@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""Reports what is due for the upstreams under the policy in README.md.
+
+Usage: tools/upstream_status.py [--desktop OGANESSON_CHECKOUT] [--android TENNESSINE_CHECKOUT]
+
+Reads the shared milestone from milestone.txt, each product's current Chromium
+version from its checkout (when given), the releases of helium-linux, Vanadium
+and Titanium from GitHub, and Chromium's Linux stable releases from
+chromiumdash. The first line is "status: current" or "status: action"; each
+later line is one finding. GITHUB_TOKEN, when set, goes to api.github.com only.
+"""
+import argparse, base64, datetime, json, os, re, sys, urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+GH = 'https://api.github.com'
+# ponytail: one grace period for every Chromium release; the agent reads the
+# release notes for severity when it fires. Split by severity if 7 days proves wrong.
+GRACE = datetime.timedelta(days=7)
+# Product: (upstream it follows, its GitHub repo).
+PRODUCTS = {'oganesson': ('helium-linux', 'imputnet/helium-linux'),
+            'tennessine': ('vanadium', 'GrapheneOS/Vanadium')}
+
+
+def version(text):
+    m = re.search(r'(\d+)\.(\d+)\.(\d+)\.(\d+)', text)
+    return tuple(map(int, m.groups())) if m else None
+
+
+def show(v):
+    return '.'.join(map(str, v))
+
+
+def get(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'dubna-upstream-status'})
+    if url.startswith(GH + '/'):
+        req.add_header('Accept', 'application/vnd.github+json')
+        if os.environ.get('GITHUB_TOKEN'):
+            req.add_header('Authorization', f'Bearer {os.environ["GITHUB_TOKEN"]}')
+    with urllib.request.urlopen(req, timeout=30) as response:
+        return json.load(response)
+
+
+def github_releases(repo):
+    """(tag, publish date) of each published release, newest first."""
+    return [(r['tag_name'], datetime.date.fromisoformat(r['published_at'][:10]))
+            for r in get(f'{GH}/repos/{repo}/releases?per_page=30')
+            if not r['draft'] and not r['prerelease']]
+
+
+def helium_linux_chromium(tag):
+    """helium-linux tags don't name Chromium: its helium-chromium submodule's
+    chromium_version.txt does."""
+    sha = get(f'{GH}/repos/imputnet/helium-linux/contents/helium-chromium?ref={tag}')['sha']
+    file = get(f'{GH}/repos/imputnet/helium/contents/chromium_version.txt?ref={sha}')
+    return version(base64.b64decode(file['content']).decode())
+
+
+def upstream_releases(name, repo, milestone):
+    """(Chromium version, date, tag) of the releases at or above milestone,
+    newest first, and at least the newest one."""
+    found = []
+    for tag, date in github_releases(repo):
+        v = helium_linux_chromium(tag) if name == 'helium-linux' else version(tag)
+        if v is None:
+            continue
+        if found and v[0] < milestone:
+            break
+        found.append((v, date, tag))
+    return found
+
+
+def chromium_stable():
+    """(version, date) of Chromium's recent Linux stable releases. Vanadium
+    tags follow the desktop version numbers, so Linux stands for both."""
+    url = 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=30'
+    return [(version(r['version']), datetime.date.fromtimestamp(r['time'] / 1000))
+            for r in get(url)]
+
+
+def current_versions(desktop, android):
+    current = {}
+    if desktop:
+        current['oganesson'] = version((Path(desktop) / 'chromium_version.txt').read_text())
+    if android:
+        current['tennessine'] = version((Path(android) / 'vanadium/args.gn').read_text())
+    return current
+
+
+def assess(milestone, releases, stable, current, today):
+    """Findings, each (kind, text). releases: product -> [(version, date, tag)];
+    stable: [(version, date)]; current: product -> version, for the given ones.
+    Kinds: milestone, waiting, update, security."""
+    findings = []
+    newest_ms = {p: max(v[0] for v, _, _ in rs) for p, rs in releases.items()}
+    ahead = {p: min(d for v, d, _ in rs if v[0] > milestone)
+             for p, rs in releases.items() if newest_ms[p] > milestone}
+    target = milestone
+    if len(ahead) == len(releases):
+        target = min(newest_ms.values())
+        findings.append(('milestone', f'every upstream has Chromium {target}: move both '
+                                      f'products and milestone.txt to {target}'))
+    for lagging in (releases.keys() - ahead.keys()) if ahead else ():
+        leader = min(ahead, key=ahead.get)
+        findings.append(('waiting', f'{lagging}: {PRODUCTS[lagging][0]} is still on '
+                                    f'{milestone}; {PRODUCTS[leader][0]} moved on '
+                                    f'{ahead[leader]} ({(today - ahead[leader]).days} days)'))
+    for p, rs in releases.items():
+        allowed = ([r for r in rs if r[0][0] == target]
+                   or [r for r in rs if r[0][0] <= target])
+        if not allowed:
+            continue
+        best, _, tag = max(allowed)
+        if p in current and best > current[p]:
+            findings.append(('update', f'{p}: {PRODUCTS[p][0]} {tag} has Chromium '
+                                       f'{show(best)}, we build {show(current[p])}'))
+        since = [d for v, d in stable if v > best]
+        if since and today - min(since) > GRACE:
+            findings.append(('security', f'{p}: Chromium stable has {show(max(stable)[0])}, '
+                                         f'newer than {show(best)} since {min(since)} '
+                                         f'({(today - min(since)).days} days), and nothing '
+                                         f'newer from {PRODUCTS[p][0]} fits milestone {target}'))
+    return findings
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
+    parser.add_argument('--desktop', help='an oganesson-focused checkout')
+    parser.add_argument('--android', help='a tennessine-focused checkout')
+    args = parser.parse_args()
+    milestone = int((ROOT / 'milestone.txt').read_text())
+    releases = {p: upstream_releases(name, repo, milestone)
+                for p, (name, repo) in PRODUCTS.items()}
+    stable = chromium_stable()
+    titanium = github_releases('jqssun/android-titanium-browser')[0]
+    findings = assess(milestone, releases, stable, current_versions(args.desktop, args.android),
+                      datetime.date.today())
+    print('status: action' if findings else 'status: current')
+    for kind, text in findings:
+        print(f'{kind}: {text}')
+    print(f'info: milestone {milestone}; ' + '; '.join(
+        f'{PRODUCTS[p][0]} {rs[0][2]} = Chromium {show(rs[0][0])} ({rs[0][1]})'
+        for p, rs in releases.items())
+        + f'; titanium {titanium[0]} ({titanium[1]}); '
+        f'Linux stable {show(max(stable)[0])}')
+
+
+if __name__ == '__main__':
+    sys.exit(main())
