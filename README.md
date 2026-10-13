@@ -13,7 +13,10 @@ Each product takes its upstream's patches as they are, so that the upstream does
 
 1. **New Chromium release in the same milestone: take it now.** These releases carry security fixes, and shared patches rarely break between them. Each product moves as soon as its own upstream has the release.
 2. **New milestone: wait until every upstream has it.** Then move both products and `milestone.txt` together. While one upstream lags, the other product stays on the current milestone, at that upstream's newest release in it.
-3. **Security exception.** When Chromium stable has been newer than what the policy allows for more than 7 days, read the release notes. When the fixes matter (high or critical severity, or exploited in the wild), update that product without waiting: bump its Chromium version, and fix the upstream patches that fail. Those fixes are ours until the upstream catches up. Then drop them and take the upstream's versions.
+3. **Exploited in the wild: update now.** When Chromium fixes an exploit that is used in the wild, each product takes the first upstream release with the fix at once, even into a new milestone before the other upstream gets there. When its upstream has no such release yet, bump the product's Chromium version ourselves and fix the upstream patches that fail. Those fixes stay ours only until the upstream catches up. In September 2026 both upstreams shipped each zero-day fix within about a day, so the upstream usually comes first.
+4. **Stable ahead for long.** When Chromium stable has been newer than what the policy allows for more than 7 days, read the release notes and decide whether to do the same as in rule 3. Nearly every release has fixes rated High, so severity alone doesn't decide it.
+
+Google marks zero-days only with the sentence "Google is aware that an exploit for CVE-… exists in the wild" in the Chrome Releases post. The script takes those CVEs, adds the Chromium entries in CISA's [Known Exploited Vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) catalog, and finds the release that fixes each one in the posts. A CVE that it can't place is the one case that needs a reader.
 
 `tools/upstream_status.py` applies these rules and prints what is due:
 
@@ -26,7 +29,8 @@ tools/upstream_status.py --desktop ../oganesson-focused --android ../tennessine-
 | `update` | Rule 1: the product's upstream has a newer release in the milestone. |
 | `milestone` | Rule 2: every upstream has a newer milestone. |
 | `waiting` | Rule 2: one upstream has a newer milestone and the other doesn't. Nothing to do. |
-| `security` | Rule 3: Chromium stable has been ahead for more than 7 days. |
+| `zeroday` | Rule 3: a version we build has an exploit in the wild. |
+| `security` | Rule 4: Chromium stable has been ahead for more than 7 days. |
 
 It needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network. A T3 scheduled task runs the report every morning and does the preparation that a finding calls for. It doesn't commit, push or start a long build without the maintainer.
 

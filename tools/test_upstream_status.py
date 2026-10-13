@@ -10,8 +10,9 @@ D = datetime.date
 TODAY = D(2026, 10, 20)
 
 
-def kinds(releases, stable=(), current=None, today=TODAY):
-    return sorted(k for k, _ in assess(155, releases, list(stable), current or {}, today))
+def kinds(releases, stable=(), current=None, today=TODAY, zerodays=()):
+    return sorted(k for k, _ in assess(155, releases, list(stable), current or {}, today,
+                                       zerodays))
 
 
 desktop_155 = [((155, 0, 8059, 39), D(2026, 10, 8), '0.19.2.1')]
@@ -37,4 +38,11 @@ stable = [((155, 0, 8059, 50), D(2026, 10, 10)), (v39, D(2026, 10, 6))]
 both = {'oganesson': desktop_155, 'tennessine': android_155}
 assert kinds(both, stable, today=D(2026, 10, 16)) == []
 assert kinds(both, stable, today=D(2026, 10, 18)) == ['security', 'security']
+# An exploit in the wild: no grace period, and the milestone rule doesn't hold
+# it back. A product already on the fix is left alone.
+fixed_in_156 = [((156, 0, 8078, 25), D(2026, 10, 19), ['CVE-2026-1'])]
+assert kinds({'oganesson': desktop_155, 'tennessine': android_156}, current={'oganesson': v39,
+             'tennessine': (156, 0, 8078, 25)}, zerodays=fixed_in_156) == ['waiting', 'zeroday']
+fixed_in_39 = [(v39, D(2026, 10, 8), ['CVE-2026-2'])]
+assert kinds(both, current={'oganesson': v39, 'tennessine': v39}, zerodays=fixed_in_39) == []
 print('ok')

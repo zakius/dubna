@@ -6,10 +6,11 @@ Usage: tools/upstream_status.py [--desktop OGANESSON_CHECKOUT] [--android TENNES
 Reads the shared milestone from milestone.txt, each product's current Chromium
 version from its checkout (when given), the releases of helium-linux, Vanadium
 and Titanium from GitHub, and Chromium's Linux stable releases from
-chromiumdash. The first line is "status: current" or "status: action"; each
+chromiumdash, and the exploits Google reports in the wild from the Chrome
+Releases blog. The first line is "status: current" or "status: action"; each
 later line is one finding. GITHUB_TOKEN, when set, goes to api.github.com only.
 """
-import argparse, base64, datetime, json, os, re, sys, urllib.request
+import argparse, base64, datetime, html, json, os, re, sys, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -78,6 +79,41 @@ def chromium_stable():
             for r in get(url)]
 
 
+KEV = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
+
+
+def zero_days(today):
+    """([(fixed version, date, CVEs)], [unplaced CVE]) for the Chromium exploits
+    known in the wild. The CVEs come from two sources: the Chrome Releases
+    sentences that say "in the wild" (Google's only marker; severity is no
+    sign), and the Chromium entries CISA added to its Known Exploited
+    Vulnerabilities catalog in the last 30 days. Each CVE is fixed in the
+    earliest recent desktop post that names it; the first full version in a
+    post is the Linux one. An unplaced CVE needs a reader."""
+    feed = get('https://chromereleases.googleblog.com/feeds/posts/default'
+               '?alt=json&max-results=50')['feed']['entry']
+    posts = []
+    for post in feed:
+        text = re.sub(r'\s+', ' ', html.unescape(re.sub('<[^>]+>', ' ', post['content']['$t'])))
+        if 'Desktop' in post['title']['$t'] and version(text):
+            posts.append((datetime.date.fromisoformat(post['published']['$t'][:10]),
+                          version(text), text))
+    wild = {cve for _, _, text in posts for sentence in re.findall(r'[^.]*in the wild[^.]*', text)
+            for cve in re.findall(r'CVE-\d+-\d+', sentence)}
+    recent = (today - datetime.timedelta(days=30)).isoformat()
+    wild |= {v['cveID'] for v in get(KEV)['vulnerabilities']
+             if v['vendorProject'] == 'Google' and 'Chromium' in v['product']
+             and v['dateAdded'] >= recent}
+    fixes, unplaced = {}, []
+    for cve in sorted(wild):
+        naming = sorted((date, v) for date, v, text in posts if cve in text)
+        if naming:
+            fixes.setdefault(naming[0][::-1], []).append(cve)
+        else:
+            unplaced.append(cve)
+    return [(v, date, cves) for (v, date), cves in fixes.items()], unplaced
+
+
 def current_versions(desktop, android):
     current = {}
     if desktop:
@@ -87,10 +123,11 @@ def current_versions(desktop, android):
     return current
 
 
-def assess(milestone, releases, stable, current, today):
+def assess(milestone, releases, stable, current, today, zerodays=()):
     """Findings, each (kind, text). releases: product -> [(version, date, tag)];
-    stable: [(version, date)]; current: product -> version, for the given ones.
-    Kinds: milestone, waiting, update, security."""
+    stable: [(version, date)]; current: product -> version, for the given ones;
+    zerodays: [(fixed version, date, CVEs)]. Kinds: zeroday, milestone, waiting,
+    update, security."""
     findings = []
     newest_ms = {p: max(v[0] for v, _, _ in rs) for p, rs in releases.items()}
     ahead = {p: min(d for v, d, _ in rs if v[0] > milestone)
@@ -120,6 +157,18 @@ def assess(milestone, releases, stable, current, today):
                                          f'newer than {show(best)} since {min(since)} '
                                          f'({(today - min(since)).days} days), and nothing '
                                          f'newer from {PRODUCTS[p][0]} fits milestone {target}'))
+        # An exploit in the wild overrides the milestone rule: any upstream
+        # release with the fix, or our own update when there is none.
+        ours = current.get(p, best)
+        for fixed, date, cves in zerodays:
+            if ours >= fixed:
+                continue
+            fix = [r for r in rs if r[0] >= fixed]
+            then = (f'{PRODUCTS[p][0]} {min(fix)[2]} has it: take it now' if fix
+                    else f'{PRODUCTS[p][0]} has no release with it: update ourselves')
+            findings.append(('zeroday', f'{p}: {", ".join(cves)} exploited in the wild, fixed '
+                                        f'in Chromium {show(fixed)} ({date}); we build '
+                                        f'{show(ours)}; {then}'))
     return findings
 
 
@@ -133,8 +182,13 @@ def main():
                 for p, (name, repo) in PRODUCTS.items()}
     stable = chromium_stable()
     titanium = github_releases('jqssun/android-titanium-browser')[0]
+    today = datetime.date.today()
+    fixes, unplaced = zero_days(today)
     findings = assess(milestone, releases, stable, current_versions(args.desktop, args.android),
-                      datetime.date.today())
+                      today, fixes)
+    findings += [('zeroday', f'{cve} is exploited in the wild (CISA KEV) but no recent Chrome '
+                             f'Releases post names it: find the version that fixes it')
+                 for cve in unplaced]
     print('status: action' if findings else 'status: current')
     for kind, text in findings:
         print(f'{kind}: {text}')
