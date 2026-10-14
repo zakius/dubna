@@ -118,7 +118,7 @@ def zero_days(today):
 def current_versions(desktop, android):
     current = {}
     if desktop:
-        current['oganesson'] = version((Path(desktop) / 'chromium_version.txt').read_text())
+        current['oganesson'] = version((Path(desktop) / 'helium/chromium_version.txt').read_text())
     if android:
         current['tennessine'] = version((Path(android) / 'vanadium/args.gn').read_text())
     return current
