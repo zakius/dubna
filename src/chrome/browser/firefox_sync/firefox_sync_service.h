@@ -17,12 +17,10 @@
 #include "base/memory/weak_ptr.h"
 #include "base/timer/timer.h"
 #include "base/values.h"
-#include "build/build_config.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/prefs/pref_change_registrar.h"
 
 class Profile;
-class SkBitmap;
 
 namespace base {
 class SequencedTaskRunner;
@@ -43,7 +41,7 @@ class PrefRegistrySyncable;
 namespace firefox_sync {
 
 class HttpBridge;
-class RemoteTabs;
+class Platform;
 class SigninWatcher;
 class SyncAdapter;
 
@@ -119,10 +117,6 @@ class FirefoxSyncService : public KeyedService {
   void ApplyProfile(const base::DictValue* account);
   void OnAvatarDownloaded(const std::string& url,
                           std::optional<std::string> body);
-  void SetBrowserProfileAvatar(const std::string& name,
-                               const std::string& url,
-                               const SkBitmap& picture,
-                               bool keep_picture = false);
   // The account's name, or its email if it has none.
   std::string DisplayName() const;
   // History syncs only while the browser saves it (history.saving_disabled).
@@ -135,6 +129,9 @@ class FirefoxSyncService : public KeyedService {
   bool HasServer() const;
 
   const raw_ptr<Profile> profile_;
+  // The browser around Sync: tabs, the sign-in tab, synced tabs' views and
+  // the account on the profile.
+  std::unique_ptr<Platform> platform_;
   scoped_refptr<base::SequencedTaskRunner> sync_runner_;
   scoped_refptr<HttpBridge> http_;
   scoped_refptr<os_crypt_async::Encryptor> encryptor_;
@@ -148,10 +145,6 @@ class FirefoxSyncService : public KeyedService {
   // The running sync's {name: {state, local}}, as snapshots come in.
   base::DictValue pending_engines_;
   base::ListValue remote_tabs_;
-#if !BUILDFLAG(IS_ANDROID)
-  // remote_tabs_ for History, Recent tabs and the sessions API.
-  std::unique_ptr<RemoteTabs> remote_tabs_ui_;
-#endif
 
   bool syncing_ = false;
   bool sync_again_ = false;

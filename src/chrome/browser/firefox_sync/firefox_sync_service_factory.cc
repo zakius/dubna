@@ -33,7 +33,7 @@ FirefoxSyncServiceFactory::FirefoxSyncServiceFactory()
   DependsOn(BookmarkModelFactory::GetInstance());
   DependsOn(HistoryServiceFactory::GetInstance());
   DependsOn(ProfilePasswordStoreFactory::GetInstance());
-  // RemoteTabs hands its delegate back to it in Shutdown().
+  // Desktop's synced tabs view hands its delegate back to it in Shutdown().
   DependsOn(SessionSyncServiceFactory::GetInstance());
 }
 

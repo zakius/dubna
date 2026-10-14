@@ -4,15 +4,17 @@
 
 # Firefox Sync, shared by oganesson and tennessine through dubna. The protocol
 # runs in liboganesson_sync.so, built by each product's tools/build-sync-lib.sh
-# from dubna's rust/oganesson_sync and loaded at runtime from the browser's
-# folder, or on Android from the APK. The android/ folder is tennessine's
-# (github.com/zakius/tennessine-focused).
+# from dubna's rust/oganesson_sync. What depends on the browser around it
+# (firefox_sync_platform.h) is in each product's
+# //chrome/browser/firefox_sync/platform, which public_deps this target and is
+# the one the browser depends on.
 source_set("firefox_sync") {
   sources = [
     "autofill_adapter.cc",
     "autofill_adapter.h",
     "bookmarks_adapter.cc",
     "bookmarks_adapter.h",
+    "firefox_sync_platform.h",
     "firefox_sync_service.cc",
     "firefox_sync_service.h",
     "firefox_sync_service_factory.cc",
@@ -40,36 +42,10 @@ source_set("firefox_sync") {
     "//components/os_crypt/async/browser",
     "//components/password_manager/core/browser",
     "//components/pref_registry",
-    "//components/sessions",
-    "//components/sync/protocol",
-    "//components/sync_device_info",
-    "//components/sync_sessions",
     "//components/prefs",
     "//content/public/browser",
-    "//crypto",
     "//net",
     "//services/network/public/cpp",
-    "//skia",
     "//ui/base",
-    "//ui/gfx",
   ]
-  if (is_android) {
-    sources += [
-      "android/firefox_sync_bridge.cc",
-      "android/tabs_adapter_android.cc",
-      "android/tabs_adapter_android.h",
-    ]
-    deps += [
-      "//chrome/browser/firefox_sync/android:jni_headers",
-      "//chrome/browser/ui/android/tab_model",
-    ]
-  } else {
-    sources += [
-      "remote_tabs.cc",
-      "remote_tabs.h",
-      "tabs_adapter.cc",
-      "tabs_adapter.h",
-    ]
-    deps += [ "//services/data_decoder/public/cpp" ]
-  }
 }

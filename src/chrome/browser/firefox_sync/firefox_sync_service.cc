@@ -6,10 +6,8 @@
 
 #include <utility>
 
-#include "build/build_config.h"
 #include "base/barrier_closure.h"
 #include "base/base64.h"
-#include "base/base_paths.h"
 #include "base/compiler_specific.h"
 #include "base/environment.h"
 #include "base/files/file_path.h"
@@ -30,6 +28,7 @@
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/firefox_sync/autofill_adapter.h"
 #include "chrome/browser/firefox_sync/bookmarks_adapter.h"
+#include "chrome/browser/firefox_sync/firefox_sync_platform.h"
 #include "chrome/browser/firefox_sync/history_adapter.h"
 #include "chrome/browser/firefox_sync/passwords_adapter.h"
 #include "chrome/browser/history/history_service_factory.h"
@@ -60,29 +59,8 @@
 #include "services/network/public/mojom/url_response_head.mojom.h"
 #include "ui/base/l10n/l10n_util.h"
 #include "url/gurl.h"
-#include "third_party/skia/include/core/SkBitmap.h"
 #include "url/origin.h"
 
-// The Android parts are tennessine's: github.com/zakius/tennessine-focused,
-// src/chrome/browser/firefox_sync/android.
-#if BUILDFLAG(IS_ANDROID)
-#include "base/android/bundle_utils.h"
-#include "chrome/browser/firefox_sync/android/tabs_adapter_android.h"
-#include "chrome/browser/ui/android/tab_model/tab_model.h"
-#include "chrome/browser/ui/android/tab_model/tab_model_list.h"
-#else
-#include "base/path_service.h"
-#include "chrome/browser/firefox_sync/remote_tabs.h"
-#include "chrome/browser/profiles/profile_attributes_entry.h"
-#include "chrome/browser/profiles/profile_attributes_storage.h"
-#include "chrome/browser/profiles/profile_manager.h"
-#include "services/data_decoder/public/cpp/decode_image.h"
-#include "ui/gfx/image/image.h"
-#include "chrome/browser/firefox_sync/tabs_adapter.h"
-#include "chrome/browser/ui/navigator/browser_navigator.h"
-#include "chrome/browser/ui/navigator/browser_navigator_params.h"
-#include "crypto/nss_util.h"
-#endif
 
 namespace firefox_sync {
 
@@ -169,26 +147,13 @@ std::string& LoadError() {
   return *error;
 }
 
-// Loads liboganesson_sync.so: from the browser's folder, or on Android from
-// the APK's native libraries. Blocks. Calls into the library are indirect
-// calls CFI can't check, hence DISABLE_CFI_ICALL.
+// Loads liboganesson_sync.so from where the platform has it. Blocks. Calls
+// into the library are indirect calls CFI can't check, hence
+// DISABLE_CFI_ICALL.
 DISABLE_CFI_ICALL const Library* LoadSyncLibrary() {
-#if BUILDFLAG(IS_ANDROID)
-  // The linker namespace libchrome.so is in doesn't search the APK, so the
-  // path comes from the class loader, as for Chromium's own module libraries.
-  // The library brings its own NSS (Chromium on Android has none).
-  std::string path =
-      base::android::BundleUtils::ResolveLibraryPath("oganesson_sync", "");
-  base::FilePath file(path.empty() ? "liboganesson_sync.so" : path);
-#else
-  // Chromium's own NSS setup first; the library then uses it as is.
-  crypto::EnsureNSSInit();
-  base::FilePath dir;
-  base::PathService::Get(base::DIR_MODULE, &dir);
-  base::FilePath file = dir.Append(FILE_PATH_LITERAL("liboganesson_sync.so"));
-#endif
   base::NativeLibraryLoadError error;
-  base::NativeLibrary native = base::LoadNativeLibrary(file, &error);
+  base::NativeLibrary native =
+      base::LoadNativeLibrary(SyncLibraryPath(), &error);
   if (!native) {
     LoadError() = error.ToString();
     LOG(WARNING) << "Firefox Sync is unavailable: " << LoadError();
@@ -413,10 +378,8 @@ FirefoxSyncService::FirefoxSyncService(Profile* profile)
       !prefs->HasPrefPath(kServerPref)) {
     prefs->SetString(kServerPref, kMozillaServer);
   }
-#if !BUILDFLAG(IS_ANDROID)
   // Before OnEncryptor, which may run right away.
-  remote_tabs_ui_ = std::make_unique<RemoteTabs>(profile_);
-#endif
+  platform_ = CreatePlatform(profile_);
   // Loads the library and proves it works.
   Call("version", {}, base::BindOnce([](base::DictValue result) {
          if (const std::string* version = result.FindString("ok")) {
@@ -451,10 +414,8 @@ void FirefoxSyncService::RegisterProfilePrefs(
 }
 
 void FirefoxSyncService::Shutdown() {
-#if !BUILDFLAG(IS_ANDROID)
-  remote_tabs_ui_->Clear();
-  remote_tabs_ui_.reset();
-#endif
+  platform_->ClearRemoteTabs();
+  platform_.reset();
   history_saving_.RemoveAll();
   adapters_.clear();
   signin_watcher_.reset();
@@ -487,19 +448,17 @@ void FirefoxSyncService::OnEncryptor(
   CreateAdapters();
   if (signed_in() && IsTypeEnabled("tabs")) {
     remote_tabs_ = profile_->GetPrefs()->GetList(kRemoteTabsPref).Clone();
-#if !BUILDFLAG(IS_ANDROID)
     // Posted: this can run while the profile is created, before the browser
     // sets up the session serialization the tabs need.
     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE, base::BindOnce(
                        [](base::WeakPtr<FirefoxSyncService> service) {
-                         if (service && service->remote_tabs_ui_) {
-                           service->remote_tabs_ui_->Update(
+                         if (service && service->platform_) {
+                           service->platform_->ShowRemoteTabs(
                                service->remote_tabs_);
                          }
                        },
                        account_weak_factory_.GetWeakPtr()));
-#endif
   }
   periodic_.Start(FROM_HERE, kSyncInterval,
                   base::BindRepeating(&FirefoxSyncService::SyncNow,
@@ -581,31 +540,12 @@ void FirefoxSyncService::OnBeginSignIn(base::DictValue result) {
     SetError(result);
     return;
   }
-#if BUILDFLAG(IS_ANDROID)
-  // Android's Navigate() needs a browser window, which a profile alone
-  // doesn't give: the tab comes from the profile's tab model.
-  content::WebContents* contents = nullptr;
-  for (TabModel* model : TabModelList::models()) {
-    if (model->GetProfile() == profile_ && !model->IsOffTheRecord()) {
-      contents =
-          model->CreateNewTabForDevTools(GURL(*url), /*new_window=*/false);
-      break;
-    }
-  }
+  content::WebContents* contents = platform_->OpenTab(GURL(*url));
   if (!contents) {
     error_ = l10n_util::GetStringUTF8(IDS_FIREFOX_SYNC_NO_WINDOW);
     NotifyStatus();
     return;
   }
-#else
-  NavigateParams params(profile_, GURL(*url), ui::PAGE_TRANSITION_LINK);
-  params.disposition = WindowOpenDisposition::NEW_FOREGROUND_TAB;
-  Navigate(&params);
-  content::WebContents* contents = params.navigated_or_inserted_contents.get();
-  if (!contents) {
-    return;
-  }
-#endif
   signin_watcher_ =
       std::make_unique<SigninWatcher>(contents, GURL(*redirect), this);
   // The last attempt's error, such as a server that isn't an accounts one.
@@ -664,7 +604,8 @@ void FirefoxSyncService::SignOut() {
   profile_->GetPrefs()->ClearPref(kNamePref);
   profile_->GetPrefs()->ClearPref(kAvatarUrlPref);
   avatar_loader_.reset();
-  SetBrowserProfileAvatar(std::string(), std::string(), SkBitmap());
+  platform_->ShowAccount(std::string(), std::string(), std::string(),
+                         /*keep_picture=*/false);
   profile_->GetPrefs()->ClearPref(kLastSyncPref);
   profile_->GetPrefs()->ClearPref(kHistorySincePref);
   profile_->GetPrefs()->ClearPref(kHistoryDeletionsPref);
@@ -681,9 +622,7 @@ void FirefoxSyncService::SignOut() {
 void FirefoxSyncService::ClearRemoteTabs() {
   remote_tabs_.clear();
   profile_->GetPrefs()->ClearPref(kRemoteTabsPref);
-#if !BUILDFLAG(IS_ANDROID)
-  remote_tabs_ui_->Clear();
-#endif
+  platform_->ClearRemoteTabs();
 }
 
 void FirefoxSyncService::ApplyProfile(const base::DictValue* account) {
@@ -699,14 +638,15 @@ void FirefoxSyncService::ApplyProfile(const base::DictValue* account) {
   std::string url = avatar ? *avatar : "";
   if (url == prefs->GetString(kAvatarUrlPref)) {
     // Only the name may have changed.
-    SetBrowserProfileAvatar(DisplayName(), std::string(), SkBitmap(),
-                            /*keep_picture=*/true);
+    platform_->ShowAccount(DisplayName(), std::string(), std::string(),
+                           /*keep_picture=*/true);
     return;
   }
   prefs->SetString(kAvatarUrlPref, url);
   GURL avatar_url(url);
   if (!avatar_url.SchemeIsHTTPOrHTTPS()) {
-    SetBrowserProfileAvatar(DisplayName(), std::string(), SkBitmap());
+    platform_->ShowAccount(DisplayName(), std::string(), std::string(),
+                           /*keep_picture=*/false);
     return;
   }
   auto request = std::make_unique<network::ResourceRequest>();
@@ -737,47 +677,8 @@ void FirefoxSyncService::OnAvatarDownloaded(
     profile_->GetPrefs()->ClearPref(kAvatarUrlPref);
     return;
   }
-#if !BUILDFLAG(IS_ANDROID)
-  data_decoder::DecodeImageIsolated(
-      base::as_byte_span(*body), data_decoder::mojom::ImageCodec::kDefault,
-      /*shrink_to_fit=*/true, kMaxAvatarSize, gfx::Size(),
-      base::BindOnce(
-          [](base::WeakPtr<FirefoxSyncService> service, std::string url,
-             const SkBitmap& bitmap) {
-            if (service) {
-              service->SetBrowserProfileAvatar(service->DisplayName(), url,
-                                               bitmap);
-            }
-          },
-          account_weak_factory_.GetWeakPtr(), url));
-#endif
-}
-
-// The browser profile shows the account like a Google one: the avatar
-// button, the profile menu and Settings show its picture, and its name where
-// the profile has none of its own. An empty bitmap removes the picture.
-void FirefoxSyncService::SetBrowserProfileAvatar(const std::string& name,
-                                                 const std::string& url,
-                                                 const SkBitmap& picture,
-                                                 bool keep_picture) {
-#if !BUILDFLAG(IS_ANDROID)
-  ProfileAttributesEntry* entry =
-      g_browser_process->profile_manager()
-          ->GetProfileAttributesStorage()
-          .GetProfileAttributesWithPath(profile_->GetPath());
-  if (!entry) {
-    return;
-  }
-  entry->SetGAIAName(base::UTF8ToUTF16(name));
-  if (keep_picture) {
-    return;
-  }
-  gfx::Image image = picture.drawsNothing()
-                         ? gfx::Image()
-                         : gfx::Image::CreateFrom1xBitmap(picture);
-  entry->SetGAIAPicture(url, image);
-  entry->SetIsUsingGAIAPicture(!image.IsEmpty());
-#endif
+  platform_->ShowAccount(DisplayName(), url, std::move(*body),
+                         /*keep_picture=*/false);
 }
 
 bool FirefoxSyncService::HistoryBlocked() const {
@@ -862,7 +763,7 @@ void FirefoxSyncService::CreateAdapters() {
             local_changed);
       }
     } else if (name == "tabs") {
-      adapters_[name] = std::make_unique<TabsAdapter>(profile_, local_changed);
+      adapters_[name] = platform_->CreateTabsAdapter(local_changed);
     } else if (name == "addresses") {
       if (auto* pdm = autofill::PersonalDataManagerFactory::GetForBrowserContext(
               profile_)) {
@@ -974,9 +875,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
         if (name == "tabs" && ops) {
           remote_tabs_ = ops->Clone();
           profile_->GetPrefs()->SetList(kRemoteTabsPref, remote_tabs_.Clone());
-#if !BUILDFLAG(IS_ANDROID)
-          remote_tabs_ui_->Update(remote_tabs_);
-#endif
+          platform_->ShowRemoteTabs(remote_tabs_);
         }
         if (adapter != adapters_.end() && ops && IsTypeEnabled(name)) {
           adapter->second->Apply(*ops);

@@ -39,8 +39,8 @@ It needs only Python 3 and the network. `tools/test_upstream_status.py` checks t
 | Path | What |
 |---|---|
 | `milestone.txt` | The Chromium milestone both products build. |
-| `src/` | New files both products copy over the Chromium tree before their own: Firefox Sync's C++ (`chrome/browser/firefox_sync/`, Android's `android/` folder is tennessine's), its strings, and no saved history's headers. |
-| `patches/` | Patches both products apply: `no-saved-history.patch`, which also registers its prefs. |
+| `src/` | New files both products copy over the Chromium tree before their own: Firefox Sync's C++ (`chrome/browser/firefox_sync/`), its strings, and no saved history's headers. Nothing platform-specific: what Sync needs from the browser (tabs, the sign-in tab, synced-tab views, the account on the profile, the library's path) is `firefox_sync_platform.h`, which each product implements in its `chrome/browser/firefox_sync/platform/`. |
+| `patches/` | Patches both products apply: `firefox-sync.patch` (the service, on Linux and Android), `no-saved-history.patch` (which registers its own prefs) and `ublock-assets-update.patch` (uBlock Origin's filter lists from uBlock's own URLs, instead of Helium's servers). |
 | `rust/oganesson_sync/` | Firefox Sync's Rust library. Each product builds it with its own `tools/build-sync-lib.sh`: desktop with Chromium's toolchain, Android with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the policy check), `translate.py` (puts translations into a tree, for both products), `update_app_services.py` (moves the Rust library to a new application-services release). |
