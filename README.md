@@ -32,29 +32,23 @@ tools/upstream_status.py --desktop ../oganesson-focused --android ../tennessine-
 | `zeroday` | Rule 3: a version we build has an exploit in the wild. |
 | `security` | Rule 4: Chromium stable has been ahead for more than 7 days. |
 
-It needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network. A T3 scheduled task runs the report every morning and does the preparation that a finding calls for. It doesn't commit, push or start a long build without the maintainer.
+It needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network. A T3 scheduled task runs the report every night at midnight and does the preparation that a finding calls for. It doesn't commit, push or start a long build without the maintainer.
 
-## Moving shared code here
+## Layout
 
-Today tennessine-focused has oganesson-focused as a submodule and copies the shared files out of it. The submodule is pinned, so the two drift apart, and a change on desktop can break Android without anything showing it. Desktop's `ba35311` did: it moved the no-saved-history pref registration into the desktop-only `hooks.patch`.
+| Path | What |
+|---|---|
+| `milestone.txt` | The Chromium milestone both products build. |
+| `src/` | New files both products copy over the Chromium tree before their own: Firefox Sync's C++ (`chrome/browser/firefox_sync/`, Android's `android/` folder is tennessine's), its strings, and no saved history's headers. |
+| `patches/` | Patches both products apply: `no-saved-history.patch`, which also registers its prefs. |
+| `rust/oganesson_sync/` | Firefox Sync's Rust library. Each product builds it with its own `tools/build-sync-lib.sh`: desktop with Chromium's toolchain, Android with the NDK. |
+| `l10n/` | Polish translations of the strings in `src/`. |
+| `tools/` | `upstream_status.py` (the policy check), `translate.py` (puts translations into a tree, for both products), `update_app_services.py` (moves the Rust library to a new application-services release). |
 
-Steps, each one verified with both products' patch checks:
+Desktop has dubna as a submodule: `dubna/src/` goes in before `src/`, and `patches/series` lists `../dubna/patches/…`. tennessine has it as a submodule too, next to Vanadium, Titanium and Helium (uBlock Origin's patches and pin, at the tag desktop follows). A shared feature registers its own prefs and strings, so it doesn't depend on either product's hooks. Each product's patch check warns when its Chromium is off `milestone.txt`.
 
-1. Give the shared features (Firefox Sync, no saved history) their own pref and string registration, apart from desktop's `oganesson_prefs.h`.
-2. Move here: `src/chrome/browser/firefox_sync/`, its strings and their Polish translations, `rust/oganesson_sync/`, `no-saved-history.patch` and its headers, and the `[ublock_origin]` pin from `deps.ini`.
-3. Both products add dubna as a submodule. tennessine drops its oganesson submodule. Android takes Helium's uBlock Origin patches from desktop's vendored Helium copy, now in dubna, at the shared milestone.
-4. Each product's patch check fails when its upstream's Chromium milestone differs from `milestone.txt`.
+A change here is checked with both products' patch checks, and with a build of each, before both move their submodule to it.
 
-## One tool per job
+## Tools
 
-The tools that both products need move here as one Python script each (stdlib, Python 3.10). Files that come from an upstream (helium-linux's `linux/`, Titanium's `build.sh` and `common.sh`) stay as they are.
-
-| Job | Desktop today | Android today |
-|---|---|---|
-| Build the Sync Rust library | `tools/build-sync-lib.sh` | `tools/build-sync-lib.sh`, a separate copy |
-| Apply the series, zero fuzz | `tools/check_patches.py` | `check.sh`, `apply.sh` |
-| Refresh a failing patch | `tools/regen.py` | `tools/refresh.sh` |
-| Report upstream changes | `tools/update_helium.py --dry-run` | `tools/upstream.sh` |
-| Apply our translations | `tools/translate.py` | uses desktop's |
-
-Each product keeps one entry point: `oganesson.py` on desktop. On Android, `apply.sh` and `local-build.sh` become one Python entry point.
+Each product has one entry point: `oganesson.py` on desktop, `tennessine.py` on Android. Shared jobs are Python tools here, stdlib only. Scripts that run inside a build container or come from an upstream (helium-linux's `linux/`, Titanium's `build.sh`, `common.sh` and `post-sync.sh`) stay in bash, and so do the two `build-sync-lib.sh`, which share nothing but the crate.
