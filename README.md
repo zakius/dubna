@@ -41,14 +41,14 @@ It needs only Python 3 and the network. `tools/test_upstream_status.py` checks t
 | `milestone.txt` | The Chromium milestone both products build. |
 | `src/` | New files both products copy over the Chromium tree before their own: Firefox Sync's C++ (`chrome/browser/firefox_sync/`), its strings, and no saved history's headers. Nothing platform-specific: what Sync needs from the browser (tabs, the sign-in tab, synced-tab views, the account on the profile, the library's path) is `firefox_sync_platform.h`, which each product implements in its `chrome/browser/firefox_sync/platform/`. |
 | `patches/` | Patches both products apply: `firefox-sync.patch` (the service, on Linux and Android), `no-saved-history.patch` (which registers its own prefs) and `ublock-assets-update.patch` (uBlock Origin's filter lists from uBlock's own URLs, instead of Helium's servers). |
-| `rust/oganesson_sync/` | Firefox Sync's Rust library. Each product builds it with its own `tools/build-sync-lib.sh`: desktop with Chromium's toolchain, Android with the NDK. |
+| `rust/oganesson_sync/` | Firefox Sync's Rust library. Each product builds it with its own `build-sync-lib.sh`: desktop (`linux/`) with Chromium's toolchain, Android (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the policy check), `translate.py` (puts translations into a tree, for both products), `update_app_services.py` (moves the Rust library to a new application-services release). |
 
-Desktop has dubna as a submodule: `dubna/src/` goes in before `src/`, and `patches/series` lists `../dubna/patches/…`. tennessine has it as a submodule too, next to Vanadium, Titanium and Helium (uBlock Origin's patches and pin, at the tag desktop follows). A shared feature registers its own prefs and strings, so it doesn't depend on either product's hooks. Each product's patch check warns when its Chromium is off `milestone.txt`.
+Desktop has dubna as a submodule: `dubna/src/` goes in before `src/`, and `patches/series` lists `../dubna/patches/…`. tennessine has it as a submodule too, next to Vanadium, Titanium and Helium (uBlock Origin's patches and pin, at the commit desktop's `helium` submodule pins). A shared feature registers its own prefs and strings, so it doesn't depend on either product's hooks. Each product's patch check warns when its Chromium is off `milestone.txt`.
 
 A change here is checked with both products' patch checks, and with a build of each, before both move their submodule to it.
 
 ## Tools
 
-Each product has one entry point: `oganesson.py` on desktop, `tennessine.py` on Android. Shared jobs are Python tools here, stdlib only. Scripts that run inside a build container or come from an upstream (helium-linux's `linux/`, Titanium's `build.sh`, `common.sh` and `post-sync.sh`) stay in bash, and so do the two `build-sync-lib.sh`, which share nothing but the crate.
+Each product has one entry point: `oganesson.py` on desktop, `tennessine.py` on Android. Shared jobs are Python tools here, stdlib only. Scripts that run inside a build container or come from an upstream (desktop's `linux/container-build.sh` and the helium-linux scripts it runs, Titanium's `build.sh`, `common.sh` and `post-sync.sh`) stay in bash, and so do the two `build-sync-lib.sh`, which share nothing but the crate.
