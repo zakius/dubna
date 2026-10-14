@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn last_used_from_a_double() {
-        // base::WriteJson writes the browser's double with ".0" (#41).
+        // base::WriteJson writes the browser's double with ".0".
         for last_used in [json!(1700000000000.0), json!(1700000000000i64)] {
             let tab = local_tab(&json!({"url": "https://tab.example/", "lastUsed": last_used}))
                 .unwrap()
