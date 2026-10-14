@@ -24,8 +24,11 @@ def main():
             files.update(re.findall(r'(?m)^\+\+\+ b/(\S+\.(?:cc|mm))$', source.read_text()))
     sources = {f'../../{f}' for f in files}
     objects = []
-    # gn writes a .ninja file per target; non-UTF-8 bytes come from some flags.
-    for ninja in Path(sys.argv[1], 'obj').rglob('*.ninja'):
+    # gn writes a .ninja file per target, listed in toolchain.ninja; files of
+    # targets that left the build stay on disk. Non-UTF-8 bytes come from some flags.
+    out = Path(sys.argv[1])
+    listed = re.findall(r'(?m)^subninja (obj/\S+\.ninja)$', (out / 'toolchain.ninja').read_text())
+    for ninja in (out / name for name in listed):
         for m in re.finditer(r'(?m)^build (\S+\.o(?:bj)?)(?: \S+)*: \w+ (\S+)', ninja.read_text(errors='replace')):
             if m[2] in sources:
                 objects.append(m[1])
