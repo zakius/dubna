@@ -417,3 +417,21 @@ pub unsafe extern "C" fn og_free(s: *mut c_char) {
         drop(CString::from_raw(s));
     }
 }
+
+/// mozpkix's code-signing check, which nss_as declares and only Mozilla's own NSS
+/// builds have. Nothing here calls it, but lld-link wants every symbol a linked
+/// object names, and Windows' NSS (MSYS2's, upstream) lacks it: it fails, always.
+#[cfg(windows)]
+#[no_mangle]
+pub extern "C" fn VerifyCodeSigningCertificateChain(
+    _certificates: *mut *const u8,
+    _certificate_lengths: *const u16,
+    _num_certificates: usize,
+    _seconds_since_epoch: u64,
+    _root_sha256_hash: *const u8,
+    _hostname: *const u8,
+    _hostname_length: usize,
+    _error: *mut i32,
+) -> bool {
+    false
+}
