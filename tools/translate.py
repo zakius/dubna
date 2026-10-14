@@ -12,14 +12,14 @@ a translation to its message by the English text, so a changed English text
 needs a new translation.
 
 All our messages go into chrome/app/generated_resources.grd's .xtb files.
-Applying needs Helium's utils/ (i18n_apply, name_substitution_utils) on
-PYTHONPATH.
+Applying uses the tree's own grit for the message IDs.
 
-Usage: translate.py SRC_TREE ROOT...   apply, after Helium's i18n_apply.py
+Usage: translate.py SRC_TREE ROOT...   apply
        translate.py --check ROOT...    each ROOT's messages have a current
                                        translation in every ROOT/l10n/<lang>.json
 """
-import json, re, sys
+import html, json, re, sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 MESSAGE = re.compile(r'<message name="(\w+)"[^>]*>\s*(.*?)\s*</message>', re.S)
@@ -77,17 +77,42 @@ def check(roots):
     return 1 if errors else 0
 
 
+PLACEHOLDER = re.compile(r'<ph name="(\w+)">.*?</ph>', re.S)
+
+
+def message_id(text, tree):
+    """grit's ID for a message: the fingerprint of its text with each
+    placeholder shown as its name in capitals, as grit presents it."""
+    sys.path.insert(0, str(tree / 'tools/grit'))
+    from grit.extern import tclib  # pylint: disable=import-outside-toplevel
+    shown = ''.join(html.unescape(part) if i % 2 == 0 else part.upper()
+                    for i, part in enumerate(PLACEHOLDER.split(text)))
+    return tclib.GenerateMessageId(shown)
+
+
+def xtb_text(message):
+    """A translation as an .xtb holds it: placeholders as empty <ph> tags."""
+    return PLACEHOLDER.sub(lambda m: f'<ph name="{m[1]}" />', message)
+
+
+def xtb_paths(grd):
+    """The .xtb file of each language, from the .grd's <translations>."""
+    return {f.get('lang'): grd.parent / f.get('path')
+            for f in ET.parse(grd).getroot().find('translations').iter('file')}
+
+
 def apply(tree, roots):
-    import i18n_apply, name_substitution_utils
-    name_substitution_utils.add_grit_to_path(tree)
-    xtbs = i18n_apply.parse_xtb_paths(tree / 'chrome/app/generated_resources.grd')
+    xtbs = xtb_paths(tree / 'chrome/app/generated_resources.grd')
     for root in roots:
         for lang_file in sorted((root / 'l10n').glob('*.json')):
-            entries = [(i18n_apply.get_id(name, '', text, None), i18n_apply.to_xtb_message(message))
-                       for (name, text), message in load(lang_file).items()]
-            i18n_apply.insert_into_xtb(xtbs[lang_file.stem], entries)
+            entries = {message_id(text, tree): xtb_text(message)
+                       for (_, text), message in load(lang_file).items()}
+            xtb = xtbs[lang_file.stem]
+            content = re.sub(r'<translation id="(\d+)">.*?</translation>\n',
+                             lambda m: '' if m[1] in entries else m[0], xtb.read_text(), flags=re.S)
+            lines = ''.join(f'<translation id="{i}">{t}</translation>\n' for i, t in entries.items())
+            xtb.write_text(content.replace('</translationbundle>', lines + '</translationbundle>', 1))
             print(f'translate.py: {root.name} {lang_file.stem}: {len(entries)} translations')
-
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
