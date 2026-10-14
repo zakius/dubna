@@ -5,7 +5,11 @@ The layer shared by two Chromium-based browsers:
 - [oganesson](https://github.com/zakius/oganesson): desktop (Linux, Windows planned), on [Helium](https://github.com/imputnet/helium) through [helium-linux](https://github.com/imputnet/helium-linux).
 - [tennessine](https://github.com/zakius/tennessine): Android, on [Vanadium](https://github.com/GrapheneOS/Vanadium) with [Titanium](https://github.com/jqssun/android-titanium-browser)'s extension support.
 
-The products keep their own names, repos and releases. This repo holds what both build on: the shared Chromium milestone, and the code, patches and tools that both use.
+The two browsers share a large part of their code, but they are different products. tennessine on a large Android screen doesn't give you oganesson: the platforms differ in their toolbars, tab strips, windows, extensions and input, and each browser is built around its own platform. So they have their own names, repos and releases. This repo holds what both build on: the shared Chromium milestone, and the code, patches and tools that both use.
+
+Both elements were first synthesized at the Joint Institute for Nuclear Research in Dubna: oganesson (118) in 2002, tennessine (117) in 2010. This is where the parts they share are made. The town also has an element of its own, dubnium (105).
+
+Like both browsers, this is a personal project: it changes without notice, and development may stop at any moment.
 
 ## Update policy
 
