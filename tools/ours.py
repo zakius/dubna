@@ -6,7 +6,7 @@ compile first: an error in our code then fails the build minutes in, not hours.
 Usage: ours.py OUT SOURCE...
 OUT is an output dir in the tree, after gn gen. A SOURCE is a dir of new files
 (dubna/src, a product's src/; its .cc and .mm files) or a patch (the files it
-changes). Objects of OUT's default toolchain only.
+changes). Objects (.o, or .obj for Windows) of OUT's default toolchain only.
 """
 import re, sys
 from pathlib import Path
@@ -26,10 +26,11 @@ def main():
     objects = []
     # gn writes a .ninja file per target; non-UTF-8 bytes come from some flags.
     for ninja in Path(sys.argv[1], 'obj').rglob('*.ninja'):
-        for m in re.finditer(r'(?m)^build (\S+\.o)(?: \S+)*: \w+ (\S+)', ninja.read_text(errors='replace')):
+        for m in re.finditer(r'(?m)^build (\S+\.o(?:bj)?)(?: \S+)*: \w+ (\S+)', ninja.read_text(errors='replace')):
             if m[2] in sources:
                 objects.append(m[1])
-    print('\n'.join(sorted(objects)))
+    if objects:
+        print('\n'.join(sorted(objects)))
 
 
 if __name__ == '__main__':
