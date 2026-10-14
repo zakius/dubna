@@ -1,6 +1,5 @@
 // Copyright 2026 The oganesson Authors
-// You can use, redistribute, and/or modify this source code under
-// the terms of the GPL-3.0 license that can be found in the LICENSE file.
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
 #ifndef CHROME_BROWSER_DOWNLOAD_DOWNLOAD_HISTORY_SAVING_H_
 #define CHROME_BROWSER_DOWNLOAD_DOWNLOAD_HISTORY_SAVING_H_

@@ -2,7 +2,7 @@
 name = "oganesson_sync"
 version = "0.1.0"
 edition = "2021"
-license = "BSD-3-Clause"
+license = "GPL-2.0-only OR GPL-3.0-only"
 publish = false
 
 [lib]

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2026 The oganesson Authors. GPL-3.0, see the LICENSE file. -->
+<!-- Copyright 2026 The oganesson Authors. SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only -->
 <grit-part>
   <message name="IDS_FIREFOX_SYNC_SECTION_TITLE" desc="Title of the Settings section for syncing with Firefox through a Mozilla account.">
     Sync

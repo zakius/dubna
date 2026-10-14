@@ -1,6 +1,5 @@
 // Copyright 2026 The oganesson Authors
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
 #include "chrome/browser/firefox_sync/firefox_sync_service.h"
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 """Puts our translations (l10n/<lang>.json) into a prepared tree's .xtb files.
 
 Each ROOT is a repo with our strings: dubna, and each product that has its own.

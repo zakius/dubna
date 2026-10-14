@@ -1,6 +1,5 @@
 // Copyright 2026 The oganesson Authors
-// You can use, redistribute, and/or modify this source code under
-// the terms of the GPL-3.0 license that can be found in the LICENSE file.
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
 #ifndef COMPONENTS_SESSIONS_CORE_CLOSED_TABS_IN_MEMORY_H_
 #define COMPONENTS_SESSIONS_CORE_CLOSED_TABS_IN_MEMORY_H_

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 """Reports what is due for the upstreams under the policy in README.md.
 
 Usage: tools/upstream_status.py [--desktop OGANESSON_CHECKOUT] [--android TENNESSINE_CHECKOUT]

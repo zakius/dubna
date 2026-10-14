@@ -75,4 +75,4 @@ A T3 scheduled task runs the report every night at midnight and does the prepara
 
 ## License
 
-GPL-3.0 (`LICENSE`).
+GPL-2.0 or GPL-3.0, at your option, so that both browsers can build dubna in: tennessine is GPL-2.0, because Vanadium's patches are GPL-2.0-only, and oganesson is GPL-3.0, because Helium's are. Under section 14 of GPL-3.0 the maintainer is the proxy who decides whether a future GPL version can be used too. See `LICENSE`.

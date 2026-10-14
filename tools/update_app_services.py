@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 """Moves rust/oganesson_sync to another application-services release.
 
 Usage: tools/update_app_services.py TAG   (for example v159.0)

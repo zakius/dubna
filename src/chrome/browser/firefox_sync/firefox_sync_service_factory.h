@@ -1,6 +1,5 @@
 // Copyright 2026 The oganesson Authors
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
 #ifndef CHROME_BROWSER_FIREFOX_SYNC_FIREFOX_SYNC_SERVICE_FACTORY_H_
 #define CHROME_BROWSER_FIREFOX_SYNC_FIREFOX_SYNC_SERVICE_FACTORY_H_

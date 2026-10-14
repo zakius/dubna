@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 """Checks upstream_status.assess on made-up releases; no network."""
 import datetime, sys
 from pathlib import Path
