@@ -50,7 +50,8 @@ class Platform {
 
 std::unique_ptr<Platform> CreatePlatform(Profile* profile);
 
-// liboganesson_sync.so's path. Blocks.
+// The Sync library's path (liboganesson_sync.so, oganesson_sync.dll on
+// Windows). Blocks.
 base::FilePath SyncLibraryPath();
 
 }  // namespace firefox_sync

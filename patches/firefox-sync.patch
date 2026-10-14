@@ -7,7 +7,7 @@
      deps += [ "//chrome/browser/offline_pages" ]
    }
 +
-+  if (is_linux || is_android) {
++  if (is_linux || is_android || is_win) {
 +    deps += [ "//chrome/browser/firefox_sync/platform" ]
 +  }
  }
@@ -19,7 +19,7 @@
  #include "chrome/browser/feed/feed_service_factory.h"
  #include "chrome/browser/feedback/feedback_uploader_factory_chrome.h"
  #include "chrome/browser/file_system_access/file_system_access_permission_context_factory.h"
-+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_ANDROID)
++#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN)
 +#include "chrome/browser/firefox_sync/firefox_sync_service_factory.h"
 +#endif
  #include "chrome/browser/first_party_sets/first_party_sets_policy_service_factory.h"
@@ -29,7 +29,7 @@
  #if BUILDFLAG(IS_ANDROID)
    finds::FindsServiceFactory::GetInstance();
  #endif  // BUILDFLAG(IS_ANDROID)
-+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_ANDROID)
++#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_WIN)
 +  firefox_sync::FirefoxSyncServiceFactory::GetInstance();
 +#endif
    first_party_sets::FirstPartySetsPolicyServiceFactory::GetInstance();

@@ -44,13 +44,14 @@ class Platform;
 class SigninWatcher;
 class SyncAdapter;
 
-// Firefox Sync for a profile. Protocol, crypto and merging run in
-// liboganesson_sync.so, Mozilla's application-services crates behind a small
-// C API, on a background sequence. This class owns what all data types
-// share: the Mozilla account (encrypted with OSCrypt in prefs), the sync
-// state, per-type switches and scheduling. Each enabled type has a
-// SyncAdapter that snapshots the browser's data for the library's engine
-// and applies the changes it returns; all types sync in one pass.
+// Firefox Sync for a profile. Protocol, crypto and merging run in the Sync
+// library (liboganesson_sync.so, oganesson_sync.dll on Windows), Mozilla's
+// application-services crates behind a small C API, on a background sequence.
+// This class owns what all data types share: the Mozilla account (encrypted
+// with OSCrypt in prefs), the sync state, per-type switches and scheduling.
+// Each enabled type has a SyncAdapter that snapshots the browser's data for the
+// library's engine and applies the changes it returns; all types sync in one
+// pass.
 class FirefoxSyncService : public KeyedService {
  public:
   explicit FirefoxSyncService(Profile* profile);

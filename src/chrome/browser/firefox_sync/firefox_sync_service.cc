@@ -146,7 +146,7 @@ std::string& LoadError() {
   return *error;
 }
 
-// Loads liboganesson_sync.so from where the platform has it. Blocks. Calls
+// Loads the Sync library from where the platform has it. Blocks. Calls
 // into the library are indirect calls CFI can't check, hence
 // DISABLE_CFI_ICALL.
 DISABLE_CFI_ICALL const Library* LoadSyncLibrary() {
@@ -167,7 +167,7 @@ DISABLE_CFI_ICALL const Library* LoadSyncLibrary() {
           base::GetFunctionPointerFromNativeLibrary(native, "og_free")),
   };
   if (!lib->init || !lib->call || !lib->free) {
-    LoadError() = "bad liboganesson_sync.so";
+    LoadError() = "bad Sync library";
     LOG(WARNING) << "Firefox Sync is unavailable: " << LoadError();
     return nullptr;
   }
@@ -308,7 +308,7 @@ DISABLE_CFI_ICALL base::DictValue CallLibrary(scoped_refptr<HttpBridge> http,
   const Library* lib = GetLibrary();
   if (!lib) {
     base::DictValue error;
-    error.Set("error", "liboganesson_sync.so didn't load: " + LoadError());
+    error.Set("error", "the Sync library didn't load: " + LoadError());
     return error;
   }
   char* raw = lib->call(http.get(), method.c_str(), args.c_str());

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
 # Firefox Sync, shared by oganesson and tennessine through dubna. The protocol
-# runs in liboganesson_sync.so, built by each product's tools/build-sync-lib.sh
+# runs in the Sync library, built by each product's build-sync-lib.sh
 # from dubna's rust/oganesson_sync. What depends on the browser around it
 # (firefox_sync_platform.h) is in each product's
 # //chrome/browser/firefox_sync/platform, which public_deps this target and is
