@@ -43,7 +43,7 @@ use sync15::engine::SyncEngine;
 // identity.sync.tokenserver.uri; the account keeps it once signed in.
 // OGANESSON_FXA_SERVER (the
 // accounts server's content URL) and OGANESSON_SYNC_TOKEN_SERVER win over
-// it, for oganesson-focused's tools/fake_firefox_sync.py.
+// it, for oganesson's tools/fake_firefox_sync.py.
 const CLIENT_ID: &str = "3c49430b43dfba77";
 const REDIRECT_URI: &str = "https://accounts.firefox.com/oauth/success/3c49430b43dfba77";
 

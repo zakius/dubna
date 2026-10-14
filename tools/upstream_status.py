@@ -174,8 +174,8 @@ def assess(milestone, releases, stable, current, today, zerodays=()):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    parser.add_argument('--desktop', help='an oganesson-focused checkout')
-    parser.add_argument('--android', help='a tennessine-focused checkout')
+    parser.add_argument('--desktop', help='an oganesson checkout')
+    parser.add_argument('--android', help='a tennessine checkout')
     args = parser.parse_args()
     milestone = int((ROOT / 'milestone.txt').read_text())
     releases = {p: upstream_releases(name, repo, milestone)

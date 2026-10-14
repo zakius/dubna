@@ -2,8 +2,8 @@
 
 The layer shared by two Chromium-based browsers:
 
-- [oganesson](https://github.com/zakius/oganesson-focused): desktop (Linux, Windows planned), on [Helium](https://github.com/imputnet/helium) through [helium-linux](https://github.com/imputnet/helium-linux).
-- [tennessine](https://github.com/zakius/tennessine-focused): Android, on [Vanadium](https://github.com/GrapheneOS/Vanadium) with [Titanium](https://github.com/jqssun/android-titanium-browser)'s extension support.
+- [oganesson](https://github.com/zakius/oganesson): desktop (Linux, Windows planned), on [Helium](https://github.com/imputnet/helium) through [helium-linux](https://github.com/imputnet/helium-linux).
+- [tennessine](https://github.com/zakius/tennessine): Android, on [Vanadium](https://github.com/GrapheneOS/Vanadium) with [Titanium](https://github.com/jqssun/android-titanium-browser)'s extension support.
 
 The products keep their own names, repos and releases. This repo holds what both build on: the shared Chromium milestone, and the code, patches and tools that both use.
 
@@ -21,7 +21,7 @@ Google marks zero-days only with the sentence "Google is aware that an exploit f
 `tools/upstream_status.py` applies these rules and prints what is due:
 
 ```sh
-tools/upstream_status.py --desktop ../oganesson-focused --android ../tennessine-focused
+tools/upstream_status.py --desktop ../oganesson --android ../tennessine
 ```
 
 | Finding | Meaning |
