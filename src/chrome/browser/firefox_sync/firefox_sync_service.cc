@@ -471,7 +471,7 @@ void FirefoxSyncService::OnEncryptor(
 void FirefoxSyncService::Call(const std::string& method,
                               base::DictValue args,
                               base::OnceCallback<void(base::DictValue)> reply) {
-  args.Set("profile", profile_->GetPath().value());
+  args.Set("profile", profile_->GetPath().AsUTF8Unsafe());
   sync_runner_->PostTaskAndReplyWithResult(
       FROM_HERE,
       base::BindOnce(&CallLibrary, http_, method,
