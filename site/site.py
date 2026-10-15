@@ -3,7 +3,10 @@
 needs an update.
 
   site/site.py build      everything.html from everything.html.in and items.json,
-                          into site/www with the other pages
+                          into site/www with the other pages and site/img; the
+                          pages' {{name}}s get the current versions, dates and
+                          minimum systems (facts())
+  site/site.py screenshots  site/img from oganesson's tools/screenshots.py
   site/site.py publish    build, then copy site/www to PUBLISH_TARGET (HOST:DIR, from .env),
                           and server/compose.yaml and nginx.conf next to it, then
                           restarts what changed; the server's windows/ folder
@@ -25,8 +28,10 @@ import html
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent
@@ -215,6 +220,60 @@ def everything(items):
     return {'__STATS__': stats, '__CHIPS__': chips, '__TOC__': toc, '__MAIN__': main}
 
 
+# Android API levels to the release a user knows (developer.android.com/tools/releases/platforms).
+ANDROID = {29: '10', 30: '11', 31: '12', 32: '12L', 33: '13', 34: '14', 35: '15', 36: '16',
+           37: '17'}
+MONTHS = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split()
+FDROID_INDEX = Path.home() / '.local/share/tennessine-fdroid/repo/index-v1.json'
+
+
+def facts():
+    """What the pages say about the current builds: versions, dates, Chromium
+    milestones and minimum systems, read from the newest packages (what was
+    last published) and the build configuration, so the pages can't drift."""
+    og, ts = REPOS['oganesson'], REPOS['tennessine']
+    day = lambda stamp: f'{int(stamp[6:8])} {MONTHS[int(stamp[4:6]) - 1]} {stamp[:4]}'
+
+    def newest(folder):
+        """VERSION and build date of the newest VERSION-1.TIME package folder."""
+        names = sorted((d.name for d in folder.glob('[0-9]*-1.[0-9]*') if d.is_dir()),
+                       key=lambda n: n.split('-1.')[1])
+        if not names:
+            sys.exit(f'site.py: no packages in {folder}')
+        version, stamp = names[-1].split('-1.')
+        return version, day(stamp)
+
+    og_version, og_date = newest(og / 'work/dl')
+    win_version, win_date = newest(og / 'work/dl/windows')
+    # Helium's version: its own, then the Chromium milestone minus 136 (helium_version.py).
+    milestone = lambda version: str(136 + int(version.split('.')[1]))
+    apks = json.loads(FDROID_INDEX.read_text())['packages']['io.github.zakius.tennessine']
+    apk = max(apks, key=lambda a: a['versionCode'])
+    added = time.strftime('%Y%m%d', time.gmtime(apk['added'] / 1000))
+    deb = next((og / 'work/dl/latest').glob('oganesson_*.deb'))
+    depends = subprocess.run(['dpkg-deb', '-f', str(deb), 'Depends'], check=True,
+                             capture_output=True, text=True).stdout
+    nsi = (og / 'windows/helium-windows/installer/helium.nsi').read_text()
+    return {
+        'og_version': og_version, 'og_date': og_date, 'og_milestone': milestone(og_version),
+        'win_version': win_version, 'win_date': win_date, 'win_milestone': milestone(win_version),
+        'ts_version': apk['versionName'], 'ts_date': day(added),
+        'ts_milestone': apk['versionName'].split('.')[0],
+        'milestone': (DUBNA / 'milestone.txt').read_text().strip(),
+        'linux_cpu': re.search(r'x86-64-v\d', (og / 'linux/container-build.sh').read_text()).group(),
+        # The time64 package names ("t64") came with Debian 13 and Ubuntu 24.04.
+        'linux_distros': 'Debian 13, Ubuntu 24.04 or newer' if 't64' in depends
+                         else 'Debian 12, Ubuntu 22.04 or newer',
+        'windows_min': re.search(r'AtLeastWin(\d+)', nsi).group(1),
+        'android_min': ANDROID[apk['minSdkVersion']],
+    }
+
+
+def fill(text, values):
+    """Replaces each {{name}} in TEXT with its value."""
+    return re.sub(r'\{\{(\w+)\}\}', lambda m: html.escape(values[m.group(1)]), text)
+
+
 def build():
     www = SITE / 'www'
     www.mkdir(exist_ok=True)
@@ -223,11 +282,23 @@ def build():
     for k, v in everything(items).items():
         page = page.replace(k, v)
     (www / 'everything.html').write_text(page)
+    values = facts()
     for page in PAGES:
-        text = (SITE / page).read_text()
+        text = fill((SITE / page).read_text(), values)
         if page == 'index.html':
             text = re.sub(r'id="count">\d+ →', f'id="count">{len(items)} →', text)
         (www / page).write_text(text)
+    shutil.copytree(SITE / 'img', www / 'img', dirs_exist_ok=True)
+
+
+def screenshots():
+    """site/img from oganesson's tools/screenshots.py, with the installed package
+    unless OGANESSON_BINARY says otherwise."""
+    og = REPOS['oganesson']
+    environ = dict(os.environ, TMPDIR=str(og / 'work/tmp'))
+    environ.setdefault('OGANESSON_BINARY', '/opt/oganesson/oganesson')
+    subprocess.run([sys.executable, str(og / 'tools/screenshots.py'), str(SITE / 'img')],
+                   env=environ, check=True)
 
 
 def publish():
@@ -249,7 +320,8 @@ def mark_reviewed():
 
 
 if __name__ == '__main__':
-    commands = {'build': build, 'publish': publish, 'check': check, 'reviewed': mark_reviewed}
+    commands = {'build': build, 'publish': publish, 'screenshots': screenshots, 'check': check,
+                'reviewed': mark_reviewed}
     if len(sys.argv) != 2 or sys.argv[1] not in commands:
         sys.exit(__doc__)
     commands[sys.argv[1]]()

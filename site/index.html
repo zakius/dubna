@@ -166,6 +166,12 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .everything>*{position:relative}
 .everything h2{margin:0 0 6px}
 .everything p{margin:0;color:var(--dim)}
+.current{margin:18px 0 0;color:var(--faint);font-size:14px}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.shots figure{margin:0}
+.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.shots figcaption{color:var(--dim);font-size:14px;margin-top:8px}
+@media (max-width:700px){.shots{grid-template-columns:1fr}}
 .big{font:700 56px/1 var(--mono);background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
 
 footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
@@ -210,6 +216,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       <a class="btn" href="#compare">How they compare</a>
       <a class="btn" href="everything.html">Every feature & patch</a>
     </div>
+    <p class="current">Now: oganesson {{og_version}} and tennessine {{ts_version}}, on Chromium {{milestone}}.</p>
   </div>
   <div class="tiles" aria-hidden="true">
     <div class="tile og"><span class="n" title="atomic number">Z=118</span><span class="plat">desktop</span><span class="sym">Og</span><span class="nm">oganesson</span><span class="m">on Helium</span></div>
@@ -247,6 +254,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     </div>
   </div>
   <div class="dubna"><span style="font-size:22px">⚛</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), no saved history, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
+  <div class="shots">
+    <figure><a href="img/tabs.webp"><img src="img/tabs.webp" width="1300" height="850" loading="lazy" alt="oganesson with four Wikipedia tabs in a Firefox-style tab strip; uBlock Origin's button shows one blocked request"></a><figcaption>The classic layout, with uBlock Origin built in</figcaption></figure>
+    <figure><a href="img/vertical.webp"><img src="img/vertical.webp" width="1300" height="850" loading="lazy" alt="oganesson in the vertical layout, with the tabs in a column on the left"></a><figcaption>Helium's vertical layout, one setting away</figcaption></figure>
+    <figure><a href="img/tab-behavior.webp"><img src="img/tab-behavior.webp" width="1300" height="850" loading="lazy" alt="The Tab behavior settings with the Firefox preset selected and its rules listed"></a><figcaption>Tab behavior: the Firefox preset, or each rule on its own</figcaption></figure>
+    <figure><a href="img/gestures.webp"><img src="img/gestures.webp" width="1300" height="850" loading="lazy" alt="Shortcuts and gestures settings: Back has the gestures L and hold right, click left; Close Tab has DR"></a><figcaption>Mouse gestures next to the keyboard shortcuts of each command</figcaption></figure>
+  </div>
 </div></section>
 
 <section id="why"><div class="wrap">

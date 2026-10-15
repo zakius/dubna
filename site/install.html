@@ -203,7 +203,7 @@ pre a{color:inherit}
 
 <section id="linux" class="os"><div class="wrap">
   <h2>Linux <span class="st ok">x86-64</span></h2>
-  <p class="sub">A signed apt and dnf repository. Builds target x86-64-v2, which covers almost any PC from the last fifteen years. The browser keeps its own profile in <code>~/.config/oganesson</code>.</p>
+  <p class="sub">A signed apt and dnf repository. Needs an {{linux_cpu}} processor, which covers almost any PC from the last fifteen years, and {{linux_distros}}, or a current Fedora. Now at oganesson {{og_version}} on Chromium {{og_milestone}}, built {{og_date}}. The browser keeps its own profile in <code>~/.config/oganesson</code>.</p>
   <div class="steps">
     <div class="ib"><h3>Debian, Ubuntu</h3>
 <pre>curl -fsSL https://packages.zakius.xyz/oganesson.asc | sudo gpg --dearmor -o /usr/share/keyrings/oganesson.gpg
@@ -219,7 +219,7 @@ sudo dnf install oganesson</pre>
 
 <section id="windows" class="os"><div class="wrap">
   <h2>Windows <span class="st ok">x64</span></h2>
-  <p class="sub">An installer and a portable zip. The files aren't code-signed yet, so SmartScreen warns about them: choose <b>More info</b>, then <b>Run anyway</b>. There's no automatic updater on Windows yet; download a new installer from this page. The browser keeps its profile in <code>%LOCALAPPDATA%\oganesson</code>.</p>
+  <p class="sub">An installer and a portable zip, for Windows {{windows_min}} or newer. Now at oganesson {{win_version}} on Chromium {{win_milestone}}, built {{win_date}}. The files aren't code-signed yet, so SmartScreen warns about them: choose <b>More info</b>, then <b>Run anyway</b>. There's no automatic updater on Windows yet; download a new installer from this page. The browser keeps its profile in <code>%LOCALAPPDATA%\oganesson</code>.</p>
   <div class="steps">
     <div class="ib"><h3>Installer</h3><p>Installs for you alone, without admin rights, or for every user of the PC.</p><a class="btn primary" href="windows/oganesson-windows-x64-installer.exe">Download the installer</a></div>
     <div class="ib"><h3>Portable zip</h3><p>The browser's folder: unpack it anywhere and run <code>oganesson.exe</code>.</p><a class="btn" href="windows/oganesson-windows-x64.zip">Download the zip</a></div>
@@ -229,7 +229,7 @@ sudo dnf install oganesson</pre>
 
 <section id="android" class="os"><div class="wrap">
   <h2>Android <span class="st ok">arm64</span></h2>
-  <p class="sub">tennessine installs from its own F-Droid repository, in F-Droid or Obtainium.</p>
+  <p class="sub">tennessine installs from its own F-Droid repository, in F-Droid or Obtainium, on Android {{android_min}} or newer. Now at {{ts_version}} (Chromium {{ts_milestone}}), added {{ts_date}}.</p>
   <div class="steps">
     <div class="ib"><h3>1 · Add the repository</h3><p>In F-Droid: Settings, Repositories, +. Or open this page on the phone and tap the link.</p>
 <pre><a href="https://packages.zakius.xyz/fdroid/repo?fingerprint=A40055F0D1CF2D8B22F0DCD2CE8B874DB15352E5B6DC262C3B4FEA9FD46ADFBE">https://packages.zakius.xyz/fdroid/repo</a></pre>
