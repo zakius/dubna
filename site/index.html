@@ -135,7 +135,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{ou
 .rule:before{content:"0" counter(r);font:600 12px var(--mono);color:var(--faint)}
 .rule h3{margin:8px 0 6px;font-size:16px}
 .rule p{margin:0;color:var(--dim);font-size:14px}
-.rule .tag{display:inline-block;margin-top:10px;font:11px var(--mono);color:var(--part);border:1px solid rgba(244,201,93,.35);padding:2px 8px;border-radius:6px}
 
 .install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
@@ -388,7 +387,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <h2>Updates: both browsers on one Chromium</h2>
   <p class="sub">The two browsers share patches, so they move together. Helium and Vanadium each release at their own pace, and these rules decide when I follow.</p>
   <div class="policy">
-    <div class="rule"><h3>Same milestone</h3><p>A new release within the current Chromium milestone: take it now. The two browsers may run different releases of one milestone.</p><span class="tag">experiment</span></div>
+    <div class="rule"><h3>Same milestone</h3><p>A new release within the current Chromium milestone: take it now. The two browsers may run different releases of one milestone.</p></div>
     <div class="rule"><h3>New milestone</h3><p>Wait until Helium and Vanadium both have it, so the shared patches move once.</p></div>
     <div class="rule"><h3>Zero-day</h3><p>An exploit in the wild: update at once. If an upstream is late, I move the Chromium version myself and fix its patches.</p></div>
     <div class="rule"><h3>Stale</h3><p>If Chrome stable has been ahead for over 7 days, catch up.</p></div>
@@ -424,7 +423,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <footer><div class="wrap">
   <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
-  <span>Licenses: oganesson GPL-3.0 · tennessine GPL-2.0 · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+  <span>Licenses: oganesson GPL-3.0-only · tennessine GPL-2.0-only · dubna GPL-2.0-only OR GPL-3.0-only.</span>
 </div></footer>
 
 <script>

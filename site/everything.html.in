@@ -117,7 +117,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <div class="wrap"><div class="warn"><span aria-hidden="true">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div></div>
 <footer><div class="wrap">
   <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
-  <span>Licenses: oganesson GPL-3.0 · tennessine GPL-2.0 · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+  <span>Licenses: oganesson GPL-3.0-only · tennessine GPL-2.0-only · dubna GPL-2.0-only OR GPL-3.0-only.</span>
 </div></footer>
 
 <script>

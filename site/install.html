@@ -127,7 +127,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{ou
 .rule:before{content:"0" counter(r);font:600 12px var(--mono);color:var(--faint)}
 .rule h3{margin:8px 0 6px;font-size:16px}
 .rule p{margin:0;color:var(--dim);font-size:14px}
-.rule .tag{display:inline-block;margin-top:10px;font:11px var(--mono);color:var(--part);border:1px solid rgba(244,201,93,.35);padding:2px 8px;border-radius:6px}
 
 .install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
@@ -260,7 +259,7 @@ sudo dnf install oganesson</pre>
 
 <section id="licenses"><div class="wrap">
   <h2>Licenses</h2>
-  <p class="sub">oganesson is under the GPL-3.0 and tennessine under the GPL-2.0: some of the components each one builds on have licenses the other can't take, so the two couldn't share one. dubna, the shared core, is under the GPL-2.0 or the GPL-3.0, at your choice, so it fits both. As the GPL-3.0 allows, I act as proxy for dubna and can accept later versions of the GPL for it.</p>
+  <p class="sub">oganesson is under the GPL-3.0 only, as Helium is, and tennessine under the GPL-2.0 only, as Vanadium's patches are; tennessine's own code is GPL-2.0 or later. Those components' licenses rule each other out, so the two browsers couldn't share one. dubna, the shared core, is under the GPL-2.0 or the GPL-3.0, at your choice, so it fits both. As the GPL-3.0 allows, I act as proxy for dubna and can accept later versions of the GPL for it.</p>
 </div></section>
 
 <section><div class="wrap">
@@ -271,7 +270,7 @@ sudo dnf install oganesson</pre>
 
 <footer><div class="wrap">
   <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
-  <span>Licenses: oganesson GPL-3.0 · tennessine GPL-2.0 · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+  <span>Licenses: oganesson GPL-3.0-only · tennessine GPL-2.0-only · dubna GPL-2.0-only OR GPL-3.0-only.</span>
 </div></footer>
 <script>
 document.getElementById('os').hidden=false;
