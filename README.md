@@ -64,15 +64,15 @@ tools/upstream_status.py --desktop ../oganesson --android ../tennessine
 | `update` | Rule 1: the browser's upstream has a newer release in the milestone. |
 | `milestone` | Rule 2: every upstream has a newer milestone. |
 | `waiting` | Rule 2: one upstream has a newer milestone and the other doesn't. Nothing to do. |
-| `zeroday` | Rule 3: a version we build has an exploit in the wild. |
+| `zeroday` | Rule 3: a version I build has an exploit in the wild. |
 | `security` | Rule 4: Chromium stable has been ahead for more than 7 days. |
 
 Google marks zero-days only with the sentence "Google is aware that an exploit for CVE-… exists in the wild" in its Chrome Releases post. The script collects those CVEs and adds the Chromium entries from CISA's [Known Exploited Vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) catalog. It then finds the release that fixes each one in the posts. A CVE that the script can't place is the one case that needs a person to read the posts.
 
 The script needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network.
 
-A T3 scheduled task runs the report every night at midnight and does the preparation that a finding calls for. It doesn't commit, push or start a long build without the maintainer.
+A T3 scheduled task runs the report every night at midnight and does the preparation that a finding calls for. It doesn't commit, push or start a long build without me.
 
 ## License
 
-GPL-2.0 or GPL-3.0, at your option, so that both browsers can build dubna in: tennessine is GPL-2.0, because Vanadium's patches are GPL-2.0-only, and oganesson is GPL-3.0, because Helium's are. Under section 14 of GPL-3.0 the maintainer is the proxy who decides whether a future GPL version can be used too. See `LICENSE`.
+GPL-2.0 or GPL-3.0, at your option, so that both browsers can build dubna in: tennessine is GPL-2.0, because Vanadium's patches are GPL-2.0-only, and oganesson is GPL-3.0, because Helium's are. Under section 14 of GPL-3.0 I am the proxy who decides whether a future GPL version can be used too. See `LICENSE`.
