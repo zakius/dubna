@@ -130,46 +130,42 @@ def assess(milestone, releases, stable, current, today, zerodays=()):
     zerodays: [(fixed version, date, CVEs)]. Kinds: zeroday, milestone, waiting,
     update, security."""
     findings = []
-    newest_ms = {p: max(v[0] for v, _, _ in rs) for p, rs in releases.items()}
-    ahead = {p: min(d for v, d, _ in rs if v[0] > milestone)
-             for p, rs in releases.items() if newest_ms[p] > milestone}
-    target = milestone
-    if len(ahead) == len(releases):
-        target = min(newest_ms.values())
-        findings.append(('milestone', f'every upstream has Chromium {target}: move both '
-                                      f'products and milestone.txt to {target}'))
-    for lagging in (releases.keys() - ahead.keys()) if ahead else ():
-        leader = min(ahead, key=ahead.get)
-        findings.append(('waiting', f'{lagging}: {PRODUCTS[lagging][0]} is still on '
-                                    f'{milestone}; {PRODUCTS[leader][0]} moved on '
-                                    f'{ahead[leader]} ({(today - ahead[leader]).days} days)'))
+    # Both products build the newest Chromium version both upstreams have released.
+    common = set.intersection(*({v for v, _, _ in rs} for rs in releases.values()))
+    shared = max(common, default=None)
+    if shared and shared[0] > milestone:
+        findings.append(('milestone', f'both upstreams have Chromium {shared[0]}: '
+                                      f'milestone.txt moves to {shared[0]}'))
     for p, rs in releases.items():
-        allowed = ([r for r in rs if r[0][0] == target]
-                   or [r for r in rs if r[0][0] <= target])
-        if not allowed:
-            continue
-        best, _, tag = max(allowed)
-        if p in current and best > current[p]:
-            findings.append(('update', f'{p}: {PRODUCTS[p][0]} {tag} has Chromium '
-                                       f'{show(best)}, we build {show(current[p])}'))
-        since = [d for v, d in stable if v > best]
-        if since and today - min(since) > GRACE:
-            findings.append(('security', f'{p}: Chromium stable has {show(max(stable)[0])}, '
-                                         f'newer than {show(best)} since {min(since)} '
-                                         f'({(today - min(since)).days} days), and nothing '
-                                         f'newer from {PRODUCTS[p][0]} fits milestone {target}'))
-        # An exploit in the wild overrides the milestone rule: any upstream
-        # release with the fix, or our own update when there is none.
-        ours = current.get(p, best)
-        for fixed, date, cves in zerodays:
+        newest, date, tag = max(rs)
+        if shared is None or newest > shared:
+            others = ', '.join(PRODUCTS[q][0] for q in releases if q != p)
+            findings.append(('waiting', f'{p}: {PRODUCTS[p][0]} {tag} has Chromium '
+                                        f'{show(newest)} since {date} ({(today - date).days} '
+                                        f'days); {others} not yet'))
+        if shared and p in current and shared > current[p]:
+            shared_tag = next(t for v, _, t in rs if v == shared)
+            findings.append(('update', f'{p}: both upstreams have Chromium {show(shared)} '
+                                       f'({PRODUCTS[p][0]} {shared_tag}); we build '
+                                       f'{show(current[p])}'))
+        # An exploit in the wild overrides waiting for the other upstream: this
+        # upstream's release with the fix, or our own update when there is none.
+        ours = current.get(p, shared or newest)
+        for fixed, fixed_date, cves in zerodays:
             if ours >= fixed:
                 continue
             fix = [r for r in rs if r[0] >= fixed]
             then = (f'{PRODUCTS[p][0]} {min(fix)[2]} has it: take it now' if fix
                     else f'{PRODUCTS[p][0]} has no release with it: update ourselves')
             findings.append(('zeroday', f'{p}: {", ".join(cves)} exploited in the wild, fixed '
-                                        f'in Chromium {show(fixed)} ({date}); we build '
+                                        f'in Chromium {show(fixed)} ({fixed_date}); we build '
                                         f'{show(ours)}; {then}'))
+    if shared:
+        since = [d for v, d in stable if v > shared]
+        if since and today - min(since) > GRACE:
+            findings.append(('security', f'Chromium stable has {show(max(stable)[0])}, newer '
+                                         f'than the shared {show(shared)} since {min(since)} '
+                                         f'({(today - min(since)).days} days)'))
     return findings
 
 
