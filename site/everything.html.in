@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everything in oganesson & tennessine</title>
+<style>
+:root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#6b7088;
+  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
+  --on:#5be3a1;--flag:#7cc4ff;--off:#8a90a6;--drop:#ff6b7f;--plan:#f4c95d;
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:150px}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;height:56px}
+nav a{text-decoration:none;color:var(--dim);font-size:14px} nav a:hover{color:var(--text)}
+nav b{font-family:var(--mono)}
+header{padding:48px 0 28px}
+h1{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.025em;margin:0 0 10px;line-height:1.05}
+h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--dim);max-width:760px;margin:0;font-size:17px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:120px}
+.stat b{display:block;font:700 26px/1.1 var(--mono)}
+.stat span{color:var(--faint);font-size:12.5px}
+.bar{position:sticky;top:0;z-index:4;background:rgba(10,11,16,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 0}
+.bar .wrap{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+input[type=search]{flex:1;min-width:220px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--text);font:inherit;outline:none}
+input[type=search]:focus{border-color:#4a5275}
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button,.chipf{all:unset;cursor:pointer;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--dim)}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--text)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chipf{border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.chipf[aria-pressed=false]{opacity:.45}
+.chipf i{width:8px;height:8px;border-radius:50%}
+.layout{display:grid;grid-template-columns:230px 1fr;gap:32px;padding:28px 24px 80px}
+aside{position:sticky;top:130px;align-self:start;max-height:calc(100vh - 150px);overflow:auto}
+aside a{display:flex;justify-content:space-between;text-decoration:none;color:var(--dim);font-size:14px;padding:6px 10px;border-radius:8px}
+aside a:hover{background:var(--card);color:var(--text)}
+aside a span{font:12px var(--mono);color:var(--faint)}
+.cat{margin-bottom:40px}
+.cat h2{display:flex;align-items:baseline;gap:12px;font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.cat h2 small{font:13px var(--mono);color:var(--faint)}
+.cat>p{color:var(--faint);margin:0 0 14px;font-size:14px}
+.list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.it{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:13px 18px;border-top:1px solid var(--line)}
+.it:first-child{border-top:0}
+.it:hover{background:#181c2a}
+.t{font-weight:600;font-size:15px}
+.w{grid-column:1/-1;color:var(--dim);font-size:14px}
+.n{grid-column:1/-1;font-size:13px;color:var(--plan);}
+.n:before{content:"→ ";color:var(--faint)}
+.meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.b{font:11.5px var(--mono);padding:2px 8px;border-radius:6px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.b.og{color:var(--og);border-color:rgba(255,154,90,.35)} .b.ts{color:var(--ts);border-color:rgba(180,140,255,.35)}
+.b.own{background:var(--glow);color:#140f16;border:0;font-weight:600}
+.s{font:11.5px var(--mono);padding:2px 8px;border-radius:6px;white-space:nowrap}
+.s.on{color:var(--on);background:rgba(91,227,161,.1)} .s.flag{color:var(--flag);background:rgba(124,196,255,.1)}
+.s.off{color:var(--off);background:rgba(138,144,166,.12)} .s.dropped,.s.to-drop{color:var(--drop);background:rgba(255,107,127,.1)}
+.path{grid-column:1/-1;font:12px var(--mono);color:var(--faint)}
+.empty{color:var(--faint);padding:40px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="index.html">← <b>Og · Ts</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="install.html">Install</a></div></nav>
+<header><div class="wrap">
+  <h1>Everything, <em>patch by patch</em></h1>
+  <p class="lede">Every change in both browsers: Helium's whole series as oganesson carries it, oganesson's own patches, and tennessine's patches on top of Vanadium and Titanium. Each one says what it does, where it comes from, and whether it's on, behind a flag, off by default or dropped.</p>
+  <div class="stats" id="stats"></div>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <input type="search" id="q" placeholder="Search features, patches, origins…  (press /)">
+  <div class="seg" id="br"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
+  <div class="seg" id="own"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Ours only</button></div>
+  <div class="chips" id="st"></div>
+</div></div>
+
+<div class="wrap layout" style="padding-left:24px;padding-right:24px">
+  <aside id="toc"></aside>
+  <main id="main"></main>
+</div>
+
+<script>
+const DATA=__DATA__;
+const AREAS=[
+ ['Sync','Firefox-compatible Sync in both browsers, with your own sync server if you like. Helium\'s dormant sync vault is under Build & plumbing.'],
+ ['Extensions & uBlock','Full uBlock Origin, Manifest V2, Web Store and AMO installs, Chrome extensions on Android.'],
+ ['Tabs & windows','Firefox tab placement and selection, recently-used Ctrl+Tab, tab menus, split view, web apps.'],
+ ['Address bar & search','Search engines, suggestions, the address bar itself.'],
+ ['Input & shortcuts','Mouse gestures, editable keyboard shortcuts, context menus, zoom.'],
+ ['History','Switches that stop saving history.'],
+ ['Media','Autoplay and tab sound indicators.'],
+ ['De-Googling & telemetry','Connections to Google and telemetry, cut. Useful Google-backed features come back as opt-ins.'],
+ ['Fingerprinting','Fingerprinting defenses: mostly flags, Helium\'s noise off by default.'],
+ ['Network & security','HTTPS-first, certificate transparency, WebRTC, DNS, TLS and network flags.'],
+ ['Helium services','Helium\'s own servers (proxy, bangs, updates, crash reports): carried, off by default.'],
+ ['Importers','Import from other browsers.'],
+ ['Settings & flags','Settings pages, chrome://flags entries and about:config.'],
+ ['Look & layout','Helium\'s redesign and layouts, toolbars, Android\'s bottom-first layout.'],
+ ['Platform & packaging','Linux, Windows and Android builds, repositories, profiles.'],
+ ['Build & plumbing','Build fixes and groundwork other patches need.'],
+];
+const ST={on:['on','var(--on)'],flag:['flag','var(--flag)'],off:['off by default','var(--off)'],dropped:['dropped','var(--drop)']};
+const state={q:'',br:'all',own:'0',st:new Set(Object.keys(ST))};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const title=p=>{if(/^project:/.test(p))return p.slice(8).replace(/-/g,' ').replace(/^./,c=>c.toUpperCase());
+  if(p.includes(' '))return p; const b=p.replace(/\/$/,'').split('/').pop().replace(/\.patch$/,''); return (b||p).replace(/-/g,' ').replace(/^./,c=>c.toUpperCase())};
+const hl=(s,q)=>q?esc(s).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'):esc(s);
+DATA.forEach(d=>{d.t=d.t||title(d.p);d.k=(d.t+' '+d.p+' '+d.w+' '+d.o+' '+d.n+' '+d.a).toLowerCase()});
+
+function stats(){const c=k=>DATA.filter(k).length;
+  document.getElementById('stats').innerHTML=[
+   [c(d=>d.b==='og'&&!d.own),'Helium-series patches'],[c(d=>d.b==='og'&&d.own),'oganesson items'],[c(d=>d.b==='both'),'shared (dubna)'],
+   [c(d=>d.b==='ts'),'tennessine items'],[c(d=>d.s==='flag'),'behind flags'],[c(d=>/drop/.test(d.s)),'dropped']]
+   .map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}
+function chips(){document.getElementById('st').innerHTML=Object.entries(ST).map(([k,[l,c]])=>`<button class="chipf" data-k="${k}" aria-pressed="${state.st.has(k)}"><i style="background:${c}"></i>${l}</button>`).join('');
+  document.querySelectorAll('#st .chipf').forEach(b=>b.onclick=()=>{const k=b.dataset.k;state.st.has(k)?state.st.delete(k):state.st.add(k);chips();render()})}
+function render(){
+  const q=state.q.trim().toLowerCase();
+  const f=DATA.filter(d=>(state.br==='all'||d.b===state.br||d.b==='both')&&(state.own==='0'||d.own)&&state.st.has(d.s)&&(!q||d.k.includes(q)));
+  let toc='',main='';
+  for(const [a,desc] of AREAS){const xs=f.filter(d=>d.a===a); if(!xs.length)continue;
+    const id=a.replace(/\W+/g,'-').toLowerCase();
+    xs.sort((x,y)=>(y.own|0)-(x.own|0)||(x.b>y.b?1:-1));
+    toc+=`<a href="#${id}">${a}<span>${xs.length}</span></a>`;
+    main+=`<section class="cat" id="${id}"><h2>${a}<small>${xs.length}</small></h2><p>${desc}</p><div class="list">`+xs.map(d=>`
+      <div class="it"><div class="t">${hl(d.t,q)}</div><div class="meta">${d.own?'<span class="b own">ours</span>':''}${d.b==='both'?'<span class="b og">oganesson</span><span class="b ts">tennessine</span>':`<span class="b ${d.b}">${d.b==='og'?'oganesson':'tennessine'}</span>`}${d.own?'':`<span class="b">${esc(d.o)}</span>`}<span class="s ${d.s.replace(/ /g,'-')}">${ST[d.s][0]}</span></div>
+      ${d.w?`<div class="w">${hl(d.w,q)}</div>`:''}${d.n?`<div class="n">${hl(d.n,q)}</div>`:''}${d.p.startsWith('project:')||!d.p.includes('/')?'':`<div class="path">${hl(d.p,q)}</div>`}</div>`).join('')+`</div></section>`}
+  document.getElementById('toc').innerHTML=toc;
+  document.getElementById('main').innerHTML=main||'<div class="empty">Nothing matches.</div>';
+}
+document.getElementById('q').oninput=e=>{state.q=e.target.value;render()};
+for(const id of ['br','own'])document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{state[id]=b.dataset.v;document.querySelectorAll('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('q').focus()}});
+stats();chips();render();
+</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oganesson & tennessine: Chromium, the way one person wants it</title>
+<style>
+:root{
+  --bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#6b7088;
+  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
+  --yes:#5be3a1;--part:#f4c95d;--no:#c4566a;
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;z-index:5;background:rgba(10,11,16,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:28px;height:56px}
+nav b{font-family:var(--mono);font-weight:600;letter-spacing:.02em}
+nav a{color:var(--dim);text-decoration:none;font-size:14px}
+nav a:hover{color:var(--text)}
+nav .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;font-size:15px;transition:.15s}
+.btn:hover{border-color:#3b4260;transform:translateY(-1px)}
+.btn.primary{background:var(--glow);color:#120d14;border:0}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:96px 0 72px}
+.hero:before{content:"";position:absolute;inset:-40% -10% auto;height:620px;background:radial-gradient(closest-side,rgba(255,140,110,.22),transparent 70%),radial-gradient(closest-side at 70% 60%,rgba(160,130,255,.22),transparent 70%);filter:blur(10px);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;margin:14px 0 20px;letter-spacing:-.025em}
+h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:19px;color:var(--dim);max-width:560px;margin:0 0 30px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.tiles{display:flex;gap:18px;justify-content:center}
+.tile{width:190px;aspect-ratio:1/1.12;border-radius:18px;border:1px solid var(--line);background:linear-gradient(160deg,#1a1d2b,#10121a);padding:16px 18px;display:flex;flex-direction:column;position:relative;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.tile .n{font-family:var(--mono);font-size:15px;color:var(--dim)}
+.tile .sym{font-size:84px;font-weight:700;line-height:1;margin-top:auto;letter-spacing:-.04em}
+.tile .nm{font-size:15px;margin-top:6px}
+.tile .m{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tile.og{transform:rotate(-3deg)} .tile.og .sym{color:var(--og);text-shadow:0 0 34px rgba(255,154,90,.55)}
+.tile.ts{transform:rotate(3deg) translateY(24px)} .tile.ts .sym{color:var(--ts);text-shadow:0 0 34px rgba(180,140,255,.55)}
+.tile .plat{position:absolute;top:14px;right:16px;font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+
+section{padding:72px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;margin:0 0 12px;line-height:1.15}
+.sub{color:var(--dim);max-width:720px;margin:0 0 40px;font-size:17px}
+
+/* pair */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px}
+.pcard h3{margin:0 0 4px;font-size:24px;display:flex;align-items:baseline;gap:10px}
+.pcard h3 small{font:13px var(--mono);color:var(--faint)}
+.pcard .base{color:var(--dim);font-size:15px;margin:0 0 18px}
+.pcard ul{margin:0;padding:0;list-style:none}
+.pcard li{padding:9px 0 9px 26px;position:relative;border-top:1px solid var(--line);font-size:15px}
+.pcard li:first-child{border-top:0}
+.pcard li:before{content:"";position:absolute;left:4px;top:17px;width:8px;height:8px;border-radius:2px;transform:rotate(45deg)}
+.pcard.og li:before{background:var(--og)} .pcard.ts li:before{background:var(--ts)}
+.dubna{margin-top:20px;padding:18px 24px;border:1px dashed #33394f;border-radius:14px;color:var(--dim);font-size:15px;display:flex;gap:16px;align-items:center}
+.dubna b{color:var(--text);font-family:var(--mono)}
+
+/* features */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.f:after{content:"";position:absolute;inset:auto -40px -60px auto;width:140px;height:140px;border-radius:50%;background:var(--glow);opacity:.06}
+.f .ic{width:40px;height:40px;border-radius:10px;background:#1f2333;display:grid;place-items:center;margin-bottom:14px;font-size:20px}
+.f h4{margin:0 0 6px;font-size:17px}
+.f p{margin:0;color:var(--dim);font-size:14.5px}
+.f .who{margin-top:12px;font:12px var(--mono);color:var(--faint)}
+.f .who i{font-style:normal;padding:2px 7px;border-radius:6px;margin-right:4px}
+.who .o{background:rgba(255,154,90,.13);color:var(--og)} .who .t{background:rgba(180,140,255,.14);color:var(--ts)} .who .p{background:rgba(244,201,93,.13);color:var(--part)}
+
+/* compare */
+.tabs{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:22px}
+.tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:9px;font-weight:600;font-size:14px;color:var(--dim)}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--text);box-shadow:0 1px 0 #2a2f42 inset}
+#compare .wrap{max-width:1420px}
+#compare h2,#compare .sub{max-width:1120px}
+th,td{padding:12px 10px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:1220px}
+th,td{padding:13px 14px;text-align:center;border-top:1px solid var(--line);font-size:14.5px}
+thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600;position:sticky;top:0;background:var(--card)}
+th:first-child,td:first-child{text-align:left;width:24%;min-width:230px}
+td:first-child small{display:block;color:var(--faint);font-size:12.5px;margin-top:2px}
+thead th.us{color:var(--text)}
+td.us{background:rgba(255,255,255,.025)}
+.d{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle}
+.d.y{background:var(--yes);box-shadow:0 0 12px rgba(91,227,161,.45)}
+.d.p{background:conic-gradient(var(--part) 0 50%,transparent 0);border:2px solid var(--part)}
+.d.n{border:2px solid var(--no)}
+.d.pl{border:2px dashed var(--yes)}
+.c{display:block;font-size:11.5px;color:var(--faint);margin-top:3px;line-height:1.3}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;color:var(--dim);font-size:13.5px}
+.legend span{display:inline-flex;gap:8px;align-items:center}
+.notes{margin-top:18px;color:var(--faint);font-size:13px;max-width:900px}
+[hidden]{display:none!important}
+
+/* stance */
+.stance{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+.quote{font-size:22px;line-height:1.45;letter-spacing:-.01em;border-left:3px solid;border-image:var(--glow) 1;padding-left:22px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);font-size:14px}
+.chip b{color:var(--yes);font-weight:600}
+.chip.opt b{color:var(--part)}
+.chip.off b{color:var(--faint)}
+
+.policy{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:r}
+.rule{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;counter-increment:r}
+.rule:before{content:"0" counter(r);font:600 12px var(--mono);color:var(--faint)}
+.rule h4{margin:8px 0 6px;font-size:16px}
+.rule p{margin:0;color:var(--dim);font-size:14px}
+.rule .tag{display:inline-block;margin-top:10px;font:11px var(--mono);color:var(--part);border:1px solid rgba(244,201,93,.35);padding:2px 8px;border-radius:6px}
+
+.install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.ib h4{margin:0 0 4px}
+.ib p{color:var(--dim);font-size:14px;margin:0 0 12px}
+pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);color:#cfd3e4;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.st{display:inline-block;font:11px var(--mono);padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle}
+.st.ok{color:var(--yes);background:rgba(91,227,161,.1)} .st.soon{color:var(--part);background:rgba(244,201,93,.1)}
+
+.warn{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(90deg,rgba(255,154,90,.08),rgba(180,140,255,.06));border:1px solid #3a3346;border-radius:16px;padding:22px 26px}
+.warn .ic{font-size:26px;line-height:1}
+.warn p{margin:0;color:var(--dim)} .warn b{color:var(--text)}
+
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.w{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.w h4{margin:0 0 10px;font-size:17px}
+.w ul{margin:0;padding-left:18px;color:var(--dim);font-size:14px}
+.w li{margin:5px 0}
+.w li::marker{color:#ff7f8f}
+@media (max-width:900px){.why{grid-template-columns:1fr}}
+.everything{display:flex;align-items:center;justify-content:space-between;gap:24px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:36px;position:relative;overflow:hidden}
+.everything:before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 85% 50%,rgba(167,139,255,.14),transparent)}
+.everything>*{position:relative}
+.everything h2{margin:0 0 6px}
+.everything p{margin:0;color:var(--dim)}
+.big{font:700 56px/1 var(--mono);background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .hero .wrap,.pair,.stance{grid-template-columns:1fr}
+  .feat,.install{grid-template-columns:1fr 1fr}
+  .policy{grid-template-columns:1fr 1fr}
+  .tiles{justify-content:flex-start}
+  nav .links{display:none}
+}
+@media (max-width:600px){.feat,.install,.policy{grid-template-columns:1fr}.tile{width:150px}.tile .sym{font-size:64px}.everything{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <b>Og · Ts</b>
+  <span class="links" style="display:flex;gap:24px">
+    <a href="#browsers">Browsers</a><a href="#highlights">Highlights</a><a href="#compare">Compare</a><a href="#why">Why not…</a><a href="#stance">Stance</a><a href="install.html">Install</a>
+  </span>
+  <span class="sp"></span>
+  <a class="btn" href="everything.html">Everything →</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow">Two Chromium browsers · one shared core</div>
+    <h1>Chromium, made <em>whole</em> for the way one person uses it.</h1>
+    <p class="lede"><b style="color:var(--text)">oganesson</b> on the desktop and <b style="color:var(--text)">tennessine</b> on Android. Both come with full uBlock Origin, Firefox-compatible Sync and Firefox's tab habits. Google's services stay out unless you switch them on.</p>
+    <div class="cta">
+      <a class="btn primary" href="install.html">Get them</a>
+      <a class="btn" href="#compare">How they compare</a>
+      <a class="btn" href="everything.html">Every feature & patch</a>
+    </div>
+  </div>
+  <div class="tiles" aria-hidden="true">
+    <div class="tile og"><span class="n">118</span><span class="plat">desktop</span><span class="sym">Og</span><span class="nm">oganesson</span><span class="m">on Helium</span></div>
+    <div class="tile ts"><span class="n">117</span><span class="plat">android</span><span class="sym">Ts</span><span class="nm">tennessine</span><span class="m">on Vanadium</span></div>
+  </div>
+</div></header>
+
+<section id="browsers"><div class="wrap">
+  <h2>Two browsers, built from the same parts</h2>
+  <p class="sub">Each one starts from a de-Googled Chromium that someone else maintains well, then adds what an extension can't do. Where an extension does the job well, the extension does it.</p>
+  <div class="pair">
+    <div class="pcard og">
+      <h3>oganesson <small>Og · 118 · Linux &amp; Windows</small></h3>
+      <p class="base">Built on <a href="https://github.com/imputnet/helium">Helium</a>, which builds on ungoogled-chromium. Helium's whole patch series applies unchanged; the parts we don't want are dropped or switched off.</p>
+      <ul>
+        <li>Mouse gestures on every page, internal pages included</li>
+        <li>A toolbar where every item moves and hides</li>
+        <li>Firefox's tab placement and tab selection after close, or Chromium's, as a preset</li>
+        <li>Firefox-compatible Sync: passwords, bookmarks, history, tabs, addresses, cards</li>
+        <li>Installed web apps open outside links in your default browser</li>
+        <li>Switches that stop saving browsing and download history</li>
+      </ul>
+    </div>
+    <div class="pcard ts">
+      <h3>tennessine <small>Ts · 117 · Android</small></h3>
+      <p class="base">Built on GrapheneOS' <a href="https://github.com/GrapheneOS/Vanadium">Vanadium</a> with <a href="https://github.com/jqssun/android-titanium-browser">Titanium</a>'s extension support. Its own features are written for it, with no Helium code inside.</p>
+      <ul>
+        <li>Chrome extensions on Android, with uBlock Origin installed on first run</li>
+        <li>A layout that follows the address bar: put it at the bottom and the menu, suggestions and tab list follow it</li>
+        <li>A list-mode tab switcher and the full URL in the address bar</li>
+        <li>Page zoom that follows Android's font size</li>
+        <li>Firefox-compatible Sync, the same as on the desktop</li>
+        <li>Switches that stop saving history</li>
+      </ul>
+    </div>
+  </div>
+  <div class="dubna"><span style="font-size:22px">⚛</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), no saved history, translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
+</div></section>
+
+<section id="highlights"><div class="wrap">
+  <h2>What matters most</h2>
+  <p class="sub">These are the features we'd miss most if they went away.</p>
+  <div class="feat">
+    <div class="f"><div class="ic">🛡</div><h4>Real uBlock Origin</h4><p>The full Manifest V2 uBlock Origin, not the Lite version. It includes CNAME uncloaking, so trackers hidden behind a site's own subdomains are blocked too. Filter lists update from uBlock's own sources, not through a browser vendor's proxy.</p><div class="who"><i class="o">Og built in</i><i class="t">Ts first run</i></div></div>
+    <div class="f"><div class="ic">🔄</div><h4>Firefox Sync, on Chromium</h4><p>Signs in to Mozilla's sync service, or better, your own self-hosted sync server. Passwords, bookmarks, history and open tabs move between the two browsers and Firefox itself.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
+    <div class="f"><div class="ic">🗂</div><h4>Tabs that behave like Firefox</h4><p>New tabs open where Firefox would put them. Closing a tab returns you to where you came from. Extensions' tabs follow the same rules. Coming from Chrome? Pick the Chromium preset, or tune each rule yourself. Ctrl+Tab can go in most-recently-used order.</p><div class="who"><i class="o">Og</i></div></div>
+    <div class="f"><div class="ic">🖱</div><h4>Mouse gestures, natively</h4><p>Draw to go back, close a tab or reopen one. Because they're built into the browser, they also work on settings pages, the new tab page and the Web Store, where extensions can't run.</p><div class="who"><i class="o">Og</i></div></div>
+    <div class="f"><div class="ic">📱</div><h4>One-handed Android</h4><p>Move the address bar to the bottom and the whole layout follows it: the menu, suggestions and tab list grow up from your thumb. Toasts stay out of the way, above the toolbar.</p><div class="who"><i class="t">Ts</i></div></div>
+    <div class="f"><div class="ic">🧩</div><h4>Extensions on a phone</h4><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">Ts</i></div></div>
+    <div class="f"><div class="ic">🔌</div><h4>Nothing phones home</h4><p>No Google services and no browser-vendor services by default. Helium's own service proxy is off too. Crash reports, update pings and component downloads stay off until you turn them on.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
+    <div class="f"><div class="ic">🎚</div><h4>Google features as opt-ins</h4><p>Translation (on-device or Google's), push messages from closed sites, casting and each AI feature each have their own switch in one settings section, all off by default.</p><div class="who"><i class="o">Og</i></div></div>
+    <div class="f"><div class="ic">🔑</div><h4>A password manager you keep</h4><p>Some privacy browsers remove the built-in password manager; we keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
+  </div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <h2>How they compare</h2>
+  <p class="sub">Compared with the browsers people argue about most: on the desktop also Edge, Vivaldi, Opera GX and the Firefox-based Floorp and Zen, on Android also Cromite, Samsung Internet, Edge and IronFox. Green means the browser has it, on by default or as a setting; most of the others can come closer with extensions.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-t="desk">Desktop · oganesson</button>
+    <button role="tab" aria-selected="false" data-t="andr">Android · tennessine</button>
+  </div>
+
+  <div class="tbl" id="desk">
+  <table>
+    <thead><tr><th>Feature</th><th class="us">oganesson</th><th>Helium</th><th>Chrome</th><th>Edge</th><th>Firefox</th><th>Brave</th><th>Vivaldi</th><th>Opera GX</th><th>Floorp</th><th>Zen</th></tr></thead>
+    <tbody>
+    <tr><td>Blink engine<small>faster, and what sites are built and tested for first</small></td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Gecko</span></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Gecko</span></td><td><i class="d n"></i><span class="c">Gecko</span></td></tr>
+    <tr><td>Full uBlock Origin (Manifest V2)<small>not the reduced "Lite" version</small></td><td class="us"><i class="d y"></i><span class="c">built in</span></td><td><i class="d y"></i><span class="c">built in</span></td><td><i class="d n"></i><span class="c">Lite only</span></td><td><i class="d n"></i><span class="c">Lite only</span></td><td><i class="d y"></i><span class="c">add-on</span></td><td><i class="d p"></i><span class="c">own blocker; MV2 by opt-in</span></td><td><i class="d p"></i><span class="c">own blocker; MV2 gone</span></td><td><i class="d p"></i><span class="c">own blocker</span></td><td><i class="d y"></i><span class="c">add-on</span></td><td><i class="d y"></i><span class="c">add-on</span></td></tr>
+    <tr><td>CNAME uncloaking<small>blocks trackers disguised as the site's own subdomain</small></td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">no full uBlock</span></td><td><i class="d n"></i><span class="c">no full uBlock</span></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">own blocker only</span></td><td><i class="d n"></i><span class="c">no DNS API</span></td><td><i class="d n"></i><span class="c">no DNS API</span></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Firefox-compatible Sync<small>incl. a self-hosted sync server</small></td><td class="us"><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">Google account</span></td><td><i class="d n"></i><span class="c">Microsoft account</span></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Brave Sync</span></td><td><i class="d n"></i><span class="c">Vivaldi Sync</span></td><td><i class="d n"></i><span class="c">Opera Sync</span></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Built-in password manager</td><td class="us"><i class="d y"></i></td><td><i class="d n"></i><span class="c">removed</span></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>No vendor or Google services by default<small>telemetry, proxies, crash uploads</small></td><td class="us"><i class="d y"></i></td><td><i class="d p"></i><span class="c">own services, on consent</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">telemetry on</span></td><td><i class="d p"></i><span class="c">own services</span></td><td><i class="d p"></i><span class="c">usage ping</span></td><td><i class="d n"></i></td><td><i class="d p"></i><span class="c">Mozilla services</span></td><td><i class="d p"></i><span class="c">Mozilla services</span></td></tr>
+    <tr><td>Firefox tab placement &amp; close selection</td><td class="us"><i class="d y"></i></td><td><i class="d p"></i><span class="c">"next to active"</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Ctrl+Tab in recently-used order</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Native, configurable mouse gestures<small>also on internal pages</small></td><td class="us"><i class="d y"></i></td><td><i class="d n"></i><span class="c">extensions only</span></td><td><i class="d n"></i><span class="c">extensions only</span></td><td><i class="d p"></i><span class="c">right-button strokes, fixed actions</span></td><td><i class="d n"></i><span class="c">extensions only; an experiment API on Nightly</span></td><td><i class="d n"></i><span class="c">extensions only</span></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">fixed gestures, rockers too</span></td><td><i class="d y"></i><span class="c">off by default</span></td><td><i class="d n"></i><span class="c">extensions only</span></td></tr>
+    <tr><td>Every toolbar item movable and hideable</td><td class="us"><i class="d y"></i></td><td><i class="d p"></i><span class="c">some buttons</span></td><td><i class="d p"></i><span class="c">pin only</span></td><td><i class="d p"></i><span class="c">show or hide</span></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">show or hide</span></td><td><i class="d p"></i><span class="c">extension &amp; page icons fixed</span></td><td><i class="d p"></i><span class="c">show or hide</span></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">sidebar layout</span></td></tr>
+    <tr><td>Middle-click the tab strip for a new tab<small>in every layout, maximized included</small></td><td class="us"><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d p"></i><span class="c">not maximized, tabs on top</span></td><td><i class="d n"></i><span class="c">Presto Opera had it</span></td><td><i class="d y"></i></td><td><i class="d y"></i><span class="c">opens the address bar for a new tab</span></td></tr>
+    <tr><td>Open-source user interface</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">Chromium is; Chrome isn't</span></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Switch to stop saving history<small>never written, not cleared later</small></td><td class="us"><i class="d y"></i><span class="c">browsing &amp; downloads</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">only clears on exit</span></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>No AI assistant unless you turn one on</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Gemini</span></td><td><i class="d n"></i><span class="c">Copilot</span></td><td><i class="d p"></i><span class="c">Firefox's AI features on</span></td><td><i class="d n"></i><span class="c">Leo</span></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Aria</span></td><td><i class="d p"></i><span class="c">Firefox's AI features on</span></td><td><i class="d p"></i><span class="c">Firefox's AI features on</span></td></tr>
+    <tr><td>No sponsored tiles, rewards or wallet</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">news feed ads</span></td><td><i class="d n"></i><span class="c">sponsored shortcuts</span></td><td><i class="d n"></i></td><td><i class="d p"></i><span class="c">partner speed dials</span></td><td><i class="d n"></i><span class="c">sponsored dials, wallet</span></td><td><i class="d p"></i><span class="c">sponsored shortcuts</span></td><td><i class="d y"></i></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tbl" id="andr" hidden>
+  <table>
+    <thead><tr><th>Feature</th><th class="us">tennessine</th><th>Vanadium</th><th>Chrome</th><th>Firefox</th><th>Brave</th><th>Cromite</th><th>Vivaldi</th><th>Samsung Internet</th><th>Edge</th><th>IronFox</th></tr></thead>
+    <tbody>
+    <tr><td>Blink engine<small>faster, and what sites are built and tested for first</small></td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Gecko</span></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i><span class="c">Gecko</span></td></tr>
+    <tr><td>Full uBlock Origin</td><td class="us"><i class="d y"></i><span class="c">installed on first run</span></td><td><i class="d p"></i><span class="c">own blocker</span></td><td><i class="d n"></i><span class="c">no extensions</span></td><td><i class="d y"></i><span class="c">add-on</span></td><td><i class="d p"></i><span class="c">own blocker</span></td><td><i class="d p"></i><span class="c">own blocker</span></td><td><i class="d p"></i><span class="c">own blocker; MV2 gone</span></td><td><i class="d p"></i><span class="c">blocker add-ons only</span></td><td><i class="d n"></i><span class="c">Lite only</span></td><td><i class="d y"></i><span class="c">add-on</span></td></tr>
+    <tr><td>Extensions</td><td class="us"><i class="d y"></i><span class="c">Chrome's</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">Firefox's</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">Chrome's</span></td><td><i class="d p"></i><span class="c">Samsung's</span></td><td><i class="d p"></i><span class="c">Edge's</span></td><td><i class="d y"></i><span class="c">Firefox's</span></td></tr>
+    <tr><td>Firefox-compatible Sync</td><td class="us"><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">Vivaldi Sync</span></td><td><i class="d n"></i><span class="c">Samsung account</span></td><td><i class="d n"></i><span class="c">Microsoft account</span></td><td><i class="d y"></i></td></tr>
+    <tr><td>GrapheneOS hardening patches</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td></tr>
+    <tr><td>Bottom address bar<small>with the menu, suggestions and tab list following it</small></td><td class="us"><i class="d y"></i></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td><td><i class="d p"></i><span class="c">bar only</span></td></tr>
+    <tr><td>Switch to stop saving history<small>never written, not cleared later</small></td><td class="us"><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">only clears on exit</span></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">history days: never</span></td><td><i class="d n"></i><span class="c">only clears on exit</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">only clears on exit</span></td></tr>
+    <tr><td>No vendor or Google services by default</td><td class="us"><i class="d y"></i></td><td><i class="d y"></i></td><td><i class="d n"></i></td><td><i class="d n"></i><span class="c">telemetry on</span></td><td><i class="d p"></i><span class="c">own services</span></td><td><i class="d y"></i></td><td><i class="d p"></i><span class="c">usage ping</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i></td></tr>
+    <tr><td>Installs from an F-Droid repository</td><td class="us"><i class="d y"></i></td><td><i class="d n"></i><span class="c">GrapheneOS only</span></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">Fennec</span></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">own repo</span></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d n"></i></td><td><i class="d y"></i><span class="c">own repo</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="legend">
+    <span><i class="d y"></i> yes, by default or as a setting</span><span><i class="d p"></i> partly</span><span><i class="d n"></i> no</span>
+  </div>
+  <p class="notes">As of October 2026, in each browser's standard release, checked against shipped default prefs, source and official docs where possible. "Firefox" on Android includes Fennec, F-Droid's build of it. Vanadium ships only on GrapheneOS. – means not checked. On Android also Cromite, Vivaldi, Samsung Internet, Edge and IronFox; Kiwi, once the Android browser for extensions, was discontinued in 2025. Gesture extensions can't run on internal pages or the extension store in any browser; on Firefox, an experiment API lifts that only on Nightly, Developer Edition and unbranded builds, so such extensions never reach AMO. Corrections are welcome.</p>
+</div></section>
+
+
+<section id="why"><div class="wrap">
+  <h2>Why not just use…</h2>
+  <p class="sub">Each of these has its good sides. For the way the maintainer uses a browser, each one also has something that rules it out.</p>
+  <div class="why">
+    <div class="w"><h4>Vivaldi</h4><ul>
+      <li>No DNS API for extensions, and since Vivaldi 8.1 no Manifest V2, so no full uBlock Origin</li>
+      <li>Promises a lot, and much of it is half done: the toolbar editor can't move extension icons, middle-click on the tab bar fails in a maximized window with tabs on top</li>
+      <li>A closed-source interface on desktop and Android, so none of it can be patched, and the Android browser is far behind</li>
+    </ul></div>
+    <div class="w"><h4>Helium</h4><ul>
+      <li>Removes the built-in password manager</li>
+      <li>No sync between devices, and no Android version</li>
+      <li>Web Store installs, filter lists and updates go through Helium's own servers</li>
+    </ul></div>
+    <div class="w"><h4>Chrome</h4><ul>
+      <li>Only uBlock Origin Lite</li>
+      <li>Sync means a Google account</li>
+      <li>Gemini, Google services and telemetry on by default</li>
+    </ul></div>
+    <div class="w"><h4>Edge</h4><ul>
+      <li>Only uBlock Origin Lite, so no CNAME uncloaking</li>
+      <li>Copilot, a Microsoft account for sync, and ads in its news feed</li>
+      <li>Mouse gestures, but right-button strokes only, each tied to a fixed list of actions</li>
+    </ul></div>
+    <div class="w"><h4>Brave</h4><ul>
+      <li>Rewards, a crypto wallet, Leo AI and sponsored new tab images</li>
+      <li>Brave Sync, which doesn't work with Firefox</li>
+      <li>uBlock Origin can't uncloak CNAME trackers there: no DNS API, so only Shields can</li>
+    </ul></div>
+    <div class="w"><h4>Firefox</h4><ul>
+      <li>No mouse gestures on internal pages, where extensions can't run</li>
+      <li>Gecko: slower than Blink, and sites are built and tested for Blink first</li>
+      <li>Gesture extensions get there only through an experiment API that never reaches AMO</li>
+    </ul></div>
+    <div class="w"><h4>Opera GX</h4><ul>
+      <li>A full mouse-gesture engine, and not one gesture you can change: configurable gestures are "too geeky"</li>
+      <li>Sponsored speed dials, messenger sidebars, the Aria AI assistant and a crypto wallet</li>
+      <li>A closed-source interface</li>
+    </ul></div>
+    <div class="w"><h4>Floorp</h4><ul>
+      <li>Gecko: slower than Blink, and sites are built and tested for Blink first</li>
+      <li>A small team on a Firefox fork, so security fixes can arrive after Firefox's</li>
+      <li>Like Vivaldi, a lot of built-in features to keep working on every update</li>
+    </ul></div>
+    <div class="w"><h4>Zen</h4><ul>
+      <li>An Arc-style sidebar layout, with no classic horizontal tab strip</li>
+      <li>A young project whose releases have trailed Firefox's security fixes</li>
+      <li>Gecko, and no mouse gestures without an extension</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="stance"><div class="wrap">
+  <div class="stance">
+    <div>
+      <h2>Private and secure by default, not paranoid</h2>
+      <p class="quote">Out of the box, nothing talks to Google or to us, and the defaults are private and secure. When you want some convenience, open up only what you need, one switch at a time. If you don't trust a feature, don't use it.</p>
+    </div>
+    <div>
+      <p class="sub" style="margin-bottom:18px">What each feature does out of the box:</p>
+      <div class="chips">
+        <span class="chip"><b>on</b> · password manager</span>
+        <span class="chip"><b>on</b> · uBlock Origin</span>
+        <span class="chip"><b>on</b> · HTTPS-first (desktop)</span>
+        <span class="chip"><b>on</b> · DuckDuckGo default</span>
+        <span class="chip opt"><b>available</b> · Google search</span>
+        <span class="chip opt"><b>sign in</b> · Firefox Sync</span>
+        <span class="chip off"><b>off</b> · crash reports</span>
+        <span class="chip off"><b>off</b> · Helium services</span>
+        <span class="chip off"><b>off</b> · fingerprint noise</span>
+        <span class="chip off"><b>off</b> · memory saver</span>
+        <span class="chip off"><b>opt-in</b> · translation</span>
+        <span class="chip off"><b>opt-in</b> · casting</span>
+        <span class="chip off"><b>opt-in</b> · AI features</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="policy"><div class="wrap">
+  <h2>Updates: both browsers on one Chromium</h2>
+  <p class="sub">The two browsers share patches, so they move together. Helium and Vanadium each release at their own pace, and these rules decide when we follow.</p>
+  <div class="policy">
+    <div class="rule"><h4>Same milestone</h4><p>A new release within the current Chromium milestone: take it now. The two browsers may run different releases of one milestone.</p><span class="tag">experiment</span></div>
+    <div class="rule"><h4>New milestone</h4><p>Wait until Helium and Vanadium both have it, so the shared patches move once.</p></div>
+    <div class="rule"><h4>Zero-day</h4><p>An exploit in the wild: update at once. If an upstream is late, we move the Chromium version ourselves and fix its patches.</p></div>
+    <div class="rule"><h4>Stale</h4><p>If Chrome stable has been ahead for over 7 days, catch up.</p></div>
+  </div>
+</div></section>
+<section><div class="wrap">
+  <div class="warn"><span class="ic">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
+</div></section>
+
+<section><div class="wrap">
+  <a class="everything" href="everything.html" style="text-decoration:none">
+    <div><h2>Every feature, every patch</h2><p>Each change in both browsers, grouped by what it touches, with where it comes from and whether it's on or off.</p></div>
+    <div class="big" id="count">444 →</div>
+  </a>
+</div></section>
+
+<footer><div class="wrap">
+  <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
+</div></footer>
+
+<script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.getElementById('desk').hidden=b.dataset.t!=='desk';
+  document.getElementById('andr').hidden=b.dataset.t!=='andr';
+});
+</script>
+</body>
+</html>
