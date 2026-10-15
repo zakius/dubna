@@ -1,0 +1,24 @@
+# dubna, the oganesson and tennessine project site: the static files in ./www, at
+# https://dubna.zakius.xyz behind the host Traefik (wildcard certificate).
+# ./www/windows holds the Windows downloads, listed by nginx.
+services:
+  site:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./www:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dubna.rule=Host(`dubna.zakius.xyz`)"
+      - "traefik.http.routers.dubna.entrypoints=websecure"
+      - "traefik.http.services.dubna.loadbalancer.server.port=80"
+      # HSTS on the site only, not its siblings under zakius.xyz
+      - "traefik.http.routers.dubna.middlewares=dubna-hsts"
+      - "traefik.http.middlewares.dubna-hsts.headers.stsSeconds=63072000"
+      # plain http redirects to https
+      - "traefik.http.routers.dubna-http.rule=Host(`dubna.zakius.xyz`)"
+      - "traefik.http.routers.dubna-http.entrypoints=web"
+      - "traefik.http.routers.dubna-http.middlewares=dubna-https"
+      - "traefik.http.middlewares.dubna-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.dubna-https.redirectscheme.permanent=true"

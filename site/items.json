@@ -4,7 +4,7 @@
 "o": "Chromium fixes",
 "a": "Build & plumbing",
 "p": "upstream-fixes/missing-dependencies",
-"w": "Build fix: adds missing includes and GN dependencies so the browser compiles.",
+"w": "Build fix so the browser compiles. Adds some files the build was missing.",
 "s": "on",
 "n": ""
 },
@@ -13,7 +13,7 @@
 "o": "Chromium fixes",
 "a": "Tabs & windows",
 "p": "upstream-fixes/tab-restore-live-tabs",
-"w": "Backported upstream fix: restoring closed tabs/windows only returns tabs that still exist, avoiding crashes when a restored tab is closed immediately.",
+"w": "Fix from Chromium: when you restore closed tabs or windows, it only brings back tabs that still exist. This stops a crash when a restored tab is closed right away.",
 "s": "on",
 "n": ""
 },
@@ -22,7 +22,7 @@
 "o": "Inox",
 "a": "Build & plumbing",
 "p": "inox-patchset/fix-building-without-safebrowsing",
-"w": "Build fix: lets the browser compile with Safe Browsing removed, dropping its download-danger checks, interstitial callbacks and extension blocklist reporting URL.",
+"w": "Build fix so the browser compiles with Safe Browsing removed. It cuts the download-danger checks, the warning-page hooks and the extension blocklist reporting address.",
 "s": "on",
 "n": "",
 "t": "Fix building without Safe Browsing (Inox)"
@@ -32,7 +32,7 @@
 "o": "Inox",
 "a": "De-Googling & telemetry",
 "p": "inox-patchset/disable-autofill-download-manager",
-"w": "Stops Autofill from sending form crowdsourcing queries and uploads to Google's servers.",
+"w": "Stops Autofill from asking Google's servers what the fields in a form are, and from sending form data to them.",
 "s": "off",
 "n": "an opt-in: autofill can ask Google which form fields are which"
 },
@@ -41,7 +41,7 @@
 "o": "Inox",
 "a": "De-Googling & telemetry",
 "p": "inox-patchset/disable-update-pings",
-"w": "Disables the Chrome updater's update checks by returning no update server URLs.",
+"w": "Turns off the Chrome updater's update checks by giving it no update server addresses.",
 "s": "on",
 "n": ""
 },
@@ -50,7 +50,7 @@
 "o": "Inox",
 "a": "De-Googling & telemetry",
 "p": "inox-patchset/disable-rlz",
-"w": "Disables RLZ, the promotion/install-tracking library that reports brand and install data to Google.",
+"w": "Turns off RLZ, a tool that tells Google which brand and install the browser came from.",
 "s": "on",
 "n": ""
 },
@@ -59,7 +59,7 @@
 "o": "Iridium",
 "a": "De-Googling & telemetry",
 "p": "iridium-browser/safe-browsing-disable-reporting",
-"w": "Disables Safe Browsing reporting: no extended-reporting opt-in, incident reports, client-side phishing pings or binary integrity analysis sent to Google.",
+"w": "Turns off Safe Browsing reports. Nothing is sent to Google about threats, phishing checks or program file checks, and the extended-reporting option is gone.",
 "s": "on",
 "n": ""
 },
@@ -68,7 +68,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-google-host-detection",
-"w": "Removes special handling of Google domains, such as variation/client-data headers, forced SafeSearch, and bound-session cookie logic for Google sites.",
+"w": "The browser stops treating Google websites specially. No extra Google tracking headers, no forced SafeSearch and no special cookie handling for Google sites.",
 "s": "on",
 "n": ""
 },
@@ -77,7 +77,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/toggle-translation-via-switch",
-"w": "Disables built-in Google Translate and hides the \"Translate to\" menu unless a custom --translate-script-url switch is given.",
+"w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu. A custom --translate-script-url switch brings it back.",
 "s": "on",
 "n": "translation comes back as two opt-ins: on-device and Google Translate"
 },
@@ -86,7 +86,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-untraceable-urls",
-"w": "Points RLZ's financial ping at about:blank so it cannot reach clients1.google.com.",
+"w": "Stops the RLZ financial ping from reaching clients1.google.com by pointing it at about:blank.",
 "s": "on",
 "n": ""
 },
@@ -95,7 +95,7 @@
 "o": "ungoogled-chromium",
 "a": "Look & layout",
 "p": "ungoogled-chromium/disable-profile-avatar-downloading",
-"w": "Stops downloading high-resolution profile avatar images from Google's servers.",
+"w": "Stops downloading large profile pictures from Google's servers.",
 "s": "on",
 "n": ""
 },
@@ -104,7 +104,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-gcm",
-"w": "Disables Google Cloud Messaging, so the browser never checks in with or keeps a push connection to Google.",
+"w": "Turns off Google Cloud Messaging. The browser never connects to Google to receive push messages.",
 "s": "off",
 "n": "an opt-in: push messages from sites while none of their tabs is open"
 },
@@ -113,7 +113,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-domain-reliability",
-"w": "Disables Domain Reliability, which uploads network error reports about Google domains to Google.",
+"w": "Turns off Domain Reliability, which sends reports about network errors on Google sites to Google.",
 "s": "on",
 "n": ""
 },
@@ -122,7 +122,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/block-trk-and-subdomains",
-"w": "Blocks any request to a trk: URL or a host ending in qjz9zk, the markers used for scrubbed Google endpoints.",
+"w": "Blocks every request to a trk: address or a host name ending in qjz9zk. Those mark Google addresses that were scrubbed from the code.",
 "s": "on",
 "n": ""
 },
@@ -131,7 +131,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-gaia",
-"w": "Disables Gaia, so the browser makes no Google account sign-in or auth requests.",
+"w": "Turns off Gaia, Google's sign-in system. The browser makes no Google account sign-in requests.",
 "s": "on",
 "n": ""
 },
@@ -140,7 +140,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-fonts-googleapis-references",
-"w": "Removes fonts.googleapis.com references, such as Reader mode loading Roboto from Google, using local fonts instead.",
+"w": "Removes links to fonts.googleapis.com. Pages like Reader mode use fonts that come with the browser instead of loading Roboto from Google.",
 "s": "on",
 "n": ""
 },
@@ -149,7 +149,7 @@
 "o": "ungoogled-chromium",
 "a": "Extensions & uBlock",
 "p": "ungoogled-chromium/disable-webstore-urls",
-"w": "Disables Chrome Web Store update URLs and pings, so extensions are not auto-updated or checked via the Web Store.",
+"w": "Turns off Chrome Web Store update addresses and pings. The browser does not check the Web Store to update extensions.",
 "s": "on",
 "n": ""
 },
@@ -158,7 +158,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/fix-learn-doubleclick-hsts",
-"w": "Build fix: splits the learn.doubleclick.net string so domain substitution does not break the HSTS generator.",
+"w": "Build fix. It splits the learn.doubleclick.net text so the build's address replacement does not break the HSTS list generator.",
 "s": "on",
 "n": ""
 },
@@ -167,7 +167,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/disable-webrtc-log-uploader",
-"w": "Stops WebRTC diagnostic logs from being uploaded to Google or written for upload.",
+"w": "Stops WebRTC debug logs from being saved for upload or uploaded to Google.",
 "s": "on",
 "n": ""
 },
@@ -176,7 +176,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-ai",
-"w": "Removes Gemini in Chrome (Glic), Screen AI (OCR and layout extraction) and related on-device AI and speech model features.",
+"w": "Removes Gemini in Chrome (Glic), Screen AI (reads text from images and page layout) and other on-device AI and speech model features.",
 "s": "on",
 "n": "each feature its own opt in (Gemini/Glic, skills, AI permission prompts, page-annotation models, Screen AI)"
 },
@@ -185,7 +185,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/fix-building-with-prunned-binaries",
-"w": "Build fix: removes tests and data that need prebuilt binaries deleted by source pruning, and turns off the on-device model service.",
+"w": "Build fix. Removes tests and data that need prebuilt files, which the source cleanup deletes, and turns off the on-device model service.",
 "s": "on",
 "n": ""
 },
@@ -194,7 +194,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-network-time-tracker",
-"w": "Stops the browser from contacting Google to check the system clock when certificate dates look wrong.",
+"w": "Stops the browser from asking Google for the correct time when certificate dates look wrong.",
 "s": "on",
 "n": ""
 },
@@ -203,7 +203,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-mei-preload",
-"w": "Removes the bundled Media Engagement preload list, so autoplay decisions rely only on your own browsing.",
+"w": "Removes the media autoplay list that ships with Chromium. Autoplay is then decided only from your own browsing.",
 "s": "on",
 "n": ""
 },
@@ -212,7 +212,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/fix-building-without-safebrowsing",
-"w": "Build fix: further changes needed to compile without Safe Browsing, such as simplifying JavaScript optimizer and download warning logic.",
+"w": "More build fixes so the browser compiles without Safe Browsing. They simplify the download warning code and the JavaScript optimizer code.",
 "s": "on",
 "n": "",
 "t": "Fix building without Safe Browsing (ungoogled-chromium)"
@@ -222,7 +222,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/remove-unused-preferences-fields",
-"w": "Removes unused Safe Browsing and sign-in preference fields and related code from the profile Preferences file.",
+"w": "Removes unused Safe Browsing and sign-in fields from the profile's Preferences file.",
 "s": "on",
 "n": ""
 },
@@ -231,7 +231,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/block-requests",
-"w": "Blocks background requests: NTP Google bar, backgrounds and promos, spellcheck dictionary and component update checks, password affiliation lookups and DevTools CSS data.",
+"w": "Blocks background requests: the Google bar, backgrounds and promos on the new tab page, spellcheck dictionary and component update checks, password affiliation lookups and DevTools CSS data.",
 "s": "on",
 "n": "an opt-in that needs a component downloads only that component"
 },
@@ -240,7 +240,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-privacy-sandbox",
-"w": "Removes the Privacy Sandbox attestations list component that would otherwise be shipped and loaded.",
+"w": "Removes the Privacy Sandbox attestations list, which Chromium would otherwise ship and load.",
 "s": "on",
 "n": ""
 },
@@ -249,7 +249,7 @@
 "o": "ungoogled-chromium",
 "a": "Extensions & uBlock",
 "p": "ungoogled-chromium/extensions-manifestv2",
-"w": "Keeps Manifest V2 extensions working, removing MV2 deprecation warnings and disablement.",
+"w": "Keeps Manifest V2 extensions working. Removes the warnings about them and stops them from being turned off.",
 "s": "on",
 "n": ""
 },
@@ -258,7 +258,7 @@
 "o": "ungoogled-chromium",
 "a": "Input & shortcuts",
 "p": "ungoogled-chromium/remove-f1-shortcut",
-"w": "Removes the F1 shortcut that opens Google's help page.",
+"w": "Removes the F1 shortcut that opened Google's help page.",
 "s": "on",
 "n": ""
 },
@@ -267,7 +267,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/move-js-optimizer-unfamiliar-sites",
-"w": "Plumbing: moves the JavaScript optimizer \"unfamiliar sites\" pref out of Safe Browsing prefs so the setting still works without them.",
+"w": "Groundwork: moves one JavaScript optimizer setting out of the Safe Browsing settings so it still works without them. Nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -276,7 +276,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/remove-navigation-source-param",
-"w": "Removes the source=chrome.ob/chrome.rb tracking parameter added to searches made from the address bar or NTP search box.",
+"w": "Removes the source=chrome.ob and source=chrome.rb tracking parameters that were added to searches from the address bar or new tab page.",
 "s": "on",
 "n": ""
 },
@@ -285,7 +285,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/bundle-hyphenation-patterns",
-"w": "Bundles hyphenation dictionaries in the build instead of downloading them as a component.",
+"w": "Includes the hyphenation dictionaries in the browser instead of downloading them later.",
 "s": "on",
 "n": ""
 },
@@ -294,7 +294,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-tos-dialog",
-"w": "Skips the Terms of Service/EULA dialog on first run.",
+"w": "Skips the Terms of Service (EULA) screen on first run.",
 "s": "on",
 "n": ""
 },
@@ -303,7 +303,7 @@
 "o": "Bromite",
 "a": "De-Googling & telemetry",
 "p": "bromite/disable-fetching-field-trials",
-"w": "Disables fetching field trials (Variations), so Google cannot remotely toggle experiments in the browser.",
+"w": "Stops the browser from fetching field trials (Variations), so Google cannot switch experiments on or off in your browser.",
 "s": "on",
 "n": ""
 },
@@ -312,7 +312,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/add-ungoogled-flag-headers",
-"w": "Plumbing: adds empty header files where ungoogled and Bromite chrome://flags entries are registered.",
+"w": "Groundwork: adds empty header files where the ungoogled and Bromite chrome://flags entries are registered. Nothing visible on its own.",
 "s": "flag",
 "n": ""
 },
@@ -321,7 +321,7 @@
 "o": "Inox",
 "a": "Settings & flags",
 "p": "inox-patchset/modify-default-prefs",
-"w": "Changes privacy defaults: off for background mode, link pings, preloading, search suggestions, translate offers, autofill, password saving and payment checks; blocks third-party cookies; shows bookmarks bar.",
+"w": "Changes defaults for privacy. Off: background mode, link pings, preloading, search suggestions, translate offers, autofill, saving passwords and payment checks. Third-party cookies are blocked. The bookmarks bar is shown.",
 "s": "on",
 "n": ""
 },
@@ -330,7 +330,7 @@
 "o": "Inox",
 "a": "De-Googling & telemetry",
 "p": "inox-patchset/disable-battery-status-service",
-"w": "Disables the Battery Status API, so sites always get a default battery state instead of real data.",
+"w": "Turns off the Battery Status API. Websites always get a made-up battery state instead of the real one.",
 "s": "on",
 "n": ""
 },
@@ -339,7 +339,7 @@
 "o": "Debian",
 "a": "De-Googling & telemetry",
 "p": "debian/disable-google-api-warning",
-"w": "Removes the startup warning bar about missing Google API keys.",
+"w": "Removes the startup bar that warns about missing Google API keys.",
 "s": "on",
 "n": ""
 },
@@ -348,7 +348,7 @@
 "o": "Iridium",
 "a": "Helium services",
 "p": "iridium-browser/updater-disable-auto-update",
-"w": "Disables macOS auto-update checks by setting the update check interval to zero.",
+"w": "Turns off automatic update checks on macOS by setting the check interval to zero.",
 "s": "on",
 "n": ""
 },
@@ -357,7 +357,7 @@
 "o": "Iridium",
 "a": "Importers",
 "p": "iridium-browser/browser-disable-profile-auto-import-on-first-run",
-"w": "Stops automatic import of settings and bookmarks from other browsers on first run.",
+"w": "Stops the browser from copying settings and bookmarks from other browsers on first run.",
 "s": "on",
 "n": ""
 },
@@ -366,7 +366,7 @@
 "o": "Bromite",
 "a": "Fingerprinting",
 "p": "bromite/fingerprinting-flags-client-rects-and-measuretext",
-"w": "Adds flags that add small random noise to getClientRects/getBoundingClientRect and canvas measureText results to resist fingerprinting.",
+"w": "Adds flags that add a little random noise to getClientRects, getBoundingClientRect and canvas measureText results. This makes fingerprinting harder.",
 "s": "flag",
 "n": ""
 },
@@ -375,7 +375,7 @@
 "o": "Bromite",
 "a": "Network & security",
 "p": "bromite/flag-max-connections-per-host",
-"w": "Adds a flag to raise the maximum connections per host to 15.",
+"w": "Adds a flag to raise the number of connections per host to 15.",
 "s": "flag",
 "n": ""
 },
@@ -384,7 +384,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/add-components-ungoogled",
-"w": "Plumbing: adds the components/ungoogled library holding switch names for fingerprinting flags.",
+"w": "Groundwork: adds a small code library that holds the switch names for the fingerprinting flags. Nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -393,7 +393,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/add-ipv6-probing-option",
-"w": "Disables the IPv6 connectivity probe to Google DNS and adds a flag to force the result to fail, preferring IPv4.",
+"w": "Turns off the IPv6 connection test to Google DNS. Adds a flag to make that test always fail, so the browser prefers IPv4.",
 "s": "on",
 "n": ""
 },
@@ -402,7 +402,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-intranet-redirect-detector",
-"w": "Disables the intranet redirect detector, which sends random-domain DNS lookups at startup.",
+"w": "Turns off the intranet redirect detector. It sent DNS lookups for random names when the browser started.",
 "s": "on",
 "n": ""
 },
@@ -411,7 +411,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/fix-building-without-mdns-and-service-discovery",
-"w": "Build fix: lets the browser compile with mDNS and local service discovery disabled.",
+"w": "Build fix so the browser compiles with mDNS and local device discovery turned off.",
 "s": "off",
 "n": "an opt-in: one switch for casting and the device discovery it needs"
 },
@@ -420,7 +420,7 @@
 "o": "ungoogled-chromium",
 "a": "Extensions & uBlock",
 "p": "ungoogled-chromium/add-flag-to-configure-extension-downloading",
-"w": "Adds a flag to choose how extension files are handled: download them as regular files or always prompt to install.",
+"w": "Adds a flag to choose what happens with extension files: download them as normal files, or always ask to install.",
 "s": "flag",
 "n": ""
 },
@@ -429,7 +429,7 @@
 "o": "ungoogled-chromium",
 "a": "Address bar & search",
 "p": "ungoogled-chromium/add-flag-for-search-engine-collection",
-"w": "Adds a flag that stops websites from automatically adding themselves as search engines.",
+"w": "Adds a flag that stops websites from adding themselves as search engines on their own.",
 "s": "flag",
 "n": ""
 },
@@ -438,7 +438,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-disable-beforeunload",
-"w": "Adds a flag that blocks \"Leave site?\" beforeunload dialogs.",
+"w": "Adds a flag that blocks the \"Leave site?\" dialog.",
 "s": "flag",
 "n": ""
 },
@@ -447,7 +447,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/add-flag-to-force-punycode-hostnames",
-"w": "Adds a flag to show internationalized domain names as punycode, helping spot lookalike-domain attacks.",
+"w": "Adds a flag to show international domain names in their raw punycode form. This helps you spot look-alike addresses.",
 "s": "flag",
 "n": ""
 },
@@ -456,7 +456,7 @@
 "o": "ungoogled-chromium",
 "a": "Look & layout",
 "p": "ungoogled-chromium/add-flag-to-show-avatar-button",
-"w": "Adds a flag to always, never, or only in Incognito/Guest show the profile avatar button in the toolbar.",
+"w": "Adds a flag to show the profile picture button in the toolbar always, never, or only in Incognito and Guest windows.",
 "s": "flag",
 "n": ""
 },
@@ -465,7 +465,7 @@
 "o": "ungoogled-chromium",
 "a": "Address bar & search",
 "p": "ungoogled-chromium/add-suggestions-url-field",
-"w": "Adds a Suggestions URL field to the search engine edit dialog, so custom engines can supply autocomplete suggestions.",
+"w": "Adds a Suggestions URL field to the search engine edit dialog, so a custom engine can give autocomplete suggestions.",
 "s": "on",
 "n": ""
 },
@@ -474,7 +474,7 @@
 "o": "ungoogled-chromium",
 "a": "Helium services",
 "p": "ungoogled-chromium/add-flag-to-hide-crashed-bubble",
-"w": "Adds a flag that hides the \"Restore pages?\" bubble shown after the browser did not exit cleanly.",
+"w": "Adds a flag that hides the \"Restore pages?\" bubble that shows after the browser did not close properly.",
 "s": "flag",
 "n": ""
 },
@@ -483,7 +483,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-scroll-tabs",
-"w": "Adds a flag to choose whether mouse-wheel scrolling over the tab strip switches tabs.",
+"w": "Adds a flag to choose whether scrolling the mouse wheel over the tab strip switches tabs.",
 "s": "off",
 "n": "a setting in Settings, also in chrome://flags",
 "t": "Scroll the tab strip with the mouse wheel"
@@ -493,7 +493,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/enable-paste-and-go-new-tab-button",
-"w": "Enables paste-and-go on all platforms: middle-clicking the New Tab button opens the clipboard URL or search.",
+"w": "Turns on paste-and-go on all systems. Middle-click the New Tab button to open the link or search from your clipboard.",
 "s": "on",
 "n": ""
 },
@@ -502,7 +502,7 @@
 "o": "ungoogled-chromium",
 "a": "Look & layout",
 "p": "ungoogled-chromium/add-flag-for-bookmark-bar-ntp",
-"w": "Adds a flag to hide the bookmark bar on the New Tab page.",
+"w": "Adds a flag that hides the bookmarks bar on the New Tab page.",
 "s": "flag",
 "n": ""
 },
@@ -511,7 +511,7 @@
 "o": "ungoogled-chromium",
 "a": "Input & shortcuts",
 "p": "ungoogled-chromium/enable-menu-on-reload-button",
-"w": "Makes right-click on the reload button always show the hard reload/empty cache menu, not only with DevTools open.",
+"w": "Right-click on the reload button always shows the hard reload and empty cache menu. Before, it only did that with DevTools open.",
 "s": "on",
 "n": ""
 },
@@ -520,7 +520,7 @@
 "o": "ungoogled-chromium",
 "a": "Address bar & search",
 "p": "ungoogled-chromium/add-flag-for-omnibox-autocomplete-filtering",
-"w": "Adds a flag to limit address bar suggestions to search suggestions, optionally plus bookmarks and internal chrome:// pages.",
+"w": "Adds a flag to limit address bar suggestions to search suggestions. You can add bookmarks and internal chrome:// pages.",
 "s": "flag",
 "n": ""
 },
@@ -529,7 +529,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-dial-repeating-discovery",
-"w": "Stops Cast/DIAL from repeatedly sending SSDP discovery broadcasts on the local network.",
+"w": "Stops Cast/DIAL from sending discovery messages again and again on your local network.",
 "s": "on",
 "n": "part of the casting opt-in: device discovery works normally once casting is on"
 },
@@ -538,7 +538,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/remove-uneeded-ui",
-"w": "Removes Google-related UI: Learn more links, Web Store links, synced tabs entries, Live Caption setting, update status on About page, and similar.",
+"w": "Removes Google-related parts of the interface: Learn more links, Web Store links, synced tabs entries, the Live Caption setting, the update status on the About page, and similar.",
 "s": "on",
 "n": ""
 },
@@ -547,7 +547,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-close-window-with-last-tab",
-"w": "Adds a flag to keep the window open, with a new tab, when its last tab is closed.",
+"w": "Adds a flag that keeps the window open, with a new tab, when you close its last tab.",
 "s": "on",
 "n": "a setting in Settings, also in chrome://flags",
 "t": "Close the window with the last tab"
@@ -557,7 +557,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-convert-popups-to-tabs",
-"w": "Adds a flag that opens popup windows as new tabs instead.",
+"w": "Adds a flag that opens popup windows as new tabs.",
 "s": "flag",
 "n": ""
 },
@@ -566,7 +566,7 @@
 "o": "ungoogled-chromium",
 "a": "History",
 "p": "ungoogled-chromium/add-flag-to-disable-local-history-expiration",
-"w": "Adds a flag to keep browsing history older than 90 days instead of expiring it.",
+"w": "Adds a flag to keep browsing history older than 90 days instead of deleting it.",
 "s": "flag",
 "n": ""
 },
@@ -575,7 +575,7 @@
 "o": "ungoogled-chromium",
 "a": "Address bar & search",
 "p": "ungoogled-chromium/prepopulated-search-engines",
-"w": "Disables the Site search starter pack, the built-in @bookmarks/@history/@tabs and expanded shortcut search engines.",
+"w": "Turns off Chromium's expanded starter pack of built-in address bar shortcuts (the Site search extras).",
 "s": "on",
 "n": ""
 },
@@ -584,7 +584,7 @@
 "o": "ungoogled-chromium",
 "a": "History",
 "p": "ungoogled-chromium/add-flag-to-clear-data-on-exit",
-"w": "Adds a flag that clears all browsing data, including history, cookies, cache and passwords, when the browser exits.",
+"w": "Adds a flag that clears all browsing data when the browser closes: history, cookies, cache and passwords.",
 "s": "off",
 "n": "a setting in Settings, also in chrome://flags",
 "t": "Clear browsing data on exit"
@@ -594,7 +594,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-for-close-confirmation",
-"w": "Adds a flag that asks for confirmation before closing a window with multiple tabs, or only the last window.",
+"w": "Adds a flag that asks before closing a window with several tabs, or only before closing the last window.",
 "s": "off",
 "n": "a setting in Settings, also in chrome://flags",
 "t": "Ask before closing a window with several tabs"
@@ -604,7 +604,7 @@
 "o": "ungoogled-chromium",
 "a": "Look & layout",
 "p": "ungoogled-chromium/add-flag-for-custom-ntp",
-"w": "Adds a flag to set a custom URL as the New Tab page.",
+"w": "Adds a flag to set your own address as the New Tab page.",
 "s": "off",
 "n": "a setting in Settings, also in chrome://flags",
 "t": "Custom new tab page"
@@ -623,7 +623,7 @@
 "o": "ungoogled-chromium",
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-hide-tab-close-buttons",
-"w": "Adds a flag that hides the close buttons on tabs.",
+"w": "Adds a flag that hides the close button on tabs.",
 "s": "flag",
 "n": ""
 },
@@ -641,7 +641,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/add-flag-to-change-http-accept-header",
-"w": "Adds a flag to set a custom HTTP Accept header for every request.",
+"w": "Adds a flag to set your own HTTP Accept header on every request.",
 "s": "flag",
 "n": ""
 },
@@ -659,7 +659,7 @@
 "o": "ungoogled-chromium",
 "a": "Extensions & uBlock",
 "p": "ungoogled-chromium/add-flag-to-hide-extensions-menu",
-"w": "Adds a flag to hide the extensions toolbar menu and pinned extension icons.",
+"w": "Adds a flag that hides the extensions menu and the pinned extension icons in the toolbar.",
 "s": "flag",
 "n": ""
 },
@@ -668,7 +668,7 @@
 "o": "ungoogled-chromium",
 "a": "Look & layout",
 "p": "ungoogled-chromium/add-flag-to-hide-fullscreen-exit-ui",
-"w": "Adds a flag to hide the fullscreen exit X and \"Press F11 to exit\" prompt.",
+"w": "Adds a flag that hides the fullscreen exit X and the \"Press F11 to exit\" message.",
 "s": "flag",
 "n": ""
 },
@@ -686,7 +686,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/add-flags-for-referrer-customization",
-"w": "Adds flags to remove all referrers, remove cross-origin referrers, or trim referrers to the origin.",
+"w": "Adds flags to send no referrer, send no referrer to other sites, or send only the site name as the referrer.",
 "s": "flag",
 "n": ""
 },
@@ -695,7 +695,7 @@
 "o": "ungoogled-chromium",
 "a": "Settings & flags",
 "p": "ungoogled-chromium/add-flags-for-existing-switches",
-"w": "Adds chrome://flags entries for existing switches like disable WebGL, force dark mode, reduced motion, start in incognito, no pings and the WebRTC IP handling policy.",
+"w": "Adds chrome://flags entries for existing switches: disable WebGL, force dark mode, reduced motion, start in Incognito, no pings and the WebRTC IP handling policy.",
 "s": "flag",
 "n": ""
 },
@@ -704,7 +704,7 @@
 "o": "ungoogled-chromium",
 "a": "Fingerprinting",
 "p": "ungoogled-chromium/add-flag-to-reduce-system-info",
-"w": "Adds a flag that reduces system info exposed in headers and JavaScript, such as reporting two CPU cores.",
+"w": "Adds a flag that shares less system information in headers and JavaScript. For example, sites see two CPU cores.",
 "s": "flag",
 "n": ""
 },
@@ -722,7 +722,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/remove-pac-size-limit",
-"w": "Removes the size limit on proxy auto-config (PAC) files, so large PAC scripts load.",
+"w": "Removes the size limit on proxy auto-config (PAC) files, so big PAC scripts load.",
 "s": "on",
 "n": ""
 },
@@ -731,7 +731,7 @@
 "o": "ungoogled-chromium",
 "a": "Network & security",
 "p": "ungoogled-chromium/enable-certificate-transparency-and-add-flag",
-"w": "Turns on Certificate Transparency checking, which catches fraudulent HTTPS certificates. Stock Chromium enables it only in Google Chrome builds. Also adds a chrome://flags option \"Enforce Certificate Transparency\", on by default, so users can turn it off.",
+"w": "Turns on Certificate Transparency checks, which catch fake HTTPS certificates. Chromium turns them on only in Google Chrome builds. Adds a chrome://flags option \"Enforce Certificate Transparency\", on by default, so you can turn it off.",
 "s": "flag",
 "n": ""
 },
@@ -740,7 +740,7 @@
 "o": "ungoogled-chromium",
 "a": "Fingerprinting",
 "p": "ungoogled-chromium/add-flag-to-spoof-webgl-renderer-info",
-"w": "Adds a \"Spoof WebGL Info\" flag. When it is on, websites see a generic graphics card name and vendor (blank, AMD, Apple, Intel, Mesa, NVIDIA or Qualcomm) instead of your real GPU. This makes fingerprinting harder.",
+"w": "Adds a \"Spoof WebGL Info\" flag. When on, websites see a generic graphics card name and maker instead of your real one. This makes fingerprinting harder.",
 "s": "flag",
 "n": ""
 },
@@ -749,7 +749,7 @@
 "o": "ungoogled-chromium",
 "a": "Fingerprinting",
 "p": "ungoogled-chromium/add-flag-to-increase-incognito-storage-quota",
-"w": "Adds a flag that gives Incognito and Guest windows the same storage allowance as normal windows. Sites then find it harder to detect Incognito, but this can use a lot of memory.",
+"w": "Adds a flag that gives Incognito and Guest windows the same storage space as normal windows. This makes Incognito harder for sites to detect, but can use a lot of memory.",
 "s": "flag",
 "n": ""
 },
@@ -758,7 +758,7 @@
 "o": "ungoogled-chromium",
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/add-credits",
-"w": "Adds ungoogled-chromium's license to the chrome://credits page. The \"source code available here\" link there now points to the ungoogled-chromium GitHub repository instead of Chromium's.",
+"w": "Adds ungoogled-chromium's license to the chrome://credits page. The \"source code available here\" link there points to the ungoogled-chromium GitHub page instead of Chromium's.",
 "s": "on",
 "n": ""
 },
@@ -767,7 +767,7 @@
 "o": "ungoogled-chromium",
 "a": "Address bar & search",
 "p": "ungoogled-chromium/disable-ai-search-shortcuts",
-"w": "Always removes the Google AI shortcuts @gemini, @aimode and @page from the address bar and the search-engine settings, whatever Google's feature switches say.",
+"w": "Always removes the Google AI shortcuts @gemini, @aimode and @page from the address bar and the search engine settings.",
 "s": "on",
 "n": ""
 },
@@ -776,7 +776,7 @@
 "o": "Brave",
 "a": "Importers",
 "p": "brave/chrome-importer-files",
-"w": "Adds about 30 new files from Brave: the engine that reads bookmarks, history and extensions from other Chromium-based browsers' profiles. On its own it changes nothing visible; patch #7 connects it.",
+"w": "Adds about 30 new files from Brave. They read bookmarks, history and extensions from the profiles of other Chromium-based browsers. Nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -785,7 +785,7 @@
 "o": "Brave",
 "a": "Importers",
 "p": "brave/custom-importer",
-"w": "In \"Import bookmarks and settings\", you can now import from Chrome, Chrome Canary, Chromium, Edge, Brave, Vivaldi, Opera, Yandex, Whale, Arc, Dia and Perplexity Comet. You get bookmarks, history and a new \"Extensions\" checkbox. Password import is removed for all sources, including Firefox. Depends on #6.",
+"w": "In \"Import bookmarks and settings\" you can import from Chrome, Chrome Canary, Chromium, Edge, Brave, Vivaldi, Opera, Yandex, Whale, Arc, Dia and Perplexity Comet. You get bookmarks, history and a new \"Extensions\" checkbox. Password import is removed for all sources, including Firefox.",
 "s": "on",
 "n": ""
 },
@@ -794,7 +794,7 @@
 "o": "Brave",
 "a": "Build & plumbing",
 "p": "brave/fix-component-content-settings-store",
-"w": "Bug fix: site settings set by built-in (component) extensions were forgotten after the first browser restart. With this fix they keep working on every launch. No direct visible change.",
+"w": "Bug fix: site settings set by built-in extensions were forgotten after the first restart. Now they last. No visible change.",
 "s": "on",
 "n": ""
 },
@@ -803,7 +803,7 @@
 "o": "Brave",
 "a": "Tabs & windows",
 "p": "brave/tab-cycling-mru-impl",
-"w": "Adds the engine for Ctrl+Tab \"most recently used\" tab switching: tabs are ordered by when you last used them, and cycling stops when you release Ctrl, click, or leave the window. Nothing in this patch calls it; helium/core/tab-cycling-mru.patch connects it to the keys and the setting.",
+"w": "Groundwork for Ctrl+Tab switching by most recently used tab. Tabs are ordered by when you last used them, and cycling stops when you release Ctrl, click, or leave the window. A later patch connects it to the keys and the setting.",
 "s": "on",
 "n": ""
 },
@@ -812,7 +812,7 @@
 "o": "Helium",
 "a": "Importers",
 "p": "helium/core/add-zen-importer",
-"w": "Adds \"Zen\" as a source in the \"Import bookmarks and settings\" dialog. It finds Zen (Firefox-based) profiles on Linux (including Flatpak), macOS and Windows and imports history and bookmarks through the Firefox importer.",
+"w": "Adds Zen as a source in \"Import bookmarks and settings\". It finds Zen (Firefox-based) profiles on Linux (also Flatpak), macOS and Windows, and imports history and bookmarks.",
 "s": "on",
 "n": ""
 },
@@ -821,7 +821,7 @@
 "o": "Helium",
 "a": "Importers",
 "p": "helium/core/add-arc-importer",
-"w": "Adds an importer for the Arc browser sidebar (pinned tabs, top apps, folders in StorableSidebar.json), imported as favorites/bookmarks. Depends on brave/custom-importer.patch and brave/chrome-importer-files.patch, which define TYPE_ARC and brave_profile_import_impl.cc.",
+"w": "Adds an importer for the Arc browser sidebar. Pinned tabs, top apps and folders (from StorableSidebar.json) become favorites and bookmarks.",
 "s": "on",
 "n": ""
 },
@@ -830,7 +830,7 @@
 "o": "Helium",
 "a": "Importers",
 "p": "helium/core/disable-unsupported-importers",
-"w": "Removes the \"passwords\" and \"autofill form data\" options from every browser-import source, so imports only bring bookmarks, history and similar data.",
+"w": "Removes the \"passwords\" and \"autofill form data\" options from every browser import source, so imports bring only bookmarks, history and similar data.",
 "s": "on",
 "n": "password import comes back if it works with the importers I carry"
 },
@@ -839,7 +839,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/fix-building-without-safebrowsing",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium's build fix that always builds Safe Browsing's file-type data, even when Safe Browsing is removed. oganesson leaves it out; it builds without Safe Browsing with the Inox and ungoogled-chromium fixes instead.",
 "s": "dropped",
 "n": ""
 },
@@ -848,7 +848,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/services-prefs",
-"w": "Foundation of \"Helium services\". It creates components/helium_services (default server https://services.helium.imput.net, URL helpers, schema/changelog) and adds a Settings > Privacy > \"Helium services\" page with a master on/off toggle (on by default), a field for a self-hosted server, and a \"services changed\" notice. Almost every later Helium-service patch builds on the files it creates.",
+"w": "Groundwork for \"Helium services\". Adds a Settings > Privacy > \"Helium services\" page with an on/off switch (on by default in Helium), a field for your own server, and a \"services changed\" notice. Helium's default server is https://services.helium.imput.net. Later Helium service patches build on it.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -857,7 +857,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/services-schema-nag",
-"w": "When Helium services change their behavior, the app-menu button shows a \"Services updated\" badge and a \"Review Helium services updates\" item that opens the services settings page. Depends on “Services prefs” (schema.h, pref names).",
+"w": "When Helium services change how they work, the app menu button shows a \"Services updated\" badge and a \"Review Helium services updates\" item that opens the services settings.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -866,7 +866,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/override-chrome-protocol",
-"w": "Adds a `helium://` scheme as an alias of `chrome://`. The address bar, tab hover cards, tab search, status bubble, copied URLs and omnibox suggestions show `helium://settings` and similar instead of `chrome://`.",
+"w": "Adds a helium:// address scheme that works like chrome://. The address bar, tab hover cards, tab search, status bubble, copied links and suggestions show helium://settings and similar instead of chrome://.",
 "s": "on",
 "n": "shown as oganesson:// here; chrome:// still works"
 },
@@ -875,7 +875,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/onboarding-page",
-"w": "Adds a first-run setup page (`chrome://setup`, Svelte UI) that opens on launch until the user completes it, and replaces Chromium's own first-run flow. It adds a \"user consented\" pref (default off): Helium services stay inactive until the user agrees in onboarding, and the services settings page shows \"Complete setup\" until then. Modifies files created by “Services prefs”.",
+"w": "Adds a first-run setup page (chrome://setup) that opens at launch until you finish it, and replaces Chromium's own first-run screen. Helium services stay off until you agree there.",
 "s": "off",
 "n": "Helium's first-run setup is never shown"
 },
@@ -884,7 +884,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/change-chromium-branding",
-"w": "Renames the product from \"Chromium\" to \"Helium\" everywhere the branding file is used (window titles, About, installers; macOS bundle ID net.imput.helium, Helium team ID). Crash reports are tagged \"Helium\".",
+"w": "Renames the product from \"Chromium\" to \"Helium\" everywhere the branding file is used: window titles, About page and installers. Crash reports are also tagged \"Helium\".",
 "s": "on",
 "n": "renamed to oganesson"
 },
@@ -893,7 +893,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/scan-chrome-native-messaging-hosts",
-"w": "Makes Helium also look in Google Chrome's native-messaging folders (system and user, Linux/macOS), so desktop helpers installed for Chrome (password managers and similar) work with Helium extensions without extra setup.",
+"w": "Makes the browser also look in Google Chrome's native messaging folders (Linux and macOS). Helper programs installed for Chrome, such as password managers, then work with extensions here too.",
 "s": "on",
 "n": ""
 },
@@ -902,7 +902,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/restore-google",
-"w": "Brings Google back into the search engine list as a plain engine (internal key `break_stuff_google`). It uses a fixed google.com URL and drops RLZ, field-trial, assisted-query and geo-header parameters, so Google gets none of its special Chrome treatment.",
+"w": "Brings Google back into the search engine list as a plain engine. It uses a fixed google.com address and none of Chrome's tracking and special parameters, so Google gets no special Chrome treatment.",
 "s": "on",
 "n": "",
 "t": "Search: restore google"
@@ -912,7 +912,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/engine-defaults",
-"w": "Changes the default search engine from Google to DuckDuckGo. Every country gets the same list: DuckDuckGo, Ecosia, Bing, Google, Qwant, Kagi, Startpage, Brave. Uses Google from 11.",
+"w": "Changes the default search engine from Google to DuckDuckGo. Every country gets the same list: DuckDuckGo, Ecosia, Bing, Google, Qwant, Kagi, Startpage, Brave.",
 "s": "on",
 "n": "",
 "t": "Search: engine defaults"
@@ -922,7 +922,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/search/fix-search-engine-icons",
-"w": "Build switch that bundles the built-in search engine logos, which normally ship only in official Chrome builds, so engines show proper icons without downloading them.",
+"w": "Build switch that includes the built-in search engine logos. Chromium normally has them only in official Chrome builds. Engines show proper icons without downloading them.",
 "s": "on",
 "n": "",
 "t": "Search: fix search engine icons"
@@ -932,7 +932,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/force-eu-search-features",
-"w": "Treats every user as if in the EU search-choice program, so the search engine settings show the EU-style choice list in random order with the subtitle \"This list of search engines is shown in random order\", in every country.",
+"w": "Treats everyone as if they were in the EU. The search engine settings show the EU-style list in random order, with the subtitle \"This list of search engines is shown in random order\", in every country.",
 "s": "on",
 "n": "",
 "t": "Search: force eu search features"
@@ -942,7 +942,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/search/remove-description-snippet-deps",
-"w": "Build fix: removes the search engine description strings that come with the built-in assets turned on by “Search: fix search engine icons” and are missing in public sources. Needed because of “Search: fix search engine icons”.",
+"w": "Build fix. Removes the search engine description texts that come with the built-in search engine assets and are missing in public sources.",
 "s": "on",
 "n": "",
 "t": "Search: remove description snippet deps"
@@ -952,7 +952,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/break-favicons",
-"w": "Clears the favicon and logo download URLs of the built-in search engines (Bing, Brave, DuckDuckGo, Ecosia, Google, Kagi, Qwant, Startpage), so the browser does not fetch icons from them. The bundled icons from 13 are used instead.",
+"w": "Removes the icon download addresses of the built-in search engines (Bing, Brave, DuckDuckGo, Ecosia, Google, Kagi, Qwant, Startpage), so the browser does not fetch their icons. Bundled icons are used instead.",
 "s": "on",
 "n": "",
 "t": "Search: break favicons"
@@ -962,7 +962,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/omnibox-default-search-icon",
-"w": "The address bar no longer fetches the search engine's website favicon for the search-suggestion icon. It shows the bundled icon or the generic search icon.",
+"w": "The address bar no longer fetches the search engine site's icon for search suggestions. It shows the bundled icon or the plain search icon.",
 "s": "on",
 "n": "",
 "t": "Search: omnibox default search icon"
@@ -972,7 +972,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/add-kagi-image-search",
-"w": "Adds Kagi reverse image search, so \"Search image with Kagi\" works when Kagi is the default engine.",
+"w": "Adds Kagi reverse image search, so \"Search image with Kagi\" works when Kagi is your default engine.",
 "s": "on",
 "n": "",
 "t": "Search: add kagi image search"
@@ -982,7 +982,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/search/fix-brave-name",
-"w": "Renames the \"Brave\" search engine entry to \"Brave Search\".",
+"w": "Renames the \"Brave\" search engine to \"Brave Search\".",
 "s": "on",
 "n": "",
 "t": "Search: fix brave name"
@@ -992,7 +992,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/engine-interface",
-"w": "Adds a hook in the sync engine for a plug-in \"custom backend\" that runs without network or Google sign-in. Build/plumbing only.",
+"w": "Groundwork: adds a hook in the sync engine for a \"custom backend\" that needs no network or Google sign-in. Nothing visible on its own.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: engine interface"
@@ -1002,7 +1002,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/sync/service-backends",
-"w": "Rewires the sync service so it never uses a Google account. Sync can only run against the local (roaming-profile) backend or a \"custom\" backend, otherwise it stays off (\"no sync backend\"). Google auth, sync-paused handling and invalidations are removed. Nothing in the patch set supplies a custom backend: the default SyncClient returns none, and the wiring patch helium/settings/sync-setup-contract.patch is dropped by oganesson. In practice, Google Sync is gone. Builds on “Sync: engine interface”.",
+"w": "Changes sync so it never uses a Google account. It can run only on a local (roaming-profile) backend or a custom one, otherwise it stays off. Nothing supplies a custom backend, and oganesson drops the patch that would connect one, so Google Sync is gone.",
 "s": "on",
 "n": "Firefox Sync takes its place",
 "t": "Sync: service backends"
@@ -1012,7 +1012,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/datatype-policy",
-"w": "Defines which data types (bookmarks, history, tabs, settings, extensions, themes and so on) a custom sync backend may sync, and groups \"send tab to self\" under Tabs. Plumbing for the custom backend (inactive).",
+"w": "Groundwork: lists which data types (bookmarks, history, tabs, settings, extensions, themes and more) a custom sync backend may sync. Inactive.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: datatype policy"
@@ -1022,7 +1022,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-format",
-"w": "Defines the on-disk/cloud format of an encrypted \"sync vault\": journal, head and rollback/divergence checks. New code only, no user effect yet.",
+"w": "Defines how Helium's encrypted sync data is laid out and checked. New code only; you see nothing.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault format"
@@ -1032,7 +1032,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-encryption",
-"w": "Adds the encryption (AEAD) wrapper used for vault objects. Plumbing for the vault.",
+"w": "Adds the encryption used for Helium's encrypted sync data. Groundwork; nothing visible on its own.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault encryption"
@@ -1042,7 +1042,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-transport",
-"w": "Defines the abstract storage interface (read, conditional write, cleanup) a vault provider must implement. Header only, plumbing.",
+"w": "Defines what a storage provider must be able to do for Helium's encrypted sync data. Groundwork; nothing visible on its own.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault transport"
@@ -1052,7 +1052,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-store",
-"w": "Implements the encrypted journal store on top of “Sync: vault format”, “Sync: vault encryption” and “Sync: vault transport”: writes chunks, commits the head, reconstructs state. Plumbing, not reachable yet.",
+"w": "Saves and reads Helium's encrypted sync data. Groundwork; nothing uses it yet.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault store"
@@ -1062,7 +1062,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/loopback-server-in-memory",
-"w": "Lets Chromium's \"loopback\" sync server keep its state in memory and serialize or restore it as a blob, instead of only a local file. Needed by the vault backend. Plumbing.",
+"w": "Lets Chromium's local sync server (the one roaming profiles use) keep its data in memory, not only in a file. Groundwork for Helium's encrypted sync.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: loopback server in memory"
@@ -1072,7 +1072,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/history-expiration-threshold",
-"w": "Moves the 90-day history expiry into a shared constant (local behavior unchanged) and adds pruning of old history entries in the loopback server, so private sync backends also drop history older than 90 days or trim it when space is short. Plumbing for the vault.",
+"w": "Moves the 90-day history expiry into one shared setting. Local behavior does not change. Also lets private sync servers drop history older than 90 days, or trim it when space runs short. Groundwork for Helium's encrypted sync.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: history expiration threshold"
@@ -1082,7 +1082,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-engine-backend",
-"w": "Connects the loopback server (27) to the encrypted vault store (26) as a CustomSyncBackend (20). The class is never created anywhere in the patch set. Plumbing.",
+"w": "Connects Chromium's local sync server (the one roaming profiles use) to Helium's encrypted sync store. Nothing in the patch set ever turns it on. Groundwork.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault engine backend"
@@ -1092,7 +1092,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/api",
-"w": "Adds a `syncVaultProvider` extension API and permission (\"Act as a storage provider for your encrypted browser synchronization data\"), so an extension could store the encrypted sync vault in its own cloud. Behind an extension feature that is off by default, with no chrome://flags entry. Dormant.",
+"w": "Adds an extension feature that lets an extension store your encrypted sync data in its own cloud. It is off by default and has no chrome://flags entry, so it does nothing.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: API"
@@ -1102,7 +1102,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/manifest-handler",
-"w": "Parses the manifest key that declares an extension as a sync vault provider (name, key-access reason). Plumbing for “Provider: API”.",
+"w": "Reads the line in an extension's manifest that says it can store sync data. Groundwork; nothing visible on its own.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: manifest handler"
@@ -1112,7 +1112,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/service",
-"w": "Browser-side broker that talks to the provider extension: requests, configuration lifecycle, timeouts. Plumbing for “Provider: API” (dormant).",
+"w": "Browser-side code that talks to a sync-storage extension: requests, setup and time limits. Groundwork; it does nothing yet.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: service"
@@ -1122,7 +1122,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/profile-prefs",
-"w": "Registers profile prefs that store the private-sync configuration (provider ID, vault UUID, encrypted key, checkpoint, health diagnostics). Plumbing.",
+"w": "Adds saved settings for private sync: provider, encrypted key and health information. Groundwork.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: profile prefs"
@@ -1132,7 +1132,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/repository",
-"w": "Profile service that reads and writes the private-sync prefs from 33 and tracks reconciliation errors. Plumbing.",
+"w": "Reads and writes the private-sync settings and tracks sync errors. Groundwork.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: repository"
@@ -1142,7 +1142,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/exclude-from-vault",
-"w": "Keeps the provider extension itself (its installation and its storage) out of the data it syncs, and removes stale records. Plumbing for the dormant provider sync.",
+"w": "Keeps the sync-storage extension itself, and its data, out of what gets synced. Groundwork for the unused provider sync.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: exclude from vault"
@@ -1152,7 +1152,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/sync/disable-google-backed-sync-integrations",
-"w": "Makes \"is this data being uploaded to Google?\" always answer no. This switches off web-history, Safe Browsing population, password-account storage, IBAN/Wallet and similar features that depend on Google sync consent. Also suppresses Google sign-in device metadata when private sync is configured (uses prefs from 33).",
+"w": "Makes the browser always answer \"no\" to \"is this data going to Google?\". This turns off features that need Google sync consent, such as web history, Safe Browsing lists, password-account storage and Google Wallet. Also hides Google sign-in device details when private sync is set up.",
 "s": "on",
 "n": "",
 "t": "Sync: disable google backed sync integrations"
@@ -1162,7 +1162,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/setup-behavior-settings-page",
-"w": "Renames the \"Appearance\" settings page to \"Appearance and behavior\" (new icon) and adds a \"Behavior\" card under it. The card holds two toggles moved from the Appearance list: \"auto-pin new tab groups\" and \"split view drag and drop\". Also removes the light/dark \"color scheme mode\" dropdown from the Appearance page.",
+"w": "Renames the \"Appearance\" settings page to \"Appearance and behavior\", with a new icon, and adds a \"Behavior\" card. The card holds two toggles moved from Appearance: \"auto-pin new tab groups\" and \"split view drag and drop\". The light/dark \"color scheme mode\" menu is removed from Appearance.",
 "s": "on",
 "n": ""
 },
@@ -1171,7 +1171,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/keyboard-shortcuts",
-"w": "Ctrl/Cmd+Shift+C now copies the page URL (toggle in Settings > Appearance, on by default; when off it opens Inspect element). DevTools \"inspect element\" moves to Ctrl/Cmd+Shift+E. DevTools and tab-search shortcuts can no longer be captured by web pages, and the downloads shortcut toggles the downloads bubble when it is open. On macOS: \"Email Link\" removed, \"Copy URL\" added to the Edit menu, \"New split tab\" (Cmd+Opt+N) added to the Tab menu.",
+"w": "Ctrl/Cmd+Shift+C copies the page address. You can switch this off in Settings > Appearance, and then it opens Inspect element. Inspect element moves to Ctrl/Cmd+Shift+E. Web pages can no longer take the DevTools and tab-search shortcuts. On macOS, \"Email Link\" is gone, \"Copy URL\" is in the Edit menu and \"New split tab\" (Cmd+Opt+N) is in the Tab menu.",
 "s": "on",
 "n": ""
 },
@@ -1180,7 +1180,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/core/update-default-browser-prefs",
-"w": "Defaults: tab hover cards no longer show memory usage (true→false), and the Chrome Web Store icon is hidden (false→true).",
+"w": "Two new defaults: tab hover cards no longer show memory use, and the Chrome Web Store icon is hidden.",
 "s": "on",
 "n": ""
 },
@@ -1189,7 +1189,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/add-default-browser-reject-button",
-"w": "Adds a \"Don't ask again\" button to the \"make Helium your default browser\" infobar. Clicking it suppresses the infobar permanently.",
+"w": "Adds a \"Don't ask again\" button to the \"make Helium your default browser\" bar. Clicking it stops the question for good.",
 "s": "on",
 "n": ""
 },
@@ -1198,7 +1198,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/proxy-extension-downloads",
-"w": "Extension installs and updates from the Chrome Web Store are routed through Helium's server (`<services>/ext`) instead of Google's clients2.google.com. Store item snippets go through the proxy too, and the update ping domain is set to helium.computer. Adds a \"Proxy extension downloads and updates\" toggle (on). When it is off or services are disabled, Web Store installs and updates stop working. Modifies files from 5.",
+"w": "Sends extension installs and updates from the Chrome Web Store through Helium's server, not Google's. Adds the setting \"Proxy extension downloads and updates\" (on). If it is off, or Helium's services are off, Web Store installs and updates stop working.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -1207,7 +1207,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/reenable-update-checks",
-"w": "Undoes ungoogled-chromium's disabling of the update-check code and makes extension update checks start again. The stock component-updater URL is emptied and CUP request signing is turned off. This prepares for “Proxy extension downloads” and “Component updates” to point updates at Helium's server.",
+"w": "Turns the browser's extension update checks back on after ungoogled-chromium switched them off, and clears the stock component-update address. Groundwork for sending updates through Helium's server.",
 "s": "off",
 "n": "oganesson updates through its package repository instead"
 },
@@ -1216,7 +1216,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-native-bangs",
-"w": "Adds DuckDuckGo-style \"!bangs\" in the address bar (for example `!w foo`, `!gh foo`, also mid-query). The bang list is downloaded from Helium's server at startup. Adds the toggle \"Allow downloading the !bangs list\" (on). Without it, bangs only work from cache. Modifies files from 5.",
+"w": "Adds DuckDuckGo-style \"!bangs\" to the address bar, such as `!w foo` or `!gh foo`. The bang list is downloaded from Helium's server at startup. The setting \"Allow downloading the !bangs list\" (on) controls this. With it off, bangs only work from saved copies.",
 "s": "off",
 "n": "the !bang list comes from Helium's services; on again once there's another source"
 },
@@ -1225,7 +1225,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-bookmarks-bar",
-"w": "Helium's change, left out of oganesson.",
+"w": "Chromium shows the bookmarks bar on every page by default. Helium changes the default to show it only on the new tab page. oganesson keeps Chromium's default.",
 "s": "dropped",
 "n": ""
 },
@@ -1234,7 +1234,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/reenable-spellcheck-downloads",
-"w": "Spell-check dictionaries are downloaded from Helium's server (`<services>/dict/`) instead of Google's redirector.gvt1.com. Adds the toggle \"Allow downloading dictionary files for spell checking\" (on), and the download-failure text points at Helium services.",
+"w": "Downloads spell-check dictionaries from Helium's server instead of Google's. Adds the setting \"Allow downloading dictionary files for spell checking\" (on). The error message for a failed download names Helium's services.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -1243,7 +1243,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/prefer-https-by-default",
-"w": "Turns on Chromium's \"HTTPS-First balanced mode\" by default (off→on): the browser tries HTTPS first and warns before falling back to HTTP.",
+"w": "Turns on Chromium's \"HTTPS-First balanced mode\" by default (it was off). The browser tries HTTPS first and warns you before using plain HTTP.",
 "s": "on",
 "n": ""
 },
@@ -1270,7 +1270,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-history-clusters",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium turns off History Clusters, the groups of related pages in your history, on desktop. oganesson keeps Chromium's default, where they are on.",
 "s": "dropped",
 "n": ""
 },
@@ -1279,7 +1279,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/unbreak-chromium-link",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium changes the Chromium project link in the About page so ungoogled-chromium's address replacement does not rewrite it. oganesson leaves this out.",
 "s": "dropped",
 "n": ""
 },
@@ -1288,7 +1288,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/update-credits",
-"w": "chrome://credits names Helium (github.com/imputnet/helium) as the project instead of ungoogled-chromium. Adds the Svelte license (used by the onboarding page, 8) and a small CSS margin fix.",
+"w": "The chrome://credits page names Helium (github.com/imputnet/helium) as the project instead of ungoogled-chromium. Also adds the Svelte license, needed by Helium's welcome page, and a small spacing fix.",
 "s": "on",
 "n": ""
 },
@@ -1297,7 +1297,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-user-education-nags",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium switches off Chromium's built-in tips and tutorials for all profiles. oganesson keeps Chromium's behavior.",
 "s": "dropped",
 "n": ""
 },
@@ -1306,7 +1306,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/replace-default-profile-name",
-"w": "Helium's change, left out of oganesson.",
+"w": "For a new work or school profile with no domain name, Helium uses the plain single-profile name instead of the enterprise profile name. oganesson keeps Chromium's name.",
 "s": "dropped",
 "n": ""
 },
@@ -1315,7 +1315,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-live-caption-completely",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium makes Live Caption always unavailable on desktop. oganesson keeps Chromium's behavior, where it depends on your computer's speech support.",
 "s": "dropped",
 "n": ""
 },
@@ -1324,7 +1324,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/spoof-extension-downloader-platform",
-"w": "Extension download and update requests always say \"Windows x64, Chrome\" to the store/proxy, whatever the real OS. This hides the real platform and gets the standard CRX.",
+"w": "Extension download and update requests always say \"Windows x64, Chrome\" to the store, whatever your real system is. This hides your platform and gets the standard extension file.",
 "s": "on",
 "n": ""
 },
@@ -1333,7 +1333,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/spoof-chrome-ua-brand",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium makes the browser's brand list, which sites can read, say \"Google Chrome\" instead of the browser's own name. oganesson keeps Chromium's behavior.",
 "s": "dropped",
 "n": ""
 },
@@ -1342,7 +1342,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-helium-versioning",
-"w": "Adds a separate Helium version number. chrome://version shows a \"Helium\" row with its own copy button plus a \"Chromium\" row, `--version` prints \"Helium X (Chromium Y)\", and settings and crash reports use the Helium version.",
+"w": "Adds a separate Helium version number. chrome://version shows a \"Helium\" row and a \"Chromium\" row, `--version` prints \"Helium X (Chromium Y)\", and settings and crash reports use the Helium version.",
 "s": "on",
 "n": ""
 },
@@ -1351,7 +1351,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/degoogle-context-menu",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium removes many items from the page right-click menu, such as autofill, Live Caption, Gemini, Lens search, reading mode, Cast, send to your devices, QR code and translate. oganesson keeps Chromium's menu.",
 "s": "dropped",
 "n": ""
 },
@@ -1360,7 +1360,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/fix-tab-sync-unreached-error",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium removes a safety check in Chrome's tab sync code that failed when you only switched tabs. oganesson leaves it out; it syncs tabs with Firefox Sync.",
 "s": "dropped",
 "n": ""
 },
@@ -1369,7 +1369,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/fix-instance-id-stuck",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium makes code that waits for a Google push-message ID run right away instead of waiting. oganesson leaves it out.",
 "s": "dropped",
 "n": ""
 },
@@ -1378,7 +1378,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/flags-setup",
-"w": "Creates the framework for Helium's own chrome://flags entries (helium_flag_choices.h / helium_flag_entries.h) and hides ChromeOS/Android flags. Build/plumbing only. helium_flag_choices.h includes chrome/browser/channel_selection.h, which is created later by “Add update channel flag”.",
+"w": "Groundwork for Helium's own chrome://flags entries. It also hides ChromeOS and Android flags. Nothing visible on its own.",
 "s": "flag",
 "n": ""
 },
@@ -1405,7 +1405,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-update-channel-flag",
-"w": "Flag \"Update channel\" (stable/beta, default stable) used for Helium update checks. Creates channel_selection.h, which 60 already includes.",
+"w": "Flag \"Update channel\" (stable or beta, default stable), used for Helium update checks.",
 "s": "flag",
 "n": ""
 },
@@ -1414,7 +1414,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-updater-preference",
-"w": "Adds the toggle \"Allow automatic browser updates\" (on), or \"component updates\" on Linux, and the URL helper for updates.helium.computer appcasts (macOS/Windows only). Also adds a \"Update server URL\" flag (empty by default). The actual updater lives in platform patches.",
+"w": "Adds the setting \"Allow automatic browser updates\" (on), or \"component updates\" on Linux, plus a helper for the update address updates.helium.computer (macOS and Windows only). Also adds an \"Update server URL\" flag (empty by default). The updater itself is in platform patches.",
 "s": "off",
 "n": "oganesson updates through its package repository instead"
 },
@@ -1432,7 +1432,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/core/exclude-irrelevant-flags",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium hides a long list of chrome://flags entries it thinks are broken or useless for Helium. oganesson keeps them visible.",
 "s": "dropped",
 "n": ""
 },
@@ -1441,7 +1441,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/disable-outdated-build-detector",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium turns off Chromium's \"your browser is out of date\" check. oganesson keeps Chromium's default.",
 "s": "dropped",
 "n": ""
 },
@@ -1450,7 +1450,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/remove-dead-toolbar-actions",
-"w": "Removes buttons from \"Customize toolbar\" that cannot work or are unwanted: Reading mode, Reading list, Tabs from other devices, Google Lens, Search companion, Password manager, Payment methods, Addresses.",
+"w": "Removes buttons from \"Customize toolbar\" that cannot work or are not wanted: Reading mode, Reading list, Tabs from other devices, Google Lens, Search companion, Password manager, Payment methods and Addresses.",
 "s": "on",
 "n": "the Password manager button stays available",
 "t": "Remove dead toolbar actions (core)"
@@ -1460,7 +1460,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/add-component-l10n-support",
-"w": "Lets built-in (component) extensions load their translations from the browser's resource bundle. Build/plumbing for bundled uBlock (73).",
+"w": "Lets built-in extensions load their translations from the browser. Groundwork for the built-in uBlock Origin; nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -1469,7 +1469,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/add-component-managed-schema-support",
-"w": "Lets built-in extensions read their managed-storage (policy) schema from the resource bundle. Plumbing for uBlock admin settings (75).",
+"w": "Lets built-in extensions read their admin-settings layout from the browser. Groundwork for uBlock Origin's admin settings; nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -1478,7 +1478,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/prioritize-platform-policy-loading",
-"w": "Loads OS/enterprise policy files at higher priority during startup, so managed extension settings are ready before startup pages load. No visible effect.",
+"w": "Loads OS and company policy files earlier at startup, so managed extension settings are ready before startup pages load. Nothing visible.",
 "s": "on",
 "n": ""
 },
@@ -1487,7 +1487,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-setup-sources",
-"w": "Adds uBlock Origin 1.66.4 sources (third_party/ublock, remote URLs removed from assets.json) and the build rules that pack them into a resource file. Build/plumbing only.",
+"w": "Adds uBlock Origin 1.66.4 source code and the build rules that package it. Build groundwork; nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -1496,7 +1496,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-install-as-component",
-"w": "Ships uBlock Origin built into the browser as an always-installed component extension, translated through “Add component l10n support”. Depends on “uBlock setup sources”.",
+"w": "Builds uBlock Origin into the browser as an extension that is always installed.",
 "s": "on",
 "n": ""
 },
@@ -1505,7 +1505,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-reconfigure-defaults",
-"w": "Makes the built-in uBlock behave like a normal user extension instead of a hidden internal one: visible, can be disabled, subject to site-access rules. It is pinned to the toolbar by default and enabled in incognito by default. Also lets component extensions bypass enterprise install-mode blocks. Depends on “uBlock install as component”.",
+"w": "Makes the built-in uBlock Origin act like a normal extension: you can see and turn it off, and site-access rules apply. It is pinned to the toolbar and allowed in incognito by default. Also lets built-in extensions get past company install blocks.",
 "s": "on",
 "n": ""
 },
@@ -1514,7 +1514,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-helium-services",
-"w": "uBlock's filter-list downloads go through Helium's proxy (`<services>/ubo/assets.json`, injected as an admin setting). Adds the toggle \"Allow downloading filter lists for uBlock Origin\" (on). When it is off, uBlock reloads and uses only its bundled lists.",
+"w": "Sends uBlock's filter-list downloads through Helium's server. Adds the setting \"Allow downloading filter lists for uBlock Origin\" (on). If it is off, uBlock only uses its bundled lists.",
 "s": "off",
 "n": "uBlock Origin updates its filter lists from its own sources instead"
 },
@@ -1523,7 +1523,7 @@
 "o": "Helium · tennessine",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-dns-uncloaking · tennessine/dns-api",
-"w": "A DNS lookup API for uBlock Origin, so it can block trackers disguised as a site's own subdomain, as in Firefox. It respects Secure DNS and proxy settings.",
+"w": "Gives uBlock Origin a DNS lookup tool, so it can block trackers that hide behind a site's own subdomain, as in Firefox. It follows your Secure DNS and proxy settings.",
 "s": "on",
 "n": "oganesson uses Helium's patch; tennessine has its own, as it carries no Helium code",
 "own": 1,
@@ -1534,7 +1534,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/clean-omnibox-suggestions",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium removes the action suggestions in the address bar, such as manage passwords, update card, run safety check, translate and Google Docs shortcuts. oganesson keeps Chromium's suggestions.",
 "s": "dropped",
 "n": ""
 },
@@ -1543,7 +1543,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/increase-incognito-storage-quota",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium turns on ungoogled-chromium's flag that gives Incognito and Guest the same storage limit as normal profiles, which makes Incognito harder for sites to detect. oganesson keeps the default (off) and the flag stays available.",
 "s": "dropped",
 "n": ""
 },
@@ -1552,7 +1552,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/core",
-"w": "Core of \"Helium Noise\" anti-fingerprinting, on by default: per-profile, per-site secret tokens, which are regenerated when browsing data is cleared. Adds a global pref and a per-site allow/block content setting, plus a flag to disable it. The per-site UI is helium/ui/helium-noise-page-info.patch, which oganesson drops.",
+"w": "Core of \"Helium Noise\", which makes it harder to track you by your device's fingerprint. Each profile gets a secret per-site number, renewed when you clear browsing data. Adds a global setting, a per-site allow/block setting and a flag to disable it. Helium turns it on by default; oganesson ships it off. The per-site page-info panel is dropped.",
 "s": "off",
 "n": "the switch is in Settings > Privacy",
 "t": "Noise: core"
@@ -1562,7 +1562,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/canvas",
-"w": "Adds tiny, site-stable pixel noise when pages read back canvas images, to defeat canvas fingerprinting. On by default, with a flag to disable. Depends on “Noise: core”.",
+"w": "Adds tiny, site-stable changes to canvas images that pages read back, so sites cannot fingerprint you with them. Helium has it on by default, oganesson off. Has a flag to disable it.",
 "s": "off",
 "n": "",
 "t": "Noise: canvas"
@@ -1572,7 +1572,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/audio",
-"w": "Adds tiny jitter (about ±0.01%) to Web Audio output and analyser readings, to defeat audio fingerprinting. On by default, with a flag. Depends on “Noise: core”.",
+"w": "Adds a tiny change (about ±0.01%) to Web Audio sound, so sites cannot fingerprint you with it. Helium has it on by default, oganesson off. Has a flag.",
 "s": "off",
 "n": "",
 "t": "Noise: audio"
@@ -1582,7 +1582,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/hardware-concurrency",
-"w": "`navigator.hardwareConcurrency` reports a plausible, site-stable fake CPU core count (2-16, even numbers). On by default, with a flag. Depends on “Noise: core”.",
+"w": "Pages that ask how many CPU cores you have get a believable fake number (even, 2 to 16) that stays the same for each site. Helium has it on by default, oganesson off. Has a flag.",
 "s": "off",
 "n": "",
 "t": "Noise: hardware concurrency"
@@ -1592,7 +1592,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/network/disable-ech-flag",
-"w": "Flag \"Disable Encrypted Client Hello (ECH)\" for networks that block ECH. Off by default (ECH stays on).",
+"w": "Flag \"Disable Encrypted Client Hello (ECH)\", for networks that block ECH. Off by default, so ECH stays on.",
 "s": "flag",
 "n": "",
 "t": "Network: disable ech flag"
@@ -1602,7 +1602,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/network/global-privacy-control-pref",
-"w": "Adds a per-profile \"Global Privacy Control\" setting (off by default). When on, sites get the `Sec-GPC` header and `navigator.globalPrivacyControl`. The settings toggle is in helium/settings/network-and-security-page.patch, not in this patch.",
+"w": "Adds a \"Global Privacy Control\" setting for each profile (off by default). When on, sites are told you do not want your data sold or shared. The toggle itself is in the network and security settings patch.",
 "s": "on",
 "n": "",
 "t": "Network: global privacy control pref"
@@ -1622,7 +1622,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/network/split-clienthello",
-"w": "Flag \"Random TLS ClientHello splitting\" (patches BoringSSL). It splits the TLS hello so the visible site name is cut across records, which can get around some domain-based network censorship. Off by default.",
+"w": "Flag \"Random TLS ClientHello splitting\" (changes BoringSSL). It splits the start of a secure connection so the site name is cut in pieces, which can get around some censorship that filters by domain. Off by default.",
 "s": "on",
 "n": "",
 "t": "Network: split clienthello"
@@ -1632,7 +1632,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/network/dns-providers",
-"w": "Changes the Secure DNS provider list in settings: adds Cloudflare Family/Security, NextDNS shown everywhere, hides OpenDNS, CleanBrowsing Family and DNS4EU, renames Google to \"Google (8.8.8.8)\", uses plain Cloudflare/NextDNS endpoints instead of the Chrome-specific ones, and stops shuffling the list. The DNS connectivity probe uses example.com instead of google.com.",
+"w": "Changes the Secure DNS provider list in settings. Adds Cloudflare Family and Security, shows NextDNS everywhere, and hides OpenDNS, CleanBrowsing Family and DNS4EU. Google is renamed \"Google (8.8.8.8)\". Plain Cloudflare and NextDNS addresses are used, and the list is no longer shuffled. The DNS test uses example.com, not google.com.",
 "s": "on",
 "n": "",
 "t": "Network: DNS providers"
@@ -1652,7 +1652,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/reduce-accept-language-headers",
-"w": "Turns on \"Reduce Accept-Language\" by default (off→on): sites receive less language-preference detail, which reduces fingerprinting.",
+"w": "Turns on \"Reduce Accept-Language\" by default (it was off). Sites get fewer details about your languages, which makes you harder to fingerprint.",
 "s": "on",
 "n": ""
 },
@@ -1661,7 +1661,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-ad-topics-and-etc",
-"w": "Turns off Google's Privacy Sandbox ad APIs: Topics (enabled→disabled) and the Protected Audience/FLEDGE interest-group API (no longer stable or origin-trial enabled).",
+"w": "Turns off Google's Privacy Sandbox ad features: Topics, and the Protected Audience (FLEDGE) ad-interest feature.",
 "s": "on",
 "n": ""
 },
@@ -1679,7 +1679,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-touch-ui",
-"w": "Always uses the normal desktop (non-touch) layout for the toolbar and tabs, ignoring touchscreens and the touch-UI switch.",
+"w": "Always uses the normal desktop layout for the toolbar and tabs, whether or not you have a touchscreen.",
 "s": "on",
 "n": ""
 },
@@ -1688,7 +1688,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/open-new-tabs-next-to-active-tab-option",
-"w": "Adds the setting \"Open new tabs next to the active tab\" (Appearance, off by default). When on, new tabs open next to the current tab, or at the end of its tab group, instead of at the end of the strip.",
+"w": "Adds the setting \"Open new tabs next to the active tab\" (Appearance, off by default). When on, a new tab opens next to the current tab, or at the end of its tab group, not at the end of the tab strip.",
 "s": "on",
 "n": ""
 },
@@ -1697,7 +1697,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-update-toast",
-"w": "Turns off Chromium's \"non-milestone update\" toast popup (enabled→disabled).",
+"w": "Turns off Chromium's update pop-up for small (non-milestone) updates.",
 "s": "on",
 "n": ""
 },
@@ -1706,7 +1706,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/disable-fedcm-bubble",
-"w": "The FedCM \"sign in with <identity provider>\" account-picker bubble that sites can trigger is never shown.",
+"w": "Never shows the \"sign in with\" account bubble that sites can open through FedCM.",
 "s": "on",
 "n": ""
 },
@@ -1715,7 +1715,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/webrtc-default-handling-policy",
-"w": "WebRTC IP-handling default changes from \"default\" to \"default public interface only\", so sites cannot see your local/LAN IP addresses through WebRTC.",
+"w": "Changes the WebRTC address setting from \"default\" to \"default public interface only\", so sites cannot see your local network addresses.",
 "s": "on",
 "n": ""
 },
@@ -1751,7 +1751,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/component-updates",
-"w": "Blocks Google's component-update server (update.googleapis.com, marked `trk:`). Component updates come from Helium's server (`<services>/com`) instead, only if services, consent and the update toggle (64) allow it. Only CRLSet (certificate revocation) and Widevine (DRM) may register; all other components are refused. chrome://components explains the errors when services are off.",
+"w": "Blocks Google's component-update server (update.googleapis.com). Component updates come from Helium's server instead, only if its services, your consent and the update setting allow it. Only the certificate revocation list and Widevine (DRM) may register; other components are refused. chrome://components explains the errors when services are off.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings; an opt-in that needs a component downloads only that component"
 },
@@ -1760,7 +1760,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/fixups-component-setup",
-"w": "Adds an empty built-in \"extstore-fixups\" extension. Build/plumbing for “Fixups Chrome Web Store script”.",
+"w": "Adds an empty built-in extension called \"extstore-fixups\". Groundwork for the Web Store fixes; nothing visible on its own.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -1769,7 +1769,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/fixups-chrome-webstore-script",
-"w": "Injects scripts into chromewebstore.google.com that remove the \"Switch to Chrome\" banners and popups, override the store's \"is this Chrome\" check, and relabel \"Add to Chrome\" as \"Add to Helium\". Depends on “Fixups component setup”.",
+"w": "Adds scripts to chromewebstore.google.com that remove the \"Switch to Chrome\" banners and pop-ups, stop the store from checking whether you use Chrome, and rename \"Add to Chrome\" to \"Add to Helium\".",
 "s": "on",
 "n": ""
 },
@@ -1778,7 +1778,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/hibernate-tab-context-menu",
-"w": "Adds \"Hibernate\" and \"Hibernate other tabs\" to the tab right-click menu, which unload (discard) background tabs to free memory.",
+"w": "Adds \"Hibernate\" and \"Hibernate other tabs\" to the tab right-click menu. They unload background tabs to free memory.",
 "s": "on",
 "n": ""
 },
@@ -1787,7 +1787,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-side-panel-flyover",
-"w": "Turns off the side panel's fly-over slide animation on all platforms (it was already off on macOS).",
+"w": "Turns off the sliding animation when the side panel opens, on all platforms (it was already off on macOS).",
 "s": "on",
 "n": ""
 },
@@ -1796,7 +1796,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/custom-profile-avatar",
-"w": "Back-end for using your own image file as a profile avatar (stored as \"Custom Avatar Picture.png\"). The picker UI is in helium/settings/custom-profile-avatar-ui.patch.",
+"w": "Lets you use your own image file as a profile picture (saved as \"Custom Avatar Picture.png\"). The picker is in a separate Helium settings patch.",
 "s": "on",
 "n": ""
 },
@@ -1814,7 +1814,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/custom-keyboard-shortcuts",
-"w": "Back-end for user-customizable browser keyboard shortcuts (feature on by default): a list of assignable commands with labels, saved in prefs, plus macOS menu integration. The settings page and the browser-window wiring are in helium/settings/custom-keyboard-shortcuts-page.patch and helium/ui/custom-keyboard-shortcuts-wiring.patch.",
+"w": "Lets you change browser keyboard shortcuts (on by default). Adds a list of commands with labels, saves your choices, and supports the macOS menus. The settings page and window wiring are in separate Helium patches.",
 "s": "on",
 "n": ""
 },
@@ -1823,7 +1823,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/copy-url-tab-context-menu",
-"w": "Adds \"Copy URL\" / \"Copy URLs\" to the tab right-click menu. It copies the URL of one or all selected tabs, one per line, with chrome:// shown as helium://. Uses the URL formatter from 7.",
+"w": "Adds \"Copy URL\" / \"Copy URLs\" to the tab right-click menu. It copies the address of one or all selected tabs, one per line, with chrome:// shown as helium://.",
 "s": "on",
 "n": ""
 },
@@ -1841,7 +1841,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/simplify-context-menu",
-"w": "Page right-click menu: Back/Forward only appear when possible, \"Search Google for '<long text>'\" becomes \"Search with <engine>\", the selection preview is shortened (50→24 chars), and \"Copy link address\" moves.",
+"w": "Simplifies the page right-click menu. Back and Forward show only when they work, \"Search Google for '<long text>'\" becomes \"Search with <engine>\", the selected-text preview shrinks from 50 to 24 characters, and \"Copy link address\" moves.",
 "s": "on",
 "n": ""
 },
@@ -1850,7 +1850,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-annoying-infobars",
-"w": "Removes the \"make Helium your PDF viewer\" infobar and the \"launch on startup\" infobar.",
+"w": "Removes the \"make Helium your PDF viewer\" bar and the \"launch on startup\" bar.",
 "s": "on",
 "n": ""
 },
@@ -1859,7 +1859,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/enable-screenshots",
-"w": "Turns on Chromium's built-in desktop screenshot tool in the share menu (off→on). Files are saved as helium_screenshot_*.png.",
+"w": "Turns on Chromium's built-in screenshot tool in the share menu (it was off). Files are saved as helium_screenshot_*.png.",
 "s": "on",
 "n": ""
 },
@@ -1868,7 +1868,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/enable-glow-up-features",
-"w": "Turns on Chromium's newer visual refresh: toolbar \"glow up\" (without the back/forward part), refreshed tab-group colors, the 2026 WebUI refresh, and rounded icons (all off→on).",
+"w": "Turns on Chromium's newer look (all were off): the refreshed toolbar (without the back/forward part), new tab-group colors, the 2026 settings-page refresh and rounded icons.",
 "s": "on",
 "n": ""
 },
@@ -1877,7 +1877,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/enable-bookmark-bar-settings",
-"w": "Turns on the \"NTP simplification: bookmark bar\" feature (off→on), which brings bookmark-bar options into the new-tab-page customization.",
+"w": "Turns on the \"NTP simplification: bookmark bar\" feature (it was off). It adds bookmarks bar options to the new tab page customization.",
 "s": "on",
 "n": ""
 },
@@ -1886,7 +1886,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/force-paste-action",
-"w": "Adds \"Force paste\" to the page right-click menu and as a browser command. It types the clipboard text into the focused field and bypasses sites that block pasting. Modifies browser_shortcut_metadata.cc, which is created by “Custom keyboard shortcuts”.",
+"w": "Adds \"Force paste\" to the page right-click menu and as a browser command. It types the clipboard text into the selected field, even on sites that block pasting.",
 "s": "on",
 "n": ""
 },
@@ -1895,7 +1895,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/shift-right-click-context-menu",
-"w": "Shift+right-click always shows the browser's own context menu, even on sites that replace or block right-click. Setting in Appearance, on by default.",
+"w": "Shift+right-click always shows the browser's own menu, even on sites that replace or block right-click. A setting in Appearance, on by default.",
 "s": "on",
 "n": ""
 },
@@ -1904,7 +1904,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/crash-reporter-privacy-tweaks",
-"w": "Crash-upload consent is forced off at Crashpad start, and channel-based auto-upload is disabled. Command-line switch values and feature parameters are stripped from crash reports, so they keep only names.",
+"w": "Crash reports are never uploaded without consent: consent is forced off when the crash reporter starts, and automatic upload by release channel is off. Reports keep only the names of command-line switches and feature settings, not their values.",
 "s": "on",
 "n": ""
 },
@@ -1913,7 +1913,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/crash-reporting-prefs",
-"w": "Adds a crash-reporting mode (Disabled / Ask / Automatic, default \"Ask\", shared by all profiles) and report deletion. Official builds upload to crash.helium.computer, overridable with the `--custom-crash-server-url` switch (not a flags entry). Policy can disable it. The crash dialog/UI is in another patch.",
+"w": "Adds a crash-reporting mode (Disabled, Ask or Automatic; default \"Ask\"; same for all profiles) and report deletion. Official builds upload to crash.helium.computer, which the `--custom-crash-server-url` switch can change. A policy can turn it off. The crash dialog is in another patch.",
 "s": "off",
 "n": "reports would go to Helium's server"
 },
@@ -1922,7 +1922,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/remove-unused-ai-resources",
-"w": "Removes Google AI feature pages and resources from the build: Gemini in Chrome (glic), Lens overlay/side panel, Compose (\"Help me write\"), contextual tasks, the AI \"actor\" agent, AI overlay dialog, skills.",
+"w": "Removes Google AI pages and resources from the build: Gemini in Chrome, Lens overlay and side panel, \"Help me write\", contextual tasks, the AI agent, the AI overlay and skills.",
 "s": "on",
 "n": "AI features that come back as opt-ins bring back what they need"
 },
@@ -1931,7 +1931,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/remove-experimental-webui",
-"w": "Turns off the new web-based address-bar dropdown, including its AI-mode version, so the classic native dropdown is used. Also removes the experimental WebUI toolbar/browser pages and replaces a PNG icon with a vector icon.",
+"w": "Turns off the new web-based address-bar dropdown, including its AI mode, so the classic dropdown is used. Also removes the experimental web-based toolbar and browser pages, and swaps one PNG icon for a vector icon.",
 "s": "on",
 "n": ""
 },
@@ -1940,7 +1940,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/rbe-nativelink-config",
-"w": "Helium's change, left out of oganesson.",
+"w": "Build settings for Helium's own remote build servers (NativeLink), which oganesson doesn't use.",
 "s": "dropped",
 "n": ""
 },
@@ -1949,7 +1949,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/disable-non-standard-auth-features",
-"w": "Helium's change, left out of oganesson.",
+"w": "Helium turns off four web sign-in features by default: Email Verification, Digital Credentials, creating Digital Credentials and WebOTP (one-time codes from text messages). oganesson keeps Chromium's defaults.",
 "s": "dropped",
 "n": ""
 },
@@ -1958,7 +1958,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/use-system-python3",
-"w": "The build uses the system `python3` instead of Chromium's bundled CPython. Build only.",
+"w": "The build uses your system Python 3 instead of the one bundled with Chromium. Build only.",
 "s": "on",
 "n": ""
 },
@@ -1967,7 +1967,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/lazy-session-restore",
-"w": "When restoring a session at startup or reopening a closed window, background tabs (and pinned startup tabs) stay unloaded and show only their cached icon until you click them. Only the selected tab loads right away.",
+"w": "When you restore a session or reopen a closed window, background tabs stay unloaded and show only their saved icon until you click them. Only the selected tab loads right away.",
 "s": "on",
 "n": ""
 },
@@ -1985,9 +1985,9 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/ridiculous-google-compat-exceptions",
-"w": "Splits the \"google.com\", \"youtube.com\" and \"gstatic.com\" strings so ungoogled-chromium's domain substitution leaves them intact. This keeps Google's browser-level exceptions working: login/session cookies on Google and YouTube, and security-key (U2F appid) enrollment on Google.",
-"s": "dropped",
-"n": "a website is a website: no special treatment for Google's sites"
+"w": "Keeps Google sign-in, session cookies and security-key enrollment working under ungoogled-chromium's domain replacement, which would otherwise rewrite Google's and YouTube's addresses.",
+"s": "on",
+"n": ""
 },
 {
 "b": "og",
@@ -2003,7 +2003,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/settings/settings-page-icons",
-"w": "Replaces the shield icon used for Security/Privacy with a keyhole shield. In the settings sidebar, the Chrome logo next to \"About\" becomes a plain info icon.",
+"w": "Replaces the shield icon for Security/Privacy with a keyhole shield. In the settings sidebar, the Chrome logo next to \"About\" becomes a plain info icon.",
 "s": "on",
 "n": ""
 },
@@ -2012,7 +2012,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/settings/move-search-suggest",
-"w": "Moves the \"search suggestions\" toggle from the privacy/Google-services area to the Search engine page. Also removes the \"Sync and Google services\" row and the sync setup pages from the profile settings.",
+"w": "Moves the \"search suggestions\" toggle to the Search engine page. Also removes the \"Sync and Google services\" row and the sync setup pages from profile settings.",
 "s": "on",
 "n": "the Firefox Sync row takes its place"
 },
@@ -2021,7 +2021,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/remove-autofill",
-"w": "Removes the whole \"Autofill and passwords\" section from the settings menu and pages: payments, addresses, ID documents, travel, shopping, Gemini suggestions and passkeys.",
+"w": "Removes the whole \"Autofill and passwords\" section from settings: payments, addresses, ID documents, travel, shopping, Gemini suggestions and passkeys.",
 "s": "on",
 "n": "oganesson brings the Autofill and passwords section back"
 },
@@ -2030,7 +2030,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/settings/remove-profile-page-sections",
-"w": "On the profile (\"You and Google\") page, removes the Google sign-in promo, the Google account row, \"Google services\", \"Manage your Google Account\", the \"Profile name and picture\" row and the \"sync unavailable\" notice.",
+"w": "On the profile (\"You and Google\") page, removes the Google sign-in promo, the Google account row, \"Google services\", \"Manage your Google Account\", the \"Profile name and picture\" row and the \"sync unavailable\" message.",
 "s": "on",
 "n": ""
 },
@@ -2039,7 +2039,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/fix-page-names",
-"w": "Renames labels: the History page's menu item now says \"History\", and the \"You and Google\" settings page now uses the profile-menu name (\"Profiles\"/\"Profile\").",
+"w": "Renames labels: the History page's menu item says \"History\", and the \"You and Google\" page uses the profile menu's name (\"Profiles\"/\"Profile\").",
 "s": "on",
 "n": ""
 },
@@ -2048,7 +2048,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/disable-safety-hub-page",
-"w": "Removes the Safety Hub (\"Safety check\") page from Privacy settings and the Safety Hub suggestion on the Notifications page. It does this with an intentional `= false` assignment in route.ts.",
+"w": "Removes the Safety Hub (\"Safety check\") page from Privacy settings. Also removes the Safety Hub suggestion on the Notifications page.",
 "s": "on",
 "n": ""
 },
@@ -2066,7 +2066,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/about-page-tweaks",
-"w": "On the About page: removes the two \"Learn more\" links to support.google.com (about updating and about update errors), removes the click action on the product logo, hides the product subtitle line, and adjusts spacing.",
+"w": "On the About page, removes the two \"Learn more\" links to Google support pages, the click action on the product logo, and the product subtitle line.",
 "s": "on",
 "n": ""
 },
@@ -2075,7 +2075,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/remove-translate-section",
-"w": "Hides the whole Google Translate section of Languages settings (offer to translate, always/never translate lists) and the \"translate target\" label next to languages.",
+"w": "Hides the Google Translate section of Language settings: the offer to translate and the always/never translate lists. Also hides the \"translate target\" label next to languages.",
 "s": "on",
 "n": "comes back with the translation opt-ins"
 },
@@ -2084,7 +2084,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/remove-safety-hub-entry-points",
-"w": "Removes the Safety Hub header and buttons from the Site settings and Notifications pages, and the Safety Hub entry from the Privacy page. Goes with #16.",
+"w": "Removes the Safety Hub header and buttons from the Site settings and Notifications pages, and the Safety Hub entry from the Privacy page.",
 "s": "on",
 "n": ""
 },
@@ -2093,7 +2093,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/reenable-update-status",
-"w": "Shows the update status message and icon on the About page again (except on ChromeOS). An earlier patch had hidden them by setting the condition to `False`.",
+"w": "Shows the update status message and icon on the About page again (not on ChromeOS). An earlier patch had hidden them.",
 "s": "on",
 "n": ""
 },
@@ -2102,7 +2102,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/privacy-page-tweaks",
-"w": "Hides the \"Third-party cookies\" row on the Privacy page. A search for cookies now points to Site settings instead. The Site settings description now reads \"Manage site permissions and content settings (cookies, pop-ups, and more)\".",
+"w": "Hides the \"Third-party cookies\" row on the Privacy page. Searching for cookies points to Site settings instead, whose description now mentions cookies and pop-ups.",
 "s": "on",
 "n": ""
 },
@@ -2111,7 +2111,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/fix-section-separators",
-"w": "Removes the Live Caption control from Accessibility settings on Windows and macOS, and removes the leftover divider lines above \"Captions\". Goes with the already dropped helium/core/disable-live-caption-completely.patch.",
+"w": "Removes the Live Caption control from Accessibility settings on Windows and macOS, and the leftover divider lines above \"Captions\".",
 "s": "on",
 "n": ""
 },
@@ -2120,7 +2120,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/fix-text-on-cookies-page",
-"w": "Rewords the help text above the third-party-cookie exceptions list into a plain explanation of the \"[*.]\" wildcard, without the tracking-protection wording.",
+"w": "Rewrites the help text above the third-party cookie exceptions list. It now just explains the \"[*.]\" wildcard, without the tracking-protection wording.",
 "s": "on",
 "n": ""
 },
@@ -2129,7 +2129,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/settings/update-search-suggest-text",
-"w": "Renames the search-suggest toggle to \"Suggestions from the search engine\". Its description now says Helium sends what you type in the address bar to your default search engine, and that this is off in Incognito.",
+"w": "Renames the search suggestion toggle to \"Suggestions from the search engine\". Its text now says that what you type in the address bar is sent to your default search engine, and that this is off in Incognito.",
 "s": "on",
 "n": ""
 },
@@ -2138,7 +2138,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/fix-appearance-page",
-"w": "Shows the \"Reset to default theme\" label on Linux too (stock hides it there). Shortens the auto-pin label to \"Automatically pin new tab groups to the bookmarks bar\", without \"created on any device\".",
+"w": "On Linux, shows the \"Reset to default theme\" label, which stock Chromium hides there. Shortens the label for pinning new tab groups to the bookmarks bar.",
 "s": "on",
 "n": ""
 },
@@ -2147,7 +2147,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/settings/reorder-settings-menu",
-"w": "Settings now opens on \"Appearance and behavior\" instead of the profile/\"You and Google\" page. That item moves near the top of the sidebar, and the \"AI\" menu item is removed. Depends on #10 for the title and icon.",
+"w": "Settings now opens on \"Appearance and behavior\" instead of the profile page. That item moves near the top of the sidebar, and the \"AI\" item is removed.",
 "s": "on",
 "n": ""
 },
@@ -2156,7 +2156,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/settings/add-search-engine-button",
-"w": "Adds an \"Add\" button to the main search engine list. It opens an \"Add search engine\" dialog with an \"Add as default\" button, which creates the engine and makes it the default in one step. Stock only lets you add site-search shortcuts.",
+"w": "Adds an \"Add\" button to the search engine list. It opens a dialog where \"Add as default\" adds the engine and makes it the default in one step. Stock Chromium only lets you add site-search shortcuts.",
 "s": "on",
 "n": ""
 },
@@ -2165,7 +2165,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/settings/custom-profile-avatar-ui",
-"w": "In profile customization you can choose your own PNG or JPEG image (up to 30 MB) as the profile picture. It is cropped to a 256 px square, and you can clear it later; error messages cover files that are too large or unreadable. Depends on helium/core/custom-profile-avatar.patch.",
+"w": "Lets you pick your own PNG or JPEG image (up to 30 MB) as your profile picture. It is cropped to a square and you can remove it later. Clear errors show for files that are too big or can't be read.",
 "s": "on",
 "n": ""
 },
@@ -2174,7 +2174,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/settings/custom-keyboard-shortcuts-page",
-"w": "Adds a \"Keyboard shortcuts\" page under System settings. You can search browser commands, add, remove or rebind shortcuts, see conflict warnings, and reset all to defaults. It only appears when the `CustomizableBrowserShortcuts` feature is on (on by default). Depends on helium/core/custom-keyboard-shortcuts.patch and the shortcut service.",
+"w": "Adds a \"Keyboard shortcuts\" page under System settings. You can search commands, add, remove or change shortcuts, see conflict warnings, and reset everything. It shows only when the `CustomizableBrowserShortcuts` feature is on, which is the default.",
 "s": "on",
 "n": ""
 },
@@ -2183,7 +2183,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/clear-browsing-data-popup",
-"w": "In the \"Delete browsing data\" dialog, all data types are listed from the start (stock collapses them). The \"Manage other Google data\" link row is removed.",
+"w": "The \"Delete browsing data\" dialog lists all data types from the start instead of hiding them. The \"Manage other Google data\" row is removed.",
 "s": "on",
 "n": ""
 },
@@ -2192,7 +2192,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/settings/crash-reporting-settings",
-"w": "Adds a \"Crash reporting\" dropdown to Helium's services settings page: Disabled, Ask after a crash, or Send automatically. Choosing Disabled deletes pending reports, and the control locks if a policy disables metrics. Reports go to Helium's crash server (crash.helium.computer). The default is \"Ask\", set in helium/core/crash-reporting-prefs.patch, which this depends on.",
+"w": "Adds a \"Crash reporting\" setting: Disabled, Ask after a crash, or Send automatically. Disabled deletes waiting reports. Reports would go to Helium's crash server, so it is off in oganesson.",
 "s": "off",
 "n": ""
 },
@@ -2201,7 +2201,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/settings/helium-noise-settings",
-"w": "Adds a \"Fingerprinting protection\" page under Privacy. It has an on/off toggle for Helium's noise feature, an explanation, and per-site exception and override lists. It only appears when the HeliumNoise feature is available. Depends on helium/core/noise/core.patch, where the protection is on by default.",
+"w": "Adds a \"Fingerprinting protection\" page under Privacy. It has an on/off switch for Helium's noise feature, an explanation, and lists of per-site exceptions. The protection is on by default.",
 "s": "on",
 "n": ""
 },
@@ -2210,7 +2210,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/network-and-security-page",
-"w": "Renames the \"Security\" page to \"Network and security\" and splits it into Network, Privacy signals and Security sections. Adds a \"Global Privacy Control\" toggle and moves \"Do Not Track\" there without its confirmation dialog. Removes the Do Not Track toggle, the \"universal opt-out\" toggle and section headers from the cookies page, and rewords the HTTPS warning labels. The GPC toggle depends on helium/core/network/global-privacy-control-pref.patch.",
+"w": "Renames \"Security\" to \"Network and security\" and splits it into Network, Privacy signals and Security sections. Adds a \"Global Privacy Control\" switch and moves \"Do Not Track\" next to it, without its confirmation dialog. Removes the old Do Not Track and \"universal opt-out\" switches from the cookies page.",
 "s": "on",
 "n": ""
 },
@@ -2219,7 +2219,7 @@
 "o": "Helium",
 "a": "Sync",
 "p": "helium/settings/sync-setup-contract",
-"w": "Part of Helium's sync setup. Firefox Sync replaces Helium's sync.",
+"w": "Part of Helium's own sync setup. oganesson leaves it out because it uses Firefox Sync instead.",
 "s": "dropped",
 "n": ""
 },
@@ -2228,7 +2228,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/layout-constants",
-"w": "Makes the browser frame more compact. The address bar goes from 34 to 28 px tall, toolbar buttons from 34 to 28 px, and tabs from 35 to 31 px. Most toolbar and tab strip padding is based on a new 3 px \"Helium base padding\" constant, and address bar items get less rounded corners (radius 12 to 6).",
+"w": "Makes the browser frame more compact. The address bar and toolbar buttons go from 34 to 28 px tall, tabs from 35 to 31 px, and address bar items get less rounded corners (radius 12 to 6).",
 "s": "on",
 "n": ""
 },
@@ -2237,7 +2237,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/layout-provider",
-"w": "Makes buttons, menus and dialogs across the native UI and the internal web pages less rounded. Buttons are rounded rectangles (7 px) instead of pills, menus and dialogs use 8 px corners, and web-page buttons have 8 px corners and never wrap their text.",
+"w": "Makes buttons, menus and dialogs less rounded. Buttons are rounded rectangles (7 px) instead of pills, and menus and dialogs have 8 px corners. Buttons on internal pages have 8 px corners and never wrap their text.",
 "s": "on",
 "n": ""
 },
@@ -2246,7 +2246,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/update-cr-components",
-"w": "Restyles the shared parts of chrome:// pages (Settings, History, Downloads, Extensions and others). It removes the Chrome logo from page headers and the side drawer, replaces round buttons and pill-shaped search boxes with rounded squares, flattens card shadows to thin outlines, and makes toasts and nav-menu items more compact. It also restyles the theme color picker and segmented buttons.",
+"w": "Restyles the shared look of internal chrome:// pages (Settings, History, Downloads, Extensions and more). Removes the Chrome logo from headers. Round buttons and pill-shaped search boxes become rounded squares, card shadows become thin outlines, and toasts and menu items get more compact.",
 "s": "on",
 "n": ""
 },
@@ -2255,7 +2255,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/always-use-better-ntp",
-"w": "The new tab page is always the browser's own built-in page, whatever search engine is default. Stock Chromium gives that page only to Google users. With another engine it loads that engine's own new-tab URL or a bare \"third-party\" page. This also drops the supervised-user URL check and the Google-only special case.",
+"w": "The new tab page is always the browser's own page, whatever the default search engine is. Stock Chromium gives that page only to Google users and loads the search engine's own page otherwise.",
 "s": "on",
 "n": ""
 },
@@ -2264,7 +2264,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/clean-new-tab-page",
-"w": "Strips the new tab page down to the centered shortcut tiles and an icon-only Customize button. Removed: the Google bar at the top (an iframe loaded from Google), the Google logo, the search box and AI \"composebox\", voice search, Lens upload, the Microsoft auth iframe, cards/modules, action chips, promos, the wallpaper-search button, background-image credit and undo toasts.",
+"w": "Strips the new tab page down to centered shortcut tiles and an icon-only Customize button. Removed: the Google bar and logo, the search box and AI box, voice search, Lens upload, cards, promos, the wallpaper search button, and background credit and undo messages.",
 "s": "on",
 "n": ""
 },
@@ -2273,7 +2273,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-toolbar-corners",
-"w": "Removes the curved corners where the toolbar meets the tab strip and around the page area, in both horizontal and vertical tab layouts, so edges are flat and square. It also removes the vertical tab strip's outline, shadow and \"glass\" transparency or blur effects when it expands on hover.",
+"w": "Removes the curved corners where the toolbar meets the tab strip and around the page area, so edges are flat. In vertical tabs it also removes the strip's outline, shadow and see-through blur when it expands on hover.",
 "s": "on",
 "n": ""
 },
@@ -2282,7 +2282,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/location-bar",
-"w": "Reshapes the address bar into a rounded rectangle instead of a pill, with tighter icon and text spacing and a thin divider after the site-info label. It permanently hides several address-bar icons: AI Mode, Lens homework, Lens results, offers/rewards, cookie controls, payments/virtual card, autofill re-auth and filled-card info. chrome://, extension and file:// pages no longer show a text label next to the site icon.",
+"w": "Makes the address bar a rounded rectangle instead of a pill, with tighter spacing. Permanently hides several icons: AI Mode, Lens, offers and rewards, cookie controls, payments, and autofill sign-in and card info. chrome://, extension and file:// pages no longer show a text label next to the site icon.",
 "s": "on",
 "n": ""
 },
@@ -2291,7 +2291,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/location-bar-page-action",
-"w": "Address-bar action icons (translate, bookmark star, etc.) are always plain icons with no expanded text label or tinted chip. The \"Open in app\" chip with the app's icon no longer appears; the plain app-picker icon shows instead.",
+"w": "Address bar action icons (translate, bookmark star and so on) are always plain icons, with no text label or colored chip. The \"Open in app\" chip is replaced by a plain app icon.",
 "s": "on",
 "n": ""
 },
@@ -2300,7 +2300,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/tabs",
-"w": "Several tab strip changes:<br>- Every tab is drawn as a separate rounded box, and tabs are narrower (190 px instead of 232; split tabs are wider).<br>- The close \"x\" shows only when the mouse is over a tab.<br>- The speaker/alert icon sits next to the favicon, left of the title, and no longer fades in or out.<br>- Tab-group underlines and headers are restyled; buttons on the tab strip use tab colors.<br>- Clicking a tab's speaker icon to mute it is turned on by default (`kEnableTabMuting`: off to on).",
+"w": "Several tab strip changes:<br>- Each tab is a separate rounded box, and tabs are narrower (190 px instead of 232).<br>- The close \"x\" shows only when the mouse is over a tab.<br>- The sound icon sits next to the site icon, left of the title, and no longer fades.<br>- Tab group headers and underlines are restyled.<br>- Clicking a tab's sound icon to mute it is on by default.",
 "s": "on",
 "n": ""
 },
@@ -2309,7 +2309,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/tab-icon",
-"w": "Tabs no longer show the spinning loading ring around the favicon. Sleeping (discarded) tabs, and restored tabs that have not loaded yet, show a faded grayscale icon instead of Chrome's dotted ring, and Chrome's tip popup about discarded tabs is removed. The existing Performance setting is renamed \"Differentiate hibernated tabs – Display hibernated tab icons in grayscale\".",
+"w": "Tabs no longer show a spinning ring around the site icon. Sleeping tabs, and restored tabs that have not loaded yet, show a faded gray icon instead of Chrome's dotted ring. Chrome's tip popup about sleeping tabs is removed. The Performance setting is renamed \"Differentiate hibernated tabs\".",
 "s": "on",
 "n": ""
 },
@@ -2318,7 +2318,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/tab-favicon-retention",
-"w": "When you move between pages on the same site, the tab keeps showing the previous site icon until the new one loads, instead of flashing a blank globe. It also improves detection of pages that have no icon, including pages restored from the back/forward cache and pages whose security policy blocks the icon.",
+"w": "When you go to another page on the same site, the tab keeps the old site icon until the new one loads, instead of flashing a blank globe. It also detects pages with no icon more reliably.",
 "s": "on",
 "n": ""
 },
@@ -2327,7 +2327,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/tab-strip-controls",
-"w": "The new-tab \"+\" button and other tab strip buttons get 8 px rounded-square corners instead of being circles.",
+"w": "The \"+\" new tab button and other tab strip buttons are rounded squares (8 px corners) instead of circles.",
 "s": "on",
 "n": ""
 },
@@ -2336,7 +2336,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/toolbar",
-"w": "Toolbar buttons and their hover highlights are rounded squares instead of circles. The split-view toolbar button shows only if the user pinned it, not automatically when the current tab is in a split.",
+"w": "Toolbar buttons and their hover highlights are rounded squares instead of circles. The split-view button shows only if you pinned it, not whenever the tab is in a split.",
 "s": "on",
 "n": ""
 },
@@ -2345,7 +2345,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-toolbar-dividers",
-"w": "Removes the thin vertical dividers in the toolbar: the one before the extensions puzzle icon and the one in the pinned-actions area.",
+"w": "Removes the thin vertical dividers in the toolbar: the one before the extensions puzzle icon and the one in the pinned actions area.",
 "s": "on",
 "n": ""
 },
@@ -2354,7 +2354,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/toolbar-window-frame-hit-test",
-"w": "You can drag the window by any empty space in the toolbar, as with a title bar. Stock Chromium does this only in vertical-tabs mode. It also adds a macOS guard against a crash while a window is closing.",
+"w": "You can drag the window by any empty space in the toolbar, like a title bar. Stock Chromium allows this only with vertical tabs. Also adds a macOS fix for a crash while a window is closing.",
 "s": "on",
 "n": ""
 },
@@ -2363,7 +2363,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/toolbar-button-prefs",
-"w": "In Customize Chrome > Toolbar, users can hide the Back, Reload, profile avatar, Extensions, main Menu and Media controls buttons. It adds new prefs `helium.browser.show_back_button`, `show_reload_button`, `show_avatar_button`, `show_extensions_button`, `show_menu_button` and `show_media_button`, all default true, so nothing changes until the user turns one off. It also reorders and re-categorizes that settings list, and menus/popups still have an anchor in the top corner when the menu button is hidden.",
+"w": "In Customize Chrome > Toolbar, you can hide the Back, Reload, profile, Extensions, main Menu and Media controls buttons. All are shown by default, so nothing changes until you hide one. The settings list is also reordered, and menus still open from the top corner when the menu button is hidden.",
 "s": "on",
 "n": ""
 },
@@ -2372,7 +2372,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/tab-search-in-toolbar",
-"w": "Moves the Tab Search button (the list of open tabs) from the tab strip to the toolbar, with a new search-list icon instead of a down-arrow. It can be pinned in Customize Toolbar. If it is not pinned, it appears only while the tab search popup is open (opened by keyboard shortcut or menu) and disappears 2 seconds after the popup closes. Clicking it again closes the popup. The tab-strip combo button is removed from horizontal tabs, and the vertical tab strip's tab-search button is removed.",
+"w": "Moves the Tab Search button (list of open tabs) from the tab strip to the toolbar, with a new icon. You can pin it in Customize Toolbar. If it isn't pinned, it shows only while the tab search popup is open and goes away 2 seconds after it closes. Removes the old tab strip button and the vertical strip's tab search button.",
 "s": "on",
 "n": ""
 },
@@ -2381,7 +2381,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/omnibox",
-"w": "Makes the address-bar suggestion dropdown more compact. Rows shrink from 40px to 28px, the dropdown corners become 12px with a smaller shadow, and the highlighted row becomes a rounded box instead of a left-edge pill with a selection bar. Special icon backgrounds on action and journey suggestions are removed, indents are tightened, and the suggestion chips are restyled.",
+"w": "Makes the address bar suggestion list more compact. Rows shrink from 40 px to 28 px, corners become 12 px with a smaller shadow, and the highlighted row is a rounded box. Special icon backgrounds on action suggestions are removed, and suggestion chips are restyled.",
 "s": "on",
 "n": ""
 },
@@ -2390,7 +2390,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/app-menu-style",
-"w": "In the three-dot menu, the round in-menu buttons (the zoom +/- row) get 8px rounded-square highlights. The tinted row backgrounds behind the profile row, the \"Update\" row and the \"Set as default browser\" row are removed, so those rows look like normal items.",
+"w": "In the three-dot menu, the round buttons (like the zoom +/- row) get 8 px rounded-square highlights. The tinted backgrounds behind the profile, \"Update\" and \"Set as default browser\" rows are removed.",
 "s": "on",
 "n": ""
 },
@@ -2399,7 +2399,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/app-menu-model",
-"w": "Reorganizes the three-dot menu. Removed: the profile submenu, \"Passwords and autofill\", \"Send to your devices\", Translate, \"Reading mode\", the vertical-tabs toggle, the Safety Hub notification row and the Reading List item under Bookmarks. \"Bookmarks and lists\" is renamed to \"Bookmarks\", and \"Extensions\" becomes one item that opens the extensions page instead of a submenu (no more Web Store promo). \"Customize Chrome\" moves from More tools to the main menu (not in Incognito or Guest). \"Exit\" moves into More tools. The \"Update/relaunch\" item moves from the very top into the normal notice area with a plain icon. Depends on helium/core/services-schema-nag.patch, which defines AddHeliumSchemaItem.",
+"w": "Reorganizes the three-dot menu. Removed: the profile submenu, \"Passwords and autofill\", \"Send to your devices\", Translate, \"Reading mode\", the vertical tabs switch, the Safety Hub row and Reading List. \"Bookmarks and lists\" becomes \"Bookmarks\". \"Extensions\" opens the extensions page directly. \"Customize Chrome\" moves to the main menu and \"Exit\" into More tools. The Update item moves from the top to the normal notice area.",
 "s": "on",
 "n": "\"Passwords and autofill\" stays in the menu; Translate returns with the translation opt-in"
 },
@@ -2408,7 +2408,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/app-menu-button",
-"w": "The three-dot toolbar button always looks like a plain toolbar button. Chrome's colored, expanded pill with text (such as \"Update\" or \"New Chrome available\") is gone, along with its highlight colors. The button now also draws its border.",
+"w": "The three-dot toolbar button always looks like a plain toolbar button. Chrome's colored pill with text such as \"Update\" is gone. The button now draws its border.",
 "s": "on",
 "n": ""
 },
@@ -2426,7 +2426,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/remove-split-view-mini-toolbar",
-"w": "In split view, removes the small floating toolbar at the bottom-right corner of the inactive pane (it held the split menu button and favicon). The pane outline and screen-capture border now draw as plain rounded rectangles.",
+"w": "In split view, removes the small floating toolbar at the bottom-right of the inactive pane. The pane outline and screen-capture border are drawn as plain rounded rectangles.",
 "s": "on",
 "n": ""
 },
@@ -2435,7 +2435,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/split-view",
-"w": "Right-clicking the divider between split-view panes now opens the split-view menu (swap, close one side, exit split, toggle orientation). The divider handle is thinner (2px instead of 4px). \"Send feedback\" (to Google) is removed from that menu. \"Close left/right tab\" is fixed for right-to-left languages in top/bottom layout. The split-view promo text color is softened.",
+"w": "Right-clicking the divider between split-view panes opens the split-view menu (swap, close one side, exit split, change direction). The divider handle is thinner (2 px instead of 4 px). \"Send feedback\" is removed from that menu. \"Close left/right tab\" is fixed for right-to-left languages. The split-view promo text color is softer.",
 "s": "on",
 "n": ""
 },
@@ -2444,7 +2444,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/frame-radius-helper",
-"w": "Build/plumbing only. Adds helper functions that return Helium's window corner radii: 8px in general, 12px on macOS, 17px on macOS 26+, and a \"padded\" radius used by later patches. Uses kHeliumBasePadding from helium/ui/layout-constants.patch.",
+"w": "Groundwork only; nothing visible on its own. Adds helper code for Helium's window corner sizes, which later patches use.",
 "s": "on",
 "n": ""
 },
@@ -2453,7 +2453,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/multi-contents-view",
-"w": "Restyles split view. The gap around panes shrinks (8px to 3px, inner padding 4px to 2px). Corner rounding uses Helium's radii, and the bottom outer corners of the panes match the window's own rounded corners (except in fullscreen or while a drop target is shown on that side). Uses frame-radius-helper.patch and builds on remove-split-view-mini-toolbar.patch.",
+"w": "Restyles split view. The gap around panes shrinks from 8 px to 3 px and the inner padding from 4 px to 2 px. Pane corners use Helium's corner sizes, and the bottom outer corners match the window's rounded corners (except in fullscreen or while a drop target is shown).",
 "s": "on",
 "n": ""
 },
@@ -2462,7 +2462,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/rounded-frame-corners",
-"w": "Adds the setting \"Show a rounded frame around web contents\" under Settings > Appearance (pref helium.browser.rounded_frame, default ON). When on, even a single, unsplit page sits inside a small inset, rounded, outlined frame, like split view. The frame is turned off in fullscreen and in non-normal windows. Also fixes the reported page size so it excludes the border. Depends on multi-contents-view.patch and frame-radius-helper.patch. Its settings entry sits next to the Shift+right-click pref from helium/core/shift-right-click-context-menu.patch.",
+"w": "Adds the setting \"Show a rounded frame around web contents\" under Settings > Appearance, on by default. A single page then sits inside a small inset, rounded, outlined frame, like split view. It is off in fullscreen and in non-normal windows. Also fixes the reported page size so it excludes the border.",
 "s": "on",
 "n": ""
 },
@@ -2471,7 +2471,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/fix-layout-separators",
-"w": "Removes the small curved corner piece where the toolbar separator meets an open side panel. The contents area now knows when a side panel is attached on the left or right, so it drops its inset and outer rounding on that side and draws a separator there instead. This makes the rounded frame meet the side panel cleanly. Builds on rounded-frame-corners.patch.",
+"w": "Makes the rounded page frame meet an open side panel cleanly. On the side where a panel is attached, the page drops its inset and outer rounding and draws a separator. Removes the small curved corner piece where the toolbar separator meets the panel.",
 "s": "on",
 "n": ""
 },
@@ -2480,7 +2480,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/multi-contents-drop-target",
-"w": "Restyles the \"drop here to split\" area that appears when you drag a link or tab to the page edge. It gets tighter padding, Helium corner radii and an outline, neutral instead of accent-colored icon and text, and a faster animation (450ms to 300ms). It also appears sooner: the delay drops from 1000ms to 500ms in three default feature parameters. It respects the rounded frame and an open side panel. Depends on frame-radius-helper.patch, rounded-frame-corners.patch and fix-layout-separators.patch.",
+"w": "Restyles the \"drop here to split\" area that appears when you drag a link or tab to the page edge. It has tighter padding, an outline, neutral icon and text colors, and a faster animation (450 ms to 300 ms). It also appears sooner (delay 1000 ms to 500 ms) and works with the rounded frame and an open side panel.",
 "s": "on",
 "n": ""
 },
@@ -2498,7 +2498,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/side-panel",
-"w": "Restyles the side panel. Margins shrink (8px to 3px on most sides, a wider 6px strip on the resize side), the header is shorter (40px to 32px) and the resize handle is thinner. Corner rounding follows Helium's radii, with the window-edge corner matching the window. The minimum width is lowered to 200px, and dragging snaps to the default width. Chrome's drop-shadow box around the side panel is disabled. Uses frame-radius-helper.patch.",
+"w": "Restyles the side panel. Margins shrink from 8 px to 3 px on most sides, the header is shorter (40 px to 32 px), and the resize handle is thinner. Corners match the window. The minimum width is 200 px, and dragging snaps to the default width. Chrome's drop shadow around the panel is off.",
 "s": "on",
 "n": ""
 },
@@ -2507,7 +2507,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-dead-toolbar-actions",
-"w": "Removes actions for features Helium doesn't use from the list of buttons you can pin to the toolbar or side panel. Removed: Reading list, Tabs from other devices, Shopping insights, Merchant trust, Google Lens / Lens overlay, price insights and discounts icons, Send tab to self, Translate, Addresses, Payment methods and Passwords. Translate, passwords and saved-card icons are also removed from installed web-app (PWA) title bars. Adds null checks so the code that used those actions doesn't crash. These are mostly Google-backed features or ones disabled by other patches (for example helium/core/disable-password-manager.patch).",
+"w": "Removes buttons for unused features from the list of actions you can pin to the toolbar or side panel: Reading list, Tabs from other devices, shopping and price insights, Google Lens, Send tab to self, Translate, Addresses, Payment methods and Passwords. Translate, password and card icons are also removed from installed web app title bars. These are mostly Google features or ones disabled by other patches.",
 "s": "on",
 "n": "the Password manager button stays available",
 "t": "Remove dead toolbar actions (UI)"
@@ -2535,7 +2535,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/ui/add-specific-error-for-disabled-extension-downloads",
-"w": "If an extension download is blocked because Helium services or extension downloads are turned off, the downloads bubble says \"Extension downloads are disabled\" instead of \"Blocked by your organization\". It also offers a button that opens chrome://settings/privacy/services. Relies on helium::GetDummyURL from the Helium-services patches (for example helium/core/services-prefs.patch and helium/core/proxy-extension-downloads.patch).",
+"w": "If an extension download is blocked because Helium services or extension downloads are off, the downloads bubble says \"Extension downloads are disabled\" instead of \"Blocked by your organization\". It also has a button that opens chrome://settings/privacy/services.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -2544,7 +2544,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/selected-keyword-view",
-"w": "When you switch the address bar to a search engine with Tab (keyword mode), the chip shows just the engine's name (for example \"DuckDuckGo\") instead of \"Search DuckDuckGo\". The chip's padding and spacing are also tightened.",
+"w": "When you switch the address bar to a search engine with Tab, the chip shows just the engine name (for example \"DuckDuckGo\") instead of \"Search DuckDuckGo\". Spacing is tighter.",
 "s": "on",
 "n": ""
 },
@@ -2553,7 +2553,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/bookmark-button-bg-fix",
-"w": "Bookmark-bar buttons and folders get a 6px rounded-rectangle hover highlight instead of a fully round pill shape.",
+"w": "Bookmarks bar buttons and folders get a 6 px rounded-rectangle hover highlight instead of a round pill.",
 "s": "on",
 "n": ""
 },
@@ -2562,7 +2562,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/restyle-ntp-tiles",
-"w": "New tab page shortcut tiles are restyled. Icons sit in rounded squares instead of circles, tiles have 10px corners instead of 4px, and favicons are larger (30px, fetched at 128px so they stay sharp). Spacing is slightly adjusted.",
+"w": "Restyles new tab page shortcut tiles. Icons sit in rounded squares instead of circles, tile corners are 10 px instead of 4 px, and site icons are larger (30 px) and sharp.",
 "s": "on",
 "n": ""
 },
@@ -2571,7 +2571,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/side-panel-webui-general",
-"w": "Tightens the look of all web-based side panels (bookmarks, history, customize, and so on). Corners are smaller (12px to 9px), padding and gaps between cards are smaller, headings are shorter, and the hidden back button no longer takes up space. Search fields are rounded.",
+"w": "Tightens the look of all web-based side panels (bookmarks, history, customize and so on). Corners are smaller (12 px to 9 px), gaps between cards are smaller, headings are shorter, and the hidden back button no longer takes space. Search fields are rounded.",
 "s": "on",
 "n": ""
 },
@@ -2580,7 +2580,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/side-panel-webui-customize",
-"w": "Simplifies the Customize side panel. The theme preview picture, the uploaded/searched-image and \"managed by\" rows, the mini toolbar illustration, the category titles, the intro text and the reorder tip card are all removed. Theme editing becomes a \"Change wallpaper\" button that goes straight to uploading your own image instead of opening the theme gallery. \"Reset to classic Chrome\" becomes a \"Reset to default\" button. The \"Shortcuts\" heading is removed and spacing is tightened. Builds on side-panel-webui-general.patch.",
+"w": "Simplifies the Customize side panel. Removed: the theme preview, the image and \"managed by\" rows, the toolbar illustration, category titles, intro text and the reorder tip. Theme editing becomes a \"Change wallpaper\" button that goes straight to uploading your own image. \"Reset to classic Chrome\" becomes \"Reset to default\".",
 "s": "on",
 "n": ""
 },
@@ -2589,7 +2589,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/helium-logo-icons",
-"w": "Swaps the Chrome logo icon used in the browser's internal pages (for example the \"About\" entry in Settings) for Helium's star-shaped logo.",
+"w": "Replaces the Chrome logo on internal pages (for example the \"About\" entry in Settings) with Helium's star-shaped logo.",
 "s": "on",
 "n": ""
 },
@@ -2598,7 +2598,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/square-ntp-monograms",
-"w": "The letter tiles shown for sites that have no icon (on new-tab shortcuts and similar places) are drawn as rounded squares with a fixed 14px corner radius, not circles.",
+"w": "Letter tiles shown for sites with no icon (on new tab shortcuts and similar places) are rounded squares with 14 px corners instead of circles.",
 "s": "on",
 "n": ""
 },
@@ -2607,7 +2607,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/default-theme",
-"w": "New profiles start with the grey (grayscale) theme. \"Reset to default\" also returns to grey, and the stock blue \"Default\" swatch is removed from the theme colour picker. Pref kGrayscaleThemeEnabled is set to true for new profiles; in stock Chromium it is false.",
+"w": "New profiles start with the gray theme. \"Reset to default\" also returns to gray, and the stock blue \"Default\" swatch is removed from the theme color picker.",
 "s": "on",
 "n": ""
 },
@@ -2616,7 +2616,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/toast",
-"w": "Redesigns the small pop-up notifications (toasts, such as \"Link copied\"). They are smaller (32px instead of 48px), have 8px corners, a thin outline and no shadow, use the address-bar colour, appear at the right side under the toolbar instead of centred, and scale in instead of sliding down. Also changes when a toast is drawn over the page, so it no longer depends on fullscreen state.",
+"w": "Redesigns small pop-up messages (toasts, such as \"Link copied\"). They are smaller (32 px instead of 48 px), have 8 px corners and a thin outline but no shadow, use the address bar color, and appear at the right under the toolbar instead of centered. They scale in instead of sliding down.",
 "s": "on",
 "n": ""
 },
@@ -2625,7 +2625,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/square-interstitial-buttons",
-"w": "Buttons on security warning pages (for example \"Your connection is not private\") get 8px corners instead of pill shapes, and slightly narrower padding.",
+"w": "Buttons on security warning pages (for example \"Your connection is not private\") have 8 px corners instead of pill shapes, and slightly less padding.",
 "s": "on",
 "n": ""
 },
@@ -2634,7 +2634,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/center-window-on-launch",
-"w": "When there is no saved window position, the first browser window opens centred on the screen, not near the top-left corner.",
+"w": "When there is no saved window position, the first browser window opens in the center of the screen, not near the top-left corner.",
 "s": "on",
 "n": ""
 },
@@ -2643,7 +2643,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-devtools-annoyances",
-"w": "Removes several items from Developer Tools: the Recorder's \"Send feedback\" link, the \"What's New\" panel, the Gemini rebrand promo pop-up, the Help submenu in the DevTools menu, and the Google account sync / Google Developer Program badges section in DevTools settings.",
+"w": "Removes several items from Developer Tools: the Recorder's \"Send feedback\" link, the \"What's New\" panel, the Gemini promo popup, the Help submenu, and the Google account sync and Google Developer Program section in DevTools settings.",
 "s": "on",
 "n": ""
 },
@@ -2652,7 +2652,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-google-promotional-resources",
-"w": "Removes Chrome's own first-run intro page and \"feature showcase\" page, the first-run intro sounds, the Password Manager \"share with family\" banner images, the Gemini settings image and the Google Drive sign-in promo picture. Most users will not notice, because Helium shows its own onboarding instead. Depends on the helium_onboarding component, which another Helium patch adds.",
+"w": "Removes Chrome's first-run intro and feature showcase pages, the intro sounds, and promo images (Password Manager family sharing, Gemini, Google Drive sign-in). Most people won't notice, because Helium shows its own onboarding.",
 "s": "on",
 "n": ""
 },
@@ -2661,7 +2661,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/bookmarks-bar-padding",
-"w": "Makes the bookmarks bar tighter: separators are thinner (1px instead of 2px) and have less space around them, and the end margins are smaller.",
+"w": "Makes the bookmarks bar tighter: separators are thinner (1 px instead of 2 px) with less space around them, and the end margins are smaller.",
 "s": "on",
 "n": ""
 },
@@ -2670,7 +2670,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/profile-picker-cleanup",
-"w": "On the \"Who's using Helium?\" profile picker, removes the decorative side banner images and the hidden action when you click the logo, and spaces the footer controls evenly.",
+"w": "On the \"Who's using Helium?\" profile picker, removes the decorative side banner images and the hidden action when you click the logo. Footer controls are spaced evenly.",
 "s": "on",
 "n": ""
 },
@@ -2697,7 +2697,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/ui/bangs-ui",
-"w": "The interface for Helium's native bangs, which are carried but off: the bang list comes from Helium's services.",
+"w": "The settings and menus for Helium's built-in bangs (search shortcuts such as !w). oganesson leaves it out because the bangs themselves are off: their list comes from Helium's services, which oganesson doesn't use.",
 "s": "dropped",
 "n": ""
 },
@@ -2706,7 +2706,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/infobar",
-"w": "Infobars (the yellow-style bars under the toolbar, such as \"Restore pages?\") are shorter (44px instead of 56px) and use the toolbar colour. The drop shadow under them is replaced by thin side separators that fit Helium's rounded or attached content frame. Depends on rounded-frame-corners.patch (pref helium.browser.rounded_frame, default true, and ShouldUseRoundedFrame) and on Helium's vertical tab layout code.",
+"w": "Infobars (bars under the toolbar, such as \"Restore pages?\") are shorter (44 px instead of 56 px) and use the toolbar color. Their drop shadow is replaced by thin side separators that fit the rounded page frame and vertical tab layout.",
 "s": "on",
 "n": ""
 },
@@ -2715,7 +2715,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/reduce-text-button-height",
-"w": "Text buttons across the browser UI are 2px shorter (1px less padding above and below).",
+"w": "Text buttons across the browser are 2 px shorter.",
 "s": "on",
 "n": ""
 },
@@ -2724,7 +2724,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/pwa-toolbar",
-"w": "Installed web apps get a tighter title-bar toolbar with smaller margins, and the page title is no longer shown next to the address in the app's top bar. Uses kHeliumBasePadding, which layout-constants.patch defines.",
+"w": "Installed web apps get a tighter title bar toolbar with smaller margins. The page title is no longer shown next to the address in the app's top bar.",
 "s": "on",
 "n": ""
 },
@@ -2733,7 +2733,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/helium-color-mixers",
-"w": "Overhauls the built-in colours. In light mode the window frame matches the toolbar, and an inactive window keeps the same frame colour. The address bar is slightly see-through (80% opaque). Background tabs are transparent with a faint highlight on hover. The selected tab uses the address-bar colour, and separators and bubble borders are toned down in dark mode. On Linux, the system-theme tab colours change to match. Custom themes are not affected.",
+"w": "Changes the built-in colors. In light mode the window frame matches the toolbar, even when the window is inactive. The address bar is slightly see-through. Background tabs are transparent with a faint highlight on hover. The selected tab uses the address bar color, and separators and bubble borders are toned down in dark mode. On Linux, system theme tab colors change to match. Custom themes are not affected.",
 "s": "on",
 "n": ""
 },
@@ -2742,7 +2742,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/frame-background",
-"w": "The tab strip area paints the window frame or theme background itself, and in fullscreen the area behind the tabs uses the theme image instead of a plain colour. Visually this keeps themes consistent behind the tabs. Depends on ThemedBackground::kFrameTheme / CustomCornersBackground::FrameTheme(), which remove-toolbar-corners.patch adds.",
+"w": "The tab strip area paints the window frame or theme background itself. In fullscreen, the area behind the tabs shows the theme image instead of a plain color, so themes look consistent behind the tabs.",
 "s": "on",
 "n": ""
 },
@@ -2751,7 +2751,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/status-bubble",
-"w": "The link-preview bubble in the bottom-left corner (shows the URL when you hover a link) becomes a floating rounded pill with 16px corners, a soft shadow and a thin outline. It is inset 8px from the window corner and uses address-bar colours, instead of the square box attached to the corner.",
+"w": "The link preview bubble in the bottom-left corner (it shows the address when you hover a link) becomes a floating rounded pill with 16 px corners, a soft shadow and a thin outline. It sits 8 px from the window corner and uses address bar colors.",
 "s": "on",
 "n": ""
 },
@@ -2760,7 +2760,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/clean-incognito-guest-ntp",
-"w": "The Incognito and Guest new tab pages lose their \"Learn more\" links (to Google help pages) and the Incognito page loses the third-party cookie blocking box. The Incognito description is rewritten for Helium and no longer mentions Google.",
+"w": "The Incognito and Guest new tab pages lose their \"Learn more\" links to Google help pages. The Incognito page also loses the third-party cookie blocking box, and its text is rewritten without mentioning Google.",
 "s": "on",
 "n": ""
 },
@@ -2769,7 +2769,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/enable-fluent-scrollbar",
-"w": "Turns on Chromium's overlay scrollbar feature (kOverlayScrollbar, mode \"device\") by default on Windows and Linux too, not only on Mac/ChromeOS. Web page scrollbars then follow the OS setting, so they can be thin overlay scrollbars that hide when not in use.",
+"w": "Turns on overlay scrollbars on Windows and Linux too (stock Chromium has them only on Mac and ChromeOS). Page scrollbars follow the system setting, so they can be thin and hide when not in use.",
 "s": "on",
 "n": ""
 },
@@ -2778,7 +2778,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/helium-color-scheme",
-"w": "Replaces Chromium's Google-blue colour palette with Helium's indigo/blue (#3450d1) and slightly different greys, in the native UI, the internal pages (Settings, chrome://flags and so on) and the theme picker's grey swatch. Accent colours, highlights and buttons look different everywhere.",
+"w": "Replaces Chromium's Google-blue colors with Helium's indigo blue (#3450d1) and slightly different grays, in the browser UI, internal pages (Settings, chrome://flags and so on) and the theme picker's gray swatch.",
 "s": "on",
 "n": ""
 },
@@ -2787,7 +2787,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/improve-flags-webui",
-"w": "Restyles chrome://flags with rounded search box and dropdowns, an outline focus ring and full flag descriptions on narrow windows. The \"Default\" choice now shows its actual state, such as \"Default (Enabled)\", with a * and a footnote when a command line or variations has changed it.",
+"w": "Restyles chrome://flags with a rounded search box and dropdowns, an outline focus ring, and full flag descriptions in narrow windows. The \"Default\" choice shows its real state, such as \"Default (Enabled)\", with a * and a footnote if the command line or an experiment changed it.",
 "s": "flag",
 "n": ""
 },
@@ -2796,7 +2796,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/ui/ublock-show-in-settings",
-"w": "The bundled uBlock Origin, a hidden built-in component, now appears on chrome://extensions with a blue \"Helium component\" badge using the Helium logo, so you can see and manage it. Other extensions can see it via chrome.management but cannot uninstall it through that API. Depends on Manifest::IsUBlockComponent from the core uBlock patches (for example ublock-helium-services.patch) and on the logo from helium-logo-icons.patch.",
+"w": "The built-in uBlock Origin, normally hidden, now shows on chrome://extensions with a blue \"Helium component\" badge, so you can see and manage it. Other extensions can see it but can't uninstall it.",
 "s": "on",
 "n": ""
 },
@@ -2805,7 +2805,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/licenses-in-credits",
-"w": "Adds licence entries for Helium itself (GPL-3.0), the Instrument Sans font and Tabler Icons, so they appear on the chrome://credits page. Build and licensing only. Refers to files in components/helium_onboarding, which another patch adds.",
+"w": "Adds license entries for Helium itself (GPL-3.0), the Instrument Sans font and Tabler Icons to the chrome://credits page. Licensing only.",
 "s": "on",
 "n": ""
 },
@@ -2814,7 +2814,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-autofill-link-to-password-manager",
-"w": "The password autofill drop-down on login forms no longer shows its footer, such as \"Manage passwords\" and passkey/other-device entries.",
+"w": "Helium removes the footer of the password autofill drop-down on login forms (\"Manage passwords\" and passkey entries). oganesson keeps the password manager, so it keeps this footer and its link.",
 "s": "dropped",
 "n": "the password manager is kept, so its link stays"
 },
@@ -2823,7 +2823,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/fix-caption-button-bounds",
-"w": "macOS only: moves the red/yellow/green window buttons closer to the window corner (10px inset) and adjusts the space reserved for them and the window corner radius on macOS 26.",
+"w": "macOS only: moves the red/yellow/green window buttons closer to the window corner (10 px) and adjusts the space reserved for them and the corner size on macOS 26.",
 "s": "on",
 "n": ""
 },
@@ -2832,7 +2832,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/find-bar",
-"w": "The Find-in-page (Ctrl+F) box now sits at the top-right corner of the web page, not hanging under the address bar. It has tighter padding and a smaller shadow, and the magnifier icon no longer appears in the address bar while it is open.",
+"w": "The Find-in-page (Ctrl+F) box sits at the top-right of the page instead of hanging under the address bar. It has tighter padding and a smaller shadow, and the magnifier icon is not shown in the address bar while it is open.",
 "s": "on",
 "n": ""
 },
@@ -2841,7 +2841,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/ui/custom-keyboard-shortcuts-wiring",
-"w": "Connects Helium's customizable keyboard shortcuts to browser windows. User-defined shortcuts replace the built-in ones and apply live when changed, and on Mac they also update the menu-bar shortcuts. Depends on core/custom-keyboard-shortcuts.patch, which defines BrowserShortcutService and flag kCustomizableBrowserShortcuts (enabled by default); settings/custom-keyboard-shortcuts-page.patch provides the editor UI.",
+"w": "Makes Helium's customizable keyboard shortcuts work in browser windows. Your shortcuts replace the built-in ones and apply as soon as you change them. On Mac, the menu bar shortcuts update too. The editor is a separate settings page.",
 "s": "on",
 "n": ""
 },
@@ -2850,7 +2850,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/ui/crash-dialog",
-"w": "After the browser restarts from a crash, a dialog asks \"Would you like to send a crash report?\" with \"Send report\", \"No thanks\" and \"Don't ask again\" (sets reporting to disabled). Reports that are not sent are deleted. Sent reports go to Helium's server (https://crash.helium.computer/crash, set in core/crash-reporting-prefs.patch). Depends on crash-reporting-prefs.patch: pref kHeliumCrashReportingMode, default kAsk.",
+"w": "After a crash restart, asks \"Would you like to send a crash report?\" with \"Send report\", \"No thanks\" and \"Don't ask again\". Unsent reports are deleted. Sent reports go to Helium's crash server. Off in oganesson, along with crash reporting.",
 "s": "off",
 "n": ""
 },
@@ -2859,7 +2859,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/ui/crashes-webui-fixes",
-"w": "The chrome://crashes page follows Helium's crash-reporting setting (automatic, ask or disabled) instead of Google metrics consent. It always lists local crashes, shows the Helium version, and its \"Create an issue with details\" link opens a GitHub issue on imputnet/helium, not the Chromium bug tracker. Depends on core/crash-reporting-prefs.patch and on core/add-helium-versioning.patch (GetHeliumVersionNumber).",
+"w": "The chrome://crashes page follows Helium's crash reporting setting (automatic, ask or disabled) instead of Google's metrics consent. It always lists local crashes and shows the Helium version. Its \"Create an issue with details\" link opens a GitHub issue instead of the Chromium bug tracker.",
 "s": "on",
 "n": "its issue link points at oganesson"
 },
@@ -2868,7 +2868,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/layout/core",
-"w": "Groundwork for Helium's layout system. It replaces Chromium's on/off \"vertical tabs\" setting with one setting, `helium.browser.layout`, that holds one of four layouts: Classic (the default), Compact, Vertical or Dynamic. It also adds a setting for vertical tabs on the right side (default off). Visible side effects: the vertical-tabs \"expand on hover\" option is forced off and its tip popup is removed, the \"try vertical tabs\" promo popup is removed, and the collapsed state and width of the vertical tab strip are no longer saved per window in session restore.",
+"w": "Groundwork for Helium's layouts. One setting replaces the on/off vertical tabs switch and holds one of four layouts: Classic (default), Compact, Vertical or Dynamic. Adds a setting for vertical tabs on the right (off by default). Side effects: vertical tabs \"expand on hover\" is forced off, the \"try vertical tabs\" popup is removed, and the vertical strip's collapsed state and width are not saved per window.",
 "s": "on",
 "n": "",
 "t": "Layout: core"
@@ -2878,7 +2878,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/settings",
-"w": "On the Appearance settings page, the stock \"Tab strip position (side/top)\" dropdown is replaced by a \"Browser layout\" dropdown (Classic/Dynamic/Compact/Vertical; Classic is the default). A \"Show vertical tabs on right side\" toggle appears when Vertical is chosen. Several stock toggles are removed from that page: expand vertical tabs on hover, organizer panel button, \"everything menu\" button, auto-show tab scroll buttons, and \"Show tab search button\".",
+"w": "On the Appearance page, the \"Tab strip position\" dropdown is replaced by \"Browser layout\" (Classic, Dynamic, Compact, Vertical). \"Show vertical tabs on right side\" appears when Vertical is chosen. Several stock options are removed: expand vertical tabs on hover, organizer panel button, \"everything menu\" button, auto-show tab scroll buttons and \"Show tab search button\".",
 "s": "on",
 "n": "",
 "t": "Layout: settings"
@@ -2888,7 +2888,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/ui/layout/context-menu",
-"w": "Right-clicking the window title bar now shows a \"Browser layout\" submenu with check items for Classic/Dynamic/Compact/Vertical, plus \"Tabs on right side\" when Vertical is active. The submenu is not shown in incognito windows. The stock title-bar menu items for vertical tabs are removed: show tabs vertically/horizontally, collapse/expand, expand on hover, send feedback, and pin tab scroll buttons.",
+"w": "Right-clicking the window title bar shows a \"Browser layout\" submenu (Classic, Dynamic, Compact, Vertical), plus \"Tabs on right side\" in Vertical. Not shown in Incognito windows. The stock title bar items for vertical tabs, \"Send feedback\" and tab scroll buttons are removed.",
 "s": "on",
 "n": "",
 "t": "Layout: context menu"
@@ -2898,9 +2898,9 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/ui/layout/shortcuts",
-"w": "In the Vertical layout, Ctrl+S (Cmd+S on Mac) collapses or expands the vertical tab strip instead of saving the page. This is on by default, and a toggle on the settings behavior page turns it off; in other layouts Ctrl+S still saves the page. It also removes Chromium's Ctrl+Shift+L shortcut for collapsing vertical tabs, and on Mac it removes the Cmd+Alt+N shortcut for a new split tab.",
+"w": "In Vertical layout, Ctrl+S (Cmd+S on Mac) collapses or expands the vertical tab strip instead of saving the page. A setting on the behavior page turns this on or off. In other layouts Ctrl+S still saves. Also removes Chromium's Ctrl+Shift+L shortcut for collapsing vertical tabs, and on Mac the Cmd+Alt+N shortcut for a new split tab.",
 "s": "on",
-"n": "Ctrl+S always saves the page here: the switch is off by default. Collapsing the vertical tabs gets Firefox's Ctrl+Alt+Z, if free",
+"n": "Ctrl+S always saves the page here: the setting is off by default. Collapsing vertical tabs uses Firefox's Ctrl+Alt+Z, if free",
 "t": "Layout: shortcuts"
 },
 {
@@ -2908,7 +2908,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/centered-address-bar",
-"w": "Adds an optional \"Centered address bar\" setting (off by default). When on, the address bar is narrowed by 5–12% of the toolbar width (at most 700 px wide) and centered in the window. The toggle is hidden in the Compact layout.",
+"w": "Optional \"Centered address bar\" setting (off by default). When on, the address bar is narrower (at most 700 px) and centered in the window. The setting is hidden in Compact layout.",
 "s": "on",
 "n": "",
 "t": "Layout: centered address bar"
@@ -2918,7 +2918,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/frame-grab-handle",
-"w": "Changes the empty space reserved at the end of the tab strip for dragging the window: stock Chromium uses 42 px, this uses 27 px in the Classic layout and none in the other layouts.",
+"w": "Changes the empty space at the end of the tab strip used for dragging the window: 27 px in Classic layout (stock is 42 px) and none in the other layouts.",
 "s": "on",
 "n": "",
 "t": "Layout: frame grab handle"
@@ -2928,7 +2928,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/layout/horizontal-tabs",
-"w": "Hides the \"+\" new tab button (and the divider after the last tab) in the horizontal tab strip when the layout is Dynamic or Vertical. Classic and Compact keep it.",
+"w": "In Dynamic and Vertical layouts, hides the \"+\" new tab button (and the divider after the last tab) in the horizontal tab strip. Classic and Compact keep it.",
 "s": "on",
 "n": "",
 "t": "Layout: horizontal tabs"
@@ -2938,7 +2938,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/toolbar-layout",
-"w": "In every layout except Classic, the toolbar becomes the top row of the window, next to the window buttons. In Compact, the address bar gets a fixed 350 px width. The Back and Reload buttons no longer shrink or move into the overflow menu. The stock rule that lets the address bar keep its size longest when space is tight is removed.",
+"w": "In every layout except Classic, the toolbar is the top row of the window, next to the window buttons. In Compact, the address bar is a fixed 350 px wide. Back and Reload never shrink or move into the overflow menu.",
 "s": "on",
 "n": "",
 "t": "Layout: toolbar layout"
@@ -2948,7 +2948,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/ui/layout/minimal-location-bar",
-"w": "Adds an optional \"Minimal URL in the address bar\" setting (off by default). When on and the address bar is not focused, it shows only the site's domain, centered; clicking into it shows the full URL.",
+"w": "Optional \"Minimal URL in the address bar\" setting (off by default). When on and not focused, the address bar shows only the site's domain, centered. Clicking it shows the full address.",
 "s": "on",
 "n": "",
 "t": "Layout: minimal location bar"
@@ -2958,7 +2958,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/dynamic",
-"w": "Implements the Dynamic layout: the toolbar is on top and the horizontal tab strip sits below it, and the tab strip is hidden while the window has only one tab. Also adjusts frame painting for this layout on Linux.",
+"w": "Adds the Dynamic layout: the toolbar is on top, the tab strip is below it, and the tab strip is hidden while the window has only one tab. Also adjusts frame drawing for this layout on Linux.",
 "s": "on",
 "n": "",
 "t": "Layout: dynamic"
@@ -2968,7 +2968,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/compact",
-"w": "Implements the Compact layout: the tabs move into the toolbar row to the right of the address bar, giving one combined bar. The \"+\" button is hidden when it does not fit, and centering of the address bar is turned off in this layout.",
+"w": "Adds the Compact layout: tabs move into the toolbar row, to the right of the address bar, making one combined bar. The \"+\" button is hidden when it doesn't fit, and the address bar is not centered.",
 "s": "on",
 "n": "",
 "t": "Layout: compact"
@@ -2978,7 +2978,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/vertical",
-"w": "Restyles Chromium's vertical tabs for the Vertical layout. The tab strip can sit on the right side. The button row at the top of the strip and the floating rounded corners are removed. The bottom button becomes a labeled \"New tab\" button. The strip is narrower: default width 200 instead of 240, collapsed 42 instead of 56, minimum 160 instead of 126. Resizing snaps to the default width, the collapse animation is shorter (250 ms), and the divider between pinned and unpinned tabs is removed. In each tab, the sound icon sits next to the site icon, and clicking it to mute is disabled while the strip is collapsed. Spacing and tab-group lines are tightened. It also removes \"Show tabs vertically/horizontally\" from the tab right-click menu and \"Pin tab search\" from the title-bar menu.",
+"w": "Restyles vertical tabs for the Vertical layout. The strip can be on the right. The button row at the top and the floating rounded corners are removed. The bottom button becomes a labeled \"New tab\" button. The strip is narrower: 200 px instead of 240, collapsed 42 instead of 56, minimum 160 instead of 126. Resizing snaps to the default width and the collapse animation is shorter. Sound icons sit next to the site icon, and muting by clicking is off while collapsed. \"Show tabs vertically/horizontally\" is removed from the tab menu.",
 "s": "on",
 "n": "",
 "t": "Layout: vertical"
@@ -2988,7 +2988,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/toolbar-overflow",
-"w": "Improves the toolbar on narrow windows. The extensions (puzzle) button can now move into the \"...\" overflow menu, and the overflow menu no longer has separators. The split-tabs button moves into the overflow menu sooner. In Compact, the toolbar buttons keep their size and the tabs shrink first. When the puzzle button is hidden, extension popups open from the overflow button.",
+"w": "Improves the toolbar in narrow windows. The extensions (puzzle) button can move into the \"...\" overflow menu, which no longer has separators. The split tabs button moves there sooner. In Compact, toolbar buttons keep their size and tabs shrink first. When the puzzle button is hidden, extension popups open from the overflow button.",
 "s": "on",
 "n": "",
 "t": "Layout: toolbar overflow"
@@ -2998,7 +2998,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/toolbar-actions",
-"w": "Adds two toolbar buttons, both on by default and both hideable from the Customize Toolbar panel. In the Vertical layout, a sidebar-icon button collapses or expands the vertical tabs; it sits at the far left of the toolbar, or at the far right when tabs are on the right. In the Dynamic layout, a \"+\" new tab button appears in the toolbar, replacing the tab-strip \"+\" that horizontal-tabs.patch hides. Both buttons can move into the overflow menu.",
+"w": "Adds two toolbar buttons, on by default and hideable in Customize Toolbar. In Vertical layout, a sidebar-icon button collapses or expands the vertical tabs. In Dynamic layout, a \"+\" new tab button appears in the toolbar, replacing the one hidden in the tab strip. Both can move into the overflow menu.",
 "s": "on",
 "n": "",
 "t": "Layout: toolbar actions"
@@ -3008,7 +3008,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/zen-mode-wiring",
-"w": "Adds the settings and plumbing for \"Frameless mode\" (zen mode): an Appearance toggle \"Automatically hide browser UI until you hover the window edge\" (off by default), with sub-toggles \"Always show the sidebar\" (Vertical only) and \"Always show the top bar\" (both off by default). It also adds the Ctrl/Cmd+Shift+L shortcut to pin the top bar (disabled here) and a \"New tab opened\" toast. It renames the accessibility toast setting to \"Background action confirmation toasts\" with a new description. The actual hiding behavior is not in this patch.",
+"w": "Groundwork for \"Frameless mode\" (zen mode). Adds Appearance settings: \"Automatically hide browser UI until you hover the window edge\", plus \"Always show the sidebar\" (Vertical only) and \"Always show the top bar\", all off by default. Adds a Ctrl/Cmd+Shift+L shortcut to pin the top bar (disabled here) and a \"New tab opened\" toast. Renames the accessibility toast setting to \"Background action confirmation toasts\". The hiding itself is a separate patch.",
 "s": "on",
 "n": "",
 "t": "Layout: zen mode wiring"
@@ -3018,7 +3018,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/layout/zen-caption-buttons",
-"w": "Lets Frameless mode fade out and disable the window's close/minimize/maximize buttons on Mac, Linux and Windows while the browser UI is hidden.",
+"w": "Lets Frameless mode fade out and disable the close, minimize and maximize buttons on Mac, Linux and Windows while the browser UI is hidden.",
 "s": "on",
 "n": "",
 "t": "Layout: zen caption buttons"
@@ -3028,7 +3028,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/layout/zen-mode",
-"w": "Adds \"Zen mode\": the toolbar, tab strip and vertical tab sidebar hide and slide back in when the mouse reaches the top or side edge of the window. They stay visible while the address bar is focused or a menu or popup is open, and hide again when the window loses focus. The top bar and the sidebar can each be \"pinned\" to stay visible. In Zen mode Ctrl+S shows or hides the side tabs, and a toast says \"new tab created\" when a link opens a tab you can't see. Also fixes how many pinned tabs fit per row in the vertical tab strip, and clips the address bar and toolbar icons on Linux.",
+"w": "Adds Zen mode: the toolbar, tab strip and vertical tab sidebar hide and slide back in when the mouse reaches the top or side edge of the window. They stay visible while the address bar is focused or a menu is open, and hide when the window loses focus. The top bar and sidebar can each be pinned. Ctrl+S shows or hides the side tabs, and a toast says \"new tab created\" when a link opens a tab you can't see. Also fixes pinned tabs per row in the vertical strip.",
 "s": "on",
 "n": "",
 "t": "Layout: zen mode"
@@ -3038,7 +3038,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/layout/min-window-width",
-"w": "The browser window can be made narrower: 400px instead of 500px. The minimum width is now the same in every layout and no longer grows when vertical tabs or a side panel are open, so those panels may overlap at very small widths.",
+"w": "The browser window can be narrower: 400 px instead of 500 px. The minimum is the same in every layout, so vertical tabs and side panels may overlap at very small widths.",
 "s": "on",
 "n": "",
 "t": "Layout: min window width"
@@ -3048,7 +3048,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/generate-standard-qr-codes",
-"w": "The \"Create QR code\" dialog makes plain square QR codes with no Chrome dinosaur in the middle, instead of Chrome's round dots, rounded corners and dino logo. Without the logo the code can also be smaller.",
+"w": "The \"Create QR code\" dialog makes plain square QR codes with no Chrome dinosaur in the middle, instead of round dots, rounded corners and the dino. Without the logo, the code can also be smaller.",
 "s": "on",
 "n": ""
 },
@@ -3057,7 +3057,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/pdf-viewer",
-"w": "Makes the built-in PDF viewer more compact: the toolbar is 36px tall instead of 56px, with smaller text and padding. The sidebar is narrower (it widens only for the bookmarks or attachments tabs), and the selected page thumbnail gets a thin outline instead of a thick glow. It also removes the \"Save to Google Drive\" button from the PDF toolbar, and makes a small structural change to the History page's \"Tabs from other devices\" tab.",
+"w": "Makes the built-in PDF viewer more compact: the toolbar is 36 px tall instead of 56 px, with smaller text. The sidebar is narrower, and the selected page thumbnail gets a thin outline instead of a thick glow. Removes the \"Save to Google Drive\" button.",
 "s": "on",
 "n": ""
 },
@@ -3075,7 +3075,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/disable-ink-ripple-effect",
-"w": "Turns off the circular \"ripple\" animation when clicking buttons, both in the browser's own toolbar and menus and in its internal pages (Settings and other chrome:// pages). Clicks give no ripple feedback, like Chrome on Mac.",
+"w": "Turns off the circular ripple animation when you click buttons in the toolbar, menus and internal pages such as Settings. Clicks show no ripple, like Chrome on Mac.",
 "s": "on",
 "n": ""
 },
@@ -3093,7 +3093,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/ui/fix-windows-ui-position",
-"w": "Windows only: changes how the top of the window is measured above the tab strip, so the tabs and toolbar sit in the right place.",
+"w": "Windows only: fixes where the top of the window sits above the tab strip, so the tabs and toolbar are placed correctly.",
 "s": "on",
 "n": ""
 },
@@ -3102,7 +3102,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/native-frame-materials",
-"w": "macOS only: adds an option to make the browser frame (tab strip, toolbar, sidebar, infobars) see-through with the system's frosted-glass blur, tinted with the theme color. The option is a flag \"Native frame materials\" in chrome://flags, off by default. When the flag is on, a \"Use native frame materials (experimental)\" toggle appears in Settings > Appearance, also off by default (pref `helium.browser.native_frame_materials` = false).",
+"w": "macOS only: an optional see-through browser frame (tab strip, toolbar, sidebar, infobars) with the system's frosted-glass blur, tinted by the theme color. Turn on the flag \"Native frame materials\" in chrome://flags (off by default). Then a \"Use native frame materials (experimental)\" switch appears in Settings > Appearance, also off by default.",
 "s": "on",
 "n": ""
 },
@@ -3111,7 +3111,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/ui/page-zoom-indicator",
-"w": "When a page is zoomed in or out, the address bar shows the zoom level as small text (for example \"125%\") instead of Chrome's magnifier icon. Clicking it resets the zoom to 100%, where Chrome would open a zoom popup, and the zoom popup no longer appears on its own when zooming. Adds a \"Show the zoom indicator in the address bar\" toggle in Settings > Appearance, on by default (pref `helium.browser.show_zoom_indicator` = true).",
+"w": "When a page is zoomed, the address bar shows the zoom level as text (for example \"125%\") instead of Chrome's magnifier icon. Clicking it resets zoom to 100%. The zoom popup no longer opens by itself. A \"Show the zoom indicator in the address bar\" switch in Settings > Appearance is on by default.",
 "s": "on",
 "n": ""
 },
@@ -3129,7 +3129,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/ui/helium-noise-page-info",
-"w": "The page-info panel for fingerprint noise. The noise itself and its settings page stay, off by default.",
+"w": "Helium adds a link to the fingerprint noise settings in the page-info panel (opened from the address bar), plus a reload prompt after you change it. oganesson leaves that out. The noise feature and its settings page stay, off by default.",
 "s": "dropped",
 "n": ""
 },
@@ -3148,7 +3148,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/compact-debugger-warning",
-"w": "When an extension starts debugging the browser, a small bug icon with \"Debugging started\" appears at the left of the address bar, instead of Chrome's full-width yellow bar across the page. Clicking the icon opens a popup listing the extensions and a \"Stop\" button for each. The old yellow bar is still used when there is no address bar visible.",
+"w": "When an extension starts debugging the browser, a small bug icon with \"Debugging started\" appears at the left of the address bar, instead of Chrome's full-width yellow bar. Clicking it lists the extensions, each with a \"Stop\" button. The yellow bar is still used when no address bar is visible.",
 "s": "on",
 "n": ""
 },
@@ -3157,7 +3157,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/progress-bar",
-"w": "Shows page-loading progress as a thin animated, glowing line along the bottom edge of the address bar, in the theme's accent color. Adds a \"Show loading progress in the address bar\" toggle in Settings > Appearance, on by default (pref `helium.browser.show_progress_bar` = true).",
+"w": "Shows page-loading progress as a thin glowing line along the bottom of the address bar, in the theme's accent color. A \"Show loading progress in the address bar\" switch in Settings > Appearance is on by default.",
 "s": "on",
 "n": ""
 },
@@ -3166,7 +3166,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/exclusive-access-bubble",
-"w": "Restyles the \"Press Esc to exit full screen\" message: rounded corners, no shadow, dark grey background, smaller text and tighter key labels. It stays for 2.5 seconds instead of 3.8, and fades in and out faster. The background is always solid, whatever Chrome's transparency setting says.",
+"w": "Restyles the \"Press Esc to exit full screen\" message: rounded corners, no shadow, dark grey background and smaller text. It stays for 2.5 seconds instead of 3.8 and fades faster. The background is always solid, whatever Chrome's transparency setting says.",
 "s": "on",
 "n": ""
 },
@@ -3194,7 +3194,7 @@
 "o": "oganesson",
 "a": "Build & plumbing",
 "p": "oganesson/core/hooks",
-"w": "Adds the shared plumbing that lets oganesson's own settings, strings and preferences plug into the browser without patching each feature in separately.",
+"w": "Groundwork so oganesson's own settings, text and preferences can plug into the browser; nothing visible on its own.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3446,7 +3446,7 @@
 "o": "oganesson",
 "a": "Build & plumbing",
 "p": "oganesson/ui/menu-item-title-devtools",
-"w": "Exposes menu item labels to UI DevTools so the automated browser tests can check menu contents.",
+"w": "Makes menu item names visible to UI DevTools (a debugging tool) so automated tests can check menus; nothing visible on its own.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3589,7 +3589,7 @@
 "o": "oganesson",
 "a": "Platform & packaging",
 "p": "linux/late/branding",
-"w": "On Linux the browser runs as oganesson with its own desktop entry and its own profile in ~/.config/oganesson, moving an old oganesson-focused profile there.",
+"w": "On Linux the browser runs as oganesson, with its own desktop entry and its own profile in ~/.config/oganesson. A profile from the earlier \"oganesson-focused\" name is moved there once.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3622,7 +3622,7 @@
 "o": "oganesson",
 "a": "Build & plumbing",
 "p": "windows/late/installer-host-7zip",
-"w": "Lets the Windows installer be packed on a Linux build machine using its own 7-Zip.",
+"w": "Lets the Windows installer be packed on a Linux build machine, using its own copy of 7-Zip; nothing visible on its own.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3702,7 +3702,7 @@
 "o": "dubna",
 "a": "Platform & packaging",
 "p": "dubna/README.md#update-policy",
-"w": "Update policy: a new release in the current Chromium milestone at once (experimentally, the two browsers may differ within a milestone), a new milestone once Helium and Vanadium both have it, and fixes for exploits in the wild at once.",
+"w": "Update policy: a new release in the current Chromium major version ships at once (as an experiment, the two browsers may differ within a major version). A new major version ships once Helium and Vanadium both have it. Fixes for exploits seen in the wild ship at once.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3822,7 +3822,7 @@
 "o": "tennessine",
 "a": "Extensions & uBlock",
 "p": "tennessine/ublock-installer",
-"w": "On first run the browser downloads Helium's uBlock Origin build, checks it against a pinned SHA-256 and installs it as an extension, with Helium's extension ID, so its settings carry over.",
+"w": "On first run the browser downloads Helium's uBlock Origin build, checks it against a fixed SHA-256 checksum and installs it as an extension with Helium's extension ID, so its settings carry over.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3854,7 +3854,7 @@
 "o": "tennessine",
 "a": "Platform & packaging",
 "p": "tennessine/firefox-sync-native-lib · tennessine/firefox-sync-strings",
-"w": "Ships Firefox Sync's Rust library, built for arm64, and its translated strings in the APK.",
+"w": "Ships Firefox Sync's Rust library (built for arm64) and its translated text in the APK; nothing visible on its own.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3905,7 +3905,7 @@
 "o": "tennessine",
 "a": "Platform & packaging",
 "p": "tennessine/smaller-apk",
-"w": "Native libraries are stored compressed and the unused XR (headset/ARCore) module is dropped, so each download is about 190 MB instead of 340 MB.",
+"w": "Native libraries are stored compressed and the unused XR (headset/ARCore) module is dropped, so each download is about 190 MB instead of 340 MB. It takes about 110 MB more storage on the phone.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3915,7 +3915,7 @@
 "o": "Vanadium",
 "a": "Network & security",
 "p": "vanadium/",
-"w": "Vanadium's hardening: compiler flags, memory tagging, W^X, and strict site and origin isolation.",
+"w": "Vanadium's security hardening: safer compiler settings, memory tagging, W^X (memory can't be both writable and runnable), and strict site and origin isolation.",
 "s": "on",
 "n": "",
 "own": 0,
@@ -3926,7 +3926,7 @@
 "o": "Vanadium",
 "a": "De-Googling & telemetry",
 "p": "vanadium/",
-"w": "Vanadium's state partitioning and attack-surface cuts, such as sensors, WebGPU and payments.",
+"w": "Vanadium keeps each site's stored data separate (state partitioning) and removes risky features, such as sensors, WebGPU and payments.",
 "s": "on",
 "n": "",
 "own": 0,
@@ -4031,7 +4031,7 @@
 "o": "Titanium",
 "a": "Platform & packaging",
 "p": "titanium/feature-overrides",
-"w": "Titanium's feature overrides, accessibility fixes, un-expired flags and fixes for Chromium bugs.",
+"w": "Titanium's feature overrides, accessibility fixes, flags Chromium would have removed, and fixes for Chromium bugs.",
 "s": "on",
 "n": "",
 "own": 0
@@ -4041,7 +4041,7 @@
 "o": "Titanium",
 "a": "Address bar & search",
 "p": "titanium/omnibox-site-search",
-"w": "Site search from the address bar, with the address bar kept in phone behavior.",
+"w": "Search a specific site from the address bar; the address bar keeps its phone-style behavior.",
 "s": "on",
 "n": "",
 "own": 0
@@ -4061,7 +4061,7 @@
 "o": "tennessine",
 "a": "Build & plumbing",
 "p": "tools/repack_apk.py",
-"w": "The APK's native libraries are deflated with Zopfli before signing, since F-Droid and Obtainium have no delta updates and download size is each update's cost.",
+"w": "The APK's native libraries are compressed with Zopfli before signing. F-Droid and Obtainium can't send only the changed parts of an update, so download size is what each update costs.",
 "s": "on",
 "n": "",
 "own": 1
@@ -4071,7 +4071,7 @@
 "o": "tennessine",
 "a": "De-Googling & telemetry",
 "p": "vanadium-drops.txt",
-"w": "Dropped from Vanadium: HTTPS-Only mode, the built-in ad filter (uBlock Origin replaces it) and GrapheneOS connectivity checks that ping GrapheneOS servers.",
+"w": "Among the Vanadium changes tennessine leaves out: HTTPS-Only mode as the default breaks sites with misconfigured redirects, so Chromium's quiet HTTPS upgrade with HTTP fallback stays. The built-in ad filter is left out because uBlock Origin does the blocking. GrapheneOS connectivity checks contact GrapheneOS servers, so Chromium's own Secure DNS is used.",
 "s": "dropped",
 "n": "",
 "own": 1
@@ -4091,7 +4091,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "Autofill field predictions",
-"w": "lets autofill ask Google which form fields are which (crowdsourcing).",
+"w": "Lets autofill ask Google which form fields are which (crowdsourcing).",
 "s": "off",
 "n": "",
 "own": 1
@@ -4101,7 +4101,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "Google Translate",
-"w": "page translation through Google, with the Translate settings and menu item back.",
+"w": "Page translation through Google, with the Translate settings and menu item back.",
 "s": "off",
 "n": "",
 "own": 1
@@ -4111,7 +4111,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "On-device translation",
-"w": "Chromium's local translation; downloads only its language packs.",
+"w": "Chromium's translation that runs on your device. It downloads only the language packs.",
 "s": "off",
 "n": "",
 "own": 1
@@ -4121,7 +4121,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "Push messages from closed sites",
-"w": "Google Cloud Messaging for web push while no tab of the site is open.",
+"w": "Uses Google Cloud Messaging so sites can send you push messages while none of their tabs are open.",
 "s": "off",
 "n": "",
 "own": 1
@@ -4131,7 +4131,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "Cast to devices",
-"w": "one switch for mDNS and DIAL discovery and all of casting.",
+"w": "One switch for casting and for finding devices on your network (mDNS and DIAL).",
 "s": "off",
 "n": "",
 "own": 1
@@ -4141,7 +4141,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "AI features, one switch each",
-"w": "Gemini in the browser, AI skills, AI permission prompts, page annotation models, Screen AI.",
+"w": "A separate switch for each AI feature: Gemini in the browser, AI skills, AI permission prompts, page annotation models and Screen AI.",
 "s": "off",
 "n": "",
 "own": 1

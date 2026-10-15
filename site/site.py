@@ -4,8 +4,10 @@ needs an update.
 
   site/site.py build      everything.html from everything.html.in and items.json,
                           into site/www with the other pages
-  site/site.py publish    build, then copy site/www to the server (PUBLISH_TARGET);
-                          the server's windows/ folder is left alone
+  site/site.py publish    build, then copy site/www to the server (PUBLISH_TARGET),
+                          and server/compose.yaml and nginx.conf next to it, then
+                          restarts what changed; the server's windows/ folder
+                          (windows/publish.sh in oganesson) is left alone
   site/site.py check      what changed in our repos since the site was last
                           reviewed (reviewed.json): patches added to or removed
                           from a series but not in items.json or still in it, and
@@ -220,6 +222,12 @@ def publish():
     build()
     subprocess.run(['rsync', '-a', '--delete', '--exclude=windows/', f'{SITE}/www/',
                     PUBLISH_TARGET], check=True)
+    # The server's compose project and nginx config sit next to www/.
+    host, path = PUBLISH_TARGET.split(':', 1)
+    project = os.path.dirname(path.rstrip('/')) or '.'
+    subprocess.run(['rsync', '-a', f'{SITE}/server/compose.yaml', f'{SITE}/server/nginx.conf',
+                    f'{host}:{project}/'], check=True)
+    subprocess.run(['ssh', host, f'cd {project} && docker compose up -d --quiet-pull'], check=True)
 
 
 def mark_reviewed():
