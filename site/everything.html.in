@@ -68,7 +68,7 @@ mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
 </style>
 </head>
 <body>
-<nav><div class="wrap"><a href="index.html">← <b>Og · Ts</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="install.html">Install</a></div></nav>
+<nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="install.html">Install</a></div></nav>
 <header><div class="wrap">
   <h1>Everything, <em>patch by patch</em></h1>
   <p class="lede">Every change in both browsers: Helium's whole series as oganesson carries it, oganesson's own patches, and tennessine's patches on top of Vanadium and Titanium. Each one says what it does, where it comes from, and whether it's on, behind a flag, off by default or dropped.</p>
