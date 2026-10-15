@@ -251,7 +251,8 @@
 "p": "ungoogled-chromium/extensions-manifestv2",
 "w": "Keeps Manifest V2 extensions working. Removes the warnings about them and stops them from being turned off.",
 "s": "on",
-"n": ""
+"n": "",
+"t": "Manifest V2 extensions"
 },
 {
 "b": "og",
@@ -348,7 +349,7 @@
 "o": "Iridium",
 "a": "Helium services",
 "p": "iridium-browser/updater-disable-auto-update",
-"w": "Turns off automatic update checks on macOS by setting the check interval to zero.",
+"w": "Turns off automatic update checks on macOS by setting the check interval to zero. oganesson has no macOS build, so this does nothing in it.",
 "s": "on",
 "n": ""
 },
@@ -2823,7 +2824,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/fix-caption-button-bounds",
-"w": "macOS only: moves the red/yellow/green window buttons closer to the window corner (10 px) and adjusts the space reserved for them and the corner size on macOS 26.",
+"w": "macOS only: moves the red/yellow/green window buttons closer to the window corner (10 px) and adjusts the space reserved for them and the corner size on macOS 26. oganesson has no macOS build, so this does nothing in it.",
 "s": "on",
 "n": ""
 },
@@ -3102,7 +3103,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/native-frame-materials",
-"w": "macOS only: an optional see-through browser frame (tab strip, toolbar, sidebar, infobars) with the system's frosted-glass blur, tinted by the theme color. Turn on the flag \"Native frame materials\" in chrome://flags (off by default). Then a \"Use native frame materials (experimental)\" switch appears in Settings > Appearance, also off by default.",
+"w": "macOS only: an optional see-through browser frame (tab strip, toolbar, sidebar, infobars) with the system's frosted-glass blur, tinted by the theme color. Turn on the flag \"Native frame materials\" in chrome://flags (off by default). Then a \"Use native frame materials (experimental)\" switch appears in Settings > Appearance, also off by default. oganesson has no macOS build, so this does nothing in it.",
 "s": "on",
 "n": ""
 },
@@ -3635,7 +3636,8 @@
 "w": "Built on Helium, carrying its whole patch series, including full uBlock Origin with Manifest V2 support built in.",
 "s": "on",
 "n": "",
-"own": 1
+"own": 1,
+"t": "Built on Helium"
 },
 {
 "b": "og",
@@ -4074,7 +4076,8 @@
 "w": "Among the Vanadium changes tennessine leaves out: HTTPS-Only mode as the default breaks sites with misconfigured redirects, so Chromium's quiet HTTPS upgrade with HTTP fallback stays. The built-in ad filter is left out because uBlock Origin does the blocking. GrapheneOS connectivity checks contact GrapheneOS servers, so Chromium's own Secure DNS is used.",
 "s": "dropped",
 "n": "",
-"own": 1
+"own": 1,
+"t": "Vanadium's changes left out"
 },
 {
 "b": "og",

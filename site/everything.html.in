@@ -24,7 +24,7 @@ a{color:inherit}
 nav{border-bottom:1px solid var(--line)}
 nav .wrap{display:flex;align-items:center;gap:20px;height:56px}
 nav a{text-decoration:none;color:var(--dim);font-size:14px} nav a:hover{color:var(--text)}
-nav b{font-family:var(--mono)}
+nav b{font-family:var(--mono);white-space:nowrap}
 header{padding:48px 0 28px}
 h1{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.025em;margin:0 0 10px;line-height:1.05}
 h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -70,10 +70,18 @@ aside a span{font:12px var(--mono);color:var(--faint)}
 .path{grid-column:1/-1;font:12px var(--mono);color:var(--faint)}
 .empty{color:var(--faint);padding:40px;text-align:center;border:1px dashed var(--line);border-radius:14px}
 [hidden]{display:none!important}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
+.skip:focus{top:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ftoggle,#jump{display:none}
+#jump{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:var(--text);font:inherit;flex:1;min-width:0}
+.ftoggle{all:unset;cursor:pointer;padding:9px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-weight:600;color:var(--dim)}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
-@media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.bar{position:static}}
+@media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}
+  .ftoggle,#jump{display:block}.bar:not(.open) .seg,.bar:not(.open) .chips{display:none}
+  input[type=search]{flex-basis:100%;order:3}}
 @media (max-width:700px){.it{grid-template-columns:1fr}.meta{justify-content:flex-start}}
 .warn{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(90deg,rgba(255,154,90,.08),rgba(180,140,255,.06));border:1px solid #3a3346;border-radius:16px;padding:22px 26px;margin:0 24px 40px}
 .warn p{margin:0;color:var(--dim)} .warn b{color:var(--text)}
@@ -83,6 +91,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="install.html">Install</a></div></nav>
 <header><div class="wrap">
   <h1>Everything, <em>patch by patch</em></h1>
@@ -91,6 +100,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 </div></header>
 
 <div class="bar" role="search" hidden><div class="wrap">
+  <select id="jump" aria-label="Jump to a section"></select>
+  <button class="ftoggle" type="button" aria-expanded="false" aria-controls="br own st">Filters</button>
+  <span id="results" class="sr" aria-live="polite"></span>
   <input type="search" id="q" aria-label="Search features, patches and origins" placeholder="Search features, patches, origins…  (press /)">
   <div class="seg" id="br" role="group" aria-label="Browser"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
   <div class="seg" id="own" role="group" aria-label="Origin"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Mine only</button></div>
@@ -126,12 +138,19 @@ function render(){
     sec.hidden=!n;sec.querySelector('h2 small').textContent=n;
     if(n)toc+=`<a href="#${sec.id}">${esc(sec.querySelector('h2').firstChild.textContent)}<span>${n}</span></a>`}
   document.getElementById('toc').innerHTML=toc;
+  const jump=document.getElementById('jump');
+  jump.innerHTML='<option value="">Jump to a section</option>'+[...document.querySelectorAll('#toc a')].map(a=>`<option value="${a.hash.slice(1)}">${esc(a.firstChild.textContent)} (${a.lastChild.textContent})</option>`).join('');
+  document.getElementById('results').textContent=`${document.querySelectorAll('.it:not([hidden])').length} items`;
   document.querySelector('.empty').hidden=!!toc;
 }
 document.querySelector('.bar').hidden=false;
+if(matchMedia('(pointer:coarse)').matches)document.getElementById('q').placeholder='Search features, patches, origins…';
+document.querySelector('.ftoggle').onclick=e=>{const open=document.querySelector('.bar').classList.toggle('open');e.target.setAttribute('aria-expanded',open)};
+document.getElementById('jump').onchange=e=>{if(e.target.value)document.getElementById(e.target.value).scrollIntoView();e.target.value=''};
 document.getElementById('q').oninput=e=>{state.q=e.target.value;render()};
 for(const id of ['br','own'])document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{state[id]=b.dataset.v;document.querySelectorAll('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
 document.querySelectorAll('#st .chipf').forEach(b=>b.onclick=()=>{const k=b.dataset.k;state.st.has(k)?state.st.delete(k):state.st.add(k);b.setAttribute('aria-pressed',state.st.has(k));render()});
+render();
 addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('q').focus()}});
 </script>
 </body>

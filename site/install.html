@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Install oganesson & tennessine</title>
-<meta name="description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
+<meta name="description" content="Install oganesson on Linux or Windows and tennessine on Android: signed apt and dnf repositories, an installer or portable zip, and an F-Droid repository.">
 <meta property="og:title" content="Install oganesson & tennessine">
-<meta property="og:description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
+<meta property="og:description" content="Install oganesson on Linux or Windows and tennessine on Android: signed apt and dnf repositories, an installer or portable zip, and an F-Droid repository.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0b10">
 <link rel="canonical" href="https://dubna.zakius.xyz/install.html">
@@ -133,7 +133,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{ou
 .ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
 .ib h3{margin:0 0 4px;font-size:17px}
 .ib p{color:var(--dim);font-size:14px;margin:0 0 12px}
-pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);color:#cfd3e4;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);color:#cfd3e4;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.copywrap{position:relative}.copywrap pre{padding-right:72px}
+.copy{position:absolute;top:7px;right:7px;font:600 12px var(--sans);color:var(--dim);background:var(--card);border:1px solid var(--line);border-radius:7px;padding:4px 9px;cursor:pointer}
+.copy:hover{color:var(--text)}
 .st{display:inline-block;font:11px var(--mono);padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle}
 .st.ok{color:var(--yes);background:rgba(91,227,161,.1)} .st.soon{color:var(--part);background:rgba(244,201,93,.1)}
 
@@ -197,18 +200,20 @@ pre a{color:inherit}
 <header class="hero" style="padding:72px 0 40px"><div class="wrap" style="display:block">
   <div class="eyebrow">Install</div>
   <h1 style="max-width:820px">Get <em>oganesson</em> and <em>tennessine</em></h1>
-  <p class="lede">On Linux and Android they install from the project's own signed repositories, so updates arrive the same way as the rest of your software. On Windows it's an installer or a portable zip, updated by hand for now.</p>
-  <div class="tabs" role="tablist" id="os" hidden><button role="tab" aria-controls="linux" data-os="linux">Linux</button><button role="tab" aria-controls="windows" data-os="windows">Windows</button><button role="tab" aria-controls="android" data-os="android">Android</button></div>
+  <p class="lede">oganesson is a Chromium browser for Linux and Windows, and tennessine is its Android sibling (<a href="index.html">what they are</a>). On Linux and Android they install from the project's own signed repositories, so updates arrive the same way as the rest of your software. On Windows it's an installer or a portable zip, updated by hand for now.</p>
+  <div class="tabs" role="tablist" id="os" hidden><button role="tab" aria-controls="linux" data-os="linux">Linux</button><button role="tab" aria-controls="windows" data-os="windows">Windows</button><button role="tab" aria-controls="android" data-os="android">Android</button><button role="tab" aria-controls="macos" data-os="macos">macOS</button></div>
 </div></header>
 
-<section id="linux" class="os"><div class="wrap">
+<section id="linux" class="os" role="tabpanel" aria-label="Linux"><div class="wrap">
   <h2>Linux <span class="st ok">x86-64</span></h2>
   <p class="sub">A signed apt and dnf repository. Needs an {{linux_cpu}} processor, which covers almost any PC from the last fifteen years, and {{linux_distros}}, or a current Fedora. Now at oganesson {{og_version}} on Chromium {{og_milestone}}, built {{og_date}}. The browser keeps its own profile in <code>~/.config/oganesson</code>.</p>
   <div class="steps">
     <div class="ib"><h3>Debian, Ubuntu</h3>
 <pre>curl -fsSL https://packages.zakius.xyz/oganesson.asc | sudo gpg --dearmor -o /usr/share/keyrings/oganesson.gpg
 echo 'deb [signed-by=/usr/share/keyrings/oganesson.gpg] https://packages.zakius.xyz/deb ./' | sudo tee /etc/apt/sources.list.d/oganesson.list
-sudo apt update &amp;&amp; sudo apt install oganesson</pre></div>
+sudo apt update &amp;&amp; sudo apt install oganesson</pre>
+<p style="margin-top:12px">The repository key's fingerprint, which <code>gpg --show-keys /usr/share/keyrings/oganesson.gpg</code> prints:</p>
+<pre>B039 7C2A 0CA2 9690 A77E 029D 4314 5B0A 1197 2D6E</pre></div>
     <div class="ib"><h3>Fedora</h3>
 <pre>sudo curl -fsSL -o /etc/yum.repos.d/oganesson.repo https://packages.zakius.xyz/oganesson.repo
 sudo dnf install oganesson</pre>
@@ -217,7 +222,7 @@ sudo dnf install oganesson</pre>
   <p class="note">Updates come with your system's: Discover, GNOME Software, <code>apt upgrade</code> or <code>dnf upgrade</code>. To get them without asking, turn on automatic updates there, or use <code>unattended-upgrades</code> with the origin <code>oganesson</code>, or <code>dnf5-automatic</code>.</p>
 </div></section>
 
-<section id="windows" class="os"><div class="wrap">
+<section id="windows" class="os" role="tabpanel" aria-label="Windows"><div class="wrap">
   <h2>Windows <span class="st ok">x64</span></h2>
   <p class="sub">An installer and a portable zip, for Windows {{windows_min}} or newer. Now at oganesson {{win_version}} on Chromium {{win_milestone}}, built {{win_date}}. The files aren't code-signed yet, so SmartScreen warns about them: choose <b>More info</b>, then <b>Run anyway</b>. There's no automatic updater on Windows yet; download a new installer from this page. The browser keeps its profile in <code>%LOCALAPPDATA%\oganesson</code>.</p>
   <div class="steps">
@@ -227,7 +232,7 @@ sudo dnf install oganesson</pre>
   <p class="note">The buttons fetch the latest version. Check it against <a href="windows/SHA256SUMS">SHA256SUMS</a> with <code>certutil -hashfile &lt;file&gt; SHA256</code>. Every version is in <a href="windows/">dubna.zakius.xyz/windows</a>.</p>
 </div></section>
 
-<section id="android" class="os"><div class="wrap">
+<section id="android" class="os" role="tabpanel" aria-label="Android"><div class="wrap">
   <h2>Android <span class="st ok">arm64</span></h2>
   <p class="sub">tennessine installs from its own F-Droid repository, in F-Droid or Obtainium, on Android {{android_min}} or newer. Now at {{ts_version}} (Chromium {{ts_milestone}}), added {{ts_date}}.</p>
   <div class="steps">
@@ -239,12 +244,17 @@ sudo dnf install oganesson</pre>
   </div>
 </div></section>
 
+<section id="macos" class="os" role="tabpanel" aria-label="macOS"><div class="wrap">
+  <h2>macOS</h2>
+  <p class="sub">There's no macOS build: oganesson runs on Linux and Windows, and tennessine on Android. iPhones and iPads aren't supported either.</p>
+</div></section>
+
 <section id="after"><div class="wrap">
   <h2>After installing</h2>
   <div class="feat">
-    <div class="f"><div class="ic" aria-hidden="true">🔄</div><h3>Sync</h3><p>Sign in with a Mozilla account in Settings, or set your own sync server's address first. Passwords, bookmarks, history, open tabs, addresses and cards then follow you between oganesson, tennessine and Firefox.</p></div>
-    <div class="f"><div class="ic" aria-hidden="true">🎚</div><h3>Open up what you need</h3><p>Google-backed features such as translation, casting and push messages from closed sites each have their own switch under Settings, all off until you turn them on.</p></div>
-    <div class="f"><div class="ic" aria-hidden="true">🗂</div><h3>Coming from another browser?</h3><p>oganesson imports bookmarks, history and extensions from Chrome, Edge, Brave, Vivaldi, Opera, Arc, Zen and others, in Settings. Passwords aren't imported: bring them through Firefox Sync or a CSV file. Settings › Behavior › Tab behavior has a Chromium preset, if you'd rather keep Chrome's tab habits than Firefox's.</p></div>
+    <div class="f"><div class="ic" aria-hidden="true">🔄️</div><h3>Sync</h3><p>Sign in with a Mozilla account in Settings, or set your own sync server's address first. Passwords, bookmarks, history, open tabs, addresses and cards then follow you between oganesson, tennessine and Firefox.</p></div>
+    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>Open up what you need</h3><p>Google-backed features such as translation, casting and push messages from closed sites each have their own switch under Settings, all off until you turn them on.</p></div>
+    <div class="f"><div class="ic" aria-hidden="true">🗂️</div><h3>Coming from another browser?</h3><p>oganesson imports bookmarks, history and extensions from Chrome, Edge, Brave, Vivaldi, Opera, Arc, Zen and others, in Settings. Passwords aren't imported: bring them through Firefox Sync or a CSV file. Settings › Behavior › Tab behavior has a Chromium preset, if you'd rather keep Chrome's tab habits than Firefox's.</p></div>
   </div>
 </div></section>
 
@@ -254,7 +264,7 @@ sudo dnf install oganesson</pre>
 </div></section>
 
 <section><div class="wrap">
-  <div class="warn"><span class="ic">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
+  <div class="warn"><span class="ic">⚠️</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
 </div></section>
 
 </main>
@@ -270,7 +280,25 @@ const pick=os=>{document.querySelectorAll('section.os').forEach(x=>x.hidden=x.id
   document.querySelectorAll('#os button').forEach(b=>b.setAttribute('aria-selected',b.dataset.os===os))};
 document.querySelectorAll('#os button').forEach(b=>b.onclick=()=>{pick(b.dataset.os);history.replaceState(null,'','#'+b.dataset.os)});
 const h=location.hash.slice(1), ua=navigator.userAgent;
-pick(['linux','windows','android'].includes(h)?h:/Android/.test(ua)?'android':/Windows/.test(ua)?'windows':'linux');
+pick(['linux','windows','android','macos'].includes(h)?h:/Android/.test(ua)?'android':/Windows/.test(ua)?'windows':/Mac|iPhone|iPad/.test(ua)?'macos':'linux');
+// A copy button on each command block.
+document.querySelectorAll('pre').forEach(pre=>{const wrap=document.createElement('div');wrap.className='copywrap';pre.before(wrap);wrap.append(pre);
+  const b=document.createElement('button');b.className='copy';b.type='button';b.textContent='Copy';
+  b.onclick=()=>navigator.clipboard.writeText(pre.innerText.trim()).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500)});wrap.append(b)});
+// Arrow keys move between tabs (WAI-ARIA tabs pattern).
+document.querySelectorAll('[role=tablist]').forEach(list=>{
+  const tabs=[...list.querySelectorAll('[role=tab]')];
+  const sync=()=>tabs.forEach(t=>t.tabIndex=t.getAttribute('aria-selected')==='true'?0:-1);
+  sync();
+  list.addEventListener('click',()=>setTimeout(sync));
+  list.addEventListener('keydown',e=>{
+    const i=tabs.indexOf(document.activeElement), n=tabs.length;
+    const to={ArrowRight:(i+1)%n,ArrowLeft:(i-1+n)%n,Home:0,End:n-1}[e.key];
+    if(i<0||to===undefined)return;
+    e.preventDefault();tabs[to].focus();tabs[to].click();
+  });
+});
+
 </script>
 </body>
 </html>

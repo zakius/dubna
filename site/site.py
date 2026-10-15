@@ -188,7 +188,8 @@ def everything(items):
         (count(lambda d: d['b'] == 'og' and not d.get('own')), 'Helium-series patches'),
         (count(lambda d: d['b'] == 'og' and d.get('own')), 'oganesson items'),
         (count(lambda d: d['b'] == 'both'), 'shared (dubna)'),
-        (count(lambda d: d['b'] == 'ts'), 'tennessine items'),
+        (count(lambda d: d['b'] == 'ts'),
+         f"tennessine items, {count(lambda d: d['b'] == 'ts' and d.get('own'))} mine"),
         (count(lambda d: d['s'] == 'flag'), 'behind flags'),
         (count(lambda d: 'drop' in d['s']), 'dropped')])
     chips = ''.join(f'<button class="chipf" data-k="{k}" aria-pressed="true"><i style="background:{c}"></i>{l}</button>'
@@ -245,8 +246,11 @@ def facts():
 
     og_version, og_date = newest(og / 'work/dl')
     win_version, win_date = newest(og / 'work/dl/windows')
-    # Helium's version: its own, then the Chromium milestone minus 136 (helium_version.py).
-    milestone = lambda version: str(136 + int(version.split('.')[1]))
+    # Chromium's version, or, in packages before it, Helium's: its own, then the
+    # Chromium milestone minus 136.
+    def milestone(version):
+        major, minor = version.split('.')[:2]
+        return major if int(major) >= 100 else str(136 + int(minor))
     apks = json.loads(FDROID_INDEX.read_text())['packages']['io.github.zakius.tennessine']
     apk = max(apks, key=lambda a: a['versionCode'])
     added = time.strftime('%Y%m%d', time.gmtime(apk['added'] / 1000))

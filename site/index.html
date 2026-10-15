@@ -172,6 +172,9 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
 .shots figcaption{color:var(--dim);font-size:14px;margin-top:8px}
 @media (max-width:700px){.shots{grid-template-columns:1fr}}
+.endcta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 36px}
+.endcta h2{margin:0 0 6px}.endcta p{margin:0;color:var(--dim)}
+@media (max-width:900px){.tbl{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}th:first-child,td:first-child{box-shadow:8px 0 10px -8px rgba(0,0,0,.8)}}
 .big{font:700 56px/1 var(--mono);background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
 
 footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
@@ -253,7 +256,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       </ul>
     </div>
   </div>
-  <div class="dubna"><span style="font-size:22px">⚛</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), no saved history, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
+  <div class="dubna"><span style="font-size:22px">⚛️</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), no saved history, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
   <div class="shots">
     <figure><a href="img/tabs.webp"><img src="img/tabs.webp" width="1300" height="850" loading="lazy" alt="oganesson with four Wikipedia tabs and no close buttons on them; uBlock Origin's button sits left of the address bar and shows one blocked request"></a><figcaption>Tabs without close buttons, and uBlock Origin moved next to the address bar</figcaption></figure>
     <figure><a href="img/vertical.webp"><img src="img/vertical.webp" width="1300" height="850" loading="lazy" alt="oganesson in the vertical layout, with the tabs in a column on the right"></a><figcaption>Vertical tabs, here on the right</figcaption></figure>
@@ -264,13 +267,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <section id="why"><div class="wrap">
   <h2>Why not just use…</h2>
-  <p class="sub">Each of these is the right pick for someone. Open one for what kept me away, and the last one for oganesson's own weak points.</p>
+  <p class="sub">Each of these is the right pick for someone. Open one for what kept me away. The last one, oganesson's own weak points, is open.</p>
   <div class="whyl">
     <details class="wl" open><summary><b>Brave</b><span>Good if you want ads and trackers gone with no setup at all.</span></summary><ul><li>No mouse gestures</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>uBlock Origin installs, but can&#x27;t uncloak CNAME trackers: Chromium has no DNS API for extensions, so only Shields can</li><li>No way to remove tab close buttons or the sound icon</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Brave Sync, which doesn&#x27;t work with Firefox Sync</li><li>Rewards, a crypto wallet, Leo AI and sponsored new tab images</li></ul></details>
     <details class="wl" open><summary><b>Chrome</b><span>Good if you live in Google&#x27;s services.</span></summary><ul><li>No mouse gestures</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only pin and unpin; they don&#x27;t move</li><li>Only uBlock Origin Lite, so no CNAME uncloaking</li><li>No way to remove tab close buttons or the sound icon</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Sync through a Google account, which doesn&#x27;t work with Firefox Sync</li><li>Gemini, Google services and telemetry on by default</li></ul></details>
     <details class="wl" open><summary><b>Edge</b><span>Good if you&#x27;re on Windows with a Microsoft account.</span></summary><ul><li>Mouse gestures on every page with a good choice of actions, but only Edge&#x27;s fixed set of strokes: no custom strokes, rocker or wheel gestures</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>Only uBlock Origin Lite, so no CNAME uncloaking</li><li>No way to remove tab close buttons or the sound icon</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Sync through a Microsoft account, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>Copilot, telemetry and ads in its news feed</li></ul></details>
     <details class="wl" open><summary><b>Helium</b><span>Good if you want a minimal Chromium with full uBlock Origin, on one computer.</span></summary><ul><li>No mouse gestures</li><li>No middle-click on the tab strip for a new tab</li><li>Only some toolbar buttons hide, and nothing moves</li><li>Tab close buttons hide only with a flag, and the sound icon stays</li><li>Firefox&#x27;s tab placement only as &quot;next to active&quot;</li><li>No sync at all, and the password manager is removed</li><li>Web Store installs, filter lists and updates go through Helium&#x27;s own servers</li></ul></details>
-    <details class="wl" open><summary><b>Opera GX</b><span>Good if you want the gaming look, RAM and CPU limiters and messengers in a sidebar.</span></summary><ul><li>Mouse gestures, but not one you can change: configurable gestures are &quot;too geeky&quot;</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>uBlock Origin installs, but can&#x27;t uncloak CNAME trackers: Chromium has no DNS API for extensions</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Opera Sync, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>Sponsored speed dials, messenger sidebars, Aria AI and a crypto wallet</li></ul></details>
+    <details class="wl" open><summary><b>Opera GX</b><span>Good if you want the gaming look, RAM and CPU limiters and messengers in a sidebar.</span></summary><ul><li>Mouse gestures, but a fixed set you can&#x27;t change</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>uBlock Origin installs, but can&#x27;t uncloak CNAME trackers: Chromium has no DNS API for extensions</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Opera Sync, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>Sponsored speed dials, messenger sidebars, Aria AI and a crypto wallet</li></ul></details>
     <details class="wl" open><summary><b>Vivaldi</b><span>Good if you want a setting for everything, plus mail, calendar and feeds built in.</span></summary><ul><li>Middle-click on the tab strip fails in a maximized window with tabs on top</li><li>The toolbar editor can&#x27;t move extension or address bar icons</li><li>No full uBlock Origin since 8.1 dropped Manifest V2, so no CNAME uncloaking</li><li>Vivaldi Sync, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>A long feature list, though some features have rough edges, like the tab strip and toolbar gaps above</li></ul></details>
     <details class="wl" open><summary><b>Firefox</b><span>Good if you want full uBlock Origin and Firefox add-ons, and Gecko is fine.</span></summary><ul><li>No mouse gestures on internal pages: add-ons can&#x27;t run there, and the API that lifts that never reaches AMO</li><li>Tab close buttons and the sound icon go away only with userChrome.css</li><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>Telemetry, sponsored shortcuts and AI features on by default</li></ul></details>
     <details class="wl" open><summary><b>Floorp</b><span>Good if you want Firefox with more knobs: workspaces, vertical tabs, gestures.</span></summary><ul><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>A small team on a Firefox fork, so security fixes can arrive after Firefox&#x27;s</li><li>Many of its features sit on top of Firefox&#x27;s code, so each Firefox update can break a few until the team catches up. oganesson works the same way on Chromium</li></ul></details>
@@ -283,15 +286,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <h2>What matters most</h2>
   <p class="sub">These are the features I'd miss most if they went away.</p>
   <div class="feat">
-    <div class="f"><div class="ic" aria-hidden="true">🛡</div><h3>Real uBlock Origin</h3><p>The full Manifest V2 uBlock Origin, not the Lite version. It includes CNAME uncloaking, so trackers hidden behind a site's own subdomains are blocked too. Filter lists update from uBlock's own sources, not through a browser vendor's proxy.</p><div class="who"><i class="o">oganesson: built in</i><i class="t">tennessine: first run</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🔄</div><h3>Firefox Sync, on Chromium</h3><p>Signs in to Mozilla's sync service, or better, your own self-hosted sync server. Passwords, bookmarks, history, open tabs, addresses and cards move between the two browsers and Firefox itself.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🗂</div><h3>Tabs that behave like Firefox</h3><p>New tabs open where Firefox would put them. Closing a tab returns you to where you came from. Extensions' tabs follow the same rules. Coming from Chrome? Pick the Chromium preset, or tune each rule yourself. Ctrl+Tab can go in most-recently-used order.</p><div class="who"><i class="o">oganesson</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🖱</div><h3>Mouse gestures, natively</h3><p>Draw to go back, close a tab or reopen one. Because they're built into the browser, they also work on settings pages, the new tab page and the Web Store, where extensions can't run.</p><div class="who"><i class="o">oganesson</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">📱</div><h3>One-handed Android</h3><p>Move the address bar to the bottom and the whole layout follows it: the menu, suggestions and tab list grow up from your thumb. Toasts stay out of the way, above the toolbar.</p><div class="who"><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🧩</div><h3>Extensions on a phone</h3><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🔌</div><h3>Nothing phones home</h3><p>No Google services and no browser-vendor services by default, and Helium's own service proxy is off too. Crash reports and component downloads stay off until you turn them on. What does connect: uBlock Origin's filter lists update from uBlock's own sources, tennessine downloads uBlock Origin once on first run and checks it against a pinned checksum, and updates come through your package manager or F-Droid.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🎚</div><h3>Google features as opt-ins</h3><p>Translation (on-device or Google's), push messages from closed sites, casting and each AI feature each have their own switch in one settings section, all off by default.</p><div class="who"><i class="o">oganesson</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🔑</div><h3>A password manager you keep</h3><p>Some privacy browsers remove the built-in password manager; I keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🛡️</div><h3>Real uBlock Origin</h3><p>The full Manifest V2 uBlock Origin, not the Lite version. It includes CNAME uncloaking, so trackers hidden behind a site's own subdomains are blocked too. Filter lists update from uBlock's own sources, not through a browser vendor's proxy.</p><div class="who"><i class="o">oganesson: built in</i><i class="t">tennessine: first run</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🔄️</div><h3>Firefox Sync, on Chromium</h3><p>Signs in to Mozilla's sync service, or better, your own self-hosted sync server. Passwords, bookmarks, history, open tabs, addresses and cards move between the two browsers and Firefox itself.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🗂️</div><h3>Tabs that behave like Firefox</h3><p>New tabs open where Firefox would put them. Closing a tab returns you to where you came from. Extensions' tabs follow the same rules. Coming from Chrome? Pick the Chromium preset, or tune each rule yourself. Ctrl+Tab can go in most-recently-used order.</p><div class="who"><i class="o">oganesson</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🖱️</div><h3>Mouse gestures, natively</h3><p>Draw to go back, close a tab or reopen one. Because they're built into the browser, they also work on settings pages, the new tab page and the Web Store, where extensions can't run.</p><div class="who"><i class="o">oganesson</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">📱️</div><h3>One-handed Android</h3><p>Move the address bar to the bottom and the whole layout follows it: the menu, suggestions and tab list grow up from your thumb. Toasts stay out of the way, above the toolbar.</p><div class="who"><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🧩️</div><h3>Extensions on a phone</h3><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🔌️</div><h3>Nothing phones home</h3><p>No Google services and no browser-vendor services by default, and Helium's own service proxy is off too. Crash reports and component downloads stay off until you turn them on. What does connect: installing and updating extensions from the Chrome Web Store talks to Google, uBlock Origin's filter lists update from uBlock's own sources, tennessine downloads uBlock Origin once on first run and checks it against a pinned checksum, and updates come through your package manager or F-Droid.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>Google features as opt-ins</h3><p>Translation (on-device or Google's), push messages from closed sites, casting and every AI feature have their own switches in one settings section, all off by default.</p><div class="who"><i class="o">oganesson</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🔑️</div><h3>A password manager you keep</h3><p>Some privacy browsers remove the built-in password manager; I keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
   </div>
 </div></section>
 
@@ -305,7 +308,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
   <div class="tbl" id="desk" role="tabpanel" tabindex="0" aria-label="Desktop comparison">
   <table>
-    <thead><tr><th>Feature</th><th class="us">oganesson</th><th>Brave</th><th>Chrome</th><th>Edge</th><th>Helium</th><th>Opera GX</th><th>Vivaldi</th><th class="g">Firefox</th><th>Floorp</th><th>Zen</th></tr></thead>
+    <thead><tr><th scope="col">Feature</th><th scope="col" class="us">oganesson</th><th scope="col">Brave</th><th scope="col">Chrome</th><th scope="col">Edge</th><th scope="col">Helium</th><th scope="col">Opera GX</th><th scope="col">Vivaldi</th><th scope="col" class="g">Firefox</th><th scope="col">Floorp</th><th scope="col">Zen</th></tr></thead>
     <tbody>
     <tr><th scope="row">Blink engine<small>faster, and what sites are built and tested for first</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td class="g"><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td></tr>
     <tr><th scope="row">Full uBlock Origin (Manifest V2)<small>not the reduced "Lite" version</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">built in</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker; MV2 by opt-in</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Lite only</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Lite only</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">built in</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker; MV2 gone</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td></tr>
@@ -330,7 +333,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
   <div class="tbl" id="andr" role="tabpanel" tabindex="0" aria-label="Android comparison">
   <table>
-    <thead><tr><th>Feature</th><th class="us">tennessine</th><th>Brave</th><th>Chrome</th><th>Cromite</th><th>Edge</th><th>Opera</th><th>Samsung Internet</th><th>Vanadium</th><th>Vivaldi</th><th class="g">Firefox</th><th>IronFox</th></tr></thead>
+    <thead><tr><th scope="col">Feature</th><th scope="col" class="us">tennessine</th><th scope="col">Brave</th><th scope="col">Chrome</th><th scope="col">Cromite</th><th scope="col">Edge</th><th scope="col">Opera</th><th scope="col">Samsung Internet</th><th scope="col">Vanadium</th><th scope="col">Vivaldi</th><th scope="col" class="g">Firefox</th><th scope="col">IronFox</th></tr></thead>
     <tbody>
     <tr><th scope="row">Blink engine<small>faster, and what sites are built and tested for first</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td class="g"><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td></tr>
     <tr><th scope="row">Full uBlock Origin</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">installed on first run</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">no extensions</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Lite only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">blocker add-ons only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker; MV2 gone</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td></tr>
@@ -392,7 +395,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   </div>
 </div></section>
 <section><div class="wrap">
-  <div class="warn"><span class="ic">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
+  <div class="warn"><span class="ic">⚠️</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
 </div></section>
 
 <section><div class="wrap">
@@ -413,6 +416,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   </div>
 </div></section>
 
+<section class="end"><div class="wrap">
+  <div class="endcta"><div><h2>Try them</h2><p>oganesson for Linux and Windows, tennessine for Android, both on Chromium {{milestone}}.</p></div>
+  <div class="cta"><a class="btn primary" href="install.html">Get them</a><a class="btn" href="everything.html">Every feature &amp; patch</a></div></div>
+</div></section>
 </main>
 
 <footer><div class="wrap">
@@ -422,13 +429,28 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <script>
 // Without JS everything stays unfolded: both tables, every "Why not" entry.
-document.querySelectorAll('details.wl').forEach(d=>d.open=false);
+const wl=[...document.querySelectorAll('details.wl')];
+wl.forEach((d,i)=>d.open=i===wl.length-1);  // oganesson's own weak points stay open
 document.querySelector('.tabs').hidden=false;
 document.getElementById('andr').hidden=true;
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
   document.getElementById('desk').hidden=b.dataset.t!=='desk';
   document.getElementById('andr').hidden=b.dataset.t!=='andr';
+});
+
+// Arrow keys move between tabs (WAI-ARIA tabs pattern).
+document.querySelectorAll('[role=tablist]').forEach(list=>{
+  const tabs=[...list.querySelectorAll('[role=tab]')];
+  const sync=()=>tabs.forEach(t=>t.tabIndex=t.getAttribute('aria-selected')==='true'?0:-1);
+  sync();
+  list.addEventListener('click',()=>setTimeout(sync));
+  list.addEventListener('keydown',e=>{
+    const i=tabs.indexOf(document.activeElement), n=tabs.length;
+    const to={ArrowRight:(i+1)%n,ArrowLeft:(i-1+n)%n,Home:0,End:n-1}[e.key];
+    if(i<0||to===undefined)return;
+    e.preventDefault();tabs[to].focus();tabs[to].click();
+  });
 });
 </script>
 </body>
