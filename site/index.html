@@ -170,6 +170,8 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .shots figure{margin:0}
 .shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
 .shots figcaption{color:var(--dim);font-size:14px;margin-top:8px}
+.phones{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.phones{grid-template-columns:1fr 1fr}}
 @media (max-width:700px){.shots{grid-template-columns:1fr}}
 .endcta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 36px}
 .endcta h2{margin:0 0 6px}.endcta p{margin:0;color:var(--dim)}
@@ -188,7 +190,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   nav .sp{display:none}
   nav .btn{margin-left:auto;padding:6px 12px;font-size:14px}
   nav b{font-size:min(16px,3.8vw)}
-  nav .links{order:3;width:100%;overflow-x:auto;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+  nav .links{order:3;width:100%;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
   nav .links a{display:inline-block;padding:8px 0}
   nav .links a[href="install.html"]{order:-1;color:var(--text);font-weight:600}
 }
@@ -261,6 +263,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <figure><a href="img/vertical.webp"><img src="img/vertical.webp" width="1300" height="850" loading="lazy" alt="oganesson in the vertical layout, with the tabs in a column on the right"></a><figcaption>Vertical tabs, here on the right</figcaption></figure>
     <figure><a href="img/tab-behavior.webp"><img src="img/tab-behavior.webp" width="1300" height="850" loading="lazy" alt="The Tab behavior settings with the Firefox preset selected and its rules listed"></a><figcaption>Tab behavior: the Firefox preset, or each rule on its own</figcaption></figure>
     <figure><a href="img/gestures.webp"><img src="img/gestures.webp" width="1300" height="850" loading="lazy" alt="Shortcuts and gestures settings with the Add mouse gesture dialog open and UR typed in; behind it, Back has the gestures L and hold right, click left, and Close Tab has DR"></a><figcaption>Adding a mouse gesture, next to each command's keyboard shortcuts</figcaption></figure>
+  </div>
+  <div class="shots phones">
+    <figure><a href="img/android-bottom.webp"><img src="img/android-bottom.webp" width="540" height="1200" loading="lazy" alt="tennessine on Android with the address bar at the bottom: Home, the address, New tab, Extensions, Tabs and Menu"></a><figcaption>tennessine with the address bar at the bottom</figcaption></figure>
+    <figure><a href="img/android-menu.webp"><img src="img/android-menu.webp" width="540" height="1200" loading="lazy" alt="tennessine's menu opening upward from the bottom toolbar"></a><figcaption>The menu grows up from your thumb</figcaption></figure>
+    <figure><a href="img/android-extensions.webp"><img src="img/android-extensions.webp" width="540" height="1200" loading="lazy" alt="tennessine's Extensions menu with uBlock Origin switched on"></a><figcaption>Chrome extensions, uBlock Origin among them</figcaption></figure>
+    <figure><a href="img/android-tabs.webp"><img src="img/android-tabs.webp" width="540" height="1200" loading="lazy" alt="tennessine's tab switcher as a list, near the bottom of the screen"></a><figcaption>The tab list, near the address bar</figcaption></figure>
   </div>
 </div></section>
 

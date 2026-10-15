@@ -6,7 +6,7 @@ needs an update.
                           into site/www with the other pages and site/img; the
                           pages' {{name}}s get the current versions, dates and
                           minimum systems (facts())
-  site/site.py screenshots  site/img from oganesson's tools/screenshots.py
+  site/site.py screenshots  site/img from oganesson's and tennessine's tools/screenshots.py
   site/site.py publish    build, then copy site/www to PUBLISH_TARGET (HOST:DIR, from .env),
                           and server/compose.yaml and nginx.conf next to it, then
                           restarts what changed; the server's windows/ folder
@@ -297,12 +297,20 @@ def build():
 
 def screenshots():
     """site/img from oganesson's tools/screenshots.py, with the installed package
-    unless OGANESSON_BINARY says otherwise."""
+    unless OGANESSON_BINARY says otherwise, and tennessine's on the emulator."""
     og = REPOS['oganesson']
     environ = dict(os.environ, TMPDIR=str(og / 'work/tmp'))
     environ.setdefault('OGANESSON_BINARY', '/opt/oganesson/oganesson')
     subprocess.run([sys.executable, str(og / 'tools/screenshots.py'), str(SITE / 'img')],
                    env=environ, check=True)
+    # tennessine's on the Android emulator, from its newest x86_64 build.
+    ts = REPOS['tennessine']
+    apks = sorted((ts / 'work/build/tennessine/chromium/src/out/release').glob('*-x86_64.apk'),
+                  key=lambda f: f.stat().st_mtime)
+    if not apks:
+        sys.exit('site.py: no x86_64 APK; build one with ./tennessine.py build x64')
+    subprocess.run([sys.executable, str(ts / 'tools/screenshots.py'), str(apks[-1]),
+                    str(SITE / 'img')], check=True)
 
 
 def publish():
