@@ -27,7 +27,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 |---|---|
 | `milestone.txt` | The Chromium milestone both browsers build. |
 | `src/` | New files both browsers copy over the Chromium tree before their own: the C++ of Firefox-compatible Sync (`chrome/browser/firefox_sync/`), its strings, and the headers for no saved history. Nothing here is platform-specific. What Sync needs from the browser (tabs, the sign-in tab, synced-tab views, the account on the profile, the library's path) is declared in `firefox_sync_platform.h`, which each browser implements in its own `chrome/browser/firefox_sync/platform/`. |
-| `patches/` | Patches both browsers apply: `firefox-sync.patch` (the service, on Linux, Windows and Android) and `no-saved-history.patch` (which registers its own prefs). |
+| `patches/` | Patches both browsers apply: `firefox-sync.patch` (the service, on Linux and Android) and `no-saved-history.patch` (which registers its own prefs). |
 | `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release). |
@@ -46,11 +46,12 @@ Scripts that run inside a build container or come from an upstream stay in bash.
 
 ## Update policy
 
-Each browser takes its upstream's patches as they are, so the upstream does the rebasing. A patch shared by both browsers has exactly one version, so both browsers build the same Chromium version.
+Each browser takes its upstream's patches as they are, so the upstream does the rebasing. A patch shared by both browsers has exactly one version, so both browsers must build the same Chromium milestone.
 
-1. **Both upstreams have a newer Chromium: take it now.** Both browsers move to the newest Chromium version that both helium-linux and Vanadium have released, a new milestone included, with `milestone.txt`. While one upstream has a newer version and the other doesn't, both browsers stay on the version they share.
-2. **Exploited in the wild: update now.** When Chromium fixes an exploit that is used in the wild, each browser takes the first release of its own upstream with the fix at once, without waiting for the other upstream. If its upstream has no such release yet, bump the browser's Chromium version ourselves and fix the upstream patches that fail (Helium's, or Vanadium's and Titanium's). Those fixes stay ours only until the upstream catches up. In September 2026 both upstreams shipped each zero-day fix within about a day, so the upstream usually comes first.
-3. **Stable ahead for long.** When Chromium stable has been newer than the shared version for more than 7 days, read the release notes and decide whether to act as in rule 2. Nearly every release has fixes rated High, so severity alone doesn't decide it.
+1. **New Chromium release in the same milestone: take it now.** These releases carry security fixes, and shared patches rarely break between them. Each browser moves as soon as its own upstream has the release.
+2. **New milestone: wait until every upstream has it.** Then move both browsers and `milestone.txt` together. While one upstream lags, the other browser stays on the current milestone, at its upstream's newest release in that milestone.
+3. **Exploited in the wild: update now.** When Chromium fixes an exploit that is used in the wild, each browser takes the first upstream release with the fix at once. It does so even into a new milestone, before the other upstream gets there. If its upstream has no such release yet, bump the browser's Chromium version ourselves and fix the upstream patches that fail. Those fixes stay ours only until the upstream catches up. In September 2026 both upstreams shipped each zero-day fix within about a day, so the upstream usually comes first.
+4. **Stable ahead for long.** When Chromium stable has been newer than the policy allows for more than 7 days, read the release notes and decide whether to act as in rule 3. Nearly every release has fixes rated High, so severity alone doesn't decide it.
 
 `tools/upstream_status.py` applies these rules and prints what is due:
 
@@ -60,11 +61,11 @@ tools/upstream_status.py --desktop ../oganesson --android ../tennessine
 
 | Finding | Meaning |
 |---|---|
-| `update` | Rule 1: both upstreams have a newer Chromium version than the browser builds. |
-| `milestone` | Rule 1: that version is in a new milestone, so `milestone.txt` moves too. |
-| `waiting` | Rule 1: one upstream has a newer version and the other doesn't. Nothing to do. |
-| `zeroday` | Rule 2: a version we build has an exploit in the wild. |
-| `security` | Rule 3: Chromium stable has been ahead of the shared version for more than 7 days. |
+| `update` | Rule 1: the browser's upstream has a newer release in the milestone. |
+| `milestone` | Rule 2: every upstream has a newer milestone. |
+| `waiting` | Rule 2: one upstream has a newer milestone and the other doesn't. Nothing to do. |
+| `zeroday` | Rule 3: a version we build has an exploit in the wild. |
+| `security` | Rule 4: Chromium stable has been ahead for more than 7 days. |
 
 Google marks zero-days only with the sentence "Google is aware that an exploit for CVE-… exists in the wild" in its Chrome Releases post. The script collects those CVEs and adds the Chromium entries from CISA's [Known Exploited Vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) catalog. It then finds the release that fixes each one in the posts. A CVE that the script can't place is the one case that needs a person to read the posts.
 
