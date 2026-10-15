@@ -1,7 +1,7 @@
 // Copyright 2026 The oganesson Authors
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
-//! Firefox Sync for passwords, bookmarks, history, addresses and payment methods, over Mozilla's application-services crates.
+//! Firefox Sync for passwords, bookmarks, history, open tabs, addresses and payment methods, over Mozilla's application-services crates.
 //! The browser loads this library and talks to it through three C functions:
 //! `og_init` (once), `og_call` (JSON in, JSON out, blocking; call it off the
 //! UI thread) and `og_free`.
