@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>oganesson & tennessine: Chromium, the way one person wants it</title>
+<title>oganesson & tennessine: Chromium, the way I want it</title>
 <style>
 :root{
   --bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#6b7088;
@@ -175,7 +175,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <header class="hero"><div class="wrap">
   <div>
     <div class="eyebrow">Two Chromium browsers · one shared core</div>
-    <h1>Chromium, made <em>whole</em> for the way one person uses it.</h1>
+    <h1>Chromium, made <em>whole</em> for the way I use it.</h1>
     <p class="lede"><b style="color:var(--text)">oganesson</b> on the desktop and <b style="color:var(--text)">tennessine</b> on Android. Both come with full uBlock Origin, Firefox-compatible Sync and Firefox's tab habits. Google's services stay out unless you switch them on.</p>
     <div class="cta">
       <a class="btn primary" href="install.html">Get them</a>
@@ -195,7 +195,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <div class="pair">
     <div class="pcard og">
       <h3>oganesson <small>Og · 118 · Linux &amp; Windows</small></h3>
-      <p class="base">Built on <a href="https://github.com/imputnet/helium">Helium</a>, which builds on ungoogled-chromium. Helium's whole patch series applies unchanged; the parts we don't want are dropped or switched off.</p>
+      <p class="base">Built on <a href="https://github.com/imputnet/helium">Helium</a>, which builds on ungoogled-chromium. Helium's whole patch series applies unchanged; the parts I don't want are dropped or switched off.</p>
       <ul>
         <li>Mouse gestures on every page, internal pages included</li>
         <li>A toolbar where every item moves and hides</li>
@@ -223,7 +223,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <section id="highlights"><div class="wrap">
   <h2>What matters most</h2>
-  <p class="sub">These are the features we'd miss most if they went away.</p>
+  <p class="sub">These are the features I'd miss most if they went away.</p>
   <div class="feat">
     <div class="f"><div class="ic">🛡</div><h4>Real uBlock Origin</h4><p>The full Manifest V2 uBlock Origin, not the Lite version. It includes CNAME uncloaking, so trackers hidden behind a site's own subdomains are blocked too. Filter lists update from uBlock's own sources, not through a browser vendor's proxy.</p><div class="who"><i class="o">Og built in</i><i class="t">Ts first run</i></div></div>
     <div class="f"><div class="ic">🔄</div><h4>Firefox Sync, on Chromium</h4><p>Signs in to Mozilla's sync service, or better, your own self-hosted sync server. Passwords, bookmarks, history and open tabs move between the two browsers and Firefox itself.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
@@ -233,7 +233,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="f"><div class="ic">🧩</div><h4>Extensions on a phone</h4><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">Ts</i></div></div>
     <div class="f"><div class="ic">🔌</div><h4>Nothing phones home</h4><p>No Google services and no browser-vendor services by default. Helium's own service proxy is off too. Crash reports, update pings and component downloads stay off until you turn them on.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
     <div class="f"><div class="ic">🎚</div><h4>Google features as opt-ins</h4><p>Translation (on-device or Google's), push messages from closed sites, casting and each AI feature each have their own switch in one settings section, all off by default.</p><div class="who"><i class="o">Og</i></div></div>
-    <div class="f"><div class="ic">🔑</div><h4>A password manager you keep</h4><p>Some privacy browsers remove the built-in password manager; we keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
+    <div class="f"><div class="ic">🔑</div><h4>A password manager you keep</h4><p>Some privacy browsers remove the built-in password manager; I keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">Og</i><i class="t">Ts</i></div></div>
   </div>
 </div></section>
 
@@ -294,7 +294,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <section id="why"><div class="wrap">
   <h2>Why not just use…</h2>
-  <p class="sub">Each of these is the right pick for someone. Open one for what kept the maintainer away, and the last one for oganesson's own weak points.</p>
+  <p class="sub">Each of these is the right pick for someone. Open one for what kept me away, and the last one for oganesson's own weak points.</p>
   <div class="whyl">
     <details class="wl"><summary><b>Brave</b><span>Good if you want ads and trackers gone with no setup at all.</span></summary><ul><li>No mouse gestures</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>uBlock Origin installs, but can&#x27;t uncloak CNAME trackers: Chromium has no DNS API for extensions, so only Shields can</li><li>No way to remove tab close buttons or the sound icon</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Brave Sync, which doesn&#x27;t work with Firefox Sync</li><li>Rewards, a crypto wallet, Leo AI and sponsored new tab images</li></ul></details>
     <details class="wl"><summary><b>Vivaldi</b><span>Good if you want a setting for everything, plus mail, calendar and feeds built in.</span></summary><ul><li>Middle-click on the tab strip fails in a maximized window with tabs on top</li><li>The toolbar editor can&#x27;t move extension or address bar icons</li><li>No full uBlock Origin since 8.1 dropped Manifest V2, so no CNAME uncloaking</li><li>Vivaldi Sync, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>Promises a lot, and much of it is half done</li></ul></details>
@@ -305,7 +305,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <details class="wl"><summary><b>Opera GX</b><span>Good if you want the gaming look, RAM and CPU limiters and messengers in a sidebar.</span></summary><ul><li>Mouse gestures, but not one you can change: configurable gestures are &quot;too geeky&quot;</li><li>No middle-click on the tab strip for a new tab</li><li>Toolbar items only show or hide; they don&#x27;t move</li><li>uBlock Origin installs, but can&#x27;t uncloak CNAME trackers: Chromium has no DNS API for extensions</li><li>Chromium&#x27;s tab placement, not Firefox&#x27;s</li><li>Opera Sync, which doesn&#x27;t work with Firefox Sync</li><li>A closed-source interface, so none of it can be patched</li><li>Sponsored speed dials, messenger sidebars, Aria AI and a crypto wallet</li></ul></details>
     <details class="wl"><summary><b>Floorp</b><span>Good if you want Firefox with more knobs: workspaces, vertical tabs, gestures.</span></summary><ul><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>A small team on a Firefox fork, so security fixes can arrive after Firefox&#x27;s</li><li>Many of its features sit on top of Firefox&#x27;s code, so each Firefox update can break a few until the team catches up. oganesson works the same way on Chromium</li></ul></details>
     <details class="wl"><summary><b>Zen</b><span>Good if you liked Arc and want it on Firefox.</span></summary><ul><li>An Arc-style sidebar layout, with no classic horizontal tab strip</li><li>No mouse gestures on internal pages: add-ons can&#x27;t run there, and the API that lifts that never reaches AMO</li><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>A small team on a Firefox fork, so security fixes can arrive after Firefox&#x27;s</li></ul></details>
-    <details class="wl"><summary><b>oganesson</b><span>Good if you want Firefox&#x27;s habits on Blink with full uBlock Origin, and can live with a one-person project.</span></summary><ul><li>One maintainer building it for their own use: features change or disappear without notice, and development may stop at any time</li><li>Many of its features sit on top of Chromium&#x27;s code, so each Chromium update can break a few until they&#x27;re fixed. Tests cover the main paths, not every one</li><li>New Chromium versions come after Helium has them, and a new milestone waits until tennessine&#x27;s upstream has it too; security fixes don&#x27;t wait</li><li>Windows builds are unsigned, so SmartScreen warns, and have no auto-updater. No macOS</li><li>Firefox Sync covers passwords, bookmarks, history, open tabs, addresses and cards, not extensions or settings</li><li>Not privacy-paranoid: it keeps the password manager, Sync and Google search, each yours to skip, and no fingerprinting noise by default</li></ul></details>
+    <details class="wl"><summary><b>oganesson</b><span>Good if you want Firefox&#x27;s habits on Blink with full uBlock Origin, and can live with a one-person project.</span></summary><ul><li>Just me, building it for my own use: features change or disappear without notice, and development may stop at any time</li><li>Many of its features sit on top of Chromium&#x27;s code, so each Chromium update can break a few until they&#x27;re fixed. Tests cover the main paths, not every one</li><li>New Chromium versions come after Helium has them, and a new milestone waits until tennessine&#x27;s upstream has it too; security fixes don&#x27;t wait</li><li>Windows builds are unsigned, so SmartScreen warns, and have no auto-updater. No macOS</li><li>Firefox Sync covers passwords, bookmarks, history, open tabs, addresses and cards, not extensions or settings</li><li>Not privacy-paranoid: it keeps the password manager, Sync and Google search, each yours to skip, and no fingerprinting noise by default</li></ul></details>
   </div>
 </div></section>
 
@@ -313,7 +313,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <div class="stance">
     <div>
       <h2>Private and secure by default, not paranoid</h2>
-      <p class="quote">Out of the box, nothing talks to Google or to us, and the defaults are private and secure. When you want some convenience, open up only what you need, one switch at a time. If you don't trust a feature, don't use it.</p>
+      <p class="quote">Out of the box, nothing talks to Google or to me, and the defaults are private and secure. When you want some convenience, open up only what you need, one switch at a time. If you don't trust a feature, don't use it.</p>
     </div>
     <div>
       <p class="sub" style="margin-bottom:18px">What each feature does out of the box:</p>
@@ -338,11 +338,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <section id="policy"><div class="wrap">
   <h2>Updates: both browsers on one Chromium</h2>
-  <p class="sub">The two browsers share patches, so they move together. Helium and Vanadium each release at their own pace, and these rules decide when we follow.</p>
+  <p class="sub">The two browsers share patches, so they move together. Helium and Vanadium each release at their own pace, and these rules decide when I follow.</p>
   <div class="policy">
     <div class="rule"><h4>Same milestone</h4><p>A new release within the current Chromium milestone: take it now. The two browsers may run different releases of one milestone.</p><span class="tag">experiment</span></div>
     <div class="rule"><h4>New milestone</h4><p>Wait until Helium and Vanadium both have it, so the shared patches move once.</p></div>
-    <div class="rule"><h4>Zero-day</h4><p>An exploit in the wild: update at once. If an upstream is late, we move the Chromium version ourselves and fix its patches.</p></div>
+    <div class="rule"><h4>Zero-day</h4><p>An exploit in the wild: update at once. If an upstream is late, I move the Chromium version myself and fix its patches.</p></div>
     <div class="rule"><h4>Stale</h4><p>If Chrome stable has been ahead for over 7 days, catch up.</p></div>
   </div>
 </div></section>

@@ -78,7 +78,7 @@ mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
 <div class="bar"><div class="wrap">
   <input type="search" id="q" placeholder="Search features, patches, origins…  (press /)">
   <div class="seg" id="br"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
-  <div class="seg" id="own"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Ours only</button></div>
+  <div class="seg" id="own"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Mine only</button></div>
   <div class="chips" id="st"></div>
 </div></div>
 
@@ -131,7 +131,7 @@ function render(){
     xs.sort((x,y)=>(y.own|0)-(x.own|0)||(x.b>y.b?1:-1));
     toc+=`<a href="#${id}">${a}<span>${xs.length}</span></a>`;
     main+=`<section class="cat" id="${id}"><h2>${a}<small>${xs.length}</small></h2><p>${desc}</p><div class="list">`+xs.map(d=>`
-      <div class="it"><div class="t">${hl(d.t,q)}</div><div class="meta">${d.own?'<span class="b own">ours</span>':''}${d.b==='both'?'<span class="b og">oganesson</span><span class="b ts">tennessine</span>':`<span class="b ${d.b}">${d.b==='og'?'oganesson':'tennessine'}</span>`}${d.own?'':`<span class="b">${esc(d.o)}</span>`}<span class="s ${d.s.replace(/ /g,'-')}">${ST[d.s][0]}</span></div>
+      <div class="it"><div class="t">${hl(d.t,q)}</div><div class="meta">${d.own?'<span class="b own">mine</span>':''}${d.b==='both'?'<span class="b og">oganesson</span><span class="b ts">tennessine</span>':`<span class="b ${d.b}">${d.b==='og'?'oganesson':'tennessine'}</span>`}${d.own?'':`<span class="b">${esc(d.o)}</span>`}<span class="s ${d.s.replace(/ /g,'-')}">${ST[d.s][0]}</span></div>
       ${d.w?`<div class="w">${hl(d.w,q)}</div>`:''}${d.n?`<div class="n">${hl(d.n,q)}</div>`:''}${d.p.startsWith('project:')||!d.p.includes('/')?'':`<div class="path">${hl(d.p,q)}</div>`}</div>`).join('')+`</div></section>`}
   document.getElementById('toc').innerHTML=toc;
   document.getElementById('main').innerHTML=main||'<div class="empty">Nothing matches.</div>';

@@ -832,7 +832,7 @@
 "p": "helium/core/disable-unsupported-importers",
 "w": "Removes the \"passwords\" and \"autofill form data\" options from every browser-import source, so imports only bring bookmarks, history and similar data.",
 "s": "on",
-"n": "password import comes back if it works with the importers we carry"
+"n": "password import comes back if it works with the importers I carry"
 },
 {
 "b": "og",
