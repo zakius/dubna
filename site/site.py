@@ -139,6 +139,15 @@ STATES = {'on': ('on', 'var(--on)'), 'flag': ('flag', 'var(--flag)'),
 BROWSER = {'og': 'oganesson', 'ts': 'tennessine'}
 
 
+# Words in patch names that read wrong once the name becomes a heading.
+WORDS = {'ublock': 'uBlock', 'mru': 'MRU', 'ntp': 'NTP', 'webrtc': 'WebRTC', 'webstore': 'Web Store',
+         'pdf': 'PDF', 'pwa': 'PWA', 'rbe': 'RBE', 'jit': 'JIT', 'ext': 'extension', 'dont': "don't",
+         'mv2': 'MV2', 'ui': 'UI', 'ua': 'UA', 'url': 'URL', 'urls': 'URLs', 'api': 'API', 'gcm': 'GCM',
+         'hsts': 'HSTS', 'http': 'HTTP', 'https': 'HTTPS', 'id': 'ID', 'js': 'JS', 'tls': 'TLS', 'ai': 'AI',
+         'devtools': 'DevTools', 'webrequest': 'webRequest', 'webapp': 'web app', 'x86': 'x86',
+         'reenable': 're-enable', 'degoogle': 'de-Google', 'nativelink': 'NativeLink', 'chrome': 'Chrome'}
+
+
 def title(p):
     """An item's heading, from its patch path or project: name."""
     if p.startswith('project:'):
@@ -147,7 +156,8 @@ def title(p):
         return p
     else:
         t = (re.sub(r'\.patch$', '', p.rstrip('/').split('/')[-1]) or p).replace('-', ' ')
-    return t[:1].upper() + t[1:]
+    t = ' '.join(WORDS.get(w.lower(), w) for w in t.split())
+    return t if t.startswith(('uBlock', 'webRequest')) else t[:1].upper() + t[1:]
 
 
 def everything(items):

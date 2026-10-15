@@ -8,6 +8,8 @@
 <meta property="og:title" content="Everything in oganesson & tennessine">
 <meta property="og:description" content="Every change in oganesson and tennessine, patch by patch: what it does, where it comes from, and whether it is on.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0b10">
+<link rel="canonical" href="https://dubna.zakius.xyz/everything.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23151824%22/%3E%3Ctext x=%2232%22 y=%2244%22 font-family=%22sans-serif%22 font-size=%2232%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23ff9a5a%22%3EOg%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
@@ -72,27 +74,39 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
 @media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.bar{position:static}}
+@media (max-width:700px){.it{grid-template-columns:1fr}.meta{justify-content:flex-start}}
+.warn{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(90deg,rgba(255,154,90,.08),rgba(180,140,255,.06));border:1px solid #3a3346;border-radius:16px;padding:22px 26px;margin:0 24px 40px}
+.warn p{margin:0;color:var(--dim)} .warn b{color:var(--text)}
+footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
 </style>
 </head>
 <body>
 <nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="install.html">Install</a></div></nav>
 <header><div class="wrap">
   <h1>Everything, <em>patch by patch</em></h1>
-  <p class="lede">Every change in both browsers: Helium's whole series as oganesson carries it, oganesson's own patches, and tennessine's patches on top of Vanadium and Titanium. Each one says what it does, where it comes from, and whether it's on, behind a flag, off by default or dropped.</p>
+  <p class="lede">Every change in both browsers: Helium's whole series as oganesson carries it, oganesson's own patches, and tennessine's patches on top of Vanadium and Titanium. Each one says what it does, where it comes from, and whether it's on, behind a flag, off by default or dropped. Most are Helium's and maintained there; Firefox Sync is Mozilla's library behind a small adapter; my own patches are mostly small switches.</p>
   <div class="stats" id="stats">__STATS__</div>
 </div></header>
 
-<div class="bar" hidden><div class="wrap">
-  <input type="search" id="q" placeholder="Search features, patches, origins…  (press /)">
-  <div class="seg" id="br"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
-  <div class="seg" id="own"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Mine only</button></div>
-  <div class="chips" id="st">__CHIPS__</div>
+<div class="bar" role="search" hidden><div class="wrap">
+  <input type="search" id="q" aria-label="Search features, patches and origins" placeholder="Search features, patches, origins…  (press /)">
+  <div class="seg" id="br" role="group" aria-label="Browser"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
+  <div class="seg" id="own" role="group" aria-label="Origin"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Mine only</button></div>
+  <div class="chips" id="st" role="group" aria-label="State">__CHIPS__</div>
 </div></div>
 
 <div class="wrap layout" style="padding-left:24px;padding-right:24px">
   <aside id="toc">__TOC__</aside>
   <main id="main">__MAIN__<div class="empty" hidden>Nothing matches.</div></main>
 </div>
+
+<div class="wrap"><div class="warn"><span aria-hidden="true">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div></div>
+<footer><div class="wrap">
+  <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
+  <span>Licenses: oganesson GPL-3.0 · tennessine GPL-2.0 · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+</div></footer>
 
 <script>
 // The build writes every item into the page, so it reads in full without JS;

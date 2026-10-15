@@ -839,7 +839,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/fix-building-without-safebrowsing",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -857,7 +857,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/services-schema-nag",
-"w": "When Helium services change their behavior, the app-menu button shows a \"Services updated\" badge and a \"Review Helium services updates\" item that opens the services settings page. Depends on 5 (schema.h, pref names).",
+"w": "When Helium services change their behavior, the app-menu button shows a \"Services updated\" badge and a \"Review Helium services updates\" item that opens the services settings page. Depends on “Services prefs” (schema.h, pref names).",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -875,7 +875,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/onboarding-page",
-"w": "Adds a first-run setup page (`chrome://setup`, Svelte UI) that opens on launch until the user completes it, and replaces Chromium's own first-run flow. It adds a \"user consented\" pref (default off): Helium services stay inactive until the user agrees in onboarding, and the services settings page shows \"Complete setup\" until then. Modifies files created by 5.",
+"w": "Adds a first-run setup page (`chrome://setup`, Svelte UI) that opens on launch until the user completes it, and replaces Chromium's own first-run flow. It adds a \"user consented\" pref (default off): Helium services stay inactive until the user agrees in onboarding, and the services settings page shows \"Complete setup\" until then. Modifies files created by “Services prefs”.",
 "s": "off",
 "n": "Helium's first-run setup is never shown"
 },
@@ -942,7 +942,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/search/remove-description-snippet-deps",
-"w": "Build fix: removes the search engine description strings that come with the built-in assets turned on by 13 and are missing in public sources. Needed because of 13.",
+"w": "Build fix: removes the search engine description strings that come with the built-in assets turned on by “Search: fix search engine icons” and are missing in public sources. Needed because of “Search: fix search engine icons”.",
 "s": "on",
 "n": "",
 "t": "Search: remove description snippet deps"
@@ -1002,7 +1002,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/sync/service-backends",
-"w": "Rewires the sync service so it never uses a Google account. Sync can only run against the local (roaming-profile) backend or a \"custom\" backend, otherwise it stays off (\"no sync backend\"). Google auth, sync-paused handling and invalidations are removed. Nothing in the patch set supplies a custom backend: the default SyncClient returns none, and the wiring patch helium/settings/sync-setup-contract.patch is dropped by oganesson. In practice, Google Sync is gone. Builds on 20.",
+"w": "Rewires the sync service so it never uses a Google account. Sync can only run against the local (roaming-profile) backend or a \"custom\" backend, otherwise it stays off (\"no sync backend\"). Google auth, sync-paused handling and invalidations are removed. Nothing in the patch set supplies a custom backend: the default SyncClient returns none, and the wiring patch helium/settings/sync-setup-contract.patch is dropped by oganesson. In practice, Google Sync is gone. Builds on “Sync: engine interface”.",
 "s": "on",
 "n": "Firefox Sync takes its place",
 "t": "Sync: service backends"
@@ -1052,7 +1052,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/vault-store",
-"w": "Implements the encrypted journal store on top of 23-25: writes chunks, commits the head, reconstructs state. Plumbing, not reachable yet.",
+"w": "Implements the encrypted journal store on top of “Sync: vault format”, “Sync: vault encryption” and “Sync: vault transport”: writes chunks, commits the head, reconstructs state. Plumbing, not reachable yet.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Sync: vault store"
@@ -1095,14 +1095,14 @@
 "w": "Adds a `syncVaultProvider` extension API and permission (\"Act as a storage provider for your encrypted browser synchronization data\"), so an extension could store the encrypted sync vault in its own cloud. Behind an extension feature that is off by default, with no chrome://flags entry. Dormant.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
-"t": "Provider: api"
+"t": "Provider: API"
 },
 {
 "b": "og",
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/manifest-handler",
-"w": "Parses the manifest key that declares an extension as a sync vault provider (name, key-access reason). Plumbing for 30.",
+"w": "Parses the manifest key that declares an extension as a sync vault provider (name, key-access reason). Plumbing for “Provider: API”.",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: manifest handler"
@@ -1112,7 +1112,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/sync/provider/service",
-"w": "Browser-side broker that talks to the provider extension: requests, configuration lifecycle, timeouts. Plumbing for 30 (dormant).",
+"w": "Browser-side broker that talks to the provider extension: requests, configuration lifecycle, timeouts. Plumbing for “Provider: API” (dormant).",
 "s": "off",
 "n": "inert: Helium's own sync vault, which Firefox Sync replaces",
 "t": "Provider: service"
@@ -1207,7 +1207,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/reenable-update-checks",
-"w": "Undoes ungoogled-chromium's disabling of the update-check code and makes extension update checks start again. The stock component-updater URL is emptied and CUP request signing is turned off. This prepares for 40 and 100 to point updates at Helium's server.",
+"w": "Undoes ungoogled-chromium's disabling of the update-check code and makes extension update checks start again. The stock component-updater URL is emptied and CUP request signing is turned off. This prepares for “Proxy extension downloads” and “Component updates” to point updates at Helium's server.",
 "s": "off",
 "n": "oganesson updates through its package repository instead"
 },
@@ -1225,7 +1225,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/disable-bookmarks-bar",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1252,7 +1252,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/enable-tab-hover-cards",
-"w": "DROPPED",
+"w": "Not needed: hover-card images are already on by default outside Mac. ungoogled-chromium's hover-card flag stays.",
 "s": "dropped",
 "n": ""
 },
@@ -1261,7 +1261,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/memory-saving-by-default",
-"w": "DROPPED",
+"w": "Helium turns this on by default; oganesson keeps Chromium's default, and the setting stays available.",
 "s": "dropped",
 "n": ""
 },
@@ -1270,7 +1270,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-history-clusters",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1279,7 +1279,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/unbreak-chromium-link",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1297,7 +1297,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-user-education-nags",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1306,7 +1306,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/core/replace-default-profile-name",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1315,7 +1315,7 @@
 "o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/disable-live-caption-completely",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1333,7 +1333,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/spoof-chrome-ua-brand",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1351,7 +1351,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/degoogle-context-menu",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1360,7 +1360,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/fix-tab-sync-unreached-error",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1369,7 +1369,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/fix-instance-id-stuck",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1378,7 +1378,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/flags-setup",
-"w": "Creates the framework for Helium's own chrome://flags entries (helium_flag_choices.h / helium_flag_entries.h) and hides ChromeOS/Android flags. Build/plumbing only. helium_flag_choices.h includes chrome/browser/channel_selection.h, which is created later by 63.",
+"w": "Creates the framework for Helium's own chrome://flags entries (helium_flag_choices.h / helium_flag_entries.h) and hides ChromeOS/Android flags. Build/plumbing only. helium_flag_choices.h includes chrome/browser/channel_selection.h, which is created later by “Add update channel flag”.",
 "s": "flag",
 "n": ""
 },
@@ -1432,7 +1432,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/core/exclude-irrelevant-flags",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1441,7 +1441,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/disable-outdated-build-detector",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1496,7 +1496,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-install-as-component",
-"w": "Ships uBlock Origin built into the browser as an always-installed component extension, translated through 69. Depends on 72.",
+"w": "Ships uBlock Origin built into the browser as an always-installed component extension, translated through “Add component l10n support”. Depends on “uBlock setup sources”.",
 "s": "on",
 "n": ""
 },
@@ -1505,7 +1505,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-reconfigure-defaults",
-"w": "Makes the built-in uBlock behave like a normal user extension instead of a hidden internal one: visible, can be disabled, subject to site-access rules. It is pinned to the toolbar by default and enabled in incognito by default. Also lets component extensions bypass enterprise install-mode blocks. Depends on 73.",
+"w": "Makes the built-in uBlock behave like a normal user extension instead of a hidden internal one: visible, can be disabled, subject to site-access rules. It is pinned to the toolbar by default and enabled in incognito by default. Also lets component extensions bypass enterprise install-mode blocks. Depends on “uBlock install as component”.",
 "s": "on",
 "n": ""
 },
@@ -1534,7 +1534,7 @@
 "o": "Helium",
 "a": "Address bar & search",
 "p": "helium/core/clean-omnibox-suggestions",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1543,7 +1543,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/increase-incognito-storage-quota",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1562,7 +1562,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/canvas",
-"w": "Adds tiny, site-stable pixel noise when pages read back canvas images, to defeat canvas fingerprinting. On by default, with a flag to disable. Depends on 79.",
+"w": "Adds tiny, site-stable pixel noise when pages read back canvas images, to defeat canvas fingerprinting. On by default, with a flag to disable. Depends on “Noise: core”.",
 "s": "off",
 "n": "",
 "t": "Noise: canvas"
@@ -1572,7 +1572,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/audio",
-"w": "Adds tiny jitter (about ±0.01%) to Web Audio output and analyser readings, to defeat audio fingerprinting. On by default, with a flag. Depends on 79.",
+"w": "Adds tiny jitter (about ±0.01%) to Web Audio output and analyser readings, to defeat audio fingerprinting. On by default, with a flag. Depends on “Noise: core”.",
 "s": "off",
 "n": "",
 "t": "Noise: audio"
@@ -1582,7 +1582,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/core/noise/hardware-concurrency",
-"w": "`navigator.hardwareConcurrency` reports a plausible, site-stable fake CPU core count (2-16, even numbers). On by default, with a flag. Depends on 79.",
+"w": "`navigator.hardwareConcurrency` reports a plausible, site-stable fake CPU core count (2-16, even numbers). On by default, with a flag. Depends on “Noise: core”.",
 "s": "off",
 "n": "",
 "t": "Noise: hardware concurrency"
@@ -1635,7 +1635,7 @@
 "w": "Changes the Secure DNS provider list in settings: adds Cloudflare Family/Security, NextDNS shown everywhere, hides OpenDNS, CleanBrowsing Family and DNS4EU, renames Google to \"Google (8.8.8.8)\", uses plain Cloudflare/NextDNS endpoints instead of the Chrome-specific ones, and stops shuffling the list. The DNS connectivity probe uses example.com instead of google.com.",
 "s": "on",
 "n": "",
-"t": "Network: dns providers"
+"t": "Network: DNS providers"
 },
 {
 "b": "og",
@@ -1670,7 +1670,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/infinite-tab-freezing",
-"w": "DROPPED",
+"w": "Helium turns this on by default; oganesson keeps Chromium's default, and the setting stays available.",
 "s": "dropped",
 "n": ""
 },
@@ -1760,7 +1760,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/fixups-component-setup",
-"w": "Adds an empty built-in \"extstore-fixups\" extension. Build/plumbing for 102.",
+"w": "Adds an empty built-in \"extstore-fixups\" extension. Build/plumbing for “Fixups Chrome Web Store script”.",
 "s": "off",
 "n": "works only with Helium's services, which are off; you can turn them on in Settings"
 },
@@ -1769,7 +1769,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/fixups-chrome-webstore-script",
-"w": "Injects scripts into chromewebstore.google.com that remove the \"Switch to Chrome\" banners and popups, override the store's \"is this Chrome\" check, and relabel \"Add to Chrome\" as \"Add to Helium\". Depends on 101.",
+"w": "Injects scripts into chromewebstore.google.com that remove the \"Switch to Chrome\" banners and popups, override the store's \"is this Chrome\" check, and relabel \"Add to Chrome\" as \"Add to Helium\". Depends on “Fixups component setup”.",
 "s": "on",
 "n": ""
 },
@@ -1886,7 +1886,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/force-paste-action",
-"w": "Adds \"Force paste\" to the page right-click menu and as a browser command. It types the clipboard text into the focused field and bypasses sites that block pasting. Modifies browser_shortcut_metadata.cc, which is created by 107.",
+"w": "Adds \"Force paste\" to the page right-click menu and as a browser command. It types the clipboard text into the focused field and bypasses sites that block pasting. Modifies browser_shortcut_metadata.cc, which is created by “Custom keyboard shortcuts”.",
 "s": "on",
 "n": ""
 },
@@ -1940,7 +1940,7 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/rbe-nativelink-config",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1949,7 +1949,7 @@
 "o": "Helium",
 "a": "Network & security",
 "p": "helium/core/disable-non-standard-auth-features",
-"w": "DROPPED",
+"w": "Helium's change, left out of oganesson.",
 "s": "dropped",
 "n": ""
 },
@@ -1976,7 +1976,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/enable-back-to-opener",
-"w": "DROPPED",
+"w": "Helium turns this on by default; oganesson keeps Chromium's default, and the setting stays available.",
 "s": "dropped",
 "n": ""
 },
@@ -1994,7 +1994,7 @@
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/core/disable-password-manager",
-"w": "DROPPED",
+"w": "Helium turns off the password manager as insecure. oganesson keeps it: malware running as you can read passwords from memory whatever the storage, so a separate manager adds little.",
 "s": "dropped",
 "n": ""
 },
@@ -2219,7 +2219,7 @@
 "o": "Helium",
 "a": "Sync",
 "p": "helium/settings/sync-setup-contract",
-"w": "DROPPED",
+"w": "Part of Helium's sync setup. Firefox Sync replaces Helium's sync.",
 "s": "dropped",
 "n": ""
 },
@@ -2697,7 +2697,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/ui/bangs-ui",
-"w": "DROPPED",
+"w": "The interface for Helium's native bangs, which are carried but off: the bang list comes from Helium's services.",
 "s": "dropped",
 "n": ""
 },
@@ -3129,7 +3129,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/ui/helium-noise-page-info",
-"w": "DROPPED",
+"w": "The page-info panel for fingerprint noise. The noise itself and its settings page stay, off by default.",
 "s": "dropped",
 "n": ""
 },
