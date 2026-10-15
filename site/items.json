@@ -233,7 +233,7 @@
 "p": "ungoogled-chromium/block-requests",
 "w": "Blocks background requests: NTP Google bar, backgrounds and promos, spellcheck dictionary and component update checks, password affiliation lookups and DevTools CSS data.",
 "s": "on",
-"n": "an opt-in that needs a component downloads just that one"
+"n": "an opt-in that needs a component downloads only that component"
 },
 {
 "b": "og",
@@ -1753,7 +1753,7 @@
 "p": "helium/core/component-updates",
 "w": "Blocks Google's component-update server (update.googleapis.com, marked `trk:`). Component updates come from Helium's server (`<services>/com`) instead, only if services, consent and the update toggle (64) allow it. Only CRLSet (certificate revocation) and Widevine (DRM) may register; all other components are refused. chrome://components explains the errors when services are off.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings; an opt-in that needs a component downloads just that one"
+"n": "works only with Helium's services, which are off; you can turn them on in Settings; an opt-in that needs a component downloads only that component"
 },
 {
 "b": "og",

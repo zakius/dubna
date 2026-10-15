@@ -4,9 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Install oganesson & tennessine</title>
+<meta name="description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
+<meta property="og:title" content="Install oganesson & tennessine">
+<meta property="og:description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23151824%22/%3E%3Ctext x=%2232%22 y=%2244%22 font-family=%22sans-serif%22 font-size=%2232%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23ff9a5a%22%3EOg%3C/text%3E%3C/svg%3E">
 <style>
 :root{
-  --bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#6b7088;
+  --bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
   --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
   --yes:#5be3a1;--part:#f4c95d;--no:#c4566a;
   --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
@@ -23,6 +28,8 @@ nav b{font-family:var(--mono);font-weight:600;letter-spacing:.02em}
 nav a{color:var(--dim);text-decoration:none;font-size:14px}
 nav a:hover{color:var(--text)}
 nav .sp{flex:1}
+nav b{white-space:nowrap}
+nav .links{display:flex;gap:24px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;font-size:15px;transition:.15s}
 .btn:hover{border-color:#3b4260;transform:translateY(-1px)}
 .btn.primary{background:var(--glow);color:#120d14;border:0}
@@ -69,7 +76,7 @@ h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;margin:0 0 12px;line-h
 .f{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
 .f:after{content:"";position:absolute;inset:auto -40px -60px auto;width:140px;height:140px;border-radius:50%;background:var(--glow);opacity:.06}
 .f .ic{width:40px;height:40px;border-radius:10px;background:#1f2333;display:grid;place-items:center;margin-bottom:14px;font-size:20px}
-.f h4{margin:0 0 6px;font-size:17px}
+.f h3{margin:0 0 6px;font-size:17px}
 .f p{margin:0;color:var(--dim);font-size:14.5px}
 .f .who{margin-top:12px;font:12px var(--mono);color:var(--faint)}
 .f .who i{font-style:normal;padding:2px 7px;border-radius:6px;margin-right:4px}
@@ -79,9 +86,6 @@ h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;margin:0 0 12px;line-h
 .tabs{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:22px}
 .tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:9px;font-weight:600;font-size:14px;color:var(--dim)}
 .tabs button[aria-selected=true]{background:var(--card);color:var(--text);box-shadow:0 1px 0 #2a2f42 inset}
-#compare .wrap{max-width:1420px}
-#compare h2,#compare .sub{max-width:1120px}
-th,td{padding:12px 10px}
 .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
 table{border-collapse:collapse;width:100%;min-width:1220px}
 th,td{padding:13px 14px;text-align:center;border-top:1px solid var(--line);font-size:14.5px}
@@ -100,6 +104,11 @@ td.us{background:rgba(255,255,255,.025)}
 .legend span{display:inline-flex;gap:8px;align-items:center}
 .notes{margin-top:18px;color:var(--faint);font-size:13px;max-width:900px}
 [hidden]{display:none!important}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
+.skip:focus{top:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.btn:hover{transform:none}}
 
 /* stance */
 .stance{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
@@ -113,13 +122,13 @@ td.us{background:rgba(255,255,255,.025)}
 .policy{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:r}
 .rule{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;counter-increment:r}
 .rule:before{content:"0" counter(r);font:600 12px var(--mono);color:var(--faint)}
-.rule h4{margin:8px 0 6px;font-size:16px}
+.rule h3{margin:8px 0 6px;font-size:16px}
 .rule p{margin:0;color:var(--dim);font-size:14px}
 .rule .tag{display:inline-block;margin-top:10px;font:11px var(--mono);color:var(--part);border:1px solid rgba(244,201,93,.35);padding:2px 8px;border-radius:6px}
 
 .install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-.ib h4{margin:0 0 4px}
+.ib h3{margin:0 0 4px;font-size:17px}
 .ib p{color:var(--dim);font-size:14px;margin:0 0 12px}
 pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);color:#cfd3e4;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
 .st{display:inline-block;font:11px var(--mono);padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle}
@@ -131,7 +140,7 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 
 .why{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .w{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-.w h4{margin:0 0 10px;font-size:17px}
+.w h3{margin:0 0 10px;font-size:17px}
 .w ul{margin:0;padding-left:18px;color:var(--dim);font-size:14px}
 .w li{margin:5px 0}
 .w li::marker{color:#ff7f8f}
@@ -151,7 +160,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .feat,.install{grid-template-columns:1fr 1fr}
   .policy{grid-template-columns:1fr 1fr}
   .tiles{justify-content:flex-start}
-  nav .links{display:none}
+  nav .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:6px 16px}
+  nav .sp{display:none}
+  nav .btn{margin-left:auto;padding:6px 12px;font-size:14px}
+  nav b{font-size:min(16px,3.8vw)}
+  nav .links{order:3;width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
 }
 @media (max-width:600px){.feat,.install,.policy{grid-template-columns:1fr}.tile{width:150px}.tile .sym{font-size:64px}.everything{flex-direction:column;align-items:flex-start}}
 
@@ -164,20 +177,22 @@ pre a{color:inherit}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
 <nav><div class="wrap">
   <a href="index.html" style="text-decoration:none"><b>oganesson · tennessine</b></a>
-  <span class="links" style="display:flex;gap:24px">
+  <span class="links">
     <a href="#after">After installing</a>
   </span>
   <span class="sp"></span>
   <a class="btn" href="everything.html">Everything →</a>
 </div></nav>
 
+<main id="main">
 <header class="hero" style="padding:72px 0 40px"><div class="wrap" style="display:block">
   <div class="eyebrow">Install</div>
   <h1 style="max-width:820px">Get <em>oganesson</em> and <em>tennessine</em></h1>
-  <p class="lede">Both install from the project's own signed repositories, so updates arrive the same way as the rest of your software.</p>
+  <p class="lede">On Linux and Android they install from the project's own signed repositories, so updates arrive the same way as the rest of your software. On Windows it's an installer or a portable zip, updated by hand for now.</p>
   <div class="tabs" role="tablist" id="os" hidden><button role="tab" data-os="linux">Linux</button><button role="tab" data-os="windows">Windows</button><button role="tab" data-os="android">Android</button></div>
 </div></header>
 
@@ -185,11 +200,11 @@ pre a{color:inherit}
   <h2>Linux <span class="st ok">x86-64</span></h2>
   <p class="sub">A signed apt and dnf repository. Builds target x86-64-v2, which covers almost any PC from the last fifteen years. The browser keeps its own profile in <code>~/.config/oganesson</code>.</p>
   <div class="steps">
-    <div class="ib"><h4>Debian, Ubuntu</h4>
+    <div class="ib"><h3>Debian, Ubuntu</h3>
 <pre>curl -fsSL https://packages.zakius.xyz/oganesson.asc | sudo gpg --dearmor -o /usr/share/keyrings/oganesson.gpg
 echo 'deb [signed-by=/usr/share/keyrings/oganesson.gpg] https://packages.zakius.xyz/deb ./' | sudo tee /etc/apt/sources.list.d/oganesson.list
 sudo apt update &amp;&amp; sudo apt install oganesson</pre></div>
-    <div class="ib"><h4>Fedora</h4>
+    <div class="ib"><h3>Fedora</h3>
 <pre>sudo curl -fsSL -o /etc/yum.repos.d/oganesson.repo https://packages.zakius.xyz/oganesson.repo
 sudo dnf install oganesson</pre>
 <p style="margin-top:12px">dnf checks the signature on the repository's metadata, which holds each package's checksum.</p></div>
@@ -199,38 +214,40 @@ sudo dnf install oganesson</pre>
 
 <section id="windows" class="os"><div class="wrap">
   <h2>Windows <span class="st ok">x64</span></h2>
-  <p class="sub">An installer and a portable zip. Every version and its checksums are in <a href="windows/">dubna.zakius.xyz/windows</a>. The browser keeps its profile in <code>%LOCALAPPDATA%\oganesson</code>.</p>
+  <p class="sub">An installer and a portable zip. The files aren't code-signed yet, so SmartScreen warns about them: choose <b>More info</b>, then <b>Run anyway</b>. There's no automatic updater on Windows yet; download a new installer from this page. The browser keeps its profile in <code>%LOCALAPPDATA%\oganesson</code>.</p>
   <div class="steps">
-    <div class="ib"><h4>Installer</h4><p>Installs for you alone, without admin rights, or for every user of the PC.</p><a class="btn primary" href="windows/oganesson-windows-x64-installer.exe">Download the installer</a></div>
-    <div class="ib"><h4>Portable zip</h4><p>The browser's folder: unpack it anywhere and run <code>oganesson.exe</code>.</p><a class="btn" href="windows/oganesson-windows-x64.zip">Download the zip</a></div>
+    <div class="ib"><h3>Installer</h3><p>Installs for you alone, without admin rights, or for every user of the PC.</p><a class="btn primary" href="windows/oganesson-windows-x64-installer.exe">Download the installer</a></div>
+    <div class="ib"><h3>Portable zip</h3><p>The browser's folder: unpack it anywhere and run <code>oganesson.exe</code>.</p><a class="btn" href="windows/oganesson-windows-x64.zip">Download the zip</a></div>
   </div>
-  <p class="note">The files aren't code-signed yet, so SmartScreen warns about them: choose <b>More info</b>, then <b>Run anyway</b>. There's no automatic updater on Windows yet; download a new installer from the same page.</p>
+  <p class="note">Check a download against <a href="windows/SHA256SUMS">SHA256SUMS</a>. Every version is in <a href="windows/">dubna.zakius.xyz/windows</a>.</p>
 </div></section>
 
 <section id="android" class="os"><div class="wrap">
   <h2>Android <span class="st ok">arm64</span></h2>
   <p class="sub">tennessine installs from its own F-Droid repository, in F-Droid or Obtainium.</p>
   <div class="steps">
-    <div class="ib"><h4>1 · Add the repository</h4><p>In F-Droid: Settings, Repositories, +. Or open this page on the phone and tap the link.</p>
+    <div class="ib"><h3>1 · Add the repository</h3><p>In F-Droid: Settings, Repositories, +. Or open this page on the phone and tap the link.</p>
 <pre><a href="https://packages.zakius.xyz/fdroid/repo?fingerprint=A40055F0D1CF2D8B22F0DCD2CE8B874DB15352E5B6DC262C3B4FEA9FD46ADFBE">https://packages.zakius.xyz/fdroid/repo</a></pre>
 <p style="margin-top:12px">Fingerprint:</p>
 <pre>A40055F0D1CF2D8B22F0DCD2CE8B874DB15352E5B6DC262C3B4FEA9FD46ADFBE</pre></div>
-    <div class="ib"><h4>2 · Install and update</h4><p>Find tennessine in the store and install it. After that, the store installs updates in the background, as long as its battery use is set to unrestricted.</p><p>On first run, tennessine downloads uBlock Origin, checks it against a pinned checksum and installs it.</p></div>
+    <div class="ib"><h3>2 · Install and update</h3><p>Find tennessine in the store and install it. After that, the store installs updates in the background, as long as its battery use is set to unrestricted.</p><p>On first run, tennessine downloads uBlock Origin, checks it against a pinned checksum and installs it.</p></div>
   </div>
 </div></section>
 
 <section id="after"><div class="wrap">
   <h2>After installing</h2>
   <div class="feat">
-    <div class="f"><div class="ic">🔄</div><h4>Sync</h4><p>Sign in with a Mozilla account in Settings, or set your own sync server's address first. Passwords, bookmarks, history and open tabs then follow you between oganesson, tennessine and Firefox.</p></div>
-    <div class="f"><div class="ic">🎚</div><h4>Open up what you need</h4><p>Google-backed features such as translation, casting and push messages from closed sites each have their own switch under Settings, all off until you turn them on.</p></div>
-    <div class="f"><div class="ic">🗂</div><h4>Coming from Chrome?</h4><p>In oganesson, Settings › Behavior › Tab behavior has a Chromium preset, if you'd rather keep Chrome's tab habits than Firefox's.</p></div>
+    <div class="f"><div class="ic">🔄</div><h3>Sync</h3><p>Sign in with a Mozilla account in Settings, or set your own sync server's address first. Passwords, bookmarks, history and open tabs then follow you between oganesson, tennessine and Firefox.</p></div>
+    <div class="f"><div class="ic">🎚</div><h3>Open up what you need</h3><p>Google-backed features such as translation, casting and push messages from closed sites each have their own switch under Settings, all off until you turn them on.</p></div>
+    <div class="f"><div class="ic">🗂</div><h3>Coming from Chrome?</h3><p>In oganesson, Settings › Behavior › Tab behavior has a Chromium preset, if you'd rather keep Chrome's tab habits than Firefox's.</p></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
   <div class="warn"><span class="ic">⚠</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
 </div></section>
+
+</main>
 
 <footer><div class="wrap">
   <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
