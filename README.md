@@ -30,7 +30,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `patches/` | Patches both browsers apply: `firefox-sync.patch` (the service, on Linux, Windows and Android) and `no-saved-history.patch` (which registers its own prefs). |
 | `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
-| `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release). |
+| `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first). |
 
 Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium, Titanium and Helium. tennessine takes the uBlock Origin patches and pin from Helium, at the commit that oganesson's `helium` submodule pins.
 
