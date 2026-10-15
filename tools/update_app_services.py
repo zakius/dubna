@@ -36,7 +36,6 @@ def main():
     old_rev = re.search(r'rev = "([0-9a-f]+)"', toml.read_text())[1]
     old_tag = re.search(r'application-services (v[0-9.]+)', lib.read_text())[1]
     print(f'application-services {old_tag} ({old_rev}) -> {tag} ({rev})')
-    toml.write_text(toml.read_text().replace(old_rev, rev))
 
     # What glean-build would generate: places' metrics.yaml through the
     # glean_parser that places' pinned Glean asks for.
@@ -63,6 +62,8 @@ def main():
     glean_toml = CRATE / 'glean-build/Cargo.toml'
     glean_toml.write_text(re.sub(r'(?m)^version = .*', f'version = "{parser}"',
                                  glean_toml.read_text()))
+    # Written once everything is fetched: a failure above leaves the crate as it was.
+    toml.write_text(toml.read_text().replace(old_rev, rev))
     lib.write_text(lib.read_text().replace(f'application-services {old_tag}',
                                            f'application-services {tag}'))
 
