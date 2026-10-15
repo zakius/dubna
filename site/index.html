@@ -166,16 +166,48 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .everything h2{margin:0 0 6px}
 .everything p{margin:0;color:var(--dim)}
 .current{margin:18px 0 0;color:var(--faint);font-size:14px}
-.shots{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
-.shots figure{margin:0}
-.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
-.shots figcaption{color:var(--dim);font-size:14px;margin-top:8px}
-.phones{grid-template-columns:repeat(5,1fr)}
-@media (max-width:900px){.phones{grid-template-columns:1fr 1fr}}
-@media (max-width:700px){.shots{grid-template-columns:1fr}}
 .endcta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 36px}
 .endcta h2{margin:0 0 6px}.endcta p{margin:0;color:var(--dim)}
 @media (max-width:900px){.tbl{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}th:first-child,td:first-child{box-shadow:8px 0 10px -8px rgba(0,0,0,.8)}}
+/* hero screenshots */
+.duo{position:relative;display:block;padding:0 6% 14% 0}
+.duo img{display:block;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.9);height:auto}
+.duo .desk{width:100%;border-radius:12px}
+.duo .phone{position:absolute;right:0;bottom:0;width:27%;border-radius:16px}
+.names-tiles{justify-content:flex-start;margin:0 0 36px}
+/* screenshots */
+.look .stage{margin:0}
+.look .zoom{all:unset;cursor:zoom-in;display:block;width:100%}
+.look .zoom:focus-visible{outline:2px solid var(--ts);outline-offset:4px;border-radius:12px}
+.look .stage img{display:block;width:auto;max-width:100%;height:auto;max-height:68vh;margin:0 auto;border-radius:12px;border:1px solid var(--line)}
+.look .stage figcaption{color:var(--dim);margin:12px 0 0;font-size:15px;text-align:center}
+.thumbs{display:flex;gap:12px;margin-top:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+.thumbs a{flex:0 0 auto;scroll-snap-align:start;border-radius:10px;border:2px solid transparent;opacity:.6;transition:opacity .15s}
+.thumbs a:hover,.thumbs a[aria-current=true]{opacity:1}
+.thumbs a[aria-current=true]{border-color:var(--ts)}
+.thumbs img{display:block;height:96px;width:auto;border-radius:8px}
+.thumbs{justify-content:safe center}
+.look.andr .thumbs img{height:140px}
+.look+.look{margin-top:48px}
+.thumbs a{text-decoration:none}
+.thumbs span{display:none}
+@media (min-width:701px){
+  .look.andr{display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;align-items:center}
+  .look.andr .stage figcaption{display:none}
+  .look.andr .thumbs{flex-direction:column;gap:8px;margin:0;overflow:visible;justify-content:flex-start}
+  .look.andr .thumbs a{display:flex;align-items:center;gap:16px;padding:8px 14px 8px 8px;opacity:.7;background:var(--card);border:1px solid var(--line)}
+  .look.andr .thumbs a[aria-current=true]{opacity:1;border-color:var(--ts)}
+  .look.andr .thumbs img{height:72px}
+  .look.andr .thumbs span{display:block;color:var(--text);font-size:15px}
+}
+#viewer{border:0;padding:0;background:transparent;max-width:96vw;max-height:96vh;overflow:visible}
+#viewer::backdrop{background:rgba(5,6,10,.9)}
+#viewer img{display:block;max-width:92vw;max-height:84vh;width:auto;height:auto;border-radius:10px}
+#viewer .vcap{color:var(--dim);text-align:center;margin:12px 0 0}
+.vbtn{all:unset;cursor:pointer;position:fixed;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--text);display:grid;place-items:center;font-size:18px}
+.vbtn:focus-visible{outline:2px solid var(--ts)}
+.vprev{left:16px}.vnext{right:16px}.vclose{top:24px;right:16px;transform:none}
+@media (max-width:900px){.duo{max-width:560px}}
 .big{font:700 56px/1 var(--mono);background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
 
 footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
@@ -203,7 +235,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <nav><div class="wrap">
   <b>oganesson · tennessine</b>
   <span class="links">
-    <a href="#browsers">Browsers</a><a href="#why">Why not…</a><a href="#highlights">Highlights</a><a href="#compare">Compare</a><a href="#stance">Privacy</a><a href="install.html">Install</a>
+    <a href="#browsers">Browsers</a><a href="#look">Screenshots</a><a href="#why">Why not…</a><a href="#highlights">Highlights</a><a href="#compare">Compare</a><a href="#stance">Privacy</a><a href="install.html">Install</a>
   </span>
   <span class="sp"></span>
   <a class="btn" href="everything.html">Everything →</a>
@@ -222,10 +254,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     </div>
     <p class="current">Now: oganesson {{og_version}} and tennessine {{ts_version}}, on Chromium {{milestone}}.</p>
   </div>
-  <div class="tiles" aria-hidden="true">
-    <div class="tile og"><span class="n" title="atomic number">Z=118</span><span class="plat">desktop</span><span class="sym">Og</span><span class="nm">oganesson</span><span class="m">on Helium</span></div>
-    <div class="tile ts"><span class="n" title="atomic number">Z=117</span><span class="plat">android</span><span class="sym">Ts</span><span class="nm">tennessine</span><span class="m">on Vanadium</span></div>
-  </div>
+  <a class="duo" href="#look" aria-label="See the screenshots">
+    <img class="desk" src="img/tabs.webp" width="1300" height="850" alt="oganesson on the desktop">
+    <img class="phone" src="img/android-bottom.webp" width="540" height="1200" alt="tennessine on Android">
+  </a>
 </div></header>
 
 <section id="browsers"><div class="wrap">
@@ -258,20 +290,43 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     </div>
   </div>
   <div class="dubna"><span style="font-size:22px">⚛️</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), no saved history, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
-  <div class="shots">
-    <figure><a href="img/tabs.webp"><img src="img/tabs.webp" width="1300" height="850" loading="lazy" alt="oganesson with four Wikipedia tabs and no close buttons on them; uBlock Origin's button sits left of the address bar and shows one blocked request"></a><figcaption>Tabs without close buttons, and uBlock Origin moved next to the address bar</figcaption></figure>
-    <figure><a href="img/vertical.webp"><img src="img/vertical.webp" width="1300" height="850" loading="lazy" alt="oganesson in the vertical layout, with the tabs in a column on the right"></a><figcaption>Vertical tabs, here on the right</figcaption></figure>
-    <figure><a href="img/tab-behavior.webp"><img src="img/tab-behavior.webp" width="1300" height="850" loading="lazy" alt="The Tab behavior settings with the Firefox preset selected and its rules listed"></a><figcaption>Tab behavior: the Firefox preset, or each rule on its own</figcaption></figure>
-    <figure><a href="img/gestures.webp"><img src="img/gestures.webp" width="1300" height="850" loading="lazy" alt="Shortcuts and gestures settings with the Add mouse gesture dialog open and UR typed in; behind it, Back has the gestures L and hold right, click left, and Close Tab has DR"></a><figcaption>Adding a mouse gesture, next to each command's keyboard shortcuts</figcaption></figure>
+</div></section>
+
+<section id="look"><div class="wrap">
+  <h2>What they look like</h2>
+  <p class="sub">Screenshots of the current builds, each set up the way its caption says. Pick one to see it large.</p>
+  <div class="tabs looktabs" role="tablist" hidden>
+    <button role="tab" aria-selected="true" aria-controls="look-desk" data-t="desk">Desktop<span class="long"> · oganesson</span></button>
+    <button role="tab" aria-selected="false" aria-controls="look-andr" data-t="andr">Android<span class="long"> · tennessine</span></button>
   </div>
-  <div class="shots phones">
-    <figure><a href="img/android-bottom.webp"><img src="img/android-bottom.webp" width="540" height="1200" loading="lazy" alt="tennessine on Android showing Wikipedia's Tennessine article, with the address bar at the bottom and the Extensions button moved to its left"></a><figcaption>The address bar at the bottom, toolbar rearranged</figcaption></figure>
-    <figure><a href="img/android-menu.webp"><img src="img/android-menu.webp" width="540" height="1200" loading="lazy" alt="tennessine's menu opening upward from the bottom toolbar"></a><figcaption>The menu grows up from your thumb</figcaption></figure>
-    <figure><a href="img/android-extensions.webp"><img src="img/android-extensions.webp" width="540" height="1200" loading="lazy" alt="tennessine's Extensions menu with uBlock Origin switched on"></a><figcaption>Chrome extensions, uBlock Origin among them</figcaption></figure>
-    <figure><a href="img/android-tabs.webp"><img src="img/android-tabs.webp" width="540" height="1200" loading="lazy" alt="tennessine's tab switcher as a list near the bottom of the screen, with four Wikipedia tabs"></a><figcaption>The tab list, near the address bar</figcaption></figure>
-    <figure><a href="img/android-toolbar.webp"><img src="img/android-toolbar.webp" width="540" height="1200" loading="lazy" alt="tennessine's Toolbar layout settings: the items in order, Home button and Toolbar shortcut hidden"></a><figcaption>Toolbar layout: each item moves or hides</figcaption></figure>
+  <div class="look desk" id="look-desk" role="tabpanel" aria-label="oganesson screenshots">
+    <figure class="stage"><button type="button" class="zoom" aria-label="Open full size"><img src="img/tabs.webp" width="1300" height="850" alt="oganesson with four Wikipedia tabs and no close buttons; uBlock Origin's button sits left of the address bar and shows one blocked request"></button><figcaption>Tabs without close buttons, and uBlock Origin moved next to the address bar</figcaption></figure>
+    <div class="thumbs">
+      <a href="img/tabs.webp" data-cap="Tabs without close buttons, and uBlock Origin moved next to the address bar" aria-current="true"><img src="img/tabs.webp" width="1300" height="850" loading="lazy" alt="oganesson with four Wikipedia tabs and no close buttons; uBlock Origin's button sits left of the address bar and shows one blocked request"><span>Tabs without close buttons, and uBlock Origin moved next to the address bar</span></a>
+      <a href="img/vertical.webp" data-cap="Vertical tabs, here on the right"><img src="img/vertical.webp" width="1300" height="850" loading="lazy" alt="oganesson in the vertical layout, with the tabs in a column on the right"><span>Vertical tabs, here on the right</span></a>
+      <a href="img/tab-behavior.webp" data-cap="Tab behavior: the Firefox preset, or each rule on its own"><img src="img/tab-behavior.webp" width="1300" height="850" loading="lazy" alt="The Tab behavior settings with the Firefox preset selected and its rules listed"><span>Tab behavior: the Firefox preset, or each rule on its own</span></a>
+      <a href="img/gestures.webp" data-cap="Adding a mouse gesture, next to each command's keyboard shortcuts"><img src="img/gestures.webp" width="1300" height="850" loading="lazy" alt="The Add mouse gesture dialog with UR typed in; behind it, Back has the gestures L and hold right, click left, and Close Tab has DR"><span>Adding a mouse gesture, next to each command's keyboard shortcuts</span></a>
+    </div>
+  </div>
+  <div class="look andr" id="look-andr" role="tabpanel" aria-label="tennessine screenshots">
+    <figure class="stage"><button type="button" class="zoom" aria-label="Open full size"><img src="img/android-bottom.webp" width="540" height="1200" alt="tennessine showing Wikipedia's Tennessine article, with the address bar at the bottom and the Extensions button moved to its left"></button><figcaption>The address bar at the bottom, toolbar rearranged</figcaption></figure>
+    <div class="thumbs">
+      <a href="img/android-bottom.webp" data-cap="The address bar at the bottom, toolbar rearranged" aria-current="true"><img src="img/android-bottom.webp" width="540" height="1200" loading="lazy" alt="tennessine showing Wikipedia's Tennessine article, with the address bar at the bottom and the Extensions button moved to its left"><span>The address bar at the bottom, toolbar rearranged</span></a>
+      <a href="img/android-menu.webp" data-cap="The menu grows up from your thumb"><img src="img/android-menu.webp" width="540" height="1200" loading="lazy" alt="tennessine's menu opening upward from the bottom toolbar"><span>The menu grows up from your thumb</span></a>
+      <a href="img/android-extensions.webp" data-cap="Chrome extensions, uBlock Origin among them"><img src="img/android-extensions.webp" width="540" height="1200" loading="lazy" alt="tennessine's Extensions menu with uBlock Origin switched on"><span>Chrome extensions, uBlock Origin among them</span></a>
+      <a href="img/android-tabs.webp" data-cap="The tab list, near the address bar"><img src="img/android-tabs.webp" width="540" height="1200" loading="lazy" alt="tennessine's tab switcher as a list near the bottom of the screen"><span>The tab list, near the address bar</span></a>
+      <a href="img/android-toolbar.webp" data-cap="Toolbar layout: each item moves or hides"><img src="img/android-toolbar.webp" width="540" height="1200" loading="lazy" alt="tennessine's Toolbar layout settings, with Home button and Toolbar shortcut hidden"><span>Toolbar layout: each item moves or hides</span></a>
+    </div>
   </div>
 </div></section>
+
+<dialog id="viewer" aria-label="Screenshot">
+  <img alt="">
+  <p class="vcap"></p>
+  <button type="button" class="vbtn vprev" aria-label="Previous">←</button>
+  <button type="button" class="vbtn vnext" aria-label="Next">→</button>
+  <button type="button" class="vbtn vclose" aria-label="Close">✕</button>
+</dialog>
 
 <section id="why"><div class="wrap">
   <h2>Why not just use…</h2>
@@ -416,6 +471,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <section id="names"><div class="wrap">
   <h2>Where the names come from</h2>
   <p class="sub">None of it was planned. Each name followed from the one before.</p>
+  <div class="tiles names-tiles" aria-hidden="true">
+    <div class="tile og"><span class="n" title="atomic number">Z=118</span><span class="plat">desktop</span><span class="sym">Og</span><span class="nm">oganesson</span><span class="m">on Helium</span></div>
+    <div class="tile ts"><span class="n" title="atomic number">Z=117</span><span class="plat">android</span><span class="sym">Ts</span><span class="nm">tennessine</span><span class="m">on Vanadium</span></div>
+  </div>
   <div class="policy">
     <div class="rule"><h3>Helium</h3><p>When I started, Helium was the only Chromium with full uBlock Origin and CNAME uncloaking, so that's where I began. Firefox Sync came next, so the desktop could talk to Firefox on my phone.</p></div>
     <div class="rule"><h3>oganesson</h3><p>Helium sits at the top of group 18 in the periodic table, and oganesson at the bottom. Helium is the lightest noble gas; oganesson is the heaviest and falls apart in under a millisecond. Not lightweight, and volatile: it checks out.</p></div>
@@ -439,12 +498,50 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 // Without JS everything stays unfolded: both tables, every "Why not" entry.
 const wl=[...document.querySelectorAll('details.wl')];
 wl.forEach((d,i)=>d.open=i===wl.length-1);  // oganesson's own weak points stay open
-document.querySelector('.tabs').hidden=false;
-document.getElementById('andr').hidden=true;
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
-  document.getElementById('desk').hidden=b.dataset.t!=='desk';
-  document.getElementById('andr').hidden=b.dataset.t!=='andr';
+// Desktop/Android switches: the comparison tables and the screenshots.
+for (const [tabs, prefix] of [['#compare .tabs', ''], ['.looktabs', 'look-']]) {
+  const list = document.querySelector(tabs);
+  list.hidden = false;
+  document.getElementById(prefix + 'andr').hidden = true;
+  list.querySelectorAll('button').forEach(b => b.onclick = () => {
+    list.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', x === b));
+    document.getElementById(prefix + 'desk').hidden = b.dataset.t !== 'desk';
+    document.getElementById(prefix + 'andr').hidden = b.dataset.t !== 'andr';
+  });
+}
+// Screenshots: a thumbnail shows its picture large; the large one opens the viewer.
+const viewer = document.getElementById('viewer');
+let shown = [], at = 0;
+const show = i => {
+  at = (i + shown.length) % shown.length;
+  viewer.querySelector('img').src = shown[at].href;
+  viewer.querySelector('img').alt = shown[at].querySelector('img').alt;
+  viewer.querySelector('.vcap').textContent = shown[at].dataset.cap;
+};
+document.querySelectorAll('.look').forEach(look => {
+  const thumbs = [...look.querySelectorAll('.thumbs a')];
+  const stage = look.querySelector('.stage');
+  thumbs.forEach((a, i) => a.onclick = e => {
+    e.preventDefault();
+    thumbs.forEach(x => x.toggleAttribute('aria-current', x === a));
+    a.setAttribute('aria-current', 'true');
+    stage.querySelector('img').src = a.href;
+    stage.querySelector('img').alt = a.querySelector('img').alt;
+    stage.querySelector('figcaption').textContent = a.dataset.cap;
+  });
+  stage.querySelector('.zoom').onclick = () => {
+    shown = thumbs;
+    show(thumbs.findIndex(a => a.hasAttribute('aria-current')));
+    viewer.showModal();
+  };
+});
+viewer.querySelector('.vprev').onclick = () => show(at - 1);
+viewer.querySelector('.vnext').onclick = () => show(at + 1);
+viewer.querySelector('.vclose').onclick = () => viewer.close();
+viewer.onclick = e => { if (e.target === viewer) viewer.close(); };
+viewer.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') show(at - 1);
+  if (e.key === 'ArrowRight') show(at + 1);
 });
 
 // Arrow keys move between tabs (WAI-ARIA tabs pattern).
