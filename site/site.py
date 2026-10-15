@@ -4,7 +4,7 @@ needs an update.
 
   site/site.py build      everything.html from everything.html.in and items.json,
                           into site/www with the other pages
-  site/site.py publish    build, then copy site/www to the server (PUBLISH_TARGET),
+  site/site.py publish    build, then copy site/www to PUBLISH_TARGET (HOST:DIR, from .env),
                           and server/compose.yaml and nginx.conf next to it, then
                           restarts what changed; the server's windows/ folder
                           (windows/publish.sh in oganesson) is left alone
@@ -43,8 +43,20 @@ WATCHED = {
                   'goals.md', 'docs', 'helium', 'linux/helium-linux', 'windows/helium-windows'],
     'tennessine': ['patches', 'src', 'README.md', 'docs'],
 }
-PUBLISH_TARGET = os.environ.get('PUBLISH_TARGET', 'oracle:dubna/www/')
 PAGES = ('index.html', 'install.html')
+
+
+def env(name):
+    """NAME from the environment, else from dubna's .env, which Git ignores: where things
+    are deployed stays out of the repository."""
+    if name in os.environ:
+        return os.environ[name]
+    path = DUBNA / '.env'
+    for line in path.read_text().splitlines() if path.exists() else []:
+        key, _, value = line.partition('=')
+        if key.strip() == name:
+            return value.strip()
+    sys.exit(f'site.py: set {name} in the environment or in {path}, e.g. {name}=myserver:dubna/www/')
 
 
 def series(path, prefix=''):
@@ -220,10 +232,11 @@ def build():
 
 def publish():
     build()
+    target = env('PUBLISH_TARGET')
     subprocess.run(['rsync', '-a', '--delete', '--exclude=windows/', f'{SITE}/www/',
-                    PUBLISH_TARGET], check=True)
+                    target], check=True)
     # The server's compose project and nginx config sit next to www/.
-    host, path = PUBLISH_TARGET.split(':', 1)
+    host, path = target.split(':', 1)
     project = os.path.dirname(path.rstrip('/')) or '.'
     subprocess.run(['rsync', '-a', f'{SITE}/server/compose.yaml', f'{SITE}/server/nginx.conf',
                     f'{host}:{project}/'], check=True)

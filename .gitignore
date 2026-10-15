@@ -1,3 +1,5 @@
 __pycache__/
 work/
 rust/oganesson_sync/target/
+# Where things are deployed: kept out of Git
+.env
