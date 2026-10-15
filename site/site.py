@@ -19,6 +19,7 @@ OGANESSON and TENNESSINE. Only our changes are checked: Helium's series (we move
 it), our own patches and docs. Titanium and Vanadium are summarized on the site,
 not listed patch by patch.
 """
+import html
 import json
 import os
 import re
@@ -113,13 +114,91 @@ def is_patch(path):
                                                            'tools/', 'README', 'dubna/README'))
 
 
+# everything.html's areas, in page order, with their blurbs.
+AREAS = [
+    ('Sync', "Firefox-compatible Sync in both browsers, with your own sync server if you like. Helium's dormant sync vault is under Build & plumbing."),
+    ('Extensions & uBlock', 'Full uBlock Origin, Manifest V2, Web Store and AMO installs, Chrome extensions on Android.'),
+    ('Tabs & windows', 'Firefox tab placement and selection, recently-used Ctrl+Tab, tab menus, split view, web apps.'),
+    ('Address bar & search', 'Search engines, suggestions, the address bar itself.'),
+    ('Input & shortcuts', 'Mouse gestures, editable keyboard shortcuts, context menus, zoom.'),
+    ('History', 'Switches that stop saving history.'),
+    ('Media', 'Autoplay and tab sound indicators.'),
+    ('De-Googling & telemetry', 'Connections to Google and telemetry, cut. Useful Google-backed features come back as opt-ins.'),
+    ('Fingerprinting', "Fingerprinting defenses: mostly flags, Helium's noise off by default."),
+    ('Network & security', 'HTTPS-first, certificate transparency, WebRTC, DNS, TLS and network flags.'),
+    ('Helium services', "Helium's own servers (proxy, bangs, updates, crash reports): carried, off by default."),
+    ('Importers', 'Import from other browsers.'),
+    ('Settings & flags', 'Settings pages, chrome://flags entries and about:config.'),
+    ('Look & layout', "Helium's redesign and layouts, toolbars, Android's bottom-first layout."),
+    ('Platform & packaging', 'Linux, Windows and Android builds, repositories, profiles.'),
+    ('Build & plumbing', 'Build fixes and groundwork other patches need.'),
+]
+# Item states: label and colour. The page's script filters on these keys.
+STATES = {'on': ('on', 'var(--on)'), 'flag': ('flag', 'var(--flag)'),
+          'off': ('off by default', 'var(--off)'), 'dropped': ('dropped', 'var(--drop)')}
+BROWSER = {'og': 'oganesson', 'ts': 'tennessine'}
+
+
+def title(p):
+    """An item's heading, from its patch path or project: name."""
+    if p.startswith('project:'):
+        t = p[8:].replace('-', ' ')
+    elif ' ' in p:
+        return p
+    else:
+        t = (re.sub(r'\.patch$', '', p.rstrip('/').split('/')[-1]) or p).replace('-', ' ')
+    return t[:1].upper() + t[1:]
+
+
+def everything(items):
+    """everything.html's stats, filter chips, contents and list, in full so the
+    page reads without JS."""
+    e = html.escape
+    count = lambda f: sum(1 for d in items if f(d))
+    stats = ''.join(f'<div class="stat"><b>{n}</b><span>{l}</span></div>' for n, l in [
+        (count(lambda d: d['b'] == 'og' and not d.get('own')), 'Helium-series patches'),
+        (count(lambda d: d['b'] == 'og' and d.get('own')), 'oganesson items'),
+        (count(lambda d: d['b'] == 'both'), 'shared (dubna)'),
+        (count(lambda d: d['b'] == 'ts'), 'tennessine items'),
+        (count(lambda d: d['s'] == 'flag'), 'behind flags'),
+        (count(lambda d: 'drop' in d['s']), 'dropped')])
+    chips = ''.join(f'<button class="chipf" data-k="{k}" aria-pressed="true"><i style="background:{c}"></i>{l}</button>'
+                    for k, (l, c) in STATES.items())
+    toc = main = ''
+    for area, blurb in AREAS:
+        xs = sorted((d for d in items if d['a'] == area), key=lambda d: (not d.get('own'), d['b']))
+        if not xs:
+            continue
+        aid = re.sub(r'\W+', '-', area).lower()
+        toc += f'<a href="#{aid}">{e(area)}<span>{len(xs)}</span></a>'
+        main += f'<section class="cat" id="{aid}"><h2>{e(area)}<small>{len(xs)}</small></h2><p>{e(blurb)}</p><div class="list">'
+        for d in xs:
+            t = d.get('t') or title(d['p'])
+            key = ' '.join([t, d['p'], d['w'], d['o'], d['n'], d['a']]).lower()
+            badges = '<span class="b own">mine</span>' if d.get('own') else ''
+            badges += ''.join(f'<span class="b {b}">{BROWSER[b]}</span>' for b in (('og', 'ts') if d['b'] == 'both' else (d['b'],)))
+            badges += '' if d.get('own') else f'<span class="b">{e(d["o"])}</span>'
+            badges += f'<span class="s {d["s"].replace(" ", "-")}">{STATES[d["s"]][0]}</span>'
+            main += (f'\n<div class="it" data-b="{d["b"]}" data-s="{d["s"]}"{" data-own=1" if d.get("own") else ""} data-k="{e(key)}">'
+                     f'<div class="t">{e(t)}</div><div class="meta">{badges}</div>'
+                     + (f'<div class="w">{e(d["w"])}</div>' if d['w'] else '')
+                     + (f'<div class="n">{e(d["n"])}</div>' if d['n'] else '')
+                     + ('' if d['p'].startswith('project:') or '/' not in d['p'] else f'<div class="path">{e(d["p"])}</div>')
+                     + '</div>')
+        main += '</div></section>\n'
+    missing = {d['a'] for d in items} - {a for a, _ in AREAS}
+    assert not missing, f'items.json areas not in AREAS: {missing}'
+    return {'__STATS__': stats, '__CHIPS__': chips, '__TOC__': toc, '__MAIN__': main}
+
+
 def build():
     www = SITE / 'www'
     www.mkdir(exist_ok=True)
     items = json.loads((SITE / 'items.json').read_text())
-    data = json.dumps(items, separators=(',', ':'), ensure_ascii=False).replace('</', '<\\/')
-    (www / 'everything.html').write_text(
-        (SITE / 'everything.html.in').read_text().replace('__DATA__', data))
+    page = (SITE / 'everything.html.in').read_text()
+    for k, v in everything(items).items():
+        page = page.replace(k, v)
+    (www / 'everything.html').write_text(page)
     for page in PAGES:
         text = (SITE / page).read_text()
         if page == 'index.html':

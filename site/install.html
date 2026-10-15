@@ -178,7 +178,7 @@ pre a{color:inherit}
   <div class="eyebrow">Install</div>
   <h1 style="max-width:820px">Get <em>oganesson</em> and <em>tennessine</em></h1>
   <p class="lede">Both install from the project's own signed repositories, so updates arrive the same way as the rest of your software.</p>
-  <div class="tabs" role="tablist" id="os"><button role="tab" data-os="linux">Linux</button><button role="tab" data-os="windows">Windows</button><button role="tab" data-os="android">Android</button></div>
+  <div class="tabs" role="tablist" id="os" hidden><button role="tab" data-os="linux">Linux</button><button role="tab" data-os="windows">Windows</button><button role="tab" data-os="android">Android</button></div>
 </div></header>
 
 <section id="linux" class="os"><div class="wrap">
@@ -236,6 +236,7 @@ sudo dnf install oganesson</pre>
   <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
 </div></footer>
 <script>
+document.getElementById('os').hidden=false;
 // One platform at a time: from the address (#windows), else this device's.
 const pick=os=>{document.querySelectorAll('section.os').forEach(x=>x.hidden=x.id!==os);
   document.querySelectorAll('#os button').forEach(b=>b.setAttribute('aria-selected',b.dataset.os===os))};

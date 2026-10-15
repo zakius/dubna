@@ -47,8 +47,7 @@ aside a span{font:12px var(--mono);color:var(--faint)}
 .cat h2 small{font:13px var(--mono);color:var(--faint)}
 .cat>p{color:var(--faint);margin:0 0 14px;font-size:14px}
 .list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
-.it{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:13px 18px;border-top:1px solid var(--line)}
-.it:first-child{border-top:0}
+.it{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:13px 18px;border-bottom:1px solid var(--line);margin-bottom:-1px}
 .it:hover{background:#181c2a}
 .t{font-weight:600;font-size:15px}
 .w{grid-column:1/-1;color:var(--dim);font-size:14px}
@@ -63,6 +62,7 @@ aside a span{font:12px var(--mono);color:var(--faint)}
 .s.off{color:var(--off);background:rgba(138,144,166,.12)} .s.dropped,.s.to-drop{color:var(--drop);background:rgba(255,107,127,.1)}
 .path{grid-column:1/-1;font:12px var(--mono);color:var(--faint)}
 .empty{color:var(--faint);padding:40px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+[hidden]{display:none!important}
 mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
 @media (max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}}
 </style>
@@ -72,74 +72,46 @@ mark{background:rgba(244,201,93,.25);color:inherit;border-radius:3px}
 <header><div class="wrap">
   <h1>Everything, <em>patch by patch</em></h1>
   <p class="lede">Every change in both browsers: Helium's whole series as oganesson carries it, oganesson's own patches, and tennessine's patches on top of Vanadium and Titanium. Each one says what it does, where it comes from, and whether it's on, behind a flag, off by default or dropped.</p>
-  <div class="stats" id="stats"></div>
+  <div class="stats" id="stats">__STATS__</div>
 </div></header>
 
-<div class="bar"><div class="wrap">
+<div class="bar" hidden><div class="wrap">
   <input type="search" id="q" placeholder="Search features, patches, origins…  (press /)">
   <div class="seg" id="br"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
   <div class="seg" id="own"><button data-v="0" aria-pressed="true">All origins</button><button data-v="1" aria-pressed="false">Mine only</button></div>
-  <div class="chips" id="st"></div>
+  <div class="chips" id="st">__CHIPS__</div>
 </div></div>
 
 <div class="wrap layout" style="padding-left:24px;padding-right:24px">
-  <aside id="toc"></aside>
-  <main id="main"></main>
+  <aside id="toc">__TOC__</aside>
+  <main id="main">__MAIN__<div class="empty" hidden>Nothing matches.</div></main>
 </div>
 
 <script>
-const DATA=__DATA__;
-const AREAS=[
- ['Sync','Firefox-compatible Sync in both browsers, with your own sync server if you like. Helium\'s dormant sync vault is under Build & plumbing.'],
- ['Extensions & uBlock','Full uBlock Origin, Manifest V2, Web Store and AMO installs, Chrome extensions on Android.'],
- ['Tabs & windows','Firefox tab placement and selection, recently-used Ctrl+Tab, tab menus, split view, web apps.'],
- ['Address bar & search','Search engines, suggestions, the address bar itself.'],
- ['Input & shortcuts','Mouse gestures, editable keyboard shortcuts, context menus, zoom.'],
- ['History','Switches that stop saving history.'],
- ['Media','Autoplay and tab sound indicators.'],
- ['De-Googling & telemetry','Connections to Google and telemetry, cut. Useful Google-backed features come back as opt-ins.'],
- ['Fingerprinting','Fingerprinting defenses: mostly flags, Helium\'s noise off by default.'],
- ['Network & security','HTTPS-first, certificate transparency, WebRTC, DNS, TLS and network flags.'],
- ['Helium services','Helium\'s own servers (proxy, bangs, updates, crash reports): carried, off by default.'],
- ['Importers','Import from other browsers.'],
- ['Settings & flags','Settings pages, chrome://flags entries and about:config.'],
- ['Look & layout','Helium\'s redesign and layouts, toolbars, Android\'s bottom-first layout.'],
- ['Platform & packaging','Linux, Windows and Android builds, repositories, profiles.'],
- ['Build & plumbing','Build fixes and groundwork other patches need.'],
-];
-const ST={on:['on','var(--on)'],flag:['flag','var(--flag)'],off:['off by default','var(--off)'],dropped:['dropped','var(--drop)']};
-const state={q:'',br:'all',own:'0',st:new Set(Object.keys(ST))};
+// The build writes every item into the page, so it reads in full without JS;
+// this only filters and highlights.
+const state={q:'',br:'all',own:'0',st:new Set(['on','flag','off','dropped'])};
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const title=p=>{if(/^project:/.test(p))return p.slice(8).replace(/-/g,' ').replace(/^./,c=>c.toUpperCase());
-  if(p.includes(' '))return p; const b=p.replace(/\/$/,'').split('/').pop().replace(/\.patch$/,''); return (b||p).replace(/-/g,' ').replace(/^./,c=>c.toUpperCase())};
 const hl=(s,q)=>q?esc(s).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>'):esc(s);
-DATA.forEach(d=>{d.t=d.t||title(d.p);d.k=(d.t+' '+d.p+' '+d.w+' '+d.o+' '+d.n+' '+d.a).toLowerCase()});
-
-function stats(){const c=k=>DATA.filter(k).length;
-  document.getElementById('stats').innerHTML=[
-   [c(d=>d.b==='og'&&!d.own),'Helium-series patches'],[c(d=>d.b==='og'&&d.own),'oganesson items'],[c(d=>d.b==='both'),'shared (dubna)'],
-   [c(d=>d.b==='ts'),'tennessine items'],[c(d=>d.s==='flag'),'behind flags'],[c(d=>/drop/.test(d.s)),'dropped']]
-   .map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}
-function chips(){document.getElementById('st').innerHTML=Object.entries(ST).map(([k,[l,c]])=>`<button class="chipf" data-k="${k}" aria-pressed="${state.st.has(k)}"><i style="background:${c}"></i>${l}</button>`).join('');
-  document.querySelectorAll('#st .chipf').forEach(b=>b.onclick=()=>{const k=b.dataset.k;state.st.has(k)?state.st.delete(k):state.st.add(k);chips();render()})}
 function render(){
   const q=state.q.trim().toLowerCase();
-  const f=DATA.filter(d=>(state.br==='all'||d.b===state.br||d.b==='both')&&(state.own==='0'||d.own)&&state.st.has(d.s)&&(!q||d.k.includes(q)));
-  let toc='',main='';
-  for(const [a,desc] of AREAS){const xs=f.filter(d=>d.a===a); if(!xs.length)continue;
-    const id=a.replace(/\W+/g,'-').toLowerCase();
-    xs.sort((x,y)=>(y.own|0)-(x.own|0)||(x.b>y.b?1:-1));
-    toc+=`<a href="#${id}">${a}<span>${xs.length}</span></a>`;
-    main+=`<section class="cat" id="${id}"><h2>${a}<small>${xs.length}</small></h2><p>${desc}</p><div class="list">`+xs.map(d=>`
-      <div class="it"><div class="t">${hl(d.t,q)}</div><div class="meta">${d.own?'<span class="b own">mine</span>':''}${d.b==='both'?'<span class="b og">oganesson</span><span class="b ts">tennessine</span>':`<span class="b ${d.b}">${d.b==='og'?'oganesson':'tennessine'}</span>`}${d.own?'':`<span class="b">${esc(d.o)}</span>`}<span class="s ${d.s.replace(/ /g,'-')}">${ST[d.s][0]}</span></div>
-      ${d.w?`<div class="w">${hl(d.w,q)}</div>`:''}${d.n?`<div class="n">${hl(d.n,q)}</div>`:''}${d.p.startsWith('project:')||!d.p.includes('/')?'':`<div class="path">${hl(d.p,q)}</div>`}</div>`).join('')+`</div></section>`}
+  let toc='';
+  for(const sec of document.querySelectorAll('section.cat')){
+    let n=0;
+    for(const it of sec.querySelectorAll('.it')){const d=it.dataset;
+      const show=(state.br==='all'||d.b===state.br||d.b==='both')&&(state.own==='0'||d.own)&&state.st.has(d.s)&&(!q||d.k.includes(q));
+      it.hidden=!show;
+      if(show){n++;for(const el of it.querySelectorAll('.t,.w,.n,.path'))el.innerHTML=hl(el.dataset.raw??=el.textContent,q)}}
+    sec.hidden=!n;sec.querySelector('h2 small').textContent=n;
+    if(n)toc+=`<a href="#${sec.id}">${esc(sec.querySelector('h2').firstChild.textContent)}<span>${n}</span></a>`}
   document.getElementById('toc').innerHTML=toc;
-  document.getElementById('main').innerHTML=main||'<div class="empty">Nothing matches.</div>';
+  document.querySelector('.empty').hidden=!!toc;
 }
+document.querySelector('.bar').hidden=false;
 document.getElementById('q').oninput=e=>{state.q=e.target.value;render()};
 for(const id of ['br','own'])document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{state[id]=b.dataset.v;document.querySelectorAll('#'+id+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+document.querySelectorAll('#st .chipf').forEach(b=>b.onclick=()=>{const k=b.dataset.k;state.st.has(k)?state.st.delete(k):state.st.add(k);b.setAttribute('aria-pressed',state.st.has(k));render()});
 addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('q').focus()}});
-stats();chips();render();
 </script>
 </body>
 </html>
