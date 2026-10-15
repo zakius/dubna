@@ -41,7 +41,10 @@ def main():
     # What glean-build would generate: places' metrics.yaml through the
     # glean_parser that places' pinned Glean asks for.
     places = f'{RAW}/application-services/{tag}/components/places'
-    glean_tag = re.search(r'^glean-build = .*tag = "([^"]+)"', fetch(f'{places}/Cargo.toml'), re.M)[1]
+    glean_tag = re.search(r'^glean-build = .*tag = "([^"]+)"', fetch(f'{places}/Cargo.toml'), re.M)
+    if not glean_tag:
+        sys.exit(f"can't find the Glean tag in places' Cargo.toml at {tag}")
+    glean_tag = glean_tag[1]
     parser = re.search(r'^const GLEAN_PARSER_VERSION: &str = "(.*)";',
                        fetch(f'{RAW}/glean/{glean_tag}/glean-core/build/src/lib.rs'), re.M)
     if not parser:
