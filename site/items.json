@@ -1201,7 +1201,7 @@
 "p": "helium/core/proxy-extension-downloads",
 "w": "Sends extension installs and updates from the Chrome Web Store through Helium's server, not Google's. Adds the setting \"Proxy extension downloads and updates\" (on). When it is off, or Helium's services are off, oganesson installs and updates from the Chrome Web Store directly, as Chromium does.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "without the proxy, Chrome Web Store installs and updates go straight to Google, as in Chromium"
 },
 {
 "b": "og",
@@ -1237,7 +1237,7 @@
 "p": "helium/core/reenable-spellcheck-downloads",
 "w": "Downloads spell-check dictionaries from Helium's server instead of Google's. Adds the setting \"Allow downloading dictionary files for spell checking\" (on). The error message for a failed download names Helium's services.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "oganesson downloads Linux spellcheck dictionaries from Google's server instead, as Chromium does; the switch that stops them still works"
 },
 {
 "b": "og",
@@ -3307,7 +3307,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "oganesson/core/no-helium-services",
-"w": "No Helium servers by default: Helium services, bangs, update checks, crash reports, onboarding and fingerprint noise are off but can be turned on. Without Helium's proxy, Chrome Web Store installs and updates go straight to Google.",
+"w": "No Helium servers by default: Helium's services, bangs, update checks, crash reports, onboarding and fingerprint noise are off, and can be turned on. Chrome Web Store installs and updates and Linux spellcheck dictionaries come from Google instead, as in Chromium.",
 "s": "on",
 "n": "",
 "own": 1
