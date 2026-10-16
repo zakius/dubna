@@ -32,7 +32,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first). |
 
-Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium, Titanium and Helium. tennessine takes the uBlock Origin patches and pin from Helium, at the commit that oganesson's `helium` submodule pins.
+Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium and Titanium.
 
 A shared feature registers its own prefs and strings, so it doesn't depend on hooks in either browser. Each browser's patch check warns when its Chromium version is off `milestone.txt`.
 
