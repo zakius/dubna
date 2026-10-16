@@ -31,6 +31,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`, `windows/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first). |
+| `site/` | dubna's site (https://dubna.zakius.xyz): `site.py` builds, publishes and checks it; `server/` holds the server's compose and nginx files. |
 
 Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium and Titanium.
 
@@ -42,7 +43,7 @@ Before both browsers move their submodule to a change here, check the change wit
 
 Each browser has one entry point: `oganesson.py` for oganesson, `tennessine.py` for tennessine. Shared jobs are Python tools in this repo, stdlib only.
 
-Scripts that run inside a build container or come from an upstream stay in bash. Those are the `container-build.sh` scripts (oganesson's `linux/` and `windows/`, tennessine's `tools/`), the helium-linux scripts oganesson's Linux one runs, and Titanium's `build.sh`, `common.sh` and `post-sync.sh`. The `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
+Scripts that run inside a build container or come from an upstream stay in bash. Those are the `container-build.sh` scripts (oganesson's `linux/` and `windows/`, tennessine's `tools/`), the helium-linux scripts oganesson's Linux one runs, Titanium's `build.sh` and `common.sh`, and tennessine's `post-sync.sh`, which `build.sh` runs. The `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
 
 ## Update policy
 
