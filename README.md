@@ -4,7 +4,7 @@ dubna holds the code shared by two Chromium-based browsers:
 
 | Browser | Platform | Built on |
 |---|---|---|
-| [oganesson](https://github.com/zakius/oganesson) | Desktop: Linux, Windows planned | [Helium](https://github.com/imputnet/helium), through [helium-linux](https://github.com/imputnet/helium-linux) |
+| [oganesson](https://github.com/zakius/oganesson) | Desktop: Linux and Windows | [Helium](https://github.com/imputnet/helium), through [helium-linux](https://github.com/imputnet/helium-linux) and [helium-windows](https://github.com/imputnet/helium-windows) |
 | [tennessine](https://github.com/zakius/tennessine) | Android | [Vanadium](https://github.com/GrapheneOS/Vanadium), with [Titanium](https://github.com/jqssun/android-titanium-browser)'s extension support |
 
 It contains the Chromium milestone both browsers build, and the code, patches and tools they both use.
@@ -28,7 +28,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `milestone.txt` | The Chromium milestone both browsers build. |
 | `src/` | New files both browsers copy over the Chromium tree before their own: the C++ of Firefox-compatible Sync (`chrome/browser/firefox_sync/`), its strings, and the headers for no saved history. Nothing here is platform-specific. What Sync needs from the browser (tabs, the sign-in tab, synced-tab views, the account on the profile, the library's path) is declared in `firefox_sync_platform.h`, which each browser implements in its own `chrome/browser/firefox_sync/platform/`. |
 | `patches/` | Patches both browsers apply: `firefox-sync.patch` (the service, on Linux, Windows and Android) and `no-saved-history.patch` (which registers its own prefs). |
-| `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
+| `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`, `windows/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first). |
 
@@ -42,7 +42,7 @@ Before both browsers move their submodule to a change here, check the change wit
 
 Each browser has one entry point: `oganesson.py` for oganesson, `tennessine.py` for tennessine. Shared jobs are Python tools in this repo, stdlib only.
 
-Scripts that run inside a build container or come from an upstream stay in bash. Those are oganesson's `linux/container-build.sh` and the helium-linux scripts it runs, and Titanium's `build.sh`, `common.sh` and `post-sync.sh`. The two `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
+Scripts that run inside a build container or come from an upstream stay in bash. Those are the `container-build.sh` scripts (oganesson's `linux/` and `windows/`, tennessine's `tools/`), the helium-linux scripts oganesson's Linux one runs, and Titanium's `build.sh`, `common.sh` and `post-sync.sh`. The `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
 
 ## Update policy
 
