@@ -2,5 +2,5 @@
 name = "glean-build"
 version = "20.1.0"
 edition = "2021"
-license = "MPL-2.0"
+license = "(GPL-2.0-only OR GPL-3.0-only) AND MPL-2.0"
 publish = false
