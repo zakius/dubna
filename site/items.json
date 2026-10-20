@@ -837,6 +837,17 @@
 },
 {
 "b": "og",
+"o": "oganesson",
+"a": "Importers",
+"p": "oganesson/core/importer-profile-discovery",
+"w": "\"Import bookmarks and settings\" also lists every browser profile it finds in the usual application data folders: Chromium-based ones by their \"Local State\" file, Firefox-based ones by their profiles.ini. \"Choose a profile folder…\" adds the profiles in a folder you pick, or up to three levels below it. Firefox profiles with no visits or bookmarks are left out.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Import from any profile folder"
+},
+{
+"b": "og",
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/fix-building-without-safebrowsing",
@@ -1416,8 +1427,8 @@
 "a": "Helium services",
 "p": "helium/core/add-updater-preference",
 "w": "Adds the setting \"Allow automatic browser updates\" (on), or \"component updates\" on Linux, plus a helper for the update address updates.helium.computer (macOS and Windows only). Also adds an \"Update server URL\" flag (empty by default). The updater itself is in platform patches.",
-"s": "off",
-"n": "oganesson updates through its package repository instead"
+"s": "on",
+"n": "on Windows its switch turns oganesson's own updater on or off (windows/late/updater); on Linux, updates come from the package repository"
 },
 {
 "b": "og",
@@ -3627,6 +3638,17 @@
 "s": "on",
 "n": "",
 "own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Platform & packaging",
+"p": "windows/late/updater",
+"w": "On Windows, a per-user install updates itself without prompts, with helium-windows' WinSparkle updater. It reads oganesson's own feed on dubna.zakius.xyz and installs an update only if its ed25519 signature matches the key built in. Updates are on by default, with their switch under Helium services, and don't need Helium's services. All-users installs update by hand: their elevated updater needs an Authenticode signature, which the packages don't have.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Updates on Windows"
 },
 {
 "b": "og",
