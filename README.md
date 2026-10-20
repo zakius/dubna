@@ -72,7 +72,7 @@ Google marks zero-days only with the sentence "Google is aware that an exploit f
 
 The script needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network.
 
-A T3 scheduled task runs the report every evening at 20:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests, pushes and publishes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix.
+A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests, pushes and publishes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix.
 
 ## License
 
