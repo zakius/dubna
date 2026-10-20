@@ -30,7 +30,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `patches/` | Patches both browsers apply: `firefox-sync.patch` (the service, on Linux, Windows and Android) and `no-saved-history.patch` (which registers its own prefs). |
 | `rust/oganesson_sync/` | The Rust library of Firefox-compatible Sync. Each browser builds it with its own `build-sync-lib.sh`: oganesson (`linux/`, `windows/`) with Chromium's toolchain, tennessine (`tools/`) with the NDK. |
 | `l10n/` | Polish translations of the strings in `src/`. |
-| `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first). |
+| `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first), `release_notes.py` (a GitHub release's notes, from the commits since the previous release). |
 | `site/` | dubna's site (https://dubna.zakius.xyz): `site.py` builds, publishes and checks it; `server/` holds the server's compose and nginx files. |
 
 Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium and Titanium.
@@ -72,7 +72,13 @@ Google marks zero-days only with the sentence "Google is aware that an exploit f
 
 The script needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network.
 
-A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests, pushes and publishes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix.
+A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests and pushes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix. It also writes what the site's patch list and pages are missing (`site/site.py check`) and opens a pull request in dubna with it.
+
+## Releases
+
+A push to a browser's main branch releases it. GitHub Actions run each repo's workflow (`.github/workflows/`) on this project's own build machine, with a self-hosted runner per repo (labels `oganesson`, `tennessine` and `dubna`), because a Chromium build doesn't fit GitHub's machines. The workflow builds, tests and publishes from the main checkout, then posts a GitHub release with the packages and notes from the commits since the previous release (`tools/release_notes.py`). Pushes that change only docs or CI don't start one. Each workflow can also be started by hand.
+
+A merge to dubna's main that changes `site/` publishes the site. Pull requests start nothing: the runners would run their code on the build machine.
 
 ## License
 

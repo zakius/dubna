@@ -1,0 +1,26 @@
+# Publishes https://dubna.zakius.xyz when site/ changes on main, or by hand. It runs on this
+# project's own machine (runner label "dubna"), in the main checkout, which has the publish
+# settings (.env). Pull requests start nothing: a runner on this machine must never run their code.
+name: Site
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']
+  workflow_dispatch:
+concurrency:
+  group: site
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: [self-hosted, dubna]
+    timeout-minutes: 30
+    env:
+      MAIN: /home/zakius/dev/dubna
+    steps:
+      - name: Main checkout at this commit
+        run: |
+          cd "$MAIN"
+          git fetch -q origin
+          git merge -q --ff-only "$GITHUB_SHA"
+      - name: Publish
+        run: cd "$MAIN" && python3 site/site.py publish
