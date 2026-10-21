@@ -14,11 +14,11 @@ jobs:
   publish:
     runs-on: [self-hosted, dubna]
     timeout-minutes: 30
-    env:
-      MAIN: /home/zakius/dev/dubna
+    # The runner's .env sets MAIN, the main checkout.
     steps:
       - name: Main checkout at this commit
         run: |
+          : "${MAIN:?is set in the runner's .env}"
           cd "$MAIN"
           git fetch -q origin
           git merge -q --ff-only "$GITHUB_SHA"
