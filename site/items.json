@@ -3662,6 +3662,28 @@
 },
 {
 "b": "og",
+"o": "oganesson",
+"a": "Network & security",
+"p": "oganesson/core/emudhra-spki-block",
+"w": "Distrusts the six eMudhra TLS intermediates whose private keys leaked in October 2026, and Sectigo's cross-certificates of the same keys. Chrome blocks them through its downloaded revocation list, which oganesson doesn't fetch while component updates are off, so the block is built in.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Block the leaked eMudhra intermediates"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Platform & packaging",
+"p": "oganesson/core/policy-path",
+"w": "On Linux the browser reads policies from /etc/oganesson/policies, not Chromium's /etc/chromium/policies, so policies written for Chromium don't apply to it.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Its own policy folder on Linux"
+},
+{
+"b": "og",
 "o": "project",
 "a": "Extensions & uBlock",
 "p": "project:built-on-helium",
