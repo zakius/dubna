@@ -862,7 +862,7 @@
 "p": "helium/core/services-prefs",
 "w": "Groundwork for \"Helium services\". Adds a Settings > Privacy > \"Helium services\" page with an on/off switch (on by default in Helium), a field for your own server, and a \"services changed\" notice. Helium's default server is https://services.helium.imput.net. Later Helium service patches build on it.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "oganesson's Browser traffic page takes its place, and its settings follow browser traffic; Helium's own server is never used"
 },
 {
 "b": "og",
@@ -871,7 +871,7 @@
 "p": "helium/core/services-schema-nag",
 "w": "When Helium services change how they work, the app menu button shows a \"Services updated\" badge and a \"Review Helium services updates\" item that opens the services settings.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "the same badge shows instead when certificate data hasn't updated for more than a day, and its item opens Browser traffic"
 },
 {
 "b": "og",
@@ -1230,7 +1230,7 @@
 "p": "helium/core/add-native-bangs",
 "w": "Adds DuckDuckGo-style \"!bangs\" to the address bar, such as `!w foo` or `!gh foo`. The bang list is downloaded from Helium's server at startup. The setting \"Allow downloading the !bangs list\" (on) controls this. With it off, bangs only work from saved copies.",
 "s": "off",
-"n": "the !bang list comes from Helium's services; on again once there's another source"
+"n": "the !bang list comes only through your own helium-services server; without one, bangs are off"
 },
 {
 "b": "og",
@@ -1248,7 +1248,7 @@
 "p": "helium/core/reenable-spellcheck-downloads",
 "w": "Downloads spell-check dictionaries from Helium's server instead of Google's. Adds the setting \"Allow downloading dictionary files for spell checking\" (on). The error message for a failed download names Helium's services.",
 "s": "off",
-"n": "oganesson downloads Linux spellcheck dictionaries from Google's server instead, as Chromium does; the switch that stops them still works"
+"n": "by default oganesson downloads spellcheck dictionaries from Google's server, as Chromium does; through your own server only if you choose it in Browser traffic"
 },
 {
 "b": "og",
@@ -1428,7 +1428,7 @@
 "p": "helium/core/add-updater-preference",
 "w": "Adds the setting \"Allow automatic browser updates\" (on), or \"component updates\" on Linux, plus a helper for the update address updates.helium.computer (macOS and Windows only). Also adds an \"Update server URL\" flag (empty by default). The updater itself is in platform patches.",
 "s": "on",
-"n": "on Windows its switch turns oganesson's own updater on or off (windows/late/updater); on Linux, updates come from the package repository"
+"n": "on Windows the Browser updates row in Settings > Browser traffic turns oganesson's own updater's automatic checks on or off (windows/late/updater); on Linux, updates come from the package repository"
 },
 {
 "b": "og",
@@ -1528,7 +1528,7 @@
 "p": "helium/core/ublock-helium-services",
 "w": "Sends uBlock's filter-list downloads through Helium's server. Adds the setting \"Allow downloading filter lists for uBlock Origin\" (on). If it is off, uBlock only uses its bundled lists.",
 "s": "off",
-"n": "uBlock Origin updates its filter lists from its own sources instead"
+"n": "by default uBlock Origin updates its filter lists from its own sources; through your own server only if you choose it in Browser traffic"
 },
 {
 "b": "both",
@@ -1764,8 +1764,8 @@
 "a": "Helium services",
 "p": "helium/core/component-updates",
 "w": "Blocks Google's component-update server (update.googleapis.com). Component updates come from Helium's server instead, only if its services, your consent and the update setting allow it. Only the certificate revocation list and Widevine (DRM) may register; other components are refused. chrome://components explains the errors when services are off.",
-"s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings; an opt-in that needs a component downloads only that component"
+"s": "on",
+"n": "components come straight from Google's update server by default, or through your own server, never Helium's; the Chrome Root Store and the CT log list may register too, and update checks send no pings"
 },
 {
 "b": "og",
@@ -1774,7 +1774,7 @@
 "p": "helium/core/fixups-component-setup",
 "w": "Adds an empty built-in extension called \"extstore-fixups\". Groundwork for the Web Store fixes; nothing visible on its own.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "works only for what you send through your own helium-services server in Settings > Browser traffic; Helium's own server is never used"
 },
 {
 "b": "og",
@@ -2549,7 +2549,7 @@
 "p": "helium/ui/add-specific-error-for-disabled-extension-downloads",
 "w": "If an extension download is blocked because Helium services or extension downloads are off, the downloads bubble says \"Extension downloads are disabled\" instead of \"Blocked by your organization\". It also has a button that opens chrome://settings/privacy/services.",
 "s": "off",
-"n": "works only with Helium's services, which are off; you can turn them on in Settings"
+"n": "works only for what you send through your own helium-services server in Settings > Browser traffic; Helium's own server is never used"
 },
 {
 "b": "og",
@@ -2709,7 +2709,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/ui/bangs-ui",
-"w": "The settings and menus for Helium's built-in bangs (search shortcuts such as !w). oganesson leaves it out because the bangs themselves are off: their list comes from Helium's services, which oganesson doesn't use.",
+"w": "The settings and menus for Helium's built-in bangs (search shortcuts such as !w). oganesson leaves it out: bangs work only through your own helium-services server, and Settings > Browser traffic updates their list.",
 "s": "dropped",
 "n": ""
 },
@@ -3318,7 +3318,7 @@
 "o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "oganesson/core/no-helium-services",
-"w": "No Helium servers by default: Helium's services, bangs, update checks, crash reports, onboarding and fingerprint noise are off, and can be turned on. Chrome Web Store installs and updates and Linux spellcheck dictionaries come from Google instead, as in Chromium.",
+"w": "No Helium servers: Helium's services, update checks, crash reports and onboarding are off, and so is fingerprint noise, which can be turned on. Chrome Web Store installs and updates and spellcheck dictionaries come from Google, as in Chromium, unless Browser traffic sends them through your own server.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3644,7 +3644,7 @@
 "o": "oganesson",
 "a": "Platform & packaging",
 "p": "windows/late/updater",
-"w": "On Windows, a per-user install updates itself without prompts, with helium-windows' WinSparkle updater. It reads oganesson's own feed on dubna.zakius.xyz and installs an update only if its ed25519 signature matches the key built in. Updates are on by default, with their switch under Helium services, and don't need Helium's services. All-users installs update by hand: their elevated updater needs an Authenticode signature, which the packages don't have.",
+"w": "On Windows, a per-user install updates itself without prompts, with helium-windows' WinSparkle updater. It reads oganesson's own feed on dubna.zakius.xyz and installs an update only if its ed25519 signature matches the key built in. Updates are on by default, set by the Browser updates row in Settings > Browser traffic, and don't need Helium's services. All-users installs update by hand: their elevated updater needs an Authenticode signature, which the packages don't have.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3659,6 +3659,61 @@
 "s": "on",
 "n": "",
 "own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Network & security",
+"p": "oganesson/core/emudhra-spki-block",
+"w": "Distrusts the six eMudhra TLS intermediates whose private keys leaked in October 2026, and Sectigo's cross-certificates of the same keys. Chrome blocks them through its downloaded revocation list, which oganesson doesn't fetch while component updates are off, so the block is built in.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Block the leaked eMudhra intermediates"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Platform & packaging",
+"p": "oganesson/core/policy-path",
+"w": "On Linux the browser reads policies from /etc/oganesson/policies, not Chromium's /etc/chromium/policies, so policies written for Chromium don't apply to it.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Its own policy folder on Linux"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Network & security",
+"p": "oganesson/core/browser-traffic",
+"w": "Decides what the browser downloads by itself and which way each kind goes: certificate security data (CRLSet, the Chrome Root Store, the Certificate Transparency log list), Widevine, extensions, uBlock Origin's filter lists, spellcheck dictionaries, the !bang list and, on Windows, browser updates. Each goes direct to its source or through your own helium-services server, automatically or only when you ask, and never to Helium's own server. A row set to your server never falls back to a direct source. By default everything goes direct and stays current. Component update checks send no pings, and the app menu shows a badge when certificate data is more than a day old.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Browser traffic"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Settings & flags",
+"p": "oganesson/settings/browser-traffic-settings",
+"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Browser traffic settings"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Settings & flags",
+"p": "oganesson/settings/setup-page",
+"w": "oganesson's own setup at chrome://settings/setup opens on a first start: Welcome, Import, Firefox Sync, Browser traffic, Search, Tabs, Passwords, Privacy extras, Default browser and Done. Every step but Welcome and Browser traffic can be skipped. A profile that had the browser before gets it once, with only the Browser traffic choice. Settings > About runs it again.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Setup on first start"
 },
 {
 "b": "og",
