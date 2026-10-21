@@ -321,9 +321,14 @@ def publish():
     # The server's compose project and nginx config sit next to www/.
     host, path = target.split(':', 1)
     project = os.path.dirname(path.rstrip('/')) or '.'
-    subprocess.run(['rsync', '-a', f'{SITE}/server/compose.yaml', f'{SITE}/server/nginx.conf',
-                    f'{host}:{project}/'], check=True)
-    subprocess.run(['ssh', host, f'cd {project} && docker compose up -d --quiet-pull'], check=True)
+    changed = subprocess.run(['rsync', '-a', '--out-format=%n', f'{SITE}/server/compose.yaml',
+                              f'{SITE}/server/nginx.conf', f'{host}:{project}/'],
+                             check=True, capture_output=True, text=True).stdout.split()
+    # compose recreates the container for a changed compose.yaml only, and the nginx.conf bind
+    # mount keeps the file rsync replaced: a new config needs a restart.
+    restart = ' && docker compose restart site' if 'nginx.conf' in changed else ''
+    subprocess.run(['ssh', host, f'cd {project} && docker compose up -d --quiet-pull{restart}'],
+                   check=True)
 
 
 def mark_reviewed():
