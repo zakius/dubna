@@ -4122,7 +4122,7 @@
 "p": "titanium/feature-overrides",
 "w": "Titanium's feature overrides, accessibility fixes, flags Chromium would have removed, and fixes for Chromium bugs.",
 "s": "on",
-"n": "",
+"n": "automatic picture-in-picture stays off, as in Chromium: chrome://flags#auto-picture-in-picture-android turns it on",
 "own": 0
 },
 {
