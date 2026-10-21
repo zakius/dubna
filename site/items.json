@@ -3652,6 +3652,16 @@
 },
 {
 "b": "og",
+"o": "oganesson",
+"a": "Platform & packaging",
+"p": "oganesson/core/update-prompt",
+"w": "As soon as an update is installed, by apt or dnf on Linux or the updater on Windows, the three-dot menu shows an \"Update\" chip and \"Relaunch to update\", which restarts into the new version with your windows, tabs and history kept.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
 "o": "project",
 "a": "Extensions & uBlock",
 "p": "project:built-on-helium",
@@ -3706,7 +3716,7 @@
 "o": "project",
 "a": "Platform & packaging",
 "p": "project:windows-build",
-"w": "A Windows x64 build, cross-compiled on Linux, ships as an installer for one or all users and a portable zip, without an auto-updater.",
+"w": "A Windows x64 build, cross-compiled on Linux, ships as an installer for one or all users and a portable zip.",
 "s": "on",
 "n": "",
 "own": 1
