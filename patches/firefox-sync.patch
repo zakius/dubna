@@ -2,7 +2,7 @@
 # the product's //chrome/browser/firefox_sync/platform (see firefox_sync_platform.h).
 --- a/chrome/browser/profiles/BUILD.gn
 +++ b/chrome/browser/profiles/BUILD.gn
-@@ -1071,6 +1071,10 @@ source_set("profiles_extra_parts_impl") {
+@@ -1081,6 +1081,10 @@
    if (enable_offline_pages) {
      deps += [ "//chrome/browser/offline_pages" ]
    }
@@ -24,8 +24,8 @@
 +#endif
  #include "chrome/browser/first_party_sets/first_party_sets_policy_service_factory.h"
  #include "chrome/browser/font_pref_change_notifier_factory.h"
- #include "chrome/browser/glic/browser_ui/glic_actor_task_icon_manager_factory.h"
-@@ -1061,6 +1064,9 @@ void ChromeBrowserMainExtraPartsProfiles::
+ #include "chrome/browser/glic/public/glic_enabling.h"
+@@ -1060,6 +1063,9 @@
  #if BUILDFLAG(IS_ANDROID)
    finds::FindsServiceFactory::GetInstance();
  #endif  // BUILDFLAG(IS_ANDROID)
