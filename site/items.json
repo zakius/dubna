@@ -3306,7 +3306,7 @@
 "o": "dubna",
 "a": "Sync",
 "p": "dubna/patches/firefox-sync",
-"w": "Sign in with a Mozilla account, or point it at your own sync server, which works best. Passwords, bookmarks, history, open tabs, addresses and cards sync between oganesson, tennessine and Firefox.",
+"w": "Sign in with a Mozilla account, or point it at your own sync server, which works best. Passwords, bookmarks, history, open tabs, addresses and cards sync between oganesson, tennessine and Firefox. Each browser shows under its own name in your account's device list, such as \"oganesson on\" your computer's name or \"tennessine on\" your phone's.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3534,6 +3534,28 @@
 "s": "on",
 "n": "",
 "own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Look & layout",
+"p": "oganesson/ui/status-bubble-full-url",
+"w": "Hovering a link shows its whole address at once, in a bubble as wide as the address, instead of a cut-off one that widens a second and a half later. An address wider than the window scrolls by in the bubble.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Whole address on link hover"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Input & shortcuts",
+"p": "oganesson/ui/no-reading-mode-menu-item",
+"w": "Removes \"Open in reading mode\" from the right-click menu. Reading mode isn't built in (ungoogled-chromium removes it with the AI features), so the item opened an empty panel.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "No reading mode in the menu"
 },
 {
 "b": "og",
