@@ -21,7 +21,10 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::{anyhow, bail, Result};
-use fxa_client::{DeviceConfig, FirefoxAccount, FxaConfig, FxaError, FxaEvent, FxaServer, FxaState};
+use fxa_client::{
+    CloseTabsResult, Device, DeviceCapability, DeviceConfig, FirefoxAccount, FxaConfig, FxaError,
+    FxaEvent, FxaServer, FxaState, IncomingDeviceCommand,
+};
 use serde_json::{json, Value};
 use sync15::client::{sync_multiple_with_command_processor, MemoryCachedState, ServiceStatus, Sync15StorageClientInit};
 use sync15::clients_engine::{Command, CommandProcessor, CommandStatus, Settings};
@@ -51,13 +54,18 @@ const PROFILE_SCOPE: &str = "profile";
 
 /// This device in the account's device list, as the browser named it in
 /// `og_init`: "oganesson on <hostname>", desktop, or "tennessine on <phone>",
-/// mobile.
+/// mobile. It receives tabs and close requests from the other devices
+/// through Mozilla accounts' device commands, as Firefox does.
 static DEVICE: OnceLock<(String, sync15::DeviceType)> = OnceLock::new();
 
 fn device_config() -> DeviceConfig {
     let (name, device_type) =
         DEVICE.get().cloned().unwrap_or(("oganesson".into(), sync15::DeviceType::Desktop));
-    DeviceConfig { name, device_type, capabilities: vec![] }
+    DeviceConfig {
+        name,
+        device_type,
+        capabilities: vec![DeviceCapability::SendTab, DeviceCapability::CloseTabs],
+    }
 }
 
 fn config(server: Option<&str>, token_server: Option<&str>) -> Result<FxaConfig> {
@@ -357,7 +365,93 @@ fn sync_with(profile: &str, args: &Value, cached: &mut MemoryCachedState) -> Res
         "global": global_state,
         "engines": results,
         "profile": profile_json(&account),
+        "devices": devices_json(&account),
+        "commands": commands_json(&account),
     }))
+}
+
+fn mobile(device: &Device) -> bool {
+    matches!(device.device_type, sync15::DeviceType::Mobile | sync15::DeviceType::Tablet)
+}
+
+/// The account's other devices that take tabs or close requests, for the
+/// browser's send menus: `[{id, name, mobile, sendTab, closeTabs}]`. Null if
+/// the accounts server can't be reached: the browser keeps what it has.
+fn devices_json(account: &FirefoxAccount) -> Value {
+    let Ok(devices) = account.get_devices(false) else { return Value::Null };
+    devices
+        .iter()
+        .filter(|d| !d.is_current_device && !d.capabilities.is_empty())
+        .map(|d| {
+            json!({
+                "id": d.id,
+                "name": d.display_name,
+                "mobile": mobile(d),
+                "sendTab": d.capabilities.contains(&DeviceCapability::SendTab),
+                "closeTabs": d.capabilities.contains(&DeviceCapability::CloseTabs),
+            })
+        })
+        .collect()
+}
+
+/// The commands other devices sent since the last poll:
+/// `[{type: "tab", from, url, title}]` and `[{type: "close", from, urls}]`.
+/// Polling marks them handled in the account, which the caller saves. Empty
+/// if the accounts server can't be reached: the commands wait there.
+fn commands_json(account: &FirefoxAccount) -> Value {
+    let from = |sender: Option<Device>| sender.map(|d| d.display_name).unwrap_or_default();
+    account
+        .poll_device_commands()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|command| match command {
+            IncomingDeviceCommand::TabReceived { sender, payload } => {
+                // The last entry is the page to show; the others are its history.
+                let entry = payload.entries.last()?;
+                Some(json!({
+                    "type": "tab",
+                    "from": from(sender),
+                    "url": entry.url,
+                    "title": entry.title,
+                }))
+            }
+            IncomingDeviceCommand::TabsClosed { sender, payload } => Some(json!({
+                "type": "close",
+                "from": from(sender),
+                "urls": payload.urls,
+            })),
+        })
+        .collect()
+}
+
+/// Sends a tab to `device`. In: the saved account, `device`, `url` and
+/// `title`. Out: the account to save.
+fn send_tab(args: &Value) -> Result<Value> {
+    let account = account(str_arg(args, "profile")?, args["account"].as_str())?;
+    account.send_single_tab(
+        str_arg(args, "device")?,
+        args["title"].as_str().unwrap_or_default(),
+        str_arg(args, "url")?,
+        false,
+    )?;
+    Ok(json!({ "account": account.to_json()? }))
+}
+
+/// Asks `device` to close its tabs at `urls`. Out: the account to save, and
+/// `unsent`, the URLs that didn't fit in a command.
+fn close_tabs(args: &Value) -> Result<Value> {
+    let account = account(str_arg(args, "profile")?, args["account"].as_str())?;
+    let urls = args["urls"]
+        .as_array()
+        .ok_or_else(|| anyhow!("missing urls"))?
+        .iter()
+        .filter_map(|url| url.as_str().map(String::from))
+        .collect();
+    let unsent = match account.close_tabs(str_arg(args, "device")?, urls)? {
+        CloseTabsResult::Ok => vec![],
+        CloseTabsResult::TabsNotClosed { urls } => urls,
+    };
+    Ok(json!({ "account": account.to_json()?, "unsent": unsent }))
 }
 
 struct TabCommands {
@@ -389,6 +483,8 @@ fn dispatch(method: &str, args: &Value) -> Result<Value> {
         "complete_signin" => complete_signin(args),
         "sync" => sync(args),
         "signout" => signout(args),
+        "send_tab" => send_tab(args),
+        "close_tabs" => close_tabs(args),
         _ => bail!("unknown method {method}"),
     }
 }
