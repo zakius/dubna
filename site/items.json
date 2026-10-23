@@ -11,9 +11,9 @@
 {
 "b": "og",
 "o": "Chromium fixes",
-"a": "Tabs & windows",
-"p": "upstream-fixes/tab-restore-live-tabs",
-"w": "Fix from Chromium: when you restore closed tabs or windows, it only brings back tabs that still exist. This stops a crash when a restored tab is closed right away.",
+"a": "Build & plumbing",
+"p": "upstream-fixes/wasm-interpreter-fixes",
+"w": "Build fix so V8's WebAssembly interpreter compiles.",
 "s": "on",
 "n": ""
 },
@@ -458,6 +458,15 @@
 "a": "Look & layout",
 "p": "ungoogled-chromium/add-flag-to-show-avatar-button",
 "w": "Adds a flag to show the profile picture button in the toolbar always, never, or only in Incognito and Guest windows.",
+"s": "flag",
+"n": ""
+},
+{
+"b": "og",
+"o": "ungoogled-chromium",
+"a": "Look & layout",
+"p": "ungoogled-chromium/add-flag-to-hide-window-buttons",
+"w": "Adds a flag that hides the minimize, maximize and close buttons in the browser's own title bar and gives their space to the tabs. A title bar drawn by the system keeps its buttons.",
 "s": "flag",
 "n": ""
 },
@@ -1887,15 +1896,6 @@
 {
 "b": "og",
 "o": "Helium",
-"a": "Look & layout",
-"p": "helium/core/enable-bookmark-bar-settings",
-"w": "Turns on the \"NTP simplification: bookmark bar\" feature (it was off). It adds bookmarks bar options to the new tab page customization.",
-"s": "on",
-"n": ""
-},
-{
-"b": "og",
-"o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/core/force-paste-action",
 "w": "Adds \"Force paste\" to the page right-click menu and as a browser command. It types the clipboard text into the selected field, even on sites that block pasting.",
@@ -3264,6 +3264,16 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Look & layout",
+"p": "oganesson/ui/passwords-app-menu",
+"w": "Puts the \"Passwords and autofill\" submenu back in the three-dot menu, which Helium removes; oganesson keeps the password manager.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "Input & shortcuts",
 "p": "oganesson/ui/mouse-gestures-wiring",
 "w": "Right-button stroke, rocker and wheel mouse gestures work anywhere in the window, including internal pages, PDFs, tabs, toolbar and side panel.",
@@ -3419,6 +3429,16 @@
 "a": "Tabs & windows",
 "p": "oganesson/core/web-apps",
 "w": "Installed web apps open outside links in your default browser, and each app gets editable scope rules, exclusions and a custom start address.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/core/app-address-changes",
+"w": "In an installed web app, a page that tries to move to an address outside the app, by script, form, redirect or history change, asks the browser first: the address opens in your default browser and the app page stays where it is. A \"strict\" option per app sends every page outside its scope out this way, popups included.",
 "s": "on",
 "n": "",
 "own": 1
@@ -3635,6 +3655,16 @@
 "a": "Build & plumbing",
 "p": "windows/late/installer-host-7zip",
 "w": "Lets the Windows installer be packed on a Linux build machine, using its own copy of 7-Zip; nothing visible on its own.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Build & plumbing",
+"p": "windows/late/installer-snapshot-dep",
+"w": "Build fix for Windows: the installer's build waits for the V8 snapshot file it packs.",
 "s": "on",
 "n": "",
 "own": 1
