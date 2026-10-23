@@ -3549,13 +3549,13 @@
 {
 "b": "og",
 "o": "oganesson",
-"a": "Input & shortcuts",
-"p": "oganesson/ui/no-reading-mode-menu-item",
-"w": "Removes \"Open in reading mode\" from the right-click menu. Reading mode isn't built in (ungoogled-chromium removes it with the AI features), so the item opened an empty panel.",
+"a": "Look & layout",
+"p": "oganesson/core/reading-mode",
+"w": "Reading mode works without AI: \"Open in reading mode\" in the right-click menu shows the page's article in the side panel, without its navigation and sidebars. ungoogled-chromium removes reading mode with the AI features; oganesson puts it back without the Screen AI model, so pages are simplified with Mozilla's Readability, as in Firefox's Reader View, and PDFs, Google Docs and pages Readability can't read with Chromium's own rules.",
 "s": "on",
 "n": "",
 "own": 1,
-"t": "No reading mode in the menu"
+"t": "Reading mode without AI"
 },
 {
 "b": "og",
