@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "base/files/file_path.h"
 #include "base/functional/callback_forward.h"
@@ -46,6 +47,14 @@ class Platform {
                            const std::string& url,
                            std::string picture,
                            bool keep_picture) {}
+  // A tab another device sent, from the device named `from`. `url` is http or
+  // https.
+  virtual void OpenReceivedTab(const std::string& from,
+                               const GURL& url,
+                               const std::string& title) {}
+  // Another device, named `from`, asks to close the open tabs at `urls`.
+  virtual void CloseTabs(const std::string& from,
+                         const std::vector<GURL>& urls) {}
 };
 
 std::unique_ptr<Platform> CreatePlatform(Profile* profile);

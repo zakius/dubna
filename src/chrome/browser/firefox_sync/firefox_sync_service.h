@@ -9,6 +9,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "base/callback_list.h"
 #include "base/memory/raw_ptr.h"
@@ -19,6 +20,7 @@
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/prefs/pref_change_registrar.h"
 
+class GURL;
 class Profile;
 
 namespace base {
@@ -71,6 +73,19 @@ class FirefoxSyncService : public KeyedService {
   void SyncNow();
   void SetTypeEnabled(const std::string& name, bool enabled);
 
+  // The account's other devices that take tabs or close requests, for send
+  // menus: [{id, name, mobile, sendTab, closeTabs}], as of the last sync.
+  // Status observers hear when it changes.
+  const base::ListValue& devices() const { return devices_; }
+  // Sends a tab to `device_id`, one with sendTab in devices().
+  void SendTab(const std::string& device_id,
+               const GURL& url,
+               const std::string& title);
+  // Asks `device_id`, the id of a device in the synced tabs, to close its
+  // tabs at `urls`.
+  void CloseRemoteTabs(const std::string& device_id,
+                       const std::vector<GURL>& urls);
+
   // The account must sign in again: the avatar button shows "Sync paused".
   bool needs_sign_in() const { return needs_sign_in_; }
 
@@ -108,6 +123,10 @@ class FirefoxSyncService : public KeyedService {
                base::Value local);
   void OnAllLocal();
   void OnSynced(base::DictValue result);
+  // The commands other devices sent, from a sync's result.
+  void ApplyCommands(const base::ListValue& commands);
+  // Saves the account that send_tab and close_tabs return.
+  void OnDeviceCommandSent(base::DictValue result);
   void OnLocalChange();
   void SaveSecrets();
   void OnHistorySavingChanged();
@@ -145,6 +164,7 @@ class FirefoxSyncService : public KeyedService {
   // The running sync's {name: {state, local}}, as snapshots come in.
   base::DictValue pending_engines_;
   base::ListValue remote_tabs_;
+  base::ListValue devices_;
 
   bool syncing_ = false;
   bool sync_again_ = false;

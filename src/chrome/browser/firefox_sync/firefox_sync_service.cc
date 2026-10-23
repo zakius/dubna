@@ -74,6 +74,9 @@ constexpr char kAvatarUrlPref[] = "oganesson.firefox_sync.avatar_url";
 // The other devices' tabs from the last sync, shown from startup on: until
 // a sync sets them, History would offer Chromium's Google sign-in instead.
 constexpr char kRemoteTabsPref[] = "oganesson.firefox_sync.remote_tabs";
+// The account's other devices from the last sync, for send menus from
+// startup on.
+constexpr char kDevicesPref[] = "oganesson.firefox_sync.devices";
 constexpr char kSecretsPref[] = "oganesson.firefox_sync.secrets";
 constexpr char kLastSyncPref[] = "oganesson.firefox_sync.last_sync";
 constexpr char kDisabledTypesPref[] = "oganesson.firefox_sync.disabled_types";
@@ -112,7 +115,8 @@ constexpr net::NetworkTrafficAnnotationTag kTrafficAnnotation =
         description:
           "Signs in to the user's Mozilla account and syncs saved passwords, "
           "bookmarks, history, open tabs, addresses and payment methods with Firefox "
-          "Sync servers, end-to-end encrypted."
+          "Sync servers, end-to-end encrypted, and sends tabs to the account's "
+          "other devices and receives theirs."
         trigger: "The user signed in to Firefox Sync in settings."
         data: "Mozilla account tokens and encrypted password, bookmark, "
               "history, tab, address and payment card records."
@@ -404,6 +408,7 @@ void FirefoxSyncService::RegisterProfilePrefs(
   registry->RegisterStringPref(kNamePref, std::string());
   registry->RegisterStringPref(kAvatarUrlPref, std::string());
   registry->RegisterListPref(kRemoteTabsPref);
+  registry->RegisterListPref(kDevicesPref);
   registry->RegisterStringPref(kSecretsPref, std::string());
   registry->RegisterStringPref(kServerPref, std::string());
   registry->RegisterStringPref(kSyncServerPref, std::string());
@@ -446,6 +451,9 @@ void FirefoxSyncService::OnEncryptor(
     }
   }
   CreateAdapters();
+  if (signed_in()) {
+    devices_ = profile_->GetPrefs()->GetList(kDevicesPref).Clone();
+  }
   if (signed_in() && IsTypeEnabled("tabs")) {
     remote_tabs_ = profile_->GetPrefs()->GetList(kRemoteTabsPref).Clone();
     // Posted: this can run while the profile is created, before the browser
@@ -603,6 +611,8 @@ void FirefoxSyncService::SignOut() {
   profile_->GetPrefs()->ClearPref(kEmailPref);
   profile_->GetPrefs()->ClearPref(kNamePref);
   profile_->GetPrefs()->ClearPref(kAvatarUrlPref);
+  devices_.clear();
+  profile_->GetPrefs()->ClearPref(kDevicesPref);
   avatar_loader_.reset();
   platform_->ShowAccount(std::string(), std::string(), std::string(),
                          /*keep_picture=*/false);
@@ -886,6 +896,14 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
       }
     }
     ApplyProfile(ok->FindDict("profile"));
+    if (const base::ListValue* devices = ok->FindList("devices")) {
+      devices_ = devices->Clone();
+      profile_->GetPrefs()->SetList(kDevicesPref, devices_.Clone());
+    }
+    // The account saved below marks them handled.
+    if (const base::ListValue* commands = ok->FindList("commands")) {
+      ApplyCommands(*commands);
+    }
     SaveSecrets();
     profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
     error_.clear();
@@ -900,6 +918,90 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
     sync_again_ = false;
     ScheduleSync(base::TimeDelta());
   }
+}
+
+void FirefoxSyncService::ApplyCommands(const base::ListValue& commands) {
+  for (const base::Value& value : commands) {
+    const base::DictValue* command = value.GetIfDict();
+    if (!command) {
+      continue;
+    }
+    const std::string* type = command->FindString("type");
+    const std::string* from = command->FindString("from");
+    std::string sender = from ? *from : std::string();
+    if (type && *type == "tab") {
+      const std::string* url = command->FindString("url");
+      const std::string* title = command->FindString("title");
+      GURL gurl(url ? *url : std::string());
+      // Another device on the account chose it, but only web pages open:
+      // not javascript:, file: or the browser's own pages.
+      if (gurl.SchemeIsHTTPOrHTTPS()) {
+        platform_->OpenReceivedTab(sender, gurl, title ? *title : gurl.spec());
+      }
+    } else if (type && *type == "close") {
+      std::vector<GURL> urls;
+      if (const base::ListValue* list = command->FindList("urls")) {
+        for (const base::Value& url : *list) {
+          if (url.is_string()) {
+            urls.emplace_back(url.GetString());
+          }
+        }
+      }
+      if (!urls.empty()) {
+        platform_->CloseTabs(sender, urls);
+      }
+    }
+  }
+}
+
+void FirefoxSyncService::SendTab(const std::string& device_id,
+                                 const GURL& url,
+                                 const std::string& title) {
+  const std::string* account = secrets_.FindString("account");
+  if (!account || !url.SchemeIsHTTPOrHTTPS()) {
+    return;
+  }
+  base::DictValue args;
+  args.Set("account", *account);
+  args.Set("device", device_id);
+  args.Set("url", url.spec());
+  args.Set("title", title);
+  Call("send_tab", std::move(args),
+       base::BindOnce(&FirefoxSyncService::OnDeviceCommandSent,
+                      account_weak_factory_.GetWeakPtr()));
+}
+
+void FirefoxSyncService::CloseRemoteTabs(const std::string& device_id,
+                                         const std::vector<GURL>& urls) {
+  const std::string* account = secrets_.FindString("account");
+  if (!account || urls.empty()) {
+    return;
+  }
+  base::ListValue list;
+  for (const GURL& url : urls) {
+    list.Append(url.spec());
+  }
+  base::DictValue args;
+  args.Set("account", *account);
+  args.Set("device", device_id);
+  args.Set("urls", std::move(list));
+  Call("close_tabs", std::move(args),
+       base::BindOnce(&FirefoxSyncService::OnDeviceCommandSent,
+                      account_weak_factory_.GetWeakPtr()));
+}
+
+void FirefoxSyncService::OnDeviceCommandSent(base::DictValue result) {
+  const base::DictValue* ok = result.FindDict("ok");
+  const std::string* account = ok ? ok->FindString("account") : nullptr;
+  if (!account) {
+    // Not the sync's error: the sync itself may be fine.
+    const std::string* error = result.FindString("error");
+    LOG(WARNING) << "Firefox Sync: sending to a device failed: "
+                 << (error ? *error : "");
+    return;
+  }
+  secrets_.Set("account", *account);
+  SaveSecrets();
 }
 
 void FirefoxSyncService::SaveSecrets() {
