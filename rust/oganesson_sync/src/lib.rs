@@ -3,7 +3,7 @@
 
 //! Firefox Sync for passwords, bookmarks, history, open tabs, addresses and payment methods, over Mozilla's application-services crates.
 //! The browser loads this library and talks to it through three C functions:
-//! `og_init` (once), `og_call` (JSON in, JSON out, blocking; call it off the
+//! `og_init` (once, with this device's name and type), `og_call` (JSON in, JSON out, blocking; call it off the
 //! UI thread) and `og_free`.
 
 mod autofill_sync;
@@ -17,7 +17,7 @@ use std::collections::{HashMap, HashSet};
 use std::ffi::{c_char, c_void, CStr, CString};
 use std::path::Path;
 use std::panic::{catch_unwind, AssertUnwindSafe};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::{anyhow, bail, Result};
@@ -48,7 +48,17 @@ const REDIRECT_URI: &str = "https://accounts.firefox.com/oauth/success/3c49430b4
 
 const SYNC_SCOPE: &str = "https://identity.mozilla.com/apps/oldsync";
 const PROFILE_SCOPE: &str = "profile";
-const DEVICE_NAME: &str = "oganesson";
+
+/// This device in the account's device list, as the browser named it in
+/// `og_init`: "oganesson on <hostname>", desktop, or "tennessine on <phone>",
+/// mobile.
+static DEVICE: OnceLock<(String, sync15::DeviceType)> = OnceLock::new();
+
+fn device_config() -> DeviceConfig {
+    let (name, device_type) =
+        DEVICE.get().cloned().unwrap_or(("oganesson".into(), sync15::DeviceType::Desktop));
+    DeviceConfig { name, device_type, capabilities: vec![] }
+}
 
 fn config(server: Option<&str>, token_server: Option<&str>) -> Result<FxaConfig> {
     let env = |name| std::env::var(name).ok().filter(|v: &String| !v.is_empty());
@@ -71,13 +81,23 @@ fn config(server: Option<&str>, token_server: Option<&str>) -> Result<FxaConfig>
 static ACCOUNTS: Mutex<Option<HashMap<String, Arc<FirefoxAccount>>>> = Mutex::new(None);
 
 fn initialize(account: &FirefoxAccount) -> Result<FxaState> {
-    Ok(account.process_event(FxaEvent::Initialize {
-        device_config: DeviceConfig {
-            name: DEVICE_NAME.into(),
-            device_type: sync15::DeviceType::Desktop,
-            capabilities: vec![],
-        },
-    })?)
+    Ok(account.process_event(FxaEvent::Initialize { device_config: device_config() })?)
+}
+
+/// Renames a device registered under another name or type, such as every
+/// install's old "oganesson", desktop. `saved` is the account's saved state,
+/// which holds the server's last record of this device. A failure, such as
+/// no network, waits for the next start.
+fn update_device(account: &FirefoxAccount, saved: &str) {
+    let config = device_config();
+    let state: Value = serde_json::from_str(saved).unwrap_or_default();
+    let record = &state["server_local_device_info"];
+    if record["display_name"] == config.name.as_str()
+        && record["device_type"] == json!(config.device_type)
+    {
+        return;
+    }
+    let _ = account.initialize_device(&config.name, config.device_type, config.capabilities);
 }
 
 /// The profile's account, restored from the browser's saved state if it
@@ -91,6 +111,7 @@ fn account(profile: &str, saved: Option<&str>) -> Result<Arc<FirefoxAccount>> {
     let saved = saved.ok_or_else(|| anyhow!("not signed in"))?;
     let account = Arc::new(FirefoxAccount::from_json(saved)?);
     initialize(&account)?;
+    update_device(&account, saved);
     accounts.insert(profile.into(), account.clone());
     Ok(account)
 }
@@ -296,10 +317,13 @@ fn sync_with(profile: &str, args: &Value, cached: &mut MemoryCachedState) -> Res
     let refs: Vec<&dyn SyncEngine> = engines.iter().map(|(_, e)| e.as_ref() as &dyn SyncEngine).collect();
     let processor = if requested.contains_key("tabs") {
         Some(TabCommands {
-            settings: Settings {
-                fxa_device_id: account.get_current_device_id()?,
-                device_name: DEVICE_NAME.into(),
-                device_type: sync15::DeviceType::Desktop,
+            settings: {
+                let config = device_config();
+                Settings {
+                    fxa_device_id: account.get_current_device_id()?,
+                    device_name: config.name,
+                    device_type: config.device_type,
+                }
             },
         })
     } else {
@@ -369,10 +393,16 @@ fn dispatch(method: &str, args: &Value) -> Result<Value> {
     }
 }
 
-/// Registers the browser's HTTP callback and initializes NSS (a no-op if
-/// the browser already did). Call once.
+/// Registers the browser's HTTP callback and this device's name (UTF-8) and
+/// type, and initializes NSS (a no-op if the browser already did). Call once.
+///
+/// # Safety
+/// `device_name` is a NUL-terminated string.
 #[no_mangle]
-pub extern "C" fn og_init(http: http::HttpFn) {
+pub unsafe extern "C" fn og_init(http: http::HttpFn, device_name: *const c_char, mobile: bool) {
+    let name = CStr::from_ptr(device_name).to_string_lossy().into_owned();
+    let device_type = if mobile { sync15::DeviceType::Mobile } else { sync15::DeviceType::Desktop };
+    let _ = DEVICE.set((name, device_type));
     nss::ensure_initialized();
     http::init(http);
 }

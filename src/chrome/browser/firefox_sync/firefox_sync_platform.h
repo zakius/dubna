@@ -54,6 +54,10 @@ std::unique_ptr<Platform> CreatePlatform(Profile* profile);
 // Windows). Blocks.
 base::FilePath SyncLibraryPath();
 
+// This device's name in the account's device list, which Firefox shows:
+// "oganesson on <hostname>", "tennessine on <phone name>". Blocks.
+std::string DeviceName();
+
 }  // namespace firefox_sync
 
 #endif  // CHROME_BROWSER_FIREFOX_SYNC_FIREFOX_SYNC_PLATFORM_H_

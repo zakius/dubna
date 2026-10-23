@@ -22,6 +22,7 @@
 #include "base/task/sequenced_task_runner.h"
 #include "base/task/thread_pool.h"
 #include "base/time/time.h"
+#include "build/build_config.h"
 #include "chrome/browser/autofill/personal_data_manager_factory.h"
 #include "chrome/browser/bookmarks/bookmark_model_factory.h"
 #include "chrome/browser/browser_process.h"
@@ -130,7 +131,7 @@ using HttpFn = void (*)(void* ctx,
                         void* out,
                         HttpSetFn set);
 struct Library {
-  void (*init)(HttpFn http);
+  void (*init)(HttpFn http, const char* device_name, bool mobile);
   char* (*call)(void* ctx, const char* method, const char* args);
   void (*free)(char* result);
 };
@@ -159,7 +160,7 @@ DISABLE_CFI_ICALL const Library* LoadSyncLibrary() {
     return nullptr;
   }
   auto* lib = new Library{
-      reinterpret_cast<void (*)(HttpFn)>(
+      reinterpret_cast<void (*)(HttpFn, const char*, bool)>(
           base::GetFunctionPointerFromNativeLibrary(native, "og_init")),
       reinterpret_cast<char* (*)(void*, const char*, const char*)>(
           base::GetFunctionPointerFromNativeLibrary(native, "og_call")),
@@ -171,7 +172,7 @@ DISABLE_CFI_ICALL const Library* LoadSyncLibrary() {
     LOG(WARNING) << "Firefox Sync is unavailable: " << LoadError();
     return nullptr;
   }
-  lib->init(&HttpCallback);
+  lib->init(&HttpCallback, DeviceName().c_str(), BUILDFLAG(IS_ANDROID));
   return lib;
 }
 
