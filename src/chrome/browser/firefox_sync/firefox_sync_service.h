@@ -77,6 +77,15 @@ class FirefoxSyncService : public KeyedService {
   // menus: [{id, name, mobile, sendTab, closeTabs}], as of the last sync.
   // Status observers hear when it changes.
   const base::ListValue& devices() const { return devices_; }
+  // Fetches the tabs and close requests other devices sent, without a sync.
+  // The browser calls it when one of its windows comes to the front; it does
+  // nothing within a minute of the last fetch. The receive interval runs it
+  // too.
+  void PollCommands();
+  // How often PollCommands runs by itself, in minutes: 15, 30 or 60, or 0 for
+  // only with each sync.
+  void SetReceiveInterval(int minutes);
+
   // Sends a tab to `device_id`, one with sendTab in devices().
   void SendTab(const std::string& device_id,
                const GURL& url,
@@ -90,7 +99,7 @@ class FirefoxSyncService : public KeyedService {
   bool needs_sign_in() const { return needs_sign_in_; }
 
   // {signedIn, email, name, syncing, lastSync (ms), error, needsSignIn, server,
-  // syncServer, canSignIn, signingIn, types:
+  // syncServer, canSignIn, signingIn, receiveInterval (minutes), types:
   // [{name, label, supported, enabled, count?, error?}]} for settings.
   base::DictValue GetStatus() const;
   base::CallbackListSubscription AddStatusObserver(
@@ -125,6 +134,9 @@ class FirefoxSyncService : public KeyedService {
   void OnSynced(base::DictValue result);
   // The commands other devices sent, from a sync's result.
   void ApplyCommands(const base::ListValue& commands);
+  void OnPolled(base::DictValue result);
+  // Runs PollCommands at the receive interval, if it isn't 0.
+  void StartReceiveTimer();
   // Saves the account that send_tab and close_tabs return.
   void OnDeviceCommandSent(base::DictValue result);
   void OnLocalChange();
@@ -177,6 +189,10 @@ class FirefoxSyncService : public KeyedService {
   std::unique_ptr<SigninWatcher> signin_watcher_;
   std::unique_ptr<network::SimpleURLLoader> avatar_loader_;
   base::RepeatingTimer periodic_;
+  base::RepeatingTimer receive_timer_;
+  bool polling_ = false;
+  // The last fetch of other devices' commands, by itself or with a sync.
+  base::TimeTicks last_poll_;
   base::OneShotTimer soon_;
   base::RepeatingClosureList status_observers_;
   // For replies of the signed-in account's operations (sign-in, syncs):

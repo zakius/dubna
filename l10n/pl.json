@@ -188,5 +188,25 @@
     "name": "IDS_FIREFOX_SYNC_TABS_PROMO_BUTTON",
     "source": "Open Sync settings",
     "message": "Otwórz ustawienia synchronizacji"
+  },
+  {
+    "name": "IDS_FIREFOX_SYNC_RECEIVE_TABS",
+    "source": "Check for tabs from other devices",
+    "message": "Sprawdzaj karty z innych urządzeń"
+  },
+  {
+    "name": "IDS_FIREFOX_SYNC_RECEIVE_TABS_MINUTES",
+    "source": "Every <ph name=\"MINUTES\">$1<ex>15</ex></ph> minutes",
+    "message": "Co <ph name=\"MINUTES\">$1<ex>15</ex></ph> minut"
+  },
+  {
+    "name": "IDS_FIREFOX_SYNC_RECEIVE_TABS_HOUR",
+    "source": "Every hour",
+    "message": "Co godzinę"
+  },
+  {
+    "name": "IDS_FIREFOX_SYNC_RECEIVE_TABS_SYNC_ONLY",
+    "source": "Only when syncing",
+    "message": "Tylko podczas synchronizacji"
   }
 ]

@@ -115,4 +115,16 @@
   <message name="IDS_FIREFOX_SYNC_TABS_PROMO_BUTTON" desc="History page, Tabs from other devices: button that opens the Sync settings.">
     Open Sync settings
   </message>
+  <message name="IDS_FIREFOX_SYNC_RECEIVE_TABS" desc="Settings, Sync: label of the dropdown that sets how often the browser checks for tabs, and requests to close tabs, that the user's other devices sent it.">
+    Check for tabs from other devices
+  </message>
+  <message name="IDS_FIREFOX_SYNC_RECEIVE_TABS_MINUTES" desc="Settings, Sync: option of the dropdown for checking for tabs from other devices.">
+    Every <ph name="MINUTES">$1<ex>15</ex></ph> minutes
+  </message>
+  <message name="IDS_FIREFOX_SYNC_RECEIVE_TABS_HOUR" desc="Settings, Sync: option of the dropdown for checking for tabs from other devices.">
+    Every hour
+  </message>
+  <message name="IDS_FIREFOX_SYNC_RECEIVE_TABS_SYNC_ONLY" desc="Settings, Sync: option of the dropdown for checking for tabs from other devices: only when the browser syncs, about every 30 minutes and after changes.">
+    Only when syncing
+  </message>
 </grit-part>

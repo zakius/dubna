@@ -424,6 +424,14 @@ fn commands_json(account: &FirefoxAccount) -> Value {
         .collect()
 }
 
+/// The commands other devices sent, without a sync. In: the saved account.
+/// Out: the account to save, and `commands` as `sync` returns them.
+fn poll_commands(args: &Value) -> Result<Value> {
+    let account = account(str_arg(args, "profile")?, args["account"].as_str())?;
+    let commands = commands_json(&account);
+    Ok(json!({ "account": account.to_json()?, "commands": commands }))
+}
+
 /// Sends a tab to `device`. In: the saved account, `device`, `url` and
 /// `title`. Out: the account to save.
 fn send_tab(args: &Value) -> Result<Value> {
@@ -483,6 +491,7 @@ fn dispatch(method: &str, args: &Value) -> Result<Value> {
         "complete_signin" => complete_signin(args),
         "sync" => sync(args),
         "signout" => signout(args),
+        "poll_commands" => poll_commands(args),
         "send_tab" => send_tab(args),
         "close_tabs" => close_tabs(args),
         _ => bail!("unknown method {method}"),
