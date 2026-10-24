@@ -32,6 +32,7 @@
 #include "chrome/browser/firefox_sync/firefox_sync_platform.h"
 #include "chrome/browser/firefox_sync/history_adapter.h"
 #include "chrome/browser/firefox_sync/passwords_adapter.h"
+#include "chrome/browser/firefox_sync/remote_tabs.h"
 #include "chrome/browser/history/history_service_factory.h"
 #include "chrome/browser/password_manager/factories/profile_password_store_factory.h"
 #include "chrome/browser/profiles/profile.h"
@@ -393,6 +394,7 @@ FirefoxSyncService::FirefoxSyncService(Profile* profile)
   }
   // Before OnEncryptor, which may run right away.
   platform_ = CreatePlatform(profile_);
+  synced_sessions_ = std::make_unique<RemoteTabs>(profile_);
   // Loads the library and proves it works.
   Call("version", {}, base::BindOnce([](base::DictValue result) {
          if (const std::string* version = result.FindString("ok")) {
@@ -429,7 +431,9 @@ void FirefoxSyncService::RegisterProfilePrefs(
 }
 
 void FirefoxSyncService::Shutdown() {
-  platform_->ClearRemoteTabs();
+  // The SessionSyncService still exists: the factory depends on it.
+  synced_sessions_->Clear();
+  synced_sessions_.reset();
   platform_.reset();
   history_saving_.RemoveAll();
   adapters_.clear();
@@ -472,8 +476,8 @@ void FirefoxSyncService::OnEncryptor(
     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE, base::BindOnce(
                        [](base::WeakPtr<FirefoxSyncService> service) {
-                         if (service && service->platform_) {
-                           service->platform_->ShowRemoteTabs(
+                         if (service && service->synced_sessions_) {
+                           service->synced_sessions_->Update(
                                service->remote_tabs_);
                          }
                        },
@@ -646,7 +650,7 @@ void FirefoxSyncService::SignOut() {
 void FirefoxSyncService::ClearRemoteTabs() {
   remote_tabs_.clear();
   profile_->GetPrefs()->ClearPref(kRemoteTabsPref);
-  platform_->ClearRemoteTabs();
+  synced_sessions_->Clear();
 }
 
 void FirefoxSyncService::ApplyProfile(const base::DictValue* account) {
@@ -899,7 +903,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
         if (name == "tabs" && ops) {
           remote_tabs_ = ops->Clone();
           profile_->GetPrefs()->SetList(kRemoteTabsPref, remote_tabs_.Clone());
-          platform_->ShowRemoteTabs(remote_tabs_);
+          synced_sessions_->Update(remote_tabs_);
         }
         if (adapter != adapters_.end() && ops && IsTypeEnabled(name)) {
           adapter->second->Apply(*ops);

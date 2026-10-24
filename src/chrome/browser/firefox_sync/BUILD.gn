@@ -22,6 +22,8 @@ source_set("firefox_sync") {
     "history_adapter.h",
     "passwords_adapter.cc",
     "passwords_adapter.h",
+    "remote_tabs.cc",
+    "remote_tabs.h",
     "sync_adapter.h",
   ]
   public_deps = [ "//chrome/browser:browser_public_dependencies" ]
@@ -42,6 +44,10 @@ source_set("firefox_sync") {
     "//components/password_manager/core/browser",
     "//components/pref_registry",
     "//components/prefs",
+    "//components/sessions",
+    "//components/sync/protocol",
+    "//components/sync_device_info",
+    "//components/sync_sessions",
     "//content/public/browser",
     "//net",
     "//services/network/public/cpp",
