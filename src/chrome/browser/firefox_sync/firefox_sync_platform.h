@@ -35,11 +35,6 @@ class Platform {
       base::RepeatingClosure local_changed) = 0;
   // A new foreground tab at `url`, or null when there is no window for one.
   virtual content::WebContents* OpenTab(const GURL& url) = 0;
-  // The tabs engine's result, the other devices' tabs, for the browser's own
-  // views of synced tabs.
-  virtual void ShowRemoteTabs(const base::ListValue& devices) {}
-  // Hands those views back to Chromium (signed out, or tabs turned off).
-  virtual void ClearRemoteTabs() {}
   // The account on the browser profile, like a Google one: `name`, and the
   // picture downloaded from `url` (`picture` holds its bytes, empty for
   // none). With `keep_picture`, only the name changes.

@@ -43,6 +43,7 @@ namespace firefox_sync {
 
 class HttpBridge;
 class Platform;
+class RemoteTabs;
 class SigninWatcher;
 class SyncAdapter;
 
@@ -160,8 +161,8 @@ class FirefoxSyncService : public KeyedService {
   bool HasServer() const;
 
   const raw_ptr<Profile> profile_;
-  // The browser around Sync: tabs, the sign-in tab, synced tabs' views and
-  // the account on the profile.
+  // The browser around Sync: tabs, the sign-in tab, tabs other devices send
+  // or close, and the account on the profile.
   std::unique_ptr<Platform> platform_;
   scoped_refptr<base::SequencedTaskRunner> sync_runner_;
   scoped_refptr<HttpBridge> http_;
@@ -176,6 +177,9 @@ class FirefoxSyncService : public KeyedService {
   // The running sync's {name: {state, local}}, as snapshots come in.
   base::DictValue pending_engines_;
   base::ListValue remote_tabs_;
+  // The same tabs as Chromium's synced sessions, for the browser's views of
+  // other devices' tabs.
+  std::unique_ptr<RemoteTabs> synced_sessions_;
   base::ListValue devices_;
 
   bool syncing_ = false;
