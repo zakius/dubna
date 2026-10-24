@@ -3313,6 +3313,17 @@
 "t": "Firefox-compatible Sync"
 },
 {
+"b": "both",
+"o": "dubna",
+"a": "Sync",
+"p": "dubna/patches/firefox-sync-remote-tabs",
+"w": "Lets Chromium's synced-sessions service hand out Firefox Sync's tabs from your other devices while Chromium's own tab sync is off, so every place that lists other devices' tabs shows them.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Other devices' tabs as synced sessions"
+},
+{
 "b": "og",
 "o": "oganesson",
 "a": "Sync",
@@ -3513,6 +3524,28 @@
 "n": "",
 "own": 1,
 "t": "Tabs from your other devices"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Sync",
+"p": "oganesson/ui/send-to-device",
+"w": "Send to device in the page, link and tab context menus sends the page or link to one of your Firefox Sync devices, Firefox included, or to all of them. A tab sent to this browser opens in the background with a notification that switches to it; it arrives at once through Mozilla's push server (Settings > Sync > Receive tabs instantly, on by default), else when a window comes to the front and every 15, 30 or 60 minutes, as set in Settings > Sync.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Send tabs to your devices"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Sync",
+"p": "oganesson/ui/close-synced-tab",
+"w": "In History's Tabs from other devices, each tab of a device that takes close requests gets a close button. Firefox names tabs only by address, so it closes every copy of that tab there; requests from Firefox close this browser's tabs the same way.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Close tabs on other devices"
 },
 {
 "b": "og",
@@ -3989,6 +4022,39 @@
 "n": "",
 "own": 1,
 "t": "Sync account row in Settings"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Sync",
+"p": "tennessine/firefox-sync-send-tabs",
+"w": "Send to your device in the share sheet and in a link's long-press menu sends the page or link to a device on your Firefox account. A tab sent to the phone opens in the background with a notification, \"Tab from <device>\", that switches to it. Close requests from Firefox close the open tabs at those addresses.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Send tabs to your devices"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Sync",
+"p": "tennessine/firefox-sync-receive-tabs",
+"w": "Sent tabs and close requests are fetched each time the browser comes to the front, and in the background every 15, 30 or 60 minutes, or only with each sync, as set under Settings > Firefox Sync.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Receive tabs in the background"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Sync",
+"p": "tennessine/recent-tabs-empty-state",
+"w": "Recent tabs lists your other devices' open tabs, one section per device, and hides its \"sign in on other devices\" picture while any show.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Other devices' tabs in Recent tabs"
 },
 {
 "b": "ts",
