@@ -814,6 +814,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "autofill",
+ "base64 0.22.1",
  "db-crypto",
  "fxa-client",
  "interrupt-support",

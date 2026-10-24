@@ -21,8 +21,9 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::{anyhow, bail, Result};
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use fxa_client::{
-    CloseTabsResult, Device, DeviceCapability, DeviceConfig, FirefoxAccount, FxaConfig, FxaError,
+    CloseTabsResult, Device, DeviceCapability, DeviceConfig, DevicePushSubscription, FirefoxAccount, FxaConfig, FxaError,
     FxaEvent, FxaServer, FxaState, IncomingDeviceCommand,
 };
 use serde_json::{json, Value};
@@ -432,6 +433,31 @@ fn poll_commands(args: &Value) -> Result<Value> {
     Ok(json!({ "account": account.to_json()?, "commands": commands }))
 }
 
+/// Registers `endpoint`, this device's URL on a push server, with the account:
+/// the accounts server then pushes a notice there whenever another device
+/// sends this one a tab or a close request. The keys are new each time and not
+/// kept, as a notice only starts a fetch and its payload is never decrypted.
+/// Nothing changes if the account already has `endpoint` for this device.
+/// Out: the account to save.
+fn subscribe_push(args: &Value) -> Result<Value> {
+    let account = account(str_arg(args, "profile")?, args["account"].as_str())?;
+    let endpoint = str_arg(args, "endpoint")?;
+    let current = account.get_devices(false)?.into_iter().find(|d| d.is_current_device);
+    let registered = current.is_some_and(|d| {
+        !d.push_endpoint_expired
+            && d.push_subscription.is_some_and(|s| s.endpoint == endpoint)
+    });
+    if !registered {
+        let (keys, auth_secret) = rc_crypto::ece::generate_keypair_and_auth_secret()?;
+        account.set_push_subscription(DevicePushSubscription {
+            endpoint: endpoint.into(),
+            public_key: URL_SAFE_NO_PAD.encode(keys.raw_components()?.public_key()),
+            auth_key: URL_SAFE_NO_PAD.encode(auth_secret),
+        })?;
+    }
+    Ok(json!({ "account": account.to_json()? }))
+}
+
 /// Sends a tab to `device`. In: the saved account, `device`, `url` and
 /// `title`. Out: the account to save.
 fn send_tab(args: &Value) -> Result<Value> {
@@ -492,6 +518,7 @@ fn dispatch(method: &str, args: &Value) -> Result<Value> {
         "sync" => sync(args),
         "signout" => signout(args),
         "poll_commands" => poll_commands(args),
+        "subscribe_push" => subscribe_push(args),
         "send_tab" => send_tab(args),
         "close_tabs" => close_tabs(args),
         _ => bail!("unknown method {method}"),

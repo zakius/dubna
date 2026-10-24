@@ -483,6 +483,10 @@ void FirefoxSyncService::OnEncryptor(
                        },
                        account_weak_factory_.GetWeakPtr()));
   }
+  if (signed_in()) {
+    platform_->OnSignedIn(true);
+    SubscribePush();
+  }
   periodic_.Start(FROM_HERE, kSyncInterval,
                   base::BindRepeating(&FirefoxSyncService::SyncNow,
                                       base::Unretained(this)));
@@ -604,6 +608,8 @@ void FirefoxSyncService::OnCompleteSignIn(base::DictValue result) {
   error_.clear();
   needs_sign_in_ = false;
   SaveSecrets();
+  platform_->OnSignedIn(true);
+  SubscribePush();
   SyncNow();
 }
 
@@ -621,6 +627,7 @@ void FirefoxSyncService::SignOut() {
   syncing_ = false;
   sync_again_ = false;
   polling_ = false;
+  poll_again_ = false;
   last_poll_ = base::TimeTicks();
   retry_after_ = base::Time();
   pending_engines_ = base::DictValue();
@@ -644,6 +651,7 @@ void FirefoxSyncService::SignOut() {
   needs_sign_in_ = false;
   type_status_.clear();
   ClearRemoteTabs();
+  platform_->OnSignedIn(false);
   NotifyStatus();
 }
 
@@ -992,6 +1000,13 @@ void FirefoxSyncService::PollCommands() {
 
 void FirefoxSyncService::OnPolled(base::DictValue result) {
   polling_ = false;
+  if (poll_again_) {
+    poll_again_ = false;
+    last_poll_ = base::TimeTicks();
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, base::BindOnce(&FirefoxSyncService::PollCommands,
+                                  account_weak_factory_.GetWeakPtr()));
+  }
   const base::DictValue* ok = result.FindDict("ok");
   const std::string* account = ok ? ok->FindString("account") : nullptr;
   if (!account) {
@@ -1007,6 +1022,33 @@ void FirefoxSyncService::OnPolled(base::DictValue result) {
   if (const base::ListValue* commands = ok->FindList("commands")) {
     ApplyCommands(*commands);
   }
+}
+
+void FirefoxSyncService::SetPushEndpoint(const std::string& endpoint) {
+  push_endpoint_ = endpoint;
+  SubscribePush();
+}
+
+void FirefoxSyncService::SubscribePush() {
+  const std::string* account = secrets_.FindString("account");
+  if (push_endpoint_.empty() || !account || !encryptor_) {
+    return;
+  }
+  base::DictValue args;
+  args.Set("account", *account);
+  args.Set("endpoint", push_endpoint_);
+  Call("subscribe_push", std::move(args),
+       base::BindOnce(&FirefoxSyncService::OnAccountChanged,
+                      account_weak_factory_.GetWeakPtr()));
+}
+
+void FirefoxSyncService::OnPushReceived() {
+  if (polling_) {
+    poll_again_ = true;
+    return;
+  }
+  last_poll_ = base::TimeTicks();
+  PollCommands();
 }
 
 void FirefoxSyncService::SetReceiveInterval(int minutes) {
@@ -1040,7 +1082,7 @@ void FirefoxSyncService::SendTab(const std::string& device_id,
   args.Set("url", url.spec());
   args.Set("title", title);
   Call("send_tab", std::move(args),
-       base::BindOnce(&FirefoxSyncService::OnDeviceCommandSent,
+       base::BindOnce(&FirefoxSyncService::OnAccountChanged,
                       account_weak_factory_.GetWeakPtr()));
 }
 
@@ -1059,18 +1101,17 @@ void FirefoxSyncService::CloseRemoteTabs(const std::string& device_id,
   args.Set("device", device_id);
   args.Set("urls", std::move(list));
   Call("close_tabs", std::move(args),
-       base::BindOnce(&FirefoxSyncService::OnDeviceCommandSent,
+       base::BindOnce(&FirefoxSyncService::OnAccountChanged,
                       account_weak_factory_.GetWeakPtr()));
 }
 
-void FirefoxSyncService::OnDeviceCommandSent(base::DictValue result) {
+void FirefoxSyncService::OnAccountChanged(base::DictValue result) {
   const base::DictValue* ok = result.FindDict("ok");
   const std::string* account = ok ? ok->FindString("account") : nullptr;
   if (!account) {
     // Not the sync's error: the sync itself may be fine.
     const std::string* error = result.FindString("error");
-    LOG(WARNING) << "Firefox Sync: sending to a device failed: "
-                 << (error ? *error : "");
+    LOG(WARNING) << "Firefox Sync: " << (error ? *error : "");
     return;
   }
   secrets_.Set("account", *account);
