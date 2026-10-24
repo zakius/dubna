@@ -42,6 +42,8 @@ class Platform {
                            const std::string& url,
                            std::string picture,
                            bool keep_picture) {}
+  // Firefox Sync signed in, also at startup with a saved account, or out.
+  virtual void OnSignedIn(bool signed_in) {}
   // A tab another device sent, from the device named `from`. `url` is http or
   // https.
   virtual void OpenReceivedTab(const std::string& from,

@@ -87,6 +87,14 @@ class FirefoxSyncService : public KeyedService {
   // only with each sync.
   void SetReceiveInterval(int minutes);
 
+  // This device's URL on a push server, from the browser's connection to it:
+  // registered with the account, which then pushes a notice there for each
+  // tab or close request another device sends. Registered again after each
+  // sign-in; empty for none.
+  void SetPushEndpoint(const std::string& endpoint);
+  // Such a notice came: fetches at once, however recent the last fetch.
+  void OnPushReceived();
+
   // Sends a tab to `device_id`, one with sendTab in devices().
   void SendTab(const std::string& device_id,
                const GURL& url,
@@ -138,8 +146,9 @@ class FirefoxSyncService : public KeyedService {
   void OnPolled(base::DictValue result);
   // Runs PollCommands at the receive interval, if it isn't 0.
   void StartReceiveTimer();
-  // Saves the account that send_tab and close_tabs return.
-  void OnDeviceCommandSent(base::DictValue result);
+  void SubscribePush();
+  // Saves the account that send_tab, close_tabs and subscribe_push return.
+  void OnAccountChanged(base::DictValue result);
   void OnLocalChange();
   void SaveSecrets();
   void OnHistorySavingChanged();
@@ -195,6 +204,9 @@ class FirefoxSyncService : public KeyedService {
   base::RepeatingTimer periodic_;
   base::RepeatingTimer receive_timer_;
   bool polling_ = false;
+  // A push came during a fetch, which may have missed what it announced.
+  bool poll_again_ = false;
+  std::string push_endpoint_;
   // The last fetch of other devices' commands, by itself or with a sync.
   base::TimeTicks last_poll_;
   base::OneShotTimer soon_;
