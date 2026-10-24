@@ -3,6 +3,7 @@
 
 #include "chrome/browser/firefox_sync/firefox_sync_service.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "base/barrier_closure.h"
@@ -85,6 +86,14 @@ constexpr char kServerPref[] = "oganesson.firefox_sync.server";
 // A self-hosted sync storage server's URL; empty for the accounts server's.
 constexpr char kSyncServerPref[] = "oganesson.firefox_sync.sync_server";
 constexpr char kMozillaServer[] = "https://accounts.firefox.com";
+// How often to fetch the tabs and close requests other devices sent, in
+// minutes; 0 for only with each sync. They wait on the accounts server for
+// up to 28 days, so a later fetch loses none.
+constexpr char kReceiveIntervalPref[] = "oganesson.firefox_sync.receive_interval";
+constexpr int kReceiveIntervals[] = {0, 15, 30, 60};
+// PollCommands does nothing for this long after the last fetch: windows can
+// come to the front many times a minute.
+constexpr base::TimeDelta kMinPollInterval = base::Minutes(1);
 
 // The types Firefox Sync has and application-services has engines for, by
 // Sync collection name, in settings order. `supported` ones have a browser
@@ -409,6 +418,7 @@ void FirefoxSyncService::RegisterProfilePrefs(
   registry->RegisterStringPref(kAvatarUrlPref, std::string());
   registry->RegisterListPref(kRemoteTabsPref);
   registry->RegisterListPref(kDevicesPref);
+  registry->RegisterIntegerPref(kReceiveIntervalPref, 15);
   registry->RegisterStringPref(kSecretsPref, std::string());
   registry->RegisterStringPref(kServerPref, std::string());
   registry->RegisterStringPref(kSyncServerPref, std::string());
@@ -425,6 +435,7 @@ void FirefoxSyncService::Shutdown() {
   adapters_.clear();
   signin_watcher_.reset();
   periodic_.Stop();
+  receive_timer_.Stop();
   soon_.Stop();
   account_weak_factory_.InvalidateWeakPtrs();
   weak_factory_.InvalidateWeakPtrs();
@@ -471,6 +482,7 @@ void FirefoxSyncService::OnEncryptor(
   periodic_.Start(FROM_HERE, kSyncInterval,
                   base::BindRepeating(&FirefoxSyncService::SyncNow,
                                       base::Unretained(this)));
+  StartReceiveTimer();
   if (signed_in()) {
     ScheduleSync(kStartupDelay);
   }
@@ -604,6 +616,8 @@ void FirefoxSyncService::SignOut() {
   soon_.Stop();
   syncing_ = false;
   sync_again_ = false;
+  polling_ = false;
+  last_poll_ = base::TimeTicks();
   retry_after_ = base::Time();
   pending_engines_ = base::DictValue();
   secrets_ = base::DictValue();
@@ -903,6 +917,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
     // The account saved below marks them handled.
     if (const base::ListValue* commands = ok->FindList("commands")) {
       ApplyCommands(*commands);
+      last_poll_ = base::TimeTicks::Now();
     }
     SaveSecrets();
     profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
@@ -951,6 +966,60 @@ void FirefoxSyncService::ApplyCommands(const base::ListValue& commands) {
         platform_->CloseTabs(sender, urls);
       }
     }
+  }
+}
+
+void FirefoxSyncService::PollCommands() {
+  const std::string* account = secrets_.FindString("account");
+  // A sync under way fetches them too.
+  if (!account || !encryptor_ || polling_ || syncing_ ||
+      (!last_poll_.is_null() &&
+       base::TimeTicks::Now() - last_poll_ < kMinPollInterval)) {
+    return;
+  }
+  polling_ = true;
+  last_poll_ = base::TimeTicks::Now();
+  base::DictValue args;
+  args.Set("account", *account);
+  Call("poll_commands", std::move(args),
+       base::BindOnce(&FirefoxSyncService::OnPolled,
+                      account_weak_factory_.GetWeakPtr()));
+}
+
+void FirefoxSyncService::OnPolled(base::DictValue result) {
+  polling_ = false;
+  const base::DictValue* ok = result.FindDict("ok");
+  const std::string* account = ok ? ok->FindString("account") : nullptr;
+  if (!account) {
+    // The next sync shows the error, if it lasts.
+    const std::string* error = result.FindString("error");
+    LOG(WARNING) << "Firefox Sync: fetching sent tabs failed: "
+                 << (error ? *error : "");
+    return;
+  }
+  secrets_.Set("account", *account);
+  // Saved first: the account marks the commands handled.
+  SaveSecrets();
+  if (const base::ListValue* commands = ok->FindList("commands")) {
+    ApplyCommands(*commands);
+  }
+}
+
+void FirefoxSyncService::SetReceiveInterval(int minutes) {
+  if (std::ranges::contains(kReceiveIntervals, minutes)) {
+    profile_->GetPrefs()->SetInteger(kReceiveIntervalPref, minutes);
+    StartReceiveTimer();
+  }
+  NotifyStatus();
+}
+
+void FirefoxSyncService::StartReceiveTimer() {
+  receive_timer_.Stop();
+  const int minutes = profile_->GetPrefs()->GetInteger(kReceiveIntervalPref);
+  if (minutes > 0) {
+    receive_timer_.Start(FROM_HERE, base::Minutes(minutes),
+                         base::BindRepeating(&FirefoxSyncService::PollCommands,
+                                             base::Unretained(this)));
   }
 }
 
@@ -1059,6 +1128,8 @@ base::DictValue FirefoxSyncService::GetStatus() const {
   status.Set("syncServer", profile_->GetPrefs()->GetString(kSyncServerPref));
   status.Set("canSignIn", HasServer());
   status.Set("signingIn", !!signin_watcher_);
+  status.Set("receiveInterval",
+             profile_->GetPrefs()->GetInteger(kReceiveIntervalPref));
   base::ListValue types;
   for (const DataType& type : kTypes) {
     base::DictValue entry;
