@@ -81,8 +81,10 @@ class FirefoxSyncService : public KeyedService {
   // Fetches the tabs and close requests other devices sent, without a sync.
   // The browser calls it when one of its windows comes to the front; it does
   // nothing within a minute of the last fetch. The receive interval runs it
-  // too.
-  void PollCommands();
+  // too. `done` runs once what was fetched is handled, by this fetch, one
+  // already under way or a sync under way, or at once when there's nothing
+  // to fetch: a background task can end then.
+  void PollCommands(base::OnceClosure done = base::OnceClosure());
   // How often PollCommands runs by itself, in minutes: 15, 30 or 60, or 0 for
   // only with each sync.
   void SetReceiveInterval(int minutes);
@@ -144,6 +146,8 @@ class FirefoxSyncService : public KeyedService {
   // The commands other devices sent, from a sync's result.
   void ApplyCommands(const base::ListValue& commands);
   void OnPolled(base::DictValue result);
+  // Runs PollCommands' `done` callbacks.
+  void PollDone();
   // Runs PollCommands at the receive interval, if it isn't 0.
   void StartReceiveTimer();
   void SubscribePush();
@@ -206,6 +210,7 @@ class FirefoxSyncService : public KeyedService {
   bool polling_ = false;
   // A push came during a fetch, which may have missed what it announced.
   bool poll_again_ = false;
+  std::vector<base::OnceClosure> poll_done_;
   std::string push_endpoint_;
   // The last fetch of other devices' commands, by itself or with a sync.
   base::TimeTicks last_poll_;

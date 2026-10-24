@@ -628,6 +628,7 @@ void FirefoxSyncService::SignOut() {
   sync_again_ = false;
   polling_ = false;
   poll_again_ = false;
+  PollDone();
   last_poll_ = base::TimeTicks();
   retry_after_ = base::Time();
   pending_engines_ = base::DictValue();
@@ -889,6 +890,11 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
         secrets_.Set(field, *value);
       }
     }
+    // Before the tabs, whose views read it for their close buttons.
+    if (const base::ListValue* devices = ok->FindList("devices")) {
+      devices_ = devices->Clone();
+      profile_->GetPrefs()->SetList(kDevicesPref, devices_.Clone());
+    }
     base::DictValue* engine_states = secrets_.EnsureDict("engines");
     if (const base::DictValue* engines = ok->FindDict("engines")) {
       for (auto [name, value] : *engines) {
@@ -922,10 +928,6 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
       }
     }
     ApplyProfile(ok->FindDict("profile"));
-    if (const base::ListValue* devices = ok->FindList("devices")) {
-      devices_ = devices->Clone();
-      profile_->GetPrefs()->SetList(kDevicesPref, devices_.Clone());
-    }
     // The account saved below marks them handled.
     if (const base::ListValue* commands = ok->FindList("commands")) {
       ApplyCommands(*commands);
@@ -940,6 +942,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
   }
   // Drops the history adapter if saving history was turned off meanwhile.
   CreateAdapters();
+  PollDone();
   NotifyStatus();
   if (sync_again_) {
     sync_again_ = false;
@@ -981,12 +984,20 @@ void FirefoxSyncService::ApplyCommands(const base::ListValue& commands) {
   }
 }
 
-void FirefoxSyncService::PollCommands() {
+void FirefoxSyncService::PollCommands(base::OnceClosure done) {
+  if (done) {
+    poll_done_.push_back(std::move(done));
+  }
+  // A fetch or a sync under way runs `done` when it ends: a sync fetches
+  // them too.
+  if (polling_ || syncing_) {
+    return;
+  }
   const std::string* account = secrets_.FindString("account");
-  // A sync under way fetches them too.
-  if (!account || !encryptor_ || polling_ || syncing_ ||
+  if (!account || !encryptor_ ||
       (!last_poll_.is_null() &&
        base::TimeTicks::Now() - last_poll_ < kMinPollInterval)) {
+    PollDone();
     return;
   }
   polling_ = true;
@@ -1014,6 +1025,7 @@ void FirefoxSyncService::OnPolled(base::DictValue result) {
     const std::string* error = result.FindString("error");
     LOG(WARNING) << "Firefox Sync: fetching sent tabs failed: "
                  << (error ? *error : "");
+    PollDone();
     return;
   }
   secrets_.Set("account", *account);
@@ -1021,6 +1033,14 @@ void FirefoxSyncService::OnPolled(base::DictValue result) {
   SaveSecrets();
   if (const base::ListValue* commands = ok->FindList("commands")) {
     ApplyCommands(*commands);
+  }
+  PollDone();
+}
+
+void FirefoxSyncService::PollDone() {
+  for (base::OnceClosure& done : std::exchange(poll_done_, {})) {
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(FROM_HERE,
+                                                             std::move(done));
   }
 }
 
