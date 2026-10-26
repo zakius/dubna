@@ -3896,7 +3896,7 @@
 "o": "project",
 "a": "Build & plumbing",
 "p": "project:browser-tests",
-"w": "Automated browser tests cover gestures, toolbar, tab behavior, web app links, autoplay, address bar suggestions and Sync before release.",
+"w": "Automated browser tests cover gestures, toolbar, tab behavior, web app links, autoplay, address bar suggestions and Sync before release. The tests wait for what they check rather than for fixed times, and a repeat mode runs each one many times to find the flaky ones.",
 "s": "on",
 "n": "",
 "own": 1
