@@ -117,74 +117,15 @@
  void RecentTabsSubMenuModel::OnSavingBrowserHistoryDisabledChanged() {
 --- a/components/sessions/core/tab_restore_service_impl.cc
 +++ b/components/sessions/core/tab_restore_service_impl.cc
-@@ -28,13 +28,16 @@
- #include "base/time/time.h"
- #include "base/uuid.h"
+@@ -30,6 +30,7 @@
  #include "components/history/core/common/pref_names.h"
-+#include "components/prefs/pref_change_registrar.h"
  #include "components/prefs/pref_service.h"
  #include "components/sessions/core/base_session_service_commands.h"
-+#include "components/sessions/core/closed_tabs_in_memory.h"
++#include "components/sessions/core/closed_tabs_in_memory_observer.h"
  #include "components/sessions/core/command_storage_manager.h"
  #include "components/sessions/core/command_storage_manager_delegate.h"
  #include "components/sessions/core/session_command.h"
- #include "components/sessions/core/session_constants.h"
- #include "components/sessions/core/session_id.h"
-+#include "components/sessions/core/tab_restore_service_observer.h"
- #include "components/sessions/core/tab_restore_types.h"
- #include "components/split_tabs/split_tab_id.h"
- #include "components/tab_groups/tab_group_color.h"
-@@ -561,6 +564,49 @@
-   }
- }
- 
-+// Empties a TabRestoreService as soon as it holds closed windows, groups or
-+// splits that aren't to be kept (history isn't saved, nor kept in memory),
-+// and when keeping them in memory is turned off. Closed tabs never get in:
-+// TabRestoreServiceImpl::CreateHistoricalTab drops them first. Owns itself
-+// and goes away with the service.
-+class ClosedTabsInMemoryObserver : public TabRestoreServiceObserver {
-+ public:
-+  static void Attach(TabRestoreService* service, PrefService* prefs) {
-+    new ClosedTabsInMemoryObserver(service, prefs);
-+  }
-+
-+  ClosedTabsInMemoryObserver(const ClosedTabsInMemoryObserver&) = delete;
-+  ClosedTabsInMemoryObserver& operator=(const ClosedTabsInMemoryObserver&) =
-+      delete;
-+
-+  // The service's observer list allows reentrancy: ClearEntries() notifies
-+  // again, and finds nothing left to clear.
-+  void TabRestoreServiceChanged(TabRestoreService* service) override {
-+    if (!KeepsClosedTabs(*registrar_.prefs()) && !service->entries().empty()) {
-+      service->ClearEntries();
-+    }
-+  }
-+
-+  void TabRestoreServiceDestroyed(TabRestoreService* service) override {
-+    service->RemoveObserver(this);
-+    delete this;
-+  }
-+
-+ private:
-+  ClosedTabsInMemoryObserver(TabRestoreService* service, PrefService* prefs) {
-+    service->AddObserver(this);
-+    registrar_.Init(prefs);
-+    registrar_.Add(
-+        kKeepClosedTabsInMemory,
-+        base::BindRepeating(
-+            &ClosedTabsInMemoryObserver::TabRestoreServiceChanged,
-+            base::Unretained(this), base::Unretained(service)));
-+  }
-+  ~ClosedTabsInMemoryObserver() override = default;
-+
-+  PrefChangeRegistrar registrar_;
-+};
-+
- }  // namespace
- 
- // TabRestoreServiceImpl::PersistenceDelegate
-@@ -1810,6 +1856,7 @@
+@@ -1810,6 +1811,7 @@
          base::BindRepeating(&TabRestoreServiceImpl::UpdatePersistenceDelegate,
                              base::Unretained(this),
                              base::Unretained(os_crypt_async)));
@@ -192,7 +133,7 @@
    }
    UpdatePersistenceDelegate(os_crypt_async);
  }
-@@ -1829,10 +1876,9 @@
+@@ -1829,10 +1831,9 @@
      LiveTab* live_tab,
      int index) {
    // When history saving is disabled by policy, don't add tabs to the restore
@@ -205,7 +146,7 @@
      return std::nullopt;
    }
    return helper_.CreateHistoricalTab(live_tab, index);
-@@ -1960,8 +2006,10 @@
+@@ -1960,9 +1961,15 @@
        persistence_delegate.DeleteLastSession();
      }
      // Also clear in-memory entries so they are not shown in the UI after the
@@ -216,5 +157,10 @@
 +      helper_.ClearEntries();
 +    }
    } else if (!persistence_delegate_) {
++    // Tabs kept in memory while history wasn't saved stay off the disk.
++    if (!entries().empty()) {
++      helper_.ClearEntries();
++    }
      // When saving is NOT disabled (or there is no pref service available), and
      // there are no persistence delegate yet, one must be created and
+     // initialized.
