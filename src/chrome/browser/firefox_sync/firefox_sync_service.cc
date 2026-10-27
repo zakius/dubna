@@ -624,6 +624,16 @@ void FirefoxSyncService::OnCompleteSignIn(base::DictValue result) {
     SetError(result);
     return;
   }
+  // A sync or fetch still running is the last sign-in's: its reply would
+  // bring back that account's state, and a sync can still be reading the
+  // adapters replaced below.
+  account_weak_factory_.InvalidateWeakPtrs();
+  soon_.Stop();
+  syncing_ = false;
+  sync_again_ = false;
+  polling_ = false;
+  poll_again_ = false;
+  pending_engines_ = base::DictValue();
   // A new sign-in starts a new sync state: the engine merges both sides.
   secrets_ = base::DictValue();
   secrets_.Set("account", *account);
@@ -985,7 +995,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
   NotifyStatus();
   if (sync_again_) {
     sync_again_ = false;
-    ScheduleSync(kLocalChangeDelay);
+    ScheduleSync(base::TimeDelta());
   }
   if (poll_again_) {
     poll_again_ = false;
@@ -1193,15 +1203,13 @@ void FirefoxSyncService::ScheduleSync(base::TimeDelta delay) {
 }
 
 void FirefoxSyncService::OnLocalChange() {
-  // Debounced. Applying a sync's own changes also lands here; that next
-  // sync finds nothing to do.
+  // Delayed, so changes in a row sync together; not restarted while it runs,
+  // as busy tabs would put the sync off forever. A change during a sync, its
+  // own applied changes too, syncs a while after it, not at once.
   if (!signed_in()) {
     return;
   }
-  // Not restarted while it runs: busy tabs would put the sync off forever.
-  if (syncing_) {
-    sync_again_ = true;
-  } else if (!soon_.IsRunning()) {
+  if (!soon_.IsRunning()) {
     ScheduleSync(kLocalChangeDelay);
   }
 }
