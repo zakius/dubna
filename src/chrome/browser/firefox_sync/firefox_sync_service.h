@@ -116,6 +116,8 @@ class FirefoxSyncService : public KeyedService {
 
   // Called by SigninWatcher with the redirect's query values.
   void CompleteSignIn(const std::string& code, const std::string& state);
+  // Called by SigninWatcher when the sign-in tab closes.
+  void CancelSignIn();
 
   // KeyedService:
   void Shutdown() override;

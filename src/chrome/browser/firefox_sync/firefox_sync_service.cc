@@ -355,6 +355,8 @@ class SigninWatcher : public content::WebContentsObserver {
   void DidRedirectNavigation(content::NavigationHandle* handle) override {
     Check(handle->GetURL());
   }
+  // The user closed the sign-in tab: the sign-in is over.
+  void WebContentsDestroyed() override { service_->CancelSignIn(); }
 
  private:
   void Check(const GURL& url) {
@@ -370,8 +372,19 @@ class SigninWatcher : public content::WebContentsObserver {
     if (code.empty() || state.empty()) {
       return;
     }
-    web_contents()->ClosePage();
+    base::WeakPtr<content::WebContents> contents = web_contents()->GetWeakPtr();
+    // Deletes this watcher soon, before the tab closes below.
     service_->CompleteSignIn(code, state);
+    // Posted: closing a tab whose renderer is gone destroys it at once,
+    // inside this navigation callback.
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, base::BindOnce(
+                       [](base::WeakPtr<content::WebContents> contents) {
+                         if (contents) {
+                           contents->ClosePage();
+                         }
+                       },
+                       std::move(contents)));
   }
 
   GURL redirect_;
@@ -594,6 +607,16 @@ void FirefoxSyncService::CompleteSignIn(const std::string& code,
                       account_weak_factory_.GetWeakPtr()));
 }
 
+void FirefoxSyncService::CancelSignIn() {
+  if (!signin_watcher_) {
+    return;
+  }
+  // Called from the watcher, which must not be deleted under itself.
+  base::SequencedTaskRunner::GetCurrentDefault()->DeleteSoon(
+      FROM_HERE, std::move(signin_watcher_));
+  NotifyStatus();
+}
+
 void FirefoxSyncService::OnCompleteSignIn(base::DictValue result) {
   const base::DictValue* ok = result.FindDict("ok");
   const std::string* account = ok ? ok->FindString("account") : nullptr;
@@ -601,10 +624,35 @@ void FirefoxSyncService::OnCompleteSignIn(base::DictValue result) {
     SetError(result);
     return;
   }
+  // A sync or fetch still running is the last sign-in's: its reply would
+  // bring back that account's state, and a sync can still be reading the
+  // adapters replaced below.
+  account_weak_factory_.InvalidateWeakPtrs();
+  soon_.Stop();
+  syncing_ = false;
+  sync_again_ = false;
+  polling_ = false;
+  poll_again_ = false;
+  pending_engines_ = base::DictValue();
   // A new sign-in starts a new sync state: the engine merges both sides.
   secrets_ = base::DictValue();
   secrets_.Set("account", *account);
-  ApplyProfile(ok->FindDict("profile"));
+  // After "Sync paused", another account keeps nothing of the last one's.
+  const std::string old_email = profile_->GetPrefs()->GetString(kEmailPref);
+  const base::DictValue* new_profile = ok->FindDict("profile");
+  const std::string* new_email =
+      new_profile ? new_profile->FindString("email") : nullptr;
+  if (!old_email.empty() && new_email && *new_email != old_email) {
+    devices_.clear();
+    profile_->GetPrefs()->ClearPref(kDevicesPref);
+    profile_->GetPrefs()->ClearPref(kHistorySincePref);
+    profile_->GetPrefs()->ClearPref(kHistoryDeletionsPref);
+    adapters_.erase("history");
+    CreateAdapters();
+    type_status_.clear();
+    ClearRemoteTabs();
+  }
+  ApplyProfile(new_profile);
   error_.clear();
   needs_sign_in_ = false;
   SaveSecrets();
@@ -915,6 +963,10 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
         }
         if (adapter != adapters_.end() && ops && IsTypeEnabled(name)) {
           adapter->second->Apply(*ops);
+        } else if (ops && name != "tabs") {
+          // Turned off during the sync: the state stays, so the next sync
+          // fetches these changes again.
+          continue;
         }
         if (const std::string* state = engine->FindString("state")) {
           engine_states->Set(name, *state);
@@ -931,10 +983,10 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
       ApplyCommands(*commands);
       last_poll_ = base::TimeTicks::Now();
     }
-    SaveSecrets();
-    profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
     error_.clear();
     needs_sign_in_ = false;
+    SaveSecrets();
+    profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
   } else {
     SetError(result);
   }
@@ -944,6 +996,11 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
   if (sync_again_) {
     sync_again_ = false;
     ScheduleSync(base::TimeDelta());
+  }
+  if (poll_again_) {
+    poll_again_ = false;
+    last_poll_ = base::TimeTicks();
+    PollCommands();
   }
 }
 
@@ -1043,7 +1100,7 @@ void FirefoxSyncService::SubscribePush() {
 }
 
 void FirefoxSyncService::OnPushReceived() {
-  if (polling_) {
+  if (polling_ || syncing_) {
     poll_again_ = true;
     return;
   }
@@ -1146,14 +1203,13 @@ void FirefoxSyncService::ScheduleSync(base::TimeDelta delay) {
 }
 
 void FirefoxSyncService::OnLocalChange() {
-  // Debounced. Applying a sync's own changes also lands here; that next
-  // sync finds nothing to do.
+  // Delayed, so changes in a row sync together; not restarted while it runs,
+  // as busy tabs would put the sync off forever. A change during a sync, its
+  // own applied changes too, syncs a while after it, not at once.
   if (!signed_in()) {
     return;
   }
-  if (syncing_) {
-    sync_again_ = true;
-  } else {
+  if (!soon_.IsRunning()) {
     ScheduleSync(kLocalChangeDelay);
   }
 }
