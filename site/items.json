@@ -3783,7 +3783,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/browser-traffic-settings",
-"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time.",
+"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -3926,7 +3926,7 @@
 "o": "tennessine",
 "a": "Look & layout",
 "p": "tennessine/layout-follows-address-bar",
-"w": "With the address bar at the bottom, the menu, search suggestions and tab switcher all run upward from it, the most-used item nearest your thumb.",
+"w": "With the address bar at the bottom, the menu, search suggestions and tab switcher all run upward from it, the most-used item nearest your thumb. On a tablet or an unfolded foldable the address bar stays at the top, and so does the tab switcher.",
 "s": "on",
 "n": "",
 "own": 1
