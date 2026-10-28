@@ -115,6 +115,17 @@
  }
  
  void RecentTabsSubMenuModel::OnSavingBrowserHistoryDisabledChanged() {
+--- a/components/sessions/BUILD.gn
++++ b/components/sessions/BUILD.gn
+@@ -102,6 +102,8 @@
+   sources = [
+     "core/base_session_service_commands.cc",
+     "core/base_session_service_commands.h",
++    "core/closed_tabs_in_memory_observer.cc",
++    "core/closed_tabs_in_memory_observer.h",
+     "core/command_storage_backend.cc",
+     "core/command_storage_backend.h",
+     "core/command_storage_features.cc",
 --- a/components/sessions/core/tab_restore_service_impl.cc
 +++ b/components/sessions/core/tab_restore_service_impl.cc
 @@ -30,6 +30,7 @@
