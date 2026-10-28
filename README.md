@@ -72,7 +72,9 @@ Google marks zero-days only with the sentence "Google is aware that an exploit f
 
 The script needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network.
 
-A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests and pushes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix. When no update is due, it also takes one simple open issue to the end. Last, it writes what the site's patch list and pages are missing (`site/site.py check`), including what the run landed, and pushes it to main, so the site ships the same night.
+A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests and pushes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix. When no update is due, it also takes a batch of clear open issues to the end, in one build and one push per browser. The batch is worth at most 6 points: a `size: nit` issue counts 1, a `size: minor` 2 and a `size: medium` 6, so it takes up to 5 nits, 3 minors or 1 medium. It never takes an issue labelled `blocked`, whose body or a comment says what it waits for. Last, it writes what the site's patch list and pages are missing (`site/site.py check`), including what the run landed, and pushes it to main, so the site ships the same night.
+
+Another task reads other browsers' changelogs every morning at 09:00 and publishes what is worth a look as a feed (https://browser-watch.zakius.xyz/feed.xml). It files an issue when the goal is already settled, and labels it `blocked` when the issue is likely wanted but needs my OK or a later Chromium.
 
 ## Releases
 
