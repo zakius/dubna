@@ -4,14 +4,15 @@
 #ifndef COMPONENTS_SESSIONS_CORE_CLOSED_TABS_IN_MEMORY_OBSERVER_H_
 #define COMPONENTS_SESSIONS_CORE_CLOSED_TABS_IN_MEMORY_OBSERVER_H_
 
-#include "base/functional/bind.h"
 #include "components/prefs/pref_change_registrar.h"
-#include "components/prefs/pref_service.h"
 #include "components/sessions/core/closed_tabs_in_memory.h"
-#include "components/sessions/core/tab_restore_service.h"
 #include "components/sessions/core/tab_restore_service_observer.h"
 
+class PrefService;
+
 namespace sessions {
+
+class TabRestoreService;
 
 // Empties a TabRestoreService as soon as it holds closed windows, groups or
 // splits that aren't to be kept (history isn't saved, nor kept in memory),
@@ -20,38 +21,19 @@ namespace sessions {
 // and goes away with the service.
 class ClosedTabsInMemoryObserver : public TabRestoreServiceObserver {
  public:
-  static void Attach(TabRestoreService* service, PrefService* prefs) {
-    new ClosedTabsInMemoryObserver(service, prefs);
-  }
+  static void Attach(TabRestoreService* service, PrefService* prefs);
 
   ClosedTabsInMemoryObserver(const ClosedTabsInMemoryObserver&) = delete;
   ClosedTabsInMemoryObserver& operator=(const ClosedTabsInMemoryObserver&) =
       delete;
 
-  // The service's observer list allows reentrancy: ClearEntries() notifies
-  // again, and finds nothing left to clear.
-  void TabRestoreServiceChanged(TabRestoreService* service) override {
-    if (!KeepsClosedTabs(*registrar_.prefs()) && !service->entries().empty()) {
-      service->ClearEntries();
-    }
-  }
-
-  void TabRestoreServiceDestroyed(TabRestoreService* service) override {
-    service->RemoveObserver(this);
-    delete this;
-  }
+  // TabRestoreServiceObserver:
+  void TabRestoreServiceChanged(TabRestoreService* service) override;
+  void TabRestoreServiceDestroyed(TabRestoreService* service) override;
 
  private:
-  ClosedTabsInMemoryObserver(TabRestoreService* service, PrefService* prefs) {
-    service->AddObserver(this);
-    registrar_.Init(prefs);
-    registrar_.Add(
-        kKeepClosedTabsInMemory,
-        base::BindRepeating(
-            &ClosedTabsInMemoryObserver::TabRestoreServiceChanged,
-            base::Unretained(this), base::Unretained(service)));
-  }
-  ~ClosedTabsInMemoryObserver() override = default;
+  ClosedTabsInMemoryObserver(TabRestoreService* service, PrefService* prefs);
+  ~ClosedTabsInMemoryObserver() override;
 
   PrefChangeRegistrar registrar_;
 };
