@@ -3264,6 +3264,17 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Settings & flags",
+"p": "oganesson/settings/about-relaunch",
+"w": "The About page has a Relaunch button that restarts the browser and reopens your windows and tabs, as \"Relaunch to update\" does.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Relaunch from the About page"
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "Look & layout",
 "p": "oganesson/ui/passwords-app-menu",
 "w": "Puts the \"Passwords and autofill\" submenu back in the three-dot menu, which Helium removes; oganesson keeps the password manager.",
@@ -3744,17 +3755,6 @@
 "s": "on",
 "n": "",
 "own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "Network & security",
-"p": "oganesson/core/emudhra-spki-block",
-"w": "Distrusts the six eMudhra TLS intermediates whose private keys leaked in October 2026, and Sectigo's cross-certificates of the same keys. Chrome blocks them through its downloaded revocation list, which oganesson doesn't fetch while component updates are off, so the block is built in.",
-"s": "on",
-"n": "",
-"own": 1,
-"t": "Block the leaked eMudhra intermediates"
 },
 {
 "b": "og",
