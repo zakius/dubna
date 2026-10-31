@@ -3388,6 +3388,16 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Build & plumbing",
+"p": "oganesson/core/smaller-build",
+"w": "A smaller browser: on Linux the binary packs its relocations (about 40 MB less installed), and the built-in pages and bundled filter lists are compressed with brotli instead of gzip. No measurable change in speed.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "De-Googling & telemetry",
 "p": "oganesson/core/offer-to-save-passwords",
 "w": "The built-in password manager offers to save passwords by default, and you can turn that off in settings.",
