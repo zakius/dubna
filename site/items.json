@@ -4129,6 +4129,16 @@
 },
 {
 "b": "ts",
+"o": "tennessine",
+"a": "Platform & packaging",
+"p": "tennessine/photo-location",
+"w": "Photos you upload keep their location: when a page accepts images, the file chooser asks for Android's media location permission, without which Android strips the GPS data. Deny it and photos upload without location, as before. Android's photo picker always strips it.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "ts",
 "o": "Vanadium",
 "a": "Network & security",
 "p": "vanadium/",
