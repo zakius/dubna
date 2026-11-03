@@ -3479,6 +3479,27 @@
 "b": "og",
 "o": "oganesson",
 "a": "Tabs & windows",
+"p": "oganesson/core/web-app-tray",
+"w": "An installed web app's settings page has a \"Keep running in the tray\" switch, off by default. With it on, closing the app's last window hides it instead, and the app keeps running with every other browser window closed, so its notifications and messages still arrive. A tray icon shows the window again, and its menu has the app's shortcuts and Quit; an app that starts when you sign in starts hidden there. On Linux, an app's badge (an unread count, say) also shows on its dock icon in KDE Plasma, Ubuntu Dock, Dash to Dock and Plank, and as a red dot on its tray icon.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Web apps in the tray"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Settings & flags",
+"p": "oganesson/core/no-background-mode",
+"w": "No \"Continue running background apps\" setting: the browser doesn't keep running for extensions once its last window closes. A web app set to keep running in the tray does that job instead.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
 "p": "oganesson/core/firefox-tab-behavior",
 "w": "New tabs open and closing a tab selects the next one by Firefox's rules, for links, extensions and pinned tabs alike.",
 "s": "on",
