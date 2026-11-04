@@ -3466,11 +3466,11 @@
 "own": 1
 },
 {
-"b": "og",
-"o": "oganesson",
+"b": "both",
+"o": "dubna",
 "a": "Tabs & windows",
-"p": "oganesson/core/app-address-changes",
-"w": "In an installed web app, a page that tries to move to an address outside the app, by script, form, redirect or history change, asks the browser first: the address opens in your default browser and the app page stays where it is. A \"strict\" option per app sends every page outside its scope out this way, popups included.",
+"p": "dubna/patches/app-links",
+"w": "In an installed web app, a link or a page that tries to move to an address outside the app, by script, form, redirect or history change, asks the browser first: the address opens in your default browser and the app page stays where it is. Each app has its own scope rules: pages that stay in the app, exclusions, and a \"strict\" option that sends every page outside its scope out this way, popups included. Shared by oganesson and tennessine.",
 "s": "on",
 "n": "",
 "own": 1
@@ -4104,6 +4104,16 @@
 "a": "History",
 "p": "tennessine/history-saving-settings",
 "w": "Privacy settings get switches to stop saving browsing history, closed tabs and download history, next to Close tabs on exit.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Tabs & windows",
+"p": "tennessine/app-links",
+"w": "dubna's web app link handling on Android: a link out of an installed web app (WebAPK or shortcut) opens in your default browser. Settings → Web apps lists the installed apps, and a site's page in Site settings links to its own app, to edit each app's scope rules.",
 "s": "on",
 "n": "",
 "own": 1
