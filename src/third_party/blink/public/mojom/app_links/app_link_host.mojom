@@ -1,0 +1,20 @@
+// Copyright 2026 The oganesson Authors
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+module blink.mojom;
+
+import "url/mojom/url.mojom";
+
+// A main frame in an installed web app's window asks this before its page
+// changes its address (third_party/blink/renderer/core/html/app_links.h).
+// Implemented by chrome/browser/app_links/app_links.cc.
+interface AppLinkHost {
+  // Whether `url` leaves the frame's app: by an exclusion, or out of its
+  // scope with `link` (a link followed from a click, or an address changed
+  // in place from one) or a strict scope. If it does, the page must not
+  // reach it, and the default browser opens it, `background` without taking
+  // the focus.
+  [Sync]
+  OpenOutsideApp(url.mojom.Url url, bool link, bool background)
+      => (bool leaves);
+};

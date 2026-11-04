@@ -1,0 +1,31 @@
+# Copyright 2026 The oganesson Authors
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+# Links out of installed web apps, shared by oganesson and tennessine through
+# dubna. What depends on the browser around it (app_links_platform.h) is in
+# each product's //chrome/browser/app_links/platform, which public_deps this
+# target and is the one the browser depends on.
+source_set("app_links") {
+  sources = [
+    "app_links.cc",
+    "app_links.h",
+    "app_links_platform.h",
+    "app_scope_rules.cc",
+    "app_scope_rules.h",
+  ]
+  public_deps = [
+    "//mojo/public/cpp/bindings",
+    "//third_party/blink/public/mojom:mojom_platform",
+    "//ui/base",
+  ]
+  deps = [
+    "//base",
+    "//chrome/browser/profiles:profile",
+    "//components/pref_registry",
+    "//components/prefs",
+    "//components/url_pattern",
+    "//content/public/browser",
+    "//third_party/liburlpattern",
+    "//url",
+  ]
+}
