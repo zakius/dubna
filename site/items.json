@@ -10,15 +10,6 @@
 },
 {
 "b": "og",
-"o": "Chromium fixes",
-"a": "Build & plumbing",
-"p": "upstream-fixes/wasm-interpreter-fixes",
-"w": "Build fix so V8's WebAssembly interpreter compiles.",
-"s": "on",
-"n": ""
-},
-{
-"b": "og",
 "o": "Inox",
 "a": "Build & plumbing",
 "p": "inox-patchset/fix-building-without-safebrowsing",
@@ -287,15 +278,6 @@
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/bundle-hyphenation-patterns",
 "w": "Includes the hyphenation dictionaries in the browser instead of downloading them later.",
-"s": "on",
-"n": ""
-},
-{
-"b": "og",
-"o": "ungoogled-chromium",
-"a": "De-Googling & telemetry",
-"p": "ungoogled-chromium/disable-tos-dialog",
-"w": "Skips the Terms of Service (EULA) screen on first run.",
 "s": "on",
 "n": ""
 },
@@ -634,8 +616,8 @@
 "a": "Tabs & windows",
 "p": "ungoogled-chromium/add-flag-to-hide-tab-close-buttons",
 "w": "Adds a flag that hides the close button on tabs.",
-"s": "flag",
-"n": ""
+"s": "dropped",
+"n": "Settings > Appearance > Show close buttons on tabs replaces the flag"
 },
 {
 "b": "og",
@@ -1262,15 +1244,6 @@
 {
 "b": "og",
 "o": "Helium",
-"a": "Network & security",
-"p": "helium/core/prefer-https-by-default",
-"w": "Turns on Chromium's \"HTTPS-First balanced mode\" by default (it was off). The browser tries HTTPS first and warns you before using plain HTTP.",
-"s": "on",
-"n": ""
-},
-{
-"b": "og",
-"o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/enable-tab-hover-cards",
 "w": "Not needed: hover-card images are already on by default outside Mac. ungoogled-chromium's hover-card flag stays.",
@@ -1693,6 +1666,15 @@
 "p": "helium/core/infinite-tab-freezing",
 "w": "Helium turns this on by default; oganesson keeps Chromium's default, and the setting stays available.",
 "s": "dropped",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/disable-actions-for-browser-commands",
+"w": "Keeps Chromium's browser commands off its new Action API until Helium's own commands move to it. Nothing visible changes.",
+"s": "on",
 "n": ""
 },
 {
@@ -3696,6 +3678,37 @@
 "b": "og",
 "o": "oganesson",
 "a": "Tabs & windows",
+"p": "oganesson/core/tab-close-buttons",
+"w": "Tabs can go without close buttons, in the horizontal and the vertical tab strip; the change applies to open tabs at once. It replaces ungoogled-chromium's flag.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Tabs without close buttons"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/settings/tab-close-buttons-settings",
+"w": "Appearance settings get a Show close buttons on tabs switch, next to the sound icon switch.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Input & shortcuts",
+"p": "oganesson/settings/shortcut-toggles",
+"w": "The switches for Helium's Ctrl+Shift+C (copy the page address, else DevTools' inspect) and Ctrl+S (collapse vertical tabs, else save the page) are on the Shortcuts page, not under Behavior.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
 "p": "oganesson/ui/wayland-drag-resting-pointer",
 "w": "On Wayland, dropping a link onto the split-view panel works even if the pointer stops moving before you release it.",
 "s": "on",
@@ -3759,16 +3772,6 @@
 {
 "b": "og",
 "o": "oganesson",
-"a": "Build & plumbing",
-"p": "windows/late/installer-snapshot-dep",
-"w": "Build fix for Windows: the installer's build waits for the V8 snapshot file it packs.",
-"s": "on",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
 "a": "Platform & packaging",
 "p": "windows/late/updater",
 "w": "On Windows, a per-user install updates itself without prompts, with helium-windows' WinSparkle updater. It reads oganesson's own feed on dubna.zakius.xyz and installs an update only if its ed25519 signature matches the key built in. Updates are on by default, set by the Browser updates row in Settings > Browser traffic, and don't need Helium's services. All-users installs update by hand: their elevated updater needs an Authenticode signature, which the packages don't have.",
@@ -3814,7 +3817,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/browser-traffic-settings",
-"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers.",
+"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. A Crash reports row offers Off or Ask each time, as setup does. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers.",
 "s": "on",
 "n": "",
 "own": 1,
