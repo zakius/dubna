@@ -24,6 +24,7 @@ source_set("firefox_sync") {
     "passwords_adapter.h",
     "remote_tabs.cc",
     "remote_tabs.h",
+    "sync_adapter.cc",
     "sync_adapter.h",
   ]
   public_deps = [ "//chrome/browser:browser_public_dependencies" ]

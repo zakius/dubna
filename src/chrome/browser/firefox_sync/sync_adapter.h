@@ -4,8 +4,6 @@
 #ifndef CHROME_BROWSER_FIREFOX_SYNC_SYNC_ADAPTER_H_
 #define CHROME_BROWSER_FIREFOX_SYNC_SYNC_ADAPTER_H_
 
-#include <utility>
-
 #include "base/functional/callback.h"
 #include "base/values.h"
 
@@ -31,7 +29,7 @@ class SyncAdapter {
   // Runs `done` once what Apply() changed is stored. The sync saves the
   // engine's state only then: a write lost as the browser quits is applied
   // again by the next sync, not taken for a local deletion.
-  virtual void WhenApplied(base::OnceClosure done) { std::move(done).Run(); }
+  virtual void WhenApplied(base::OnceClosure done);
 };
 
 }  // namespace firefox_sync
