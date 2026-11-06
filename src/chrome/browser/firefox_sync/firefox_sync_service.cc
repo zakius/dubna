@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <utility>
+#include <vector>
 
 #include "base/barrier_closure.h"
 #include "base/base64.h"
@@ -924,7 +925,7 @@ void FirefoxSyncService::OnAllLocal() {
 }
 
 void FirefoxSyncService::OnSynced(base::DictValue result) {
-  syncing_ = false;
+  std::vector<SyncAdapter*> applied;
   const base::DictValue* reply = result.FindDict("ok");
   const std::optional<double> retry_after =
       (reply ? reply : &result)->FindDouble("retry_after");
@@ -963,6 +964,7 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
         }
         if (adapter != adapters_.end() && ops && IsTypeEnabled(name)) {
           adapter->second->Apply(*ops);
+          applied.push_back(adapter->second.get());
         } else if (ops && name != "tabs") {
           // Turned off during the sync: the state stays, so the next sync
           // fetches these changes again.
@@ -985,10 +987,24 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
     }
     error_.clear();
     needs_sign_in_ = false;
-    SaveSecrets();
-    profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
   } else {
     SetError(result);
+  }
+  base::RepeatingClosure stored = base::BarrierClosure(
+      applied.size(),
+      base::BindOnce(&FirefoxSyncService::OnSyncStored,
+                     account_weak_factory_.GetWeakPtr(),
+                     result.contains("ok")));
+  for (SyncAdapter* adapter : applied) {
+    adapter->WhenApplied(stored);
+  }
+}
+
+void FirefoxSyncService::OnSyncStored(bool ok) {
+  syncing_ = false;
+  if (ok) {
+    SaveSecrets();
+    profile_->GetPrefs()->SetTime(kLastSyncPref, base::Time::Now());
   }
   // Drops the history adapter if saving history was turned off meanwhile.
   CreateAdapters();

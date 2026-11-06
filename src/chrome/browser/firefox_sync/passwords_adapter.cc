@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "base/logging.h"
+#include "base/task/sequenced_task_runner.h"
 #include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
@@ -147,9 +148,8 @@ StoredCredential NewFromFirefox(const base::DictValue& login) {
   return form;
 }
 
-// A form holding only `form`'s primary key fields, and its password:
-// UpdateLoginWithPrimaryKey() clears the password issues of a login whose
-// password differs from the old key's.
+// A form holding only `form`'s primary key fields, and its password, which
+// decides whether the login keeps its password issues.
 StoredCredential PrimaryKeyOf(const StoredCredential& form) {
   StoredCredential key;
   key.signon_realm = form.signon_realm;
@@ -173,6 +173,11 @@ PasswordsAdapter::PasswordsAdapter(
 
 PasswordsAdapter::~PasswordsAdapter() {
   store_->RemoveObserver(this);
+  // Removed during a sync (passwords turned off): it still ends.
+  if (applied_) {
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, std::move(applied_));
+  }
 }
 
 void PasswordsAdapter::GetLocal(base::OnceCallback<void(base::Value)> done) {
@@ -180,10 +185,19 @@ void PasswordsAdapter::GetLocal(base::OnceCallback<void(base::Value)> done) {
   store_->GetAllLogins(weak_factory_.GetWeakPtr());
 }
 
+void PasswordsAdapter::WhenApplied(base::OnceClosure done) {
+  applied_ = std::move(done);
+  store_->GetAllLogins(weak_factory_.GetWeakPtr());
+}
+
 void PasswordsAdapter::OnGetPasswordStoreResultsOrErrorFrom(
     password_manager::PasswordStoreInterface* store,
     base::expected<std::vector<password_manager::StoredCredential>,
                    password_manager::PasswordStoreBackendError> results) {
+  if (applied_) {
+    std::move(applied_).Run();
+    return;
+  }
   if (!results.has_value()) {
     // Syncing without the local logins would read as deleting them.
     std::move(get_local_).Run(base::Value());
@@ -271,7 +285,18 @@ void PasswordsAdapter::Apply(const base::ListValue& ops) {
           form->username_element != old_key.username_element ||
           form->username_value != old_key.username_value ||
           form->password_element != old_key.password_element) {
-        store_->UpdateLoginWithPrimaryKey(std::move(*form), old_key);
+        // Not UpdateLoginWithPrimaryKey(), which removes the old row before
+        // it adds the new one: the store skips its pending writes when the
+        // browser quits, which could lose the login between the two. Added
+        // first, a quit in between leaves the old row as well.
+        if (form->password_value != old_key.password_value) {
+          form->password_issues.clear();
+        } else if (form->username_value != old_key.username_value) {
+          form->password_issues.erase(password_manager::InsecureType::kLeaked);
+          form->password_issues.erase(password_manager::InsecureType::kPhished);
+        }
+        store_->AddLogin(std::move(*form));
+        store_->RemoveLogin(FROM_HERE, old_key);
       } else {
         store_->UpdateLogin(std::move(*form));
       }

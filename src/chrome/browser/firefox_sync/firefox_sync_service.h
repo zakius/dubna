@@ -143,6 +143,8 @@ class FirefoxSyncService : public KeyedService {
                base::Value local);
   void OnAllLocal();
   void OnSynced(base::DictValue result);
+  // After the adapters stored what the sync applied: saves the state.
+  void OnSyncStored(bool ok);
   // The commands other devices sent, from a sync's result.
   void ApplyCommands(const base::ListValue& commands);
   void OnPolled(base::DictValue result);

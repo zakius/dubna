@@ -33,6 +33,7 @@ class PasswordsAdapter : public SyncAdapter,
   // SyncAdapter:
   void GetLocal(base::OnceCallback<void(base::Value)> done) override;
   void Apply(const base::ListValue& ops) override;
+  void WhenApplied(base::OnceClosure done) override;
 
  private:
   // PasswordStoreInterface::Observer:
@@ -53,6 +54,9 @@ class PasswordsAdapter : public SyncAdapter,
   scoped_refptr<password_manager::PasswordStoreInterface> store_;
   base::RepeatingClosure local_changed_;
   base::OnceCallback<void(base::Value)> get_local_;
+  // WhenApplied()'s `done`: the store answers requests in order, so the
+  // answer to a read after Apply's writes runs it.
+  base::OnceClosure applied_;
   // The snapshot the running sync was given; ops refer to its logins.
   std::vector<password_manager::StoredCredential> snapshot_;
   // Between the snapshot and Apply: the engine keys of logins added,
