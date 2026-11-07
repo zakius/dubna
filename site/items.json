@@ -3471,6 +3471,16 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/ui/app-window-modal-dialog",
+"w": "A \"Leave this page?\" dialog in one window no longer freezes installed web app windows, and one in an app window no longer freezes the rest of the browser. Regular browser windows still wait for the dialog, as in Chromium.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/core/no-background-mode",
 "w": "No \"Continue running background apps\" setting: the browser doesn't keep running for extensions once its last window closes. A web app set to keep running in the tray does that job instead.",
