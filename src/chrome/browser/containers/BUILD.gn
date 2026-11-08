@@ -3,8 +3,40 @@
 
 import("//testing/test.gni")
 
-# Tab containers, shared by oganesson and tennessine through dubna: the
-# containers and Traffic Control's rules, without the browser.
+# Tab containers, shared by oganesson and tennessine through dubna. What
+# depends on the browser around it (containers_platform.h) is in each
+# product's //chrome/browser/containers/platform, which public_deps this
+# target and is the one the browser depends on.
+source_set("containers") {
+  sources = [
+    "containers_platform.h",
+    "containers_service.cc",
+    "containers_service.h",
+    "containers_service_factory.cc",
+    "containers_service_factory.h",
+    "containers_tabs.cc",
+    "containers_tabs.h",
+    "traffic_control_throttle.cc",
+    "traffic_control_throttle.h",
+  ]
+  public_deps = [ ":core" ]
+  deps = [
+    "//base",
+    "//chrome/app:generated_resources",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/core",
+    "//components/pref_registry",
+    "//components/prefs",
+    "//components/sessions",
+    "//content/public/browser",
+    "//crypto",
+    "//services/network/public/mojom",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+# The containers and Traffic Control's rules, without the browser.
 source_set("core") {
   sources = [
     "container.cc",

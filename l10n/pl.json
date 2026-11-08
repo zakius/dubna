@@ -208,5 +208,30 @@
     "name": "IDS_FIREFOX_SYNC_RECEIVE_TABS_SYNC_ONLY",
     "source": "Only when syncing",
     "message": "Tylko podczas synchronizacji"
+  },
+  {
+    "name": "IDS_CONTAINERS_PERSONAL",
+    "source": "Personal",
+    "message": "Osobisty"
+  },
+  {
+    "name": "IDS_CONTAINERS_WORK",
+    "source": "Work",
+    "message": "Praca"
+  },
+  {
+    "name": "IDS_CONTAINERS_BANKING",
+    "source": "Banking",
+    "message": "Bankowość"
+  },
+  {
+    "name": "IDS_CONTAINERS_SHOPPING",
+    "source": "Shopping",
+    "message": "Zakupy"
+  },
+  {
+    "name": "IDS_CONTAINERS_TEMPORARY_NAME",
+    "source": "Temporary <ph name=\"NUMBER\">$1<ex>2</ex></ph>",
+    "message": "Tymczasowy <ph name=\"NUMBER\">$1<ex>2</ex></ph>"
   }
 ]

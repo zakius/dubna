@@ -1,0 +1,132 @@
+# Tab containers (src/chrome/browser/containers/): each container is a storage partition, and a
+# tab stays in the partition its WebContents starts in, so the browser only has to start tabs in
+# the right one. These are the hooks both browsers share; the browser target is the product's
+# //chrome/browser/containers/platform (see containers_platform.h).
+# - web_contents_impl.cc: a window a container's page opens without an opener (target=_blank,
+#   noopener) stays in the container; content gives such a window a new default SiteInstance.
+# - navigation_entry_impl.cc: a page's committed partition, which the session handler saves as
+#   the page's extended info: the public NavigationEntry doesn't tell its SiteInstance.
+# - permission_util.cc: notifications work in containers; Chromium blocks them in a partition
+#   that isn't the site's own.
+# - chrome_browser_main_extra_parts_profiles.cc: the service, created with each regular
+#   profile, with its prefs and the session handler.
+# - chrome_content_browser_client_navigation_throttles.cc: Traffic Control's throttle.
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -1070,6 +1070,7 @@
+     ":browser_process",
+     ":browser_process_impl",
+     "//chrome/browser/app_links/platform",
++    "//chrome/browser/containers/platform",
+     ":browser_process_platform_part",
+     ":browser_public_dependencies",
+     ":chained_back_navigation_tracker",
+--- a/chrome/browser/chrome_content_browser_client_navigation_throttles.cc
++++ b/chrome/browser/chrome_content_browser_client_navigation_throttles.cc
+@@ -10,6 +10,7 @@
+ #include "build/buildflag.h"
+ #include "chrome/browser/actor/actor_navigation_throttle.h"
+ #include "chrome/browser/app_links/app_links.h"
++#include "chrome/browser/containers/traffic_control_throttle.h"
+ #include "chrome/browser/autocomplete/aim_eligibility_refresh_navigation_throttle.h"
+ #include "chrome/browser/browser_process.h"
+ #include "chrome/browser/contextual_tasks/contextual_tasks_navigation_throttle.h"
+@@ -485,6 +486,7 @@
+ #endif  // BUILDFLAG(ENABLE_DEVTOOLS_FRONTEND)
+ 
+   app_links::MaybeAddThrottle(registry);
++  containers::MaybeAddTrafficControlThrottle(registry);
+ 
+ #if BUILDFLAG(ENABLE_WEBUI_NTP)
+   if (base::FeatureList::IsEnabled(features::kInstantUsesSpareRenderer)) {
+--- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
++++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
+@@ -63,6 +63,7 @@
+ #include "chrome/browser/collaboration/messaging/messaging_backend_service_factory.h"
+ #include "chrome/browser/commerce/shopping_service_factory.h"
+ #include "chrome/browser/consent_auditor/consent_auditor_factory.h"
++#include "chrome/browser/containers/containers_service_factory.h"
+ #include "chrome/browser/content_index/content_index_provider_factory.h"
+ #include "chrome/browser/content_settings/cookie_settings_factory.h"
+ #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
+@@ -904,6 +905,7 @@
+ #endif
+   commerce::ShoppingServiceFactory::GetInstance();
+   ConsentAuditorFactory::GetInstance();
++  containers::ContainersServiceFactory::GetInstance();
+   ContextHubServiceFactory::GetInstance();
+   contextual_cueing::ContextualCueingServiceFactory::GetInstance();
+ 
+--- a/components/permissions/permission_util.cc
++++ b/components/permissions/permission_util.cc
+@@ -25,9 +25,11 @@
+ #include "components/permissions/permissions_client.h"
+ #include "components/permissions/request_type.h"
+ #include "content/public/browser/browser_context.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/permission_result.h"
+ #include "content/public/browser/render_frame_host.h"
+ #include "content/public/browser/render_process_host.h"
++#include "content/public/browser/storage_partition.h"
+ #include "content/public/browser/web_contents.h"
+ #include "content/public/common/content_features.h"
+ #include "services/network/public/mojom/permissions_policy/permissions_policy_feature.mojom.h"
+@@ -686,6 +688,11 @@
+     case PermissionDelegationMode::kDoubleKeyed:
+       return false;
+     case PermissionDelegationMode::kUndelegated:
++      // A tab container's partition is where its pages keep their data.
++      if (content::IsContainersPartition(
++              render_process_host->GetStoragePartition()->GetConfig())) {
++        return false;
++      }
+       // TODO(crbug.com/40220503): This will create |requesting_origin|'s home
+       // StoragePartition if it doesn't already exist. Given how
+       // StoragePartitions are used today, this shouldn't actually be a
+--- a/content/browser/renderer_host/navigation_entry_impl.cc
++++ b/content/browser/renderer_host/navigation_entry_impl.cc
+@@ -30,6 +30,7 @@
+ #include "content/browser/security/cpsp/child_process_security_policy_impl.h"
+ #include "content/common/content_constants_internal.h"
+ #include "content/common/features.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/reload_type.h"
+ #include "content/public/common/content_constants.h"
+ #include "content/public/common/url_constants.h"
+@@ -1381,4 +1382,15 @@
+   return GetBaseURLForDataURL().is_empty() ? GURL() : GetVirtualURL();
+ }
+ 
++std::optional<StoragePartitionConfig> GetCommittedStoragePartitionConfig(
++    NavigationEntry& entry) {
++  SiteInstanceImpl* site_instance = static_cast<NavigationEntryImpl&>(entry)
++                                        .root_node()
++                                        ->frame_entry->site_instance();
++  if (!site_instance) {
++    return std::nullopt;
++  }
++  return site_instance->GetSecurityPrincipal().GetStoragePartitionConfig();
++}
++
+ }  // namespace content
+--- a/content/browser/web_contents/web_contents_impl.cc
++++ b/content/browser/web_contents/web_contents_impl.cc
+@@ -147,6 +147,7 @@
+ #include "content/public/browser/browser_plugin_guest_manager.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/color_chooser.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/content_browser_client.h"
+ #include "content/public/browser/context_menu_params.h"
+ #include "content/public/browser/device_service.h"
+@@ -5837,6 +5838,10 @@
+       // as long as they preserve the guest's StoragePartition.
+       site_instance =
+           SiteInstance::CreateForGuest(GetBrowserContext(), partition_config);
++    } else if (IsContainersPartition(partition_config)) {
++      // A tab container's page: the window stays in its container.
++      site_instance = SiteInstance::CreateForFixedStoragePartition(
++          GetBrowserContext(), GURL(), partition_config);
+     } else {
+       site_instance = SiteInstance::Create(GetBrowserContext());
+     }
