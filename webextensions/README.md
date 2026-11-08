@@ -73,6 +73,16 @@ A step must fit into one evening run. It may continue into a second run, but nev
 
 A larger goal, for example "Sidebery works", is a group of steps. Name the goal in each of its steps.
 
+### Filing new steps
+
+The tool steps find most of the work, so they file many new steps. That is expected. The static scan, the test inventory and each corpus run file steps for what they find:
+
+- one step for each missing API or manifest key, even when only one add-on uses it; the ranking sets the order, not the filing;
+- tests that wait for an API go into that API's step; a step only for porting tests is filed when the API already works;
+- a new cause of a failure in a corpus run (an error that is not yet in a step) gets its own step.
+
+Before filing, search open and closed `climb` issues. If one already covers the item, add to it instead. Group very small items of one namespace into one step. Give each new step a size label and its `Depends on` lines.
+
 ## When a step runs
 
 The evening task (dubna `README.md`, "Update policy") does one climb step when:
