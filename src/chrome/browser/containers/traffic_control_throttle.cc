@@ -83,6 +83,11 @@ class TrafficControlThrottle : public content::NavigationThrottle {
     if (!target) {
       return PROCEED;
     }
+    // A prerendered page would show in this tab's container. Without it, the
+    // page loads as a plain navigation, which this check reroutes.
+    if (handle->IsInPrerenderedMainFrame()) {
+      return CANCEL;
+    }
     if (*target == kTemporaryTarget) {
       *target = service_->CreateTemporary().id;
     }
@@ -111,7 +116,7 @@ class TrafficControlThrottle : public content::NavigationThrottle {
 void MaybeAddTrafficControlThrottle(
     content::NavigationThrottleRegistry& registry) {
   content::NavigationHandle& handle = registry.GetNavigationHandle();
-  if (!handle.IsInPrimaryMainFrame()) {
+  if (!handle.IsInPrimaryMainFrame() && !handle.IsInPrerenderedMainFrame()) {
     return;
   }
   ContainersService* service =
