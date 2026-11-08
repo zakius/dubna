@@ -30,6 +30,7 @@
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/firefox_sync/autofill_adapter.h"
 #include "chrome/browser/firefox_sync/bookmarks_adapter.h"
+#include "chrome/browser/firefox_sync/containers_adapter.h"
 #include "chrome/browser/firefox_sync/firefox_sync_platform.h"
 #include "chrome/browser/firefox_sync/history_adapter.h"
 #include "chrome/browser/firefox_sync/passwords_adapter.h"
@@ -112,6 +113,8 @@ constexpr DataType kTypes[] = {
     {"tabs", IDS_FIREFOX_SYNC_TYPE_TABS, true},
     {"addresses", IDS_FIREFOX_SYNC_TYPE_ADDRESSES, true},
     {"creditcards", IDS_FIREFOX_SYNC_TYPE_PAYMENT_METHODS, true},
+    // Multi-Account Containers' add-on data, when the browser has containers.
+    {"extension-storage", IDS_FIREFOX_SYNC_TYPE_CONTAINERS, true},
 };
 
 constexpr base::TimeDelta kSyncInterval = base::Minutes(30);
@@ -125,8 +128,9 @@ constexpr net::NetworkTrafficAnnotationTag kTrafficAnnotation =
         sender: "Firefox Sync"
         description:
           "Signs in to the user's Mozilla account and syncs saved passwords, "
-          "bookmarks, history, open tabs, addresses and payment methods with Firefox "
-          "Sync servers, end-to-end encrypted, and sends tabs to the account's "
+          "bookmarks, history, open tabs, addresses, payment methods and "
+          "containers with Firefox Sync servers, end-to-end encrypted, and "
+          "sends tabs to the account's "
           "other devices and receives theirs."
         trigger: "The user signed in to Firefox Sync in settings."
         data: "Mozilla account tokens and encrypted password, bookmark, "
@@ -860,6 +864,10 @@ void FirefoxSyncService::CreateAdapters() {
               profile_)) {
         adapters_[name] = std::make_unique<CreditCardsAdapter>(
             &pdm->payments_data_manager(), local_changed);
+      }    } else if (name == "extension-storage") {
+      if (ContainersAdapter::Available(profile_->GetPrefs())) {
+        adapters_[name] = std::make_unique<ContainersAdapter>(
+            profile_->GetPrefs(), local_changed);
       }
     }
   }
@@ -1252,8 +1260,12 @@ base::DictValue FirefoxSyncService::GetStatus() const {
     base::DictValue entry;
     entry.Set("name", type.name);
     entry.Set("label", l10n_util::GetStringUTF8(type.label_id));
-    entry.Set("supported", type.supported);
-    entry.Set("enabled", type.supported && IsTypeEnabled(type.name));
+    const bool supported =
+        type.supported &&
+        (type.name != std::string_view("extension-storage") ||
+         ContainersAdapter::Available(profile_->GetPrefs()));
+    entry.Set("supported", supported);
+    entry.Set("enabled", supported && IsTypeEnabled(type.name));
     entry.Set("blocked", type.name == std::string_view("history") &&
                              HistoryBlocked());
     auto status_it = type_status_.find(type.name);

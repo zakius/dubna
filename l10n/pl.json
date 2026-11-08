@@ -110,6 +110,11 @@
     "message": "Formy płatności"
   },
   {
+    "name": "IDS_FIREFOX_SYNC_TYPE_CONTAINERS",
+    "source": "Containers",
+    "message": "Kontenery"
+  },
+  {
     "name": "IDS_FIREFOX_SYNC_ADDRESSES_OFF",
     "source": "Turn on \"Save and fill addresses\" under Contact info to sync them.",
     "message": "Aby synchronizować adresy, włącz „Zapisuj i automatycznie uzupełniaj adresy” w sekcji Dane kontaktowe."
