@@ -28,6 +28,9 @@ inline constexpr char kContainersList[] = "containers.list";
 inline constexpr char kContainersUsed[] = "containers.used";
 // Traffic Control's rules, in their order: a list of TrafficRule::ToDict().
 inline constexpr char kTrafficControlRules[] = "containers.traffic_control";
+// Where the browser's new tabs open: a container's id, "temporary" for a new
+// temporary container each time, or empty, outside containers.
+inline constexpr char kNewTabContainer[] = "containers.new_tab";
 
 // A temporary container's id starts with this. It is never in the user's
 // list, and its storage goes once no tab, saved session or closed tab uses it.

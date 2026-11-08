@@ -76,6 +76,10 @@ class ContainersService : public KeyedService,
   // Records that container `id` has storage on disk now.
   void MarkUsed(std::string_view id);
 
+  // The container a new tab opens in, as the user set: a container's id, a
+  // new temporary container's, or empty.
+  std::string NewTabContainer();
+
   const TrafficRules& traffic_rules() const { return traffic_rules_; }
 
   // Deletes the storage of the containers that aren't the user's and that

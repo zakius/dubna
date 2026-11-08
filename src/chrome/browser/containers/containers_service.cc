@@ -123,6 +123,7 @@ void ContainersService::RegisterProfilePrefs(
   registry->RegisterListPref(kContainersList, DefaultContainers());
   registry->RegisterDictionaryPref(kContainersUsed);
   registry->RegisterListPref(kTrafficControlRules);
+  registry->RegisterStringPref(kNewTabContainer, std::string());
 }
 
 ContainersService::ContainersService(Profile* profile) : profile_(profile) {
@@ -203,6 +204,14 @@ Container ContainersService::CreateTemporary() {
   ScopedDictPrefUpdate(profile_->GetPrefs(), kContainersUsed)
       ->Set(container.id, container.ToDict());
   return container;
+}
+
+std::string ContainersService::NewTabContainer() {
+  const std::string& id = profile_->GetPrefs()->GetString(kNewTabContainer);
+  if (id == kTemporaryTarget) {
+    return CreateTemporary().id;
+  }
+  return listed_.contains(id) ? id : std::string();
 }
 
 void ContainersService::MarkUsed(std::string_view id) {
