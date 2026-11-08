@@ -73,15 +73,21 @@ Google marks zero-days only with the sentence "Google is aware that an exploit f
 
 The script needs only Python 3 and the network. `tools/test_upstream_status.py` checks the rules without the network.
 
-A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests and pushes, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix. When no update is due, it also takes a batch of clear open issues to the end, in one build and one push per browser. The batch is worth at most 6 points: a `size: nit` issue counts 1, a `size: minor` 2 and a `size: medium` 6, so it takes up to 5 nits, 3 minors or 1 medium. It never takes an issue labelled `blocked`, whose body or a comment says what it waits for. When no update was due and the batch left time, it does one step of the Firefox WebExtensions climb (`webextensions/README.md`). Last, it writes what the site's patch list and pages are missing (`site/site.py check`), including what the run landed, and pushes it to main, so the site ships the same night.
+A T3 scheduled task runs the report every evening at 18:00 and does the whole update that a finding calls for: it fixes what breaks, builds, tests, pushes and tags a release, then reports every fix for me to review. It stops before the push when a build or test failure has no clear, small fix. When no update is due, it also takes a batch of clear open issues to the end, in one build and one release per browser. The batch is worth at most 6 points: a `size: nit` issue counts 1, a `size: minor` 2 and a `size: medium` 6, so it takes up to 5 nits, 3 minors or 1 medium. It never takes an issue labelled `blocked`, whose body or a comment says what it waits for. When no update was due and the batch left time, it does one step of the Firefox WebExtensions climb (`webextensions/README.md`). Last, it writes what the site's patch list and pages are missing (`site/site.py check`), including what the run landed, pushes it to main and tags a dubna release, so the site ships the same night.
 
 Another task reads other browsers' changelogs every morning at 09:00 and publishes what is worth a look as a feed (https://browser-watch.zakius.xyz/feed.xml). It files an issue when the goal is already settled, and labels it `blocked` when the issue is likely wanted but needs my OK or a later Chromium.
 
 ## Releases
 
-A push to a browser's main branch releases it. GitHub Actions run each repo's workflow (`.github/workflows/`) on this project's own build machine, with a self-hosted runner per repo (labels `oganesson`, `tennessine` and `dubna`), because a Chromium build doesn't fit GitHub's machines. The workflow builds, tests and publishes from the main checkout, then posts a GitHub release with the packages and notes from the commits since the previous release (`tools/release_notes.py`). Pushes that change only docs or CI don't start one. Each workflow can also be started by hand.
+Merging and releasing are separate steps. A merge to a repo's main only merges: it builds and publishes nothing. A release is a tag whose name starts with `release-`, pushed on a commit of main:
 
-A merge to dubna's main that changes `site/` publishes the site. Pull requests start nothing: the runners would run their code on the build machine.
+```sh
+git fetch origin main && tag="release-$(date -u +%Y%m%d-%H%M%S)" && git tag "$tag" origin/main && git push origin "$tag"
+```
+
+So several changes can land one at a time and then go out in one build. The tag starts the repo's workflow (`.github/workflows/`), which releases main's tip. GitHub Actions run each repo's workflow on this project's own build machine, with a self-hosted runner per repo (labels `oganesson`, `tennessine` and `dubna`), because a Chromium build doesn't fit GitHub's machines. A browser's workflow builds, tests and publishes from the main checkout, then posts a GitHub release with the packages and notes from the commits since the previous release (`tools/release_notes.py`, which reads the `v` tags of those releases, not the `release-` tags). In dubna, the tag publishes the site (`site/`). Each workflow can also be started by hand (`gh workflow run`).
+
+Pull requests start nothing: the runners would run their code on the build machine.
 
 ## License
 

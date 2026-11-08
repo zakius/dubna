@@ -1,11 +1,11 @@
-# Publishes https://dubna.zakius.xyz when site/ changes on main, or by hand. It runs on this
-# project's own machine (runner label "dubna"), in the main checkout, which has the publish
-# settings (.env). Pull requests start nothing: a runner on this machine must never run their code.
+# Publishes https://dubna.zakius.xyz from main's tip when a release-* tag is pushed, or by hand. A
+# merge to main publishes nothing. The tagged commit must be on main. It runs on this project's own
+# machine (runner label "dubna"), in the main checkout, which has the publish settings (.env). Pull
+# requests start nothing: a runner on this machine must never run their code.
 name: Site
 on:
   push:
-    branches: [main]
-    paths: ['site/**']
+    tags: ['release-*']
   workflow_dispatch:
 concurrency:
   group: site
@@ -16,11 +16,15 @@ jobs:
     timeout-minutes: 30
     # The runner's .env sets MAIN, the main checkout.
     steps:
-      - name: Main checkout at this commit
+      - name: Main checkout at main's tip
         run: |
           : "${MAIN:?must be set in the .env of the runner}"
           cd "$MAIN"
-          git fetch -q origin
-          git merge -q --ff-only "$GITHUB_SHA"
+          git fetch -q origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_REF_NAME is not on main; tag a commit of main"
+            exit 1
+          fi
+          git merge -q --ff-only origin/main
       - name: Publish
         run: cd "$MAIN" && python3 site/site.py publish
