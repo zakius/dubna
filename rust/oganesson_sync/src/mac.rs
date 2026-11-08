@@ -374,6 +374,10 @@ pub fn stage(
     let id_of = |uuid: &str| state.uuids.iter().find(|(_, u)| *u == uuid).map(|(id, _)| id.clone());
     let mut undeleted = vec![];
     for (host, uuid) in &view.sites {
+        // A site of a container deleted elsewhere would point at nothing.
+        if deleted.contains(uuid) {
+            continue;
+        }
         let key = site_key(host);
         let changed = state.baseline.sites.get(host) != Some(uuid);
         let listed = deleted_sites.contains(&key);
@@ -421,7 +425,12 @@ pub fn stage(
     }
     let key = format!("{INSTANCE}{}", state.instance);
     let identities: Vec<&String> = view.identities.keys().filter(|u| !deleted.contains(*u)).collect();
-    let sites: Vec<String> = view.sites.keys().map(|h| site_key(h)).collect();
+    let sites: Vec<String> = view
+        .sites
+        .iter()
+        .filter(|(_, uuid)| !deleted.contains(*uuid))
+        .map(|(h, _)| site_key(h))
+        .collect();
     let have = seen.get(&key);
     let stale = have.is_none_or(|v| {
         v["identities"] != json!(identities)
@@ -590,6 +599,23 @@ mod tests {
                             color: "toolbar".into() },
             Op::Site { host: "www.bank.example".into(), container: "banking".into() },
         ]);
+    }
+
+    #[test]
+    fn no_sites_of_a_container_deleted_elsewhere() {
+        // Firefox deleted Work while a site was assigned to it here.
+        let uuid = "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d";
+        let local: Local = serde_json::from_value(json!({
+            "containers": [{"id": "work", "name": "Work", "icon": "briefcase", "color": "orange"}],
+            "rules": [{"url_filter": ".work.example", "container": "work"}]})).unwrap();
+        let mut state = State::default();
+        state.uuids.insert("work".into(), uuid.into());
+        state.instance = "ours".into();
+        let incoming: Map<String, Value> =
+            serde_json::from_value(json!({ "deletedIdentityList": [uuid] })).unwrap();
+        let (set, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
+        assert!(!set.contains_key("siteContainerMap@@_work.example"));
+        assert_eq!(set["MACinstance:ours"]["siteAssignments"], json!([]));
     }
 
     #[test]
