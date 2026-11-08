@@ -138,6 +138,9 @@ scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
     content::BrowserContext* context,
     base::span<const sessions::SerializedNavigationEntry> navigations,
     int selected_navigation) {
+  // Before the restored pages are built, so they keep their container when
+  // saved again.
+  RegisterSessionHandler();
   if (selected_navigation < 0 ||
       static_cast<size_t>(selected_navigation) >= navigations.size()) {
     return nullptr;
