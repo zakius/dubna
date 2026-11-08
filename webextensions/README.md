@@ -14,6 +14,7 @@ We get there in small steps (the "climb"). Each step is one API, one install flo
 - Shared code goes in dubna: new files in `src/` and small patches in `patches/`, as for the other shared features. Both browsers build them.
 - Code goes in one browser only when there is a reason: UI that only that browser has (a desktop side panel, the location bar), or a patch that doesn't apply on the other browser's tree. Titanium (tennessine) patches the extensions code a lot, so check each shared patch on both trees.
 - The test harness and the corpus runner are in oganesson's `tools/e2e/`, because they drive the desktop browser. The corpus list, the static scan and the score page are in dubna, because they don't depend on a browser.
+- A download the browser makes by itself for Firefox add-ons (the AMO update check, the update's `.xpi`) follows browser traffic's own row for Firefox add-ons, `firefox_extensions`, apart from Chrome Web Store extensions. The bundled uBlock Origin is neither: its code ships with the browser, and its filter lists have their own row.
 - Desktop comes first. Each step says what tennessine gets: now, in a later step, or never (with the reason).
 
 ## The old work
