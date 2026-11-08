@@ -104,7 +104,7 @@ A step is done when:
 2. It has an end-to-end test, or a ported Firefox test, for the new behaviour.
 3. The corpus run of the add-ons it affects passes at the same level or higher. The score never goes down: a drop blocks the release, unless the step explains why and files a step to fix it. A Pouch regression always blocks the release.
 4. The status table below is updated.
-5. It is released: the browsers move their dubna submodule and push to main, or (tool work) the tool or the score page is pushed. The release notes give the score change, for example "L2: 612 → 640".
+5. It is released: the browsers move their dubna submodule, merge to main and tag a release (README "Releases"), or (tool work) the tool or the score page is merged and, for the site, tagged. The release notes give the score change, for example "L2: 612 → 640".
 
 A step that fails twice gets the `blocked` label and a comment that says why. Then take the next step.
 
