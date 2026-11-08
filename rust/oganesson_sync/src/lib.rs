@@ -1,15 +1,18 @@
 // Copyright 2026 The oganesson Authors
 // SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 
-//! Firefox Sync for passwords, bookmarks, history, open tabs, addresses and payment methods, over Mozilla's application-services crates.
+//! Firefox Sync for passwords, bookmarks, history, open tabs, addresses, payment methods and
+//! containers (Multi-Account Containers' add-on data), over Mozilla's application-services crates.
 //! The browser loads this library and talks to it through three C functions:
 //! `og_init` (once, with this device's name and type), `og_call` (JSON in, JSON out, blocking; call it off the
 //! UI thread) and `og_free`.
 
 mod autofill_sync;
 mod bookmarks;
+mod extension_storage;
 mod history;
 mod http;
+mod mac;
 mod passwords;
 mod tabs;
 
@@ -223,6 +226,7 @@ fn signout(args: &Value) -> Result<Value> {
     history::remove_store(profile);
     autofill_sync::remove_stores(profile);
     tabs::remove_store(profile);
+    extension_storage::remove_store(profile);
     Ok(json!({}))
 }
 
@@ -261,6 +265,7 @@ fn collection(name: &str, profile: &str, args: &Value) -> Result<Box<dyn Collect
             profile,
             args,
         )?)),
+        "extension-storage" => Ok(Box::new(extension_storage::ExtensionStorageEngine::new(profile, args)?)),
         _ => bail!("unsupported collection {name}"),
     }
 }

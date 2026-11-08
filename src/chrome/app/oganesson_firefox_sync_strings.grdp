@@ -70,6 +70,9 @@
   <message name="IDS_FIREFOX_SYNC_TYPE_PAYMENT_METHODS" desc="Settings: Firefox Sync data type toggle for saved credit cards.">
     Payment methods
   </message>
+  <message name="IDS_FIREFOX_SYNC_TYPE_CONTAINERS" desc="Settings: Firefox Sync data type toggle for tab containers and the sites that open in them, which sync with Firefox's Multi-Account Containers add-on.">
+    Containers
+  </message>
   <message name="IDS_FIREFOX_SYNC_ADDRESSES_OFF" desc="Settings: why Firefox Sync skips addresses: the Autofill setting for addresses is off. Use the names the Autofill settings show.">
     Turn on "Save and fill addresses" under Contact info to sync them.
   </message>
