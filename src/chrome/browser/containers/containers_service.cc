@@ -314,10 +314,13 @@ void ContainersService::TabRestoreServiceDestroyed(
 }
 
 void ContainersService::CheckClosedTabs() {
+  // Taken now, with the tabs: a temporary container made while the platform
+  // answers is no candidate, though no tab of it was counted.
+  std::vector<std::string> candidates = CleanupCandidates();
   // The closed tabs of deleted containers go; those of temporary ones keep
   // their container.
   std::set<std::string> deleted;
-  for (const std::string& id : CleanupCandidates()) {
+  for (const std::string& id : candidates) {
     if (!id.starts_with(kTemporaryIdPrefix)) {
       deleted.insert(id);
     }
@@ -342,19 +345,24 @@ void ContainersService::CheckClosedTabs() {
   GetContainersInUse(
       profile_, base::BindOnce(
                     [](base::WeakPtr<ContainersService> service,
+                       std::vector<std::string> candidates,
                        std::set<std::string> closed_tabs,
                        std::set<std::string> in_use) {
                       if (service) {
                         in_use.merge(closed_tabs);
-                        service->OnInUse(std::move(in_use));
+                        service->OnInUse(std::move(candidates),
+                                         std::move(in_use));
                       }
                     },
-                    weak_factory_.GetWeakPtr(), std::move(in_use)));
+                    weak_factory_.GetWeakPtr(), std::move(candidates),
+                    std::move(in_use)));
 }
 
-void ContainersService::OnInUse(std::set<std::string> in_use) {
-  for (const std::string& id : CleanupCandidates()) {
-    if (in_use.contains(id)) {
+void ContainersService::OnInUse(std::vector<std::string> candidates,
+                                std::set<std::string> in_use) {
+  for (const std::string& id : candidates) {
+    // Listed again meanwhile, as when sync brings a container back.
+    if (in_use.contains(id) || listed_.contains(id)) {
       continue;
     }
     ++pending_deletions_;

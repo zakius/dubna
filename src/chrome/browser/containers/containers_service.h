@@ -94,7 +94,8 @@ class ContainersService : public KeyedService,
   void OnUsedChanged();
   void OnRulesChanged();
   void CheckClosedTabs();
-  void OnInUse(std::set<std::string> in_use);
+  void OnInUse(std::vector<std::string> candidates,
+               std::set<std::string> in_use);
   void OnStorageDeleted(const std::string& id, bool success);
   void FinishCleanup();
   // The used containers that aren't in the user's list.
