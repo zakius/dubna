@@ -864,7 +864,8 @@ void FirefoxSyncService::CreateAdapters() {
               profile_)) {
         adapters_[name] = std::make_unique<CreditCardsAdapter>(
             &pdm->payments_data_manager(), local_changed);
-      }    } else if (name == "extension-storage") {
+      }
+    } else if (name == "extension-storage") {
       if (ContainersAdapter::Available(profile_->GetPrefs())) {
         adapters_[name] = std::make_unique<ContainersAdapter>(
             profile_->GetPrefs(), local_changed);
