@@ -126,5 +126,6 @@ A step that fails twice gets the `blocked` label and a comment that says why. Th
 | Test harness | oganesson's `tools/e2e/harness.py`: an add-on from an `.xpi`, its ID, background, errors and popup | zakius/oganesson#63 |
 | Corpus runner | oganesson's `tools/e2e/corpus.py`: each add-on's level, L0 to L2; `--only` checks the add-ons a step affects | zakius/oganesson#64 |
 | Corpus score | `score/oganesson.json`, 2026-11-09, oganesson 157.0.8103.38: L0 1000, L1 866, L2 472 | zakius/oganesson#64 |
+| Static scan | `tools/amo_corpus.py scan` writes `ranking.md`: on Chromium 157.0.8103.38, 110 missing manifest keys, permissions and APIs, most of them used by one add-on | #23 |
 
 Add a row for each step that ships.
