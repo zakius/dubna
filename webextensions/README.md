@@ -122,5 +122,6 @@ A step that fails twice gets the `blocked` label and a comment that says why. Th
 |---|---|---|
 | `browser.*` namespace with promises | In Chromium, also in MV2 | — |
 | MV2 | Kept by ungoogled-chromium (oganesson) and Titanium (tennessine) | — |
+| Corpus list | `corpus.json`: AMO's top 1000 by users on 2026-11-09, `.xpi` files cached by `tools/amo_corpus.py fetch` | #22 |
 
 Add a row for each step that ships.
