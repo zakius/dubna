@@ -40,6 +40,7 @@ use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
+use webext_storage::{SYNC_MAX_ITEMS, SYNC_QUOTA_BYTES, SYNC_QUOTA_BYTES_PER_ITEM};
 
 pub const EXT_ID: &str = "@testpilot-containers";
 
@@ -328,15 +329,23 @@ fn pair(local: &Local, state: &mut State, area: &Map<String, Value>, deleted: &H
     }
 }
 
-/// The keys to set and remove in the store before the merge. `current` is the
-/// store's area, `incoming` the server's if this sync downloaded it.
+/// The bytes an item adds to the area's JSON, which is what storage.sync's
+/// quota counts: the key quoted, a colon, the value and a comma.
+fn item_bytes(key: &str, value: &Value) -> usize {
+    Value::from(key).to_string().len() + 1 + value.to_string().len() + 1
+}
+
+/// The keys to set and remove in the store before the merge, and how many
+/// site assignments stay local because the area would go over storage.sync's
+/// quota. `current` is the store's area, `incoming` the server's if this sync
+/// downloaded it.
 pub fn stage(
     local: &Local,
     state: &mut State,
     current: &Map<String, Value>,
     incoming: Option<&Map<String, Value>>,
     now_ms: i64,
-) -> (Map<String, Value>, Vec<String>) {
+) -> (Map<String, Value>, Vec<String>, usize) {
     // What the area will hold: the server's keys over the store's.
     let mut seen = current.clone();
     if let Some(incoming) = incoming {
@@ -449,13 +458,47 @@ pub fn stage(
         state.instance = new_uuid();
     }
     let key = format!("{INSTANCE}{}", state.instance);
+
+    // The store refuses a set that takes the area over storage.sync's quota
+    // (webext-storage's api::set), and the collection would never sync again.
+    // New site assignments that don't fit stay local, the last hosts first.
+    // Our install's key may take up to an item's limit.
+    let mut area = seen.clone();
+    area.remove(&key);
+    for k in &remove {
+        area.remove(k);
+    }
+    area.extend(set.iter().map(|(k, v)| (k.clone(), v.clone())));
+    let mut bytes = 1 + SYNC_QUOTA_BYTES_PER_ITEM + area.iter().map(|(k, v)| item_bytes(k, v)).sum::<usize>();
+    let new_sites: Vec<String> =
+        set.keys().filter(|k| k.starts_with(SITE) && !seen.contains_key(*k)).cloned().collect();
+    let mut unsynced = 0;
+    for k in new_sites.iter().rev() {
+        if area.len() < SYNC_MAX_ITEMS && bytes <= SYNC_QUOTA_BYTES {
+            break;
+        }
+        bytes -= item_bytes(k, &area[k]);
+        area.remove(k);
+        set.remove(k);
+        unsynced += 1;
+    }
+
     let identities: Vec<&String> = view.identities.keys().filter(|u| !deleted.contains(*u)).collect();
-    let sites: Vec<String> = view
+    let mut sites: Vec<String> = view
         .sites
         .iter()
         .filter(|(_, uuid)| !deleted.contains(*uuid))
         .map(|(h, _)| site_key(h))
+        .filter(|k| area.contains_key(k))
         .collect();
+    // Within an item's limit. The add-on reads the list only to keep site
+    // deletions until every install has seen them.
+    let mut instance_bytes =
+        item_bytes(&key, &json!({ "timestamp": now_ms, "identities": identities, "siteAssignments": sites }));
+    while instance_bytes > SYNC_QUOTA_BYTES_PER_ITEM {
+        let Some(last) = sites.pop() else { break };
+        instance_bytes -= Value::from(last).to_string().len() + 1;
+    }
     let have = seen.get(&key);
     let stale = have.is_none_or(|v| {
         v["identities"] != json!(identities)
@@ -465,7 +508,7 @@ pub fn stage(
     if stale {
         set.insert(key, json!({ "timestamp": now_ms, "identities": identities, "siteAssignments": sites }));
     }
-    (set, remove)
+    (set, remove, unsynced)
 }
 
 /// The ops that make the browser's containers and rules match `area`, the
@@ -647,7 +690,7 @@ mod tests {
         let mut state = State::default();
         state.uuids.insert("dev".into(), uuid.into());
         state.instance = "ours".into();
-        let (set, _) = stage(&local, &mut state, &Map::new(), None, 1);
+        let (set, _, _) = stage(&local, &mut state, &Map::new(), None, 1);
         let site = &set["siteContainerMap@@_localhost8080"];
         assert_eq!(site["hostname"], json!("localhost8080"));
         assert_eq!(site["identityMacAddonUUID"], json!(uuid));
@@ -674,7 +717,7 @@ mod tests {
         state.instance = "ours".into();
         let incoming: Map<String, Value> =
             serde_json::from_value(json!({ "deletedIdentityList": [uuid] })).unwrap();
-        let (set, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
+        let (set, _, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
         assert!(!set.contains_key("siteContainerMap@@_work.example"));
         assert_eq!(set["MACinstance:ours"]["siteAssignments"], json!([]));
     }

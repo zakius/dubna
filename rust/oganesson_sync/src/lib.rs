@@ -242,7 +242,8 @@ fn remove_db(path: &Path) {
 /// A collection's engine. The browser has one adapter per collection that
 /// sends `{state, local}` (the engine's saved state and a snapshot of the
 /// browser's data, in whatever shape the engine defines) and applies what
-/// `finish` returns: `{state, ops, count}`.
+/// `finish` returns: `{state, ops, count}`, and `warning` when the sync left
+/// something out, which the browser shows as the collection's status.
 trait Collection: SyncEngine {
     fn finish(self: Box<Self>) -> Result<Value>;
 }

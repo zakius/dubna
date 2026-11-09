@@ -75,6 +75,8 @@ pub struct ExtensionStorageEngine {
     incoming: RefCell<HashMap<String, Map<String, Value>>>,
     /// Whether the collection synced: meta/global lists it.
     started: Cell<bool>,
+    /// Site assignments left out to keep the area under storage.sync's quota.
+    unsynced_sites: Cell<usize>,
 }
 
 impl ExtensionStorageEngine {
@@ -101,6 +103,7 @@ impl ExtensionStorageEngine {
             mac_state: RefCell::new(state.mac),
             incoming: RefCell::new(HashMap::new()),
             started: Cell::new(false),
+            unsynced_sites: Cell::new(0),
         })
     }
 }
@@ -123,7 +126,15 @@ impl crate::Collection for ExtensionStorageEngine {
             tagged.push(op);
         }
         let state = State { global: self.global.take(), mac: state };
-        Ok(json!({ "state": serde_json::to_string(&state)?, "ops": tagged, "count": count }))
+        let mut out = json!({ "state": serde_json::to_string(&state)?, "ops": tagged, "count": count });
+        let unsynced = self.unsynced_sites.get();
+        if unsynced > 0 {
+            out["warning"] = json!(format!(
+                "Too many site assignments to sync: {unsynced} stay on this device, over the \
+                 add-on's storage limit"
+            ));
+        }
+        Ok(out)
     }
 }
 
@@ -164,13 +175,14 @@ impl SyncEngine for ExtensionStorageEngine {
     fn apply(&self, timestamp: ServerTimestamp, _telem: &mut telemetry::Engine) -> Result<Vec<OutgoingBso>> {
         let current = area(&self.store, mac::EXT_ID)?;
         let incoming = self.incoming.borrow();
-        let (set, remove) = mac::stage(
+        let (set, remove, unsynced) = mac::stage(
             &self.mac_local,
             &mut self.mac_state.borrow_mut(),
             &current,
             incoming.get(mac::EXT_ID),
             now_ms(),
         );
+        self.unsynced_sites.set(unsynced);
         if !remove.is_empty() {
             self.store.remove(mac::EXT_ID, json!(remove))?;
         }
@@ -711,6 +723,34 @@ mod tests {
         assert!(!area.contains_key(&format!("identity@@_{personal}")));
         assert!(area["deletedIdentityList"].as_array().unwrap().contains(&json!(personal)));
         assert!(device.container("Personal").is_none());
+    }
+
+    #[test]
+    fn site_assignments_over_the_quota_stay_local() {
+        let mut local = defaults();
+        let rules = local["rules"].as_array_mut().unwrap();
+        for i in 0..600 {
+            rules.push(json!({"url_filter": format!(".site{i:03}.example"), "container": "work", "enabled": true}));
+        }
+        let (mut server, mut device) = (Server::default(), Device::new("quota", local));
+        let (out, _) = device.run(&mut server, false).unwrap();
+        let warning = out["warning"].as_str().unwrap_or_default();
+        assert!(warning.contains("Too many site assignments"), "{out}");
+        device.state = out["state"].as_str().unwrap().into();
+
+        // The area is within storage.sync's quota, as the store counts it.
+        let area = server.mac();
+        assert!(Value::Object(area.clone()).to_string().len() <= webext_storage::SYNC_QUOTA_BYTES);
+        assert!(area.len() <= webext_storage::SYNC_MAX_ITEMS);
+        for (key, value) in &area {
+            assert!(key.len() + value.to_string().len() <= webext_storage::SYNC_QUOTA_BYTES_PER_ITEM, "{key}");
+        }
+        let sites = area.keys().filter(|k| k.starts_with("siteContainerMap@@_site")).count();
+        assert!(sites > 400 && sites < 600, "{sites}");
+        // The rules left out stay, and the next syncs change nothing.
+        device.settle(&mut server);
+        assert_eq!(device.local["rules"].as_array().unwrap().len(), 605);
+        assert_eq!(server.mac().len(), area.len());
     }
 
     #[test]

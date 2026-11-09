@@ -961,7 +961,8 @@ void FirefoxSyncService::OnSynced(base::DictValue result) {
           LOG(WARNING) << "Firefox Sync: " << name << ": " << status.error;
           continue;
         }
-        status.error.clear();
+        const std::string* warning = engine->FindString("warning");
+        status.error = warning ? *warning : "";
         status.count =
             static_cast<int>(engine->FindDouble("count").value_or(0));
         auto adapter = adapters_.find(name);
