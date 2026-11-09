@@ -3974,7 +3974,7 @@
 "o": "dubna",
 "a": "Tabs & windows",
 "p": "dubna/patches/containers",
-"w": "Containers keep their own cookies and site data within one profile, as Firefox's Multi-Account Containers do: a tab in Work is signed in to Work's accounts, and tabs outside containers don't see them. A new profile has Personal, Work, Banking and Shopping; temporary containers delete their data once their tabs are gone. Links a container tab opens stay in its container, and tabs keep it across a restart. Traffic Control's rules open chosen sites in a container wherever you start. Containers and one-site rules sync with Firefox's Multi-Account Containers add-on through Firefox Sync.",
+"w": "Containers keep their own cookies and site data within one profile, as Firefox's Multi-Account Containers do: a tab in Work is signed in to Work's accounts, and tabs outside containers don't see them. A new profile has Personal, Work, Banking and Shopping; temporary containers delete their data once their tabs are gone. Links a container tab opens stay in its container, and tabs keep it across a restart. Traffic Control's rules open chosen sites in a container wherever you start; a form you send stays in its tab. Containers and one-site rules sync with Firefox's Multi-Account Containers add-on through Firefox Sync.",
 "s": "on",
 "n": "",
 "own": 1,
