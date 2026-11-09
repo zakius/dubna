@@ -11,6 +11,8 @@
 # - chrome_browser_main_extra_parts_profiles.cc: the service, created with each regular
 #   profile, with its prefs and the session handler.
 # - chrome_content_browser_client_navigation_throttles.cc: Traffic Control's throttle.
+# - host_zoom_map_impl.cc: containers share the default partition's zoom levels, as in Firefox;
+#   Chromium keeps one HostZoomMap per partition.
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -1070,6 +1070,7 @@
@@ -83,6 +85,33 @@
        // TODO(crbug.com/40220503): This will create |requesting_origin|'s home
        // StoragePartition if it doesn't already exist. Given how
        // StoragePartitions are used today, this shouldn't actually be a
+--- a/content/browser/host_zoom_map_impl.cc
++++ b/content/browser/host_zoom_map_impl.cc
+@@ -16,9 +16,11 @@
+ #include "content/browser/renderer_host/navigation_entry_impl.h"
+ #include "content/browser/renderer_host/render_frame_host_impl.h"
+ #include "content/browser/renderer_host/render_process_host_impl.h"
++#include "content/browser/storage_partition_impl.h"
+ #include "content/browser/web_contents/web_contents_impl.h"
+ #include "content/public/browser/browser_context.h"
+ #include "content/public/browser/browser_thread.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/content_browser_client.h"
+ #include "content/public/browser/host_zoom_map.h"
+ #include "content/public/browser/render_frame_host.h"
+@@ -122,6 +124,12 @@
+     StoragePartition* storage_partition) {
+   CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M160);
+   CHECK(storage_partition);
++  // Containers keep the default partition's zoom levels, as in Firefox.
++  if (IsContainersPartition(storage_partition->GetConfig())) {
++    storage_partition = static_cast<StoragePartitionImpl*>(storage_partition)
++                            ->browser_context()
++                            ->GetDefaultStoragePartition();
++  }
+   return storage_partition->GetHostZoomMap();
+ }
+ 
 --- a/content/browser/renderer_host/navigation_entry_impl.cc
 +++ b/content/browser/renderer_host/navigation_entry_impl.cc
 @@ -30,6 +30,7 @@
