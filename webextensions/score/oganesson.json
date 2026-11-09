@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 866,
-  "L2": 447
+  "L2": 472
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -69,7 +69,7 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
   },
   "@contain-facebook": {
    "level": "L0",
@@ -253,7 +253,7 @@
   },
   "{DDC359D1-844A-42a7-9AA1-88A850A938A8}": {
    "level": "L1",
-   "error": "unknown permission 'downloads.open'"
+   "error": "unknown permission 'menus'"
   },
   "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}": {
    "level": "L2",
@@ -280,8 +280,8 @@
    "error": "the background did not start"
   },
   "moz-addon-prod@7tv.app": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "@react-devtools": {
    "level": "L1",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
+   "level": "L2",
+   "error": null
   },
   "leechblockng@proginosko.com": {
    "level": "L1",
@@ -612,8 +612,8 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "KeeperFFStoreExtension@KeeperSecurityInc": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "clipper@obsidian.md": {
    "level": "L1",
@@ -629,7 +629,7 @@
   },
   "{f4961478-ac79-4a18-87e9-d2fb8c0442c4}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (isolated.js:50)"
+   "error": "the background did not start"
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
    "level": "L1",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-56ioaz1u/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -764,8 +764,8 @@
    "error": "the background did not start"
   },
   "s3download@statusbar": {
-   "level": "L1",
-   "error": "unknown permission 'downloads.shelf'"
+   "level": "L2",
+   "error": null
   },
   "{830f38bd-efc5-45dc-a5a6-064d9a638806}": {
    "level": "L2",
@@ -777,7 +777,7 @@
   },
   "{f2a47522-1d86-4828-b6fb-d02e849f1b69}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (at-include/ATContent.js:1)"
+   "error": "the background did not start"
   },
   "{9a3104a2-02c2-464c-b069-82344e5ed4ec}": {
    "level": "L1",
@@ -789,7 +789,7 @@
   },
   "{6b733b82-9261-47ee-a595-2dda294a4d08}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (js/extension/web-extension.js:117)"
+   "error": "the background did not start"
   },
   "jid0-YQz0l1jthOIz179ehuitYAOdBEs@jetpack": {
    "level": "L1",
@@ -800,8 +800,8 @@
    "error": null
   },
   "jid0-dsq67mf5kjjhiiju2dfb6kk8dfw@jetpack": {
-   "level": "L1",
-   "error": "unknown permission 'downloads.open'"
+   "level": "L2",
+   "error": null
   },
   "{60B7679C-BED9-11E5-998D-8526BB8E7F8B}": {
    "level": "L1",
@@ -817,7 +817,7 @@
   },
   "{06acb1db-eb92-47f1-8b4c-7d87acce5a81}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (at-include/ATContent.js:1)"
+   "error": "the background did not start"
   },
   "{60493d8c-aec8-448e-a247-5d2cfa047d69}": {
    "level": "L2",
@@ -836,8 +836,8 @@
    "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
-   "level": "L1",
-   "error": "unknown permission 'downloads.open'"
+   "level": "L2",
+   "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
    "level": "L0",
@@ -861,7 +861,7 @@
   },
   "{d7742d87-e61d-4b78-b8a1-b469842139fa}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (content_scripts/vimium_frontend.js:425)"
+   "error": "the background did not start"
   },
   "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack": {
    "level": "L1",
@@ -1028,8 +1028,8 @@
    "error": "the background did not start"
   },
   "maxurl@qsniyg": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "shinigamieyes@shinigamieyes": {
    "level": "L2",
@@ -1060,8 +1060,8 @@
    "error": null
   },
   "cashback_letyshops@LetyShops": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
    "level": "L1",
@@ -1144,12 +1144,12 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "{5b1a796b-231a-4ad1-84ff-918db0818207}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "passwordmanager@avira.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "320youtube@gmx.net": {
    "level": "L2",
@@ -1413,7 +1413,7 @@
   },
   "{2a7c0eb8-2936-4b6f-b738-5f7183d98698}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (at-include/ATContent.js:1)"
+   "error": "the background did not start"
   },
   "{d867162c-4c38-4c5f-aca4-db6a6592d7da}": {
    "level": "L2",
@@ -1472,8 +1472,8 @@
    "error": null
   },
   "addon@ytdownloader.info": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "sound-boobooster@yeahyeah": {
    "level": "L0",
@@ -1565,7 +1565,7 @@
   },
   "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "error": "Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag. (scripts/function.js:231)"
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
    "level": "L2",
@@ -1637,7 +1637,7 @@
   },
   "{f282d54d-83cc-45f5-b3e5-65888de1682b}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TransientBridgeError: Could not establish connection. Receiving end does not exist. (static/content-main.js:1)"
+   "error": "the background did not start"
   },
   "jid1-HdwPLukcGQeOSh@jetpack": {
    "level": "L2",
@@ -1772,8 +1772,8 @@
    "error": null
   },
   "{1c5afe9d-99f4-4236-b90a-08a04f589b06}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background/index.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{954142f5-7f00-4880-bee7-8a1590ac4152}": {
    "level": "L1",
@@ -1924,8 +1924,8 @@
    "error": "Too many shortcuts specified for 'commands': The maximum is 4."
   },
   "{806cbba4-1bd3-4916-9ddc-e719e9ca0cbf}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: No tab with id: 53683464. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{5fe0e3b1-ef04-41af-aae8-4653d2dbd0eb}": {
    "level": "L2",
@@ -1960,8 +1960,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'createDocument') (background-script.js:2)"
   },
   "headereditor-amo@addon.firefoxcn.net": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (assets/js/background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "support@todoist.com": {
    "level": "L1",
@@ -2009,7 +2009,7 @@
   },
   "firefox-enpass@enpass.io": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background/global.html:0)"
+   "error": "Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received (background/global.html:0)"
   },
   "downie@charliemonroe.net": {
    "level": "L0",
@@ -2085,7 +2085,7 @@
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-56ioaz1u/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2108,8 +2108,8 @@
    "error": null
   },
   "DontFuckWithPaste@raim.ist": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "tasksforcanvas@jtchengdev.com": {
    "level": "L2",
@@ -2252,8 +2252,8 @@
    "error": null
   },
   "jid1-xgtdawe3yyUeBQ@jetpack": {
-   "level": "L1",
-   "error": "unknown permission 'downloads.open'"
+   "level": "L2",
+   "error": null
   },
   "@ffn": {
    "level": "L1",
@@ -2268,8 +2268,8 @@
    "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
   },
   "moz-addon@7tv.app": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "@ext.arsenal.app": {
    "level": "L2",
@@ -2360,8 +2360,8 @@
    "error": null
   },
   "dfyoutube@example.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "reddit-url-redirector@kichkoupi.com": {
    "level": "L2",
@@ -2621,7 +2621,7 @@
   },
   "tongwen@softcup": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (content.js:1)"
+   "error": "the background did not start"
   },
   "odoo-debug-extension@odoo.com": {
    "level": "L2",
@@ -2641,7 +2641,7 @@
   },
   "forget-me-not@lusito.info": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-56ioaz1u/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2684,8 +2684,8 @@
    "error": "the background did not start"
   },
   "{e25fb70d-3892-456f-a698-f8f8bd749e23}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'setLoadingState') (bg/build.js:12215)"
   },
   "{5C46D283-ABDE-4dce-B83C-08881401921C}": {
    "level": "L1",
@@ -2697,11 +2697,11 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImQxN2VmMThhY2I0NmE5YjlkY2EyMjNmYmNkMWQ1MDhmZTY0ZTlkNTAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU4YmE1ODBiM2YzMWEwYTAxZjEzMmVkZDczNWE5NjBmNmE5YTg1NGIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "websigner_barclays_live@gemalto": {
    "level": "L2",
@@ -2948,8 +2948,8 @@
    "error": "the background did not start"
   },
   "{0fc2fcbc-a6aa-4be5-8284-c7aeda90598b}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{3754707b-1aa4-4c6f-96e7-5b1cdc1de5f9}": {
    "level": "L1",
@@ -3092,8 +3092,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'device') (content/bundle.js:312)"
   },
   "xl_webbrowserstore@xunlei.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{46da1da2-d8cd-42b2-b6d6-dfc312231d15}": {
    "level": "L1",
@@ -3208,8 +3208,8 @@
    "error": null
   },
   "headings@niquelheadings.net": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (service-worker.js:166)"
+   "level": "L2",
+   "error": null
   },
   "opentabsnexttocurrent@sblask": {
    "level": "L1",
@@ -3297,7 +3297,7 @@
   },
   "harper@writewithharper.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (assets/chunk-sDQ7paII.js:9078)"
+   "error": "the background did not start"
   },
   "{9ff7f7f9-a625-4cbe-ee6b-8f5c13c1cd79}": {
    "level": "L2",
@@ -3441,7 +3441,7 @@
   },
   "team@readwise.io": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (injection/index.js:76)"
+   "error": "the background did not start"
   },
   "@youtube-download-ytd": {
    "level": "L2",
@@ -3504,16 +3504,16 @@
    "error": "the background did not start"
   },
   "info@safe-in-cloud.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{9c0bf749-dacb-426c-8f70-882832dc6853}": {
    "level": "L0",
    "error": "Could not find key specification for 'command[1].suggested_key': Either specify a key for 'linux', or specify a default key."
   },
   "{d7e0a6e7-9a50-490a-be5c-3b448be39b42}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: No tab with id: 1785916717. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{09993eda-1986-4e10-886e-5c63815338c5}": {
    "level": "L1",
@@ -3564,8 +3564,8 @@
    "error": null
   },
   "{7c2a67fe-1184-46b4-8d17-6a4d66e9f601}": {
-   "level": "L1",
-   "error": "unknown permission 'downloads.open'"
+   "level": "L2",
+   "error": null
   },
   "foxyproxy-basic@eric.h.jung": {
    "level": "L2",
@@ -3620,8 +3620,8 @@
    "error": null
   },
   "{56b215f4-29b6-4898-bf2a-152d8bc189ed}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "@buyee-cart-extension": {
    "level": "L1",
@@ -3757,7 +3757,7 @@
   },
   "quickdial@matmoul.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Could not establish connection. Receiving end does not exist. (_generated_background_page.html:0)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (js/background.js:582)"
   },
   "{264206b8-8ba0-4824-8eeb-9d8d0520086f}": {
    "level": "L2",

@@ -125,6 +125,6 @@ A step that fails twice gets the `blocked` label and a comment that says why. Th
 | Corpus list | `corpus.json`: AMO's top 1000 by users on 2026-11-09, `.xpi` files cached by `tools/amo_corpus.py fetch` | #22 |
 | Test harness | oganesson's `tools/e2e/harness.py`: an add-on from an `.xpi`, its ID, background, errors and popup | zakius/oganesson#63 |
 | Corpus runner | oganesson's `tools/e2e/corpus.py`: each add-on's level, L0 to L2; `--only` checks the add-ons a step affects | zakius/oganesson#64 |
-| Corpus score | `score/oganesson.json`, 2026-11-09, oganesson 157.0.8103.38: L0 1000, L1 866, L2 447 | zakius/oganesson#64 |
+| Corpus score | `score/oganesson.json`, 2026-11-09, oganesson 157.0.8103.38: L0 1000, L1 866, L2 472 | zakius/oganesson#64 |
 
 Add a row for each step that ships.
