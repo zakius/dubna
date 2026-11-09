@@ -137,7 +137,9 @@ ContainersService::ContainersService(Profile* profile) : profile_(profile) {
   prefs_.Add(kTrafficControlRules,
              base::BindRepeating(&ContainersService::OnRulesChanged,
                                  base::Unretained(this)));
-  for (const Container& container : GetContainers()) {
+  containers_ =
+      ContainersFromList(profile->GetPrefs()->GetList(kContainersList));
+  for (const Container& container : containers_) {
     listed_.insert(container.id);
   }
   OnRulesChanged();
@@ -163,14 +165,10 @@ void ContainersService::RemoveObserver(Observer* observer) {
   observers_.RemoveObserver(observer);
 }
 
-std::vector<Container> ContainersService::GetContainers() const {
-  return ContainersFromList(profile_->GetPrefs()->GetList(kContainersList));
-}
-
 std::optional<Container> ContainersService::Get(std::string_view id) const {
-  for (Container& container : GetContainers()) {
+  for (const Container& container : containers_) {
     if (container.id == id) {
-      return std::move(container);
+      return container;
     }
   }
   const base::DictValue* used =
@@ -234,8 +232,10 @@ void ContainersService::MarkUsed(std::string_view id) {
 }
 
 void ContainersService::OnListChanged() {
+  containers_ =
+      ContainersFromList(profile_->GetPrefs()->GetList(kContainersList));
   std::set<std::string> listed;
-  for (const Container& container : GetContainers()) {
+  for (const Container& container : containers_) {
     listed.insert(container.id);
     // Tabs in a container the user renamed show the new name.
     if (profile_->GetPrefs()->GetDict(kContainersUsed).contains(container.id)) {

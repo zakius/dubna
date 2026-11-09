@@ -64,7 +64,7 @@ class ContainersService : public KeyedService,
   void RemoveObserver(Observer* observer);
 
   // The user's containers, in their order.
-  std::vector<Container> GetContainers() const;
+  const std::vector<Container>& GetContainers() const { return containers_; }
 
   // Container `id`: one of the user's, a temporary one, or a deleted one that
   // a tab is still in.
@@ -112,6 +112,8 @@ class ContainersService : public KeyedService,
   PrefChangeRegistrar prefs_;
   base::ObserverList<Observer> observers_;
   TrafficRules traffic_rules_;
+  // The user's list, parsed once per change: tabs look it up as they paint.
+  std::vector<Container> containers_;
   // The ids of the user's list as last seen, to tell which were deleted.
   std::set<std::string> listed_;
   // The cleanup that runs, and whether another must run after it.
