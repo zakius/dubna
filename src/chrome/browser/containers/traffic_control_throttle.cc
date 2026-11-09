@@ -53,6 +53,10 @@ class TrafficControlThrottle : public content::NavigationThrottle {
         handle->GetRestoreType() != content::RestoreType::kNotRestored) {
       return PROCEED;
     }
+    // A reopened page has no form data: a form post stays where it is.
+    if (handle->IsPost()) {
+      return PROCEED;
+    }
     const TrafficRule* rule = service_->traffic_rules().Match(handle->GetURL());
     if (!rule) {
       return PROCEED;
