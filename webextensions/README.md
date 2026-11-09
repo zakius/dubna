@@ -88,11 +88,13 @@ Before filing, search open and closed `climb` issues. If one already covers the 
 The evening task (dubna `README.md`, "Update policy") does one climb step when:
 
 - no update was due, and
-- the tracker batch was empty, or it was small enough that a step still fits in the run. The agent decides.
+- the tracker batch was empty, or it was small enough that a step can still be released by 06:00. The agent decides.
+
+The 06:00 is the first one after the run starts: a run started early in the day, by hand or on schedule, works on until then. Builds run at any hour; during the day the system gives them fewer CPUs.
 
 It takes the open `climb` step with the best gain for its size whose `Depends on` steps are closed. It doesn't take a `blocked` step.
 
-If the agent can't finish and release a step in its run, it stops it, pushes the work to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
+If a step isn't released by about 06:00, the agent stops it, pushes the work to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
 
 When the last full corpus run is more than 7 days old, the climb work for that evening is a full corpus run and a score update instead of a step.
 
