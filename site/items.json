@@ -3708,6 +3708,50 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/core/containers",
+"w": "New tabs, links, restored tabs and pinned tabs at startup open in the right container, and Settings can make every new tab open in a container or a new temporary one.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Containers on the desktop"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/ui/containers-menus",
+"w": "New tab in container (right-click the New Tab button), Open link in container, Reopen in container for tabs, and Open in container for bookmarks. A container tab has a line in its container's color along its bottom, in the horizontal and the vertical tab strip.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Container menus and tab line"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/ui/containers-page-action",
+"w": "The address bar shows the tab's container icon in its color, with its name in the tooltip; a click opens the menu to reopen the tab in another container.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Container icon in the address bar"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
+"p": "oganesson/settings/containers-settings",
+"w": "Settings > Privacy and security > Containers adds, renames, recolors and deletes containers, sets where new tabs open, and edits Traffic Control's rules.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Containers settings"
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "Input & shortcuts",
 "p": "oganesson/settings/shortcut-toggles",
 "w": "The switches for Helium's Ctrl+Shift+C (copy the page address, else DevTools' inspect) and Ctrl+S (collapse vertical tabs, else save the page) are on the Shortcuts page, not under Behavior.",
@@ -3924,6 +3968,17 @@
 "s": "on",
 "n": "",
 "own": 1
+},
+{
+"b": "both",
+"o": "dubna",
+"a": "Tabs & windows",
+"p": "dubna/patches/containers",
+"w": "Containers keep their own cookies and site data within one profile, as Firefox's Multi-Account Containers do: a tab in Work is signed in to Work's accounts, and tabs outside containers don't see them. A new profile has Personal, Work, Banking and Shopping; temporary containers delete their data once their tabs are gone. Links a container tab opens stay in its container, and tabs keep it across a restart. Traffic Control's rules open chosen sites in a container wherever you start. Containers and one-site rules sync with Firefox's Multi-Account Containers add-on through Firefox Sync.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Containers"
 },
 {
 "b": "og",
@@ -4347,6 +4402,28 @@
 "n": "",
 "own": 1,
 "t": "Vanadium's changes left out"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Tabs & windows",
+"p": "tennessine/containers",
+"w": "Tabs start, restore and reopen in their container, and links a container tab opens stay in it, as on the desktop.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Containers on Android"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Tabs & windows",
+"p": "tennessine/containers-ui",
+"w": "Open in container in a link's long-press menu, a line in the container's color on its tab in the tab switcher, and Settings > Containers for the containers, where new tabs open, and Traffic Control's rules.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Container menus and settings"
 },
 {
 "b": "og",
