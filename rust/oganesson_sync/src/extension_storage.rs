@@ -437,7 +437,7 @@ mod tests {
     const FX_WORK: &str = "0e6a1c9b-5f3d-4a8e-9c2b-7d1e3f4a5b6c";
 
     /// Firefox's area as the add-on writes it: its Work container, a site
-    /// assignment, its install, and a site on a port, which stays there.
+    /// assignment, its install, and a site on a port.
     fn firefox_area(area: &mut Map<String, Value>) {
         area.insert(format!("identity@@_{FX_WORK}"), json!({
             "name": "Work", "icon": "briefcase", "color": "red",
@@ -486,6 +486,7 @@ mod tests {
         assert_eq!(ops, vec![
             json!({"ext": mac::EXT_ID, "op": "container", "id": "work", "name": "Work",
                    "icon": "briefcase", "color": "red"}),
+            json!({"ext": mac::EXT_ID, "op": "site", "host": "localhost:8080", "container": "work"}),
             json!({"ext": mac::EXT_ID, "op": "site", "host": "mail.example.com", "container": "work"}),
         ]);
         let area = server.mac();
@@ -498,10 +499,10 @@ mod tests {
         assert_eq!(area["siteContainerMap@@_news.example"], json!({
             "userContextId": "personal", "neverAsk": false, "identityMacAddonUUID": personal,
             "hostname": "news.example"}));
-        // Local-only rules didn't go up; Firefox's site on a port stayed.
+        // Local-only rules didn't go up; Firefox's site on a port stayed as it was.
         let sites: Vec<&String> = area.keys().filter(|k| k.starts_with("siteContainerMap@@_")).collect();
         assert_eq!(sites.len(), 3);
-        assert!(area.contains_key("siteContainerMap@@_localhost8080"));
+        assert_eq!(area["siteContainerMap@@_localhost8080"]["hostname"], "localhost8080");
         let instance = area.iter().find(|(k, _)| k.starts_with("MACinstance:") && !k.contains("firefox")).unwrap().1;
         assert_eq!(instance["identities"].as_array().unwrap().len(), 2);
         // Another add-on's record is the same as Firefox's.
@@ -573,11 +574,14 @@ mod tests {
         server.firefox(mac::EXT_ID, |a| {
             a.remove(&format!("identity@@_{FX_WORK}"));
             a["deletedIdentityList"].as_array_mut().unwrap().push(json!(FX_WORK));
-            a.remove("siteContainerMap@@_mail.example.com");
-            a["deletedSiteList"].as_array_mut().unwrap().push(json!("siteContainerMap@@_mail.example.com"));
+            for key in ["siteContainerMap@@_mail.example.com", "siteContainerMap@@_localhost8080"] {
+                a.remove(key);
+                a["deletedSiteList"].as_array_mut().unwrap().push(json!(key));
+            }
         });
         let ops = device.sync(&mut server);
         assert_eq!(ops, vec![
+            json!({"ext": mac::EXT_ID, "op": "delete_site", "host": "localhost:8080"}),
             json!({"ext": mac::EXT_ID, "op": "delete_site", "host": "mail.example.com"}),
             json!({"ext": mac::EXT_ID, "op": "delete_container", "id": "work"}),
         ]);
@@ -653,7 +657,8 @@ mod tests {
             .collect();
         assert!(rules.contains(&(".trip.example".into(), travel.into())));
         assert!(rules.contains(&(".mail.example.com".into(), FX_WORK.into())));
-        assert_eq!(rules.len(), 3);
+        assert!(rules.contains(&(".localhost:8080".into(), FX_WORK.into())));
+        assert_eq!(rules.len(), 4);
         // Neither has more to do: no record goes up, no op comes back.
         for _ in 0..2 {
             a.settle(&mut server);

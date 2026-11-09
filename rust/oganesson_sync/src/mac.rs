@@ -12,7 +12,8 @@
 //!   use Firefox's names before 153 (`turquoise`, `toolbar`).
 //! - `siteContainerMap@@_<host>`: a site assignment, `{userContextId, neverAsk,
 //!   identityMacAddonUUID, hostname}`: pages of exactly `host` open in the
-//!   container. A site on another port has the port glued to the host.
+//!   container. A site on another port has the port glued to the host
+//!   (`localhost8080`), in the key and in `hostname`.
 //! - `deletedIdentityList` and `deletedSiteList`: the uuids and site keys a
 //!   device deleted, for the others to delete too.
 //! - `MACinstance:<uuid>`: per install, `{timestamp, identities,
@@ -21,9 +22,9 @@
 //!
 //! A container here is identified by its local id, which differs between
 //! devices, and the engine state pairs it with a uuid. A site assignment is a
-//! Traffic Control rule that is enabled, has the single pattern `.<host>`
-//! (that host only, as the add-on matches) and opens a container of the
-//! list. Other rules (more patterns, subdomains, paths, a temporary container
+//! Traffic Control rule that is enabled, has the single pattern `.<host>` or
+//! `.<host>:<port>` (that host only, as the add-on matches) and opens a
+//! container of the list. Other rules (more patterns, subdomains, paths, a temporary container
 //! or none, switched off) stay local, as do temporary containers, and the
 //! containers' order.
 //!
@@ -146,8 +147,10 @@ fn identity_key(uuid: &str) -> String {
     format!("{IDENTITY}{uuid}")
 }
 
-fn site_key(host: &str) -> String {
-    format!("{SITE}{host}")
+/// The key of a site, `host` or `host:port`, with the port glued on as the
+/// add-on does.
+fn site_key(site: &str) -> String {
+    format!("{SITE}{}", site.replace(':', ""))
 }
 
 /// Firefox 153's color names, as the add-on stores them.
@@ -185,9 +188,31 @@ fn valid_host(host: &str) -> bool {
     true
 }
 
-/// The host of a rule that is one site exactly: the pattern `.<host>`.
+/// A site the add-on's key can name: a valid host, or one with a port other
+/// than 80 and 443, which the add-on leaves out. An IPv4 address with a port
+/// isn't one: glued together, they can't be told apart again.
+fn valid_site(site: &str) -> bool {
+    let Some((host, port)) = site.split_once(':') else { return valid_host(site) };
+    let port_ok = !port.starts_with('0')
+        && port.parse::<u16>().is_ok_and(|n| n != 80 && n != 443 && n.to_string() == port);
+    port_ok && valid_host(host) && !host.ends_with(|c: char| c.is_ascii_digit())
+}
+
+/// The site a key names: a host, or one followed by digits, which are its
+/// port (a host other than an IPv4 address ends in a letter).
+fn key_site(suffix: &str) -> Option<String> {
+    if valid_host(suffix) {
+        return Some(suffix.to_string());
+    }
+    let host = suffix.trim_end_matches(|c: char| c.is_ascii_digit());
+    let site = format!("{host}:{}", &suffix[host.len()..]);
+    valid_site(&site).then_some(site)
+}
+
+/// The site of a rule that is one site exactly: the pattern `.<host>` or
+/// `.<host>:<port>`.
 fn rule_host(url_filter: &str) -> Option<&str> {
-    url_filter.trim().strip_prefix('.').filter(|h| valid_host(h))
+    url_filter.trim().strip_prefix('.').filter(|h| valid_site(h))
 }
 
 /// The add-on's area, read.
@@ -220,10 +245,10 @@ impl Area<'_> {
     fn sites(&self) -> BTreeMap<String, String> {
         let mut out = BTreeMap::new();
         for (key, value) in self.0 {
-            let Some(host) = key.strip_prefix(SITE) else { continue };
+            let Some(suffix) = key.strip_prefix(SITE) else { continue };
             let Some(uuid) = value["identityMacAddonUUID"].as_str() else { continue };
-            if valid_host(host) {
-                out.insert(host.to_string(), uuid.to_string());
+            if let Some(site) = key_site(suffix) {
+                out.insert(site, uuid.to_string());
             }
         }
         out
@@ -391,7 +416,7 @@ pub fn stage(
         value.insert("userContextId".into(), json!(id_of(uuid).unwrap_or_default()));
         value.entry("neverAsk").or_insert(json!(false));
         value.insert("identityMacAddonUUID".into(), json!(uuid));
-        value.insert("hostname".into(), json!(host));
+        value.insert("hostname".into(), json!(&key[SITE.len()..]));
         set.insert(key, Value::Object(value));
     }
     for host in state.baseline.sites.keys() {
@@ -548,9 +573,18 @@ mod tests {
         }
         assert_eq!(rule_host(".example.com"), Some("example.com"));
         assert_eq!(rule_host(" .example.com\n"), Some("example.com"));
-        for filter in ["example.com", ".example.com/path", "https://.example.com", ".example.com:8080",
-                       ".a.example\n.b.example", "# .a.example", "*"] {
+        assert_eq!(rule_host(".localhost:8080"), Some("localhost:8080"));
+        for filter in ["example.com", ".example.com/path", "https://.example.com", ".a.example\n.b.example",
+                       "# .a.example", "*", ".example.com:80", ".example.com:443", ".example.com:08080",
+                       ".example.com:70000", ".example.com:", ".192.168.1.10:8080"] {
             assert_eq!(rule_host(filter), None, "{filter}");
+        }
+        // The add-on's keys: digits after a host are its port.
+        assert_eq!(key_site("localhost8080").as_deref(), Some("localhost:8080"));
+        assert_eq!(key_site("example.com3000").as_deref(), Some("example.com:3000"));
+        assert_eq!(key_site("192.168.1.10").as_deref(), Some("192.168.1.10"));
+        for suffix in ["192.168.1.108080", "example.com443", "Example.com8080", "8080"] {
+            assert_eq!(key_site(suffix), None, "{suffix}");
         }
     }
 
@@ -581,8 +615,9 @@ mod tests {
         assert_eq!(identities.len(), 1);
         assert_eq!(identities["a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d"],
                    Look { name: "Banking".into(), icon: "dollar".into(), color: "toolbar".into() });
+        let uuid = "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d".to_string();
         assert_eq!(a.sites().into_iter().collect::<Vec<_>>(),
-                   vec![("www.bank.example".to_string(), "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d".to_string())]);
+                   vec![("localhost:3000".to_string(), uuid.clone()), ("www.bank.example".to_string(), uuid)]);
         assert_eq!(a.list(DELETED_IDENTITIES), vec!["c1"]);
         assert!(a.listed_elsewhere("MACinstance:ours", "identities", "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d"));
 
@@ -597,8 +632,34 @@ mod tests {
         assert_eq!(ops, vec![
             Op::Container { id: "banking".into(), name: "Banking".into(), icon: "dollar".into(),
                             color: "toolbar".into() },
+            Op::Site { host: "localhost:3000".into(), container: "banking".into() },
             Op::Site { host: "www.bank.example".into(), container: "banking".into() },
         ]);
+    }
+
+    #[test]
+    fn sites_on_another_port() {
+        // A rule for localhost:8080 here goes up in the add-on's format.
+        let uuid = "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d";
+        let local: Local = serde_json::from_value(json!({
+            "containers": [{"id": "dev", "name": "Dev", "icon": "fingerprint", "color": "blue"}],
+            "rules": [{"url_filter": ".localhost:8080", "container": "dev"}]})).unwrap();
+        let mut state = State::default();
+        state.uuids.insert("dev".into(), uuid.into());
+        state.instance = "ours".into();
+        let (set, _) = stage(&local, &mut state, &Map::new(), None, 1);
+        let site = &set["siteContainerMap@@_localhost8080"];
+        assert_eq!(site["hostname"], json!("localhost8080"));
+        assert_eq!(site["identityMacAddonUUID"], json!(uuid));
+        assert_eq!(set["MACinstance:ours"]["siteAssignments"], json!(["siteContainerMap@@_localhost8080"]));
+
+        // The add-on's localhost:3000 comes down as a rule for that port.
+        let mut area = set.clone();
+        area.insert("siteContainerMap@@_localhost3000".into(), json!({
+            "userContextId": "2", "neverAsk": false, "identityMacAddonUUID": uuid,
+            "hostname": "localhost3000"}));
+        let (ops, _) = finish(&local, &mut state, &area);
+        assert_eq!(ops, vec![Op::Site { host: "localhost:3000".into(), container: "dev".into() }]);
     }
 
     #[test]
