@@ -1,15 +1,15 @@
 {
  "date": "2026-11-10",
- "browser": "oganesson 157.0.8103.38 (Chromium 157.0.8103.38)",
+ "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
   "L1": 866,
-  "L2": 479
+  "L2": 494
  },
  "addons": {
   "uBlock0@raymondhill.net": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'register') (js/vapi-scripting.js:184)"
   },
   "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}": {
    "level": "L2",
@@ -128,8 +128,8 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "{aff8af88-06a9-4eee-b383-3af08c47b8c8}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (bg/index.js:10)"
+   "level": "L2",
+   "error": null
   },
   "@testpilot-containers": {
    "level": "L0",
@@ -140,8 +140,8 @@
    "error": null
   },
   "{d634138d-c276-4fc8-924b-40a0ea21d284}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: WASM is not initialized, unable to make core call. (background/background.js:37)"
+   "level": "L2",
+   "error": null
   },
   "helper@savefrom.net": {
    "level": "L2",
@@ -172,16 +172,16 @@
    "error": null
   },
   "jid1-93CWPmRbVPjRQA@jetpack": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'then') (h1-check.js:1)"
+   "level": "L2",
+   "error": null
   },
   "amptra@keepa.com": {
    "level": "L1",
    "error": "the background did not start"
   },
   "private-relay@firefox.com": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "simple-translate@sienori": {
    "level": "L1",
@@ -208,8 +208,8 @@
    "error": "the background did not start"
   },
   "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "video-bg-play@timdream.org": {
    "level": "L2",
@@ -253,7 +253,7 @@
   },
   "{DDC359D1-844A-42a7-9AA1-88A850A938A8}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "unknown permission 'theme'"
   },
   "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}": {
    "level": "L2",
@@ -549,7 +549,7 @@
   },
   "savewebpas@jeffersonscher.com": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'register') (fmtbtns.js:76)"
   },
   "{194d0dc6-7ada-41c6-88b8-95d7636fe43c}": {
    "level": "L1",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -677,11 +677,11 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-k8z6wst2/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
   },
   "2.0@disconnect.me": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: globalPrivacyControlValue is not defined (scripts/GPC/GPC-chrome.js:5)"
+   "level": "L2",
+   "error": null
   },
   "sbis_plugin_nmh@tensor.ru": {
    "level": "L2",
@@ -853,7 +853,7 @@
   },
   "{4853d046-c5a3-436b-bc36-220fd935ee1d}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "unknown permission 'theme'"
   },
   "{174b2d58-b983-4501-ab4b-07e71203cb43}": {
    "level": "L1",
@@ -1088,8 +1088,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
+   "level": "L2",
+   "error": null
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L0",
@@ -1236,8 +1236,8 @@
    "error": null
   },
   "copyplaintext@eros.man": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "Task_Manager_Tab___Custom_Web_Search_nKQMsPVbct@taskmanagertab.com": {
    "level": "L2",
@@ -1517,7 +1517,7 @@
   },
   "{2766e9f7-7bf2-4c72-81b9-d119eb54c753}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: This event does not support filters (background/redirectShorts.js:21)"
   },
   "{EDB6A15C-5F8C-4531-92FA-98E988CF233C}": {
    "level": "L2",
@@ -1909,7 +1909,7 @@
   },
   "YandexSearchEngineExtension@space.kdev": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:43)"
   },
   "{defe5404-0b6f-4cce-a119-ee0df858e5f9}": {
    "level": "L0",
@@ -2021,7 +2021,7 @@
   },
   "{54BB9F3F-07E5-486c-9B39-C7398B99391C}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "unknown permission 'find'"
   },
   "{2d4c0962-e9ff-4cad-8039-9a8b80d9b8b6}": {
    "level": "L2",
@@ -2065,7 +2065,7 @@
   },
   "{c5867acc-54c9-4074-9574-04d8818d53e8}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:339)"
   },
   "{db420ff1-427a-4cda-b5e7-7d395b9f16e1}": {
    "level": "L2",
@@ -2085,7 +2085,7 @@
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-k8z6wst2/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2212,8 +2212,8 @@
    "error": null
   },
   "xdm-v8-browser-helper@subhra74.github.io": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "syncshare@naloaty.me": {
    "level": "L2",
@@ -2384,8 +2384,8 @@
    "error": "Name of a key \"notifications-profilechange\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "bidev@ingenit.com": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "rester@kuehle.me": {
    "level": "L2",
@@ -2641,7 +2641,7 @@
   },
   "forget-me-not@lusito.info": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-k8z6wst2/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjNkYWQzOGM4MmFmNjIxNWM5OTI2YzZmODk5NmZiODJhMzdiYWFhN2UiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU3Njg2OTc2ZTNmYWIwNTY0ZDk3ZjhiOWM0YmMwNDNhNjM2YmRjMTAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2784,16 +2784,16 @@
    "error": "the background did not start"
   },
   "{1d6267dd-4b37-459a-84da-a5d2580daa6a}": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "ipvfoo@pmarks.net": {
    "level": "L1",
    "error": "the background did not start"
   },
   "{a218c3db-51ef-4170-804b-eb053fc9a2cd}": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "yt-less-mixes@example.com": {
    "level": "L1",
@@ -2837,7 +2837,7 @@
   },
   "newtabtools@darktrojan.net": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:262)"
   },
   "{333f4540-f467-419b-8410-233078ae8813}": {
    "level": "L2",
@@ -2860,8 +2860,8 @@
    "error": "the background did not start"
   },
   "{1262fc44-5ec9-4088-a7a7-4cd42f3f548d}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Identifier 'AnalyticsService' has already been declared (api-services/analytics-service.js:1)"
+   "level": "L2",
+   "error": null
   },
   "jid1-D7momAzRw417Ag@jetpack": {
    "level": "L1",
@@ -3045,7 +3045,7 @@
   },
   "{146f1820-2b0d-49ef-acbf-d85a6986e10c}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:22)"
   },
   "{ca667c1e-032b-406f-a512-0b7a220ed28d}": {
    "level": "L1",
@@ -3849,7 +3849,7 @@
   },
   "view-image-info@jeffersonscher.com": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (view-image-info-background.js:408)"
   },
   "{f69e22c7-bc50-414a-9269-0f5c344cd94c}": {
    "level": "L0",
@@ -3865,7 +3865,7 @@
   },
   "{364d5268-5d27-4c8f-a51d-eb3c674ff8ad}": {
    "level": "L1",
-   "error": "unknown permission 'menus'"
+   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 5: Value must be one of action, all, audio, browser_action, editable, frame,"
   },
   "extension@estate2023.com": {
    "level": "L2",
@@ -3928,8 +3928,8 @@
    "error": null
   },
   "{26ef8318-6349-483c-affa-6c6db6d30517}": {
-   "level": "L1",
-   "error": "unknown permission 'menus'"
+   "level": "L2",
+   "error": null
   },
   "{0e991294-458a-41a8-8f30-37cc4b3e1700}": {
    "level": "L1",
