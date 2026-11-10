@@ -127,5 +127,6 @@ A step that fails twice gets the `blocked` label and a comment that says why. Th
 | Corpus runner | oganesson's `tools/e2e/corpus.py`: each add-on's level, L0 to L2; `--only` checks the add-ons a step affects | zakius/oganesson#64 |
 | Corpus score | `score/oganesson.json`, 2026-11-09, oganesson 157.0.8103.38: L0 1000, L1 866, L2 472 | zakius/oganesson#64 |
 | Static scan | `tools/amo_corpus.py scan` writes `ranking.md`: on Chromium 157.0.8103.38, 110 missing manifest keys, permissions and APIs, most of them used by one add-on | #23 |
+| `runtime.getBrowserInfo` | Both browsers (`firefox-add-ons.patch`). `name` is the browser's own, `version` Chromium's; an add-on listed in `firefox_runtime_api.cc` or in the profile pref `firefox_add_ons.named_firefox` (Gecko or extension IDs, edited by hand) gets `Firefox` and `Mozilla`. The list is empty so far. Of the 157 add-ons that name it, 8 went from L1 to L2; Capital One Shopping moves between L1 and L2 from run to run (zakius/oganesson#85) | #38 |
 
 Add a row for each step that ships.

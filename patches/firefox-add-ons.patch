@@ -1,0 +1,64 @@
+# Firefox add-ons (webextensions/README.md): Firefox's WebExtensions APIs that
+# Chromium lacks. The functions are in dubna's src/extensions/; this registers them
+# in their namespaces' schemas, builds them and registers their prefs.
+--- a/extensions/browser/api/runtime/BUILD.gn
++++ b/extensions/browser/api/runtime/BUILD.gn
+@@ -9,6 +9,8 @@
+ 
+ source_set("runtime") {
+   sources = [
++    "firefox_runtime_api.cc",
++    "firefox_runtime_api.h",
+     "runtime_api.cc",
+     "runtime_api.h",
+     "runtime_api_delegate.cc",
+--- a/extensions/browser/api/runtime/runtime_api.cc
++++ b/extensions/browser/api/runtime/runtime_api.cc
+@@ -246,6 +246,7 @@
+   registry->RegisterBooleanPref(kPrefLastRestartWasDueToDelayedRestartApi,
+                                 false);
+   registry->RegisterDoublePref(kPrefLastRestartAfterDelayTime, 0.0);
++  RegisterFirefoxRuntimePrefs(registry);
+ }
+ 
+ template <>
+--- a/extensions/browser/api/runtime/runtime_api.h
++++ b/extensions/browser/api/runtime/runtime_api.h
+@@ -410,4 +410,7 @@
+ 
+ }  // namespace extensions
+ 
++// Firefox's functions, which the generated registration finds here.
++#include "extensions/browser/api/runtime/firefox_runtime_api.h"  // IWYU pragma: export
++
+ #endif  // EXTENSIONS_BROWSER_API_RUNTIME_RUNTIME_API_H_
+--- a/extensions/common/api/runtime.json
++++ b/extensions/common/api/runtime.json
+@@ -648,6 +648,27 @@
+         }
+       },
+       {
++        "name": "getBrowserInfo",
++        "type": "function",
++        "description": "Firefox's: the browser's name, vendor and version (Chromium's). See firefox_runtime_api.cc.",
++        "parameters": [],
++        "returns_async": {
++          "name": "callback",
++          "parameters": [
++            {
++              "name": "browserInfo",
++              "type": "object",
++              "properties": {
++                "name": {"type": "string"},
++                "vendor": {"type": "string"},
++                "version": {"type": "string"},
++                "buildID": {"type": "string"}
++              }
++            }
++          ]
++        }
++      },
++      {
+         "name": "getPackageDirectoryEntry",
+         "type": "function",
+         "description": "Returns a DirectoryEntry for the package directory.",
