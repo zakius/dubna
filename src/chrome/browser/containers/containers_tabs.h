@@ -56,9 +56,16 @@ void InheritContainer(content::SiteInstance* source,
                       const GURL& url,
                       scoped_refptr<content::SiteInstance>& site_instance);
 
+// The container to restore a tab of container `id` in: `id` while it is one
+// of the user's or a temporary one, else a new temporary container, so a
+// deleted container's storage isn't used again. Empty stays empty.
+std::string ContainerToRestore(content::BrowserContext* context,
+                               std::string_view id);
+
 // The SiteInstance to restore a tab with, from its saved `navigations` and
 // the one it shows: in the container its pages were in, or null for the
-// default. Pages of the browser itself (chrome://) restore outside containers.
+// default. Pages of the browser itself (chrome://) restore outside containers,
+// and a deleted container's pages in a new temporary one.
 scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
     content::BrowserContext* context,
     base::span<const sessions::SerializedNavigationEntry> navigations,

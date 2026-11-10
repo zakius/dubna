@@ -134,6 +134,21 @@ void InheritContainer(content::SiteInstance* source,
   }
 }
 
+std::string ContainerToRestore(content::BrowserContext* context,
+                               std::string_view id) {
+  ContainersService* service = ContainersServiceFactory::GetForProfile(
+      Profile::FromBrowserContext(context));
+  if (id.empty() || !service || id.starts_with(kTemporaryIdPrefix)) {
+    return std::string(id);
+  }
+  for (const Container& container : service->GetContainers()) {
+    if (container.id == id) {
+      return std::string(id);
+    }
+  }
+  return service->CreateTemporary().id;
+}
+
 scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
     content::BrowserContext* context,
     base::span<const sessions::SerializedNavigationEntry> navigations,
@@ -153,7 +168,8 @@ scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
   if (id.empty() || content::HasWebUIScheme(navigation.virtual_url())) {
     return nullptr;
   }
-  return SiteInstanceIn(context, id, navigation.virtual_url());
+  return SiteInstanceIn(context, ContainerToRestore(context, id),
+                        navigation.virtual_url());
 }
 
 void AddContainerIds(
