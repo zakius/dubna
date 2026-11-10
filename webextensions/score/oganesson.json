@@ -1,10 +1,10 @@
 {
- "date": "2026-11-09",
+ "date": "2026-11-10",
  "browser": "oganesson 157.0.8103.38 (Chromium 157.0.8103.38)",
  "levels": {
   "L0": 1000,
   "L1": 866,
-  "L2": 472
+  "L2": 479
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -12,8 +12,8 @@
    "error": "unknown permission 'menus'"
   },
   "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (background.js:3856)"
+   "level": "L2",
+   "error": null
   },
   "{7e87d0f4-75b2-45d6-a677-0dce7a209882}": {
    "level": "L2",
@@ -32,8 +32,8 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "jid1-NIfFY2CA8fy1tg@jetpack": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (abp-background.js:2450)"
+   "level": "L2",
+   "error": null
   },
   "addon@darkreader.org": {
    "level": "L1",
@@ -69,7 +69,7 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
   },
   "@contain-facebook": {
    "level": "L0",
@@ -128,8 +128,8 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "{aff8af88-06a9-4eee-b383-3af08c47b8c8}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (bg/index.js:10)"
   },
   "@testpilot-containers": {
    "level": "L0",
@@ -141,7 +141,7 @@
   },
   "{d634138d-c276-4fc8-924b-40a0ea21d284}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 9: Value must be one of action, all, audio, browser_action, edi"
+   "error": "Uncaught (in promise) Error: WASM is not initialized, unable to make core call. (background/background.js:37)"
   },
   "helper@savefrom.net": {
    "level": "L2",
@@ -380,8 +380,8 @@
    "error": null
   },
   "Maps_Assist___Custom_Web_Search_VeyzPDMlKh@mapsassist.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (distJs/constants.js:19)"
+   "level": "L2",
+   "error": null
   },
   "firefox-extension@steamdb.info": {
    "level": "L1",
@@ -448,8 +448,8 @@
    "error": null
   },
   "Converter_Suite_fqRObEsLaM@convertersuite.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (distJs/constants.js:19)"
+   "level": "L2",
+   "error": null
   },
   "{c2c003ee-bd69-42a2-b0e9-6f34222cb046}": {
    "level": "L1",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -564,8 +564,8 @@
    "error": "unknown permission 'browserSettings'"
   },
   "Package_Tracking_Tab___Custom_Web_Search_JVVfIFSBVe@packagetrackingtab.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (distJs/constants.js:22)"
+   "level": "L2",
+   "error": null
   },
   "{57e8684d-5ae8-47d6-93c9-f870ef0e40a3}": {
    "level": "L1",
@@ -677,11 +677,11 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
   },
   "2.0@disconnect.me": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught ReferenceError: globalPrivacyControlValue is not defined (scripts/GPC/GPC-chrome.js:5)"
   },
   "sbis_plugin_nmh@tensor.ru": {
    "level": "L2",
@@ -1064,8 +1064,8 @@
    "error": null
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (imagesearchoptions.js:61)"
+   "level": "L2",
+   "error": null
   },
   "jid1-Kt2kYYgi32zPuw@jetpack": {
    "level": "L1",
@@ -1316,8 +1316,8 @@
    "error": "the background did not start"
   },
   "Quick_Live_News_spxMukSrlT@quicklivenews.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (distJs/constants.js:21)"
+   "level": "L2",
+   "error": null
   },
   "{59812185-ea92-4cca-8ab7-cfcacee81281}": {
    "level": "L2",
@@ -1660,8 +1660,8 @@
    "error": null
   },
   "webpconverter@hilberteikelboom.nl": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: browser.runtime.getBrowserInfo is not a function (background/background.js:67)"
+   "level": "L2",
+   "error": null
   },
   "{47163005-a10b-4a41-9abd-ab3c5840e075}": {
    "level": "L1",
@@ -2008,8 +2008,8 @@
    "error": "the background did not start"
   },
   "firefox-enpass@enpass.io": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received (background/global.html:0)"
+   "level": "L2",
+   "error": null
   },
   "downie@charliemonroe.net": {
    "level": "L0",
@@ -2085,7 +2085,7 @@
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2353,7 +2353,7 @@
   },
   "{5d0d1f87-5991-42d3-98c3-54878ead1ed1}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'setIcon') (background.js:1)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:1)"
   },
   "{486ba9c7-0bfd-4148-928f-5c6044f46b56}": {
    "level": "L2",
@@ -2433,7 +2433,7 @@
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
    "level": "L1",
-   "error": "Uncaught TypeError: browser.runtime.getBrowserInfo is not a function (swift-selection-search.js:235)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (swift-selection-search.js:603)"
   },
   "secureline-vpn@avast.com": {
    "level": "L1",
@@ -2641,7 +2641,7 @@
   },
   "forget-me-not@lusito.info": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-rt3wcpc6/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-m9m9dppg/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU4YmE1ODBiM2YzMWEwYTAxZjEzMmVkZDczNWE5NjBmNmE5YTg1NGIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjNkYWQzOGM4MmFmNjIxNWM5OTI2YzZmODk5NmZiODJhMzdiYWFhN2UiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2977,7 +2977,7 @@
   },
   "vimium-c@gdh1995.cn": {
    "level": "L1",
-   "error": "Uncaught TypeError: a.n.runtime.getBrowserInfo is not a function (background/settings.js:5)"
+   "error": "Uncaught TypeError: Object.defineProperty called on non-object (content/vimium-c.js:1)"
   },
   "saladict@crimx.com": {
    "level": "L2",
