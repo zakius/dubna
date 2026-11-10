@@ -1,6 +1,8 @@
 # Firefox add-ons (webextensions/README.md): Firefox's WebExtensions APIs that
 # Chromium lacks. The functions are in dubna's src/extensions/; this registers them
-# in their namespaces' schemas, builds them and registers their prefs.
+# in their namespaces' schemas, builds them and registers their prefs. Firefox's
+# names for Chromium's APIs are aliases: browser.menus and the "menus" permission
+# are contextMenus.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -62,3 +64,42 @@
          "name": "getPackageDirectoryEntry",
          "type": "function",
          "description": "Returns a DirectoryEntry for the package directory.",
+--- a/chrome/common/extensions/api/_api_features.json
++++ b/chrome/common/extensions/api/_api_features.json
+@@ -282,7 +282,9 @@
+   },
+   "contextMenus": {
+     "dependencies": ["permission:contextMenus"],
+-    "contexts": ["privileged_extension"]
++    "contexts": ["privileged_extension"],
++    // Firefox add-ons (dubna): Firefox's name for it.
++    "alias": "menus"
+   },
+   "crashReportPrivate": [{
+     "dependencies": ["permission:crashReportPrivate"],
+@@ -710,6 +712,12 @@
+     "dependencies": ["permission:mdns"],
+     "contexts": ["privileged_extension"]
+   },
++  // Firefox add-ons (dubna): browser.menus is contextMenus.
++  "menus": {
++    "dependencies": ["permission:contextMenus"],
++    "contexts": ["privileged_extension"],
++    "source": "contextMenus"
++  },
+   "notifications": {
+     "dependencies": ["permission:notifications"],
+     "contexts": ["privileged_extension"]
+--- a/chrome/common/extensions/permissions/chrome_api_permissions.cc
++++ b/chrome/common/extensions/permissions/chrome_api_permissions.cc
+@@ -231,7 +231,9 @@
+ base::span<const Alias> GetPermissionAliases() {
+   // In alias constructor, first value is the alias name; second value is the
+   // real name. See also alias.h.
+-  static constexpr Alias aliases[] = {Alias("windows", "tabs")};
++  // Firefox add-ons (dubna): Firefox's "menus" is "contextMenus".
++  static constexpr Alias aliases[] = {Alias("windows", "tabs"),
++                                      Alias("menus", "contextMenus")};
+ 
+   return base::span(aliases);
+ }
