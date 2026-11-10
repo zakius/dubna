@@ -305,9 +305,15 @@ fn new_uuid() -> String {
     format!("{}-{}-{}-{}-{}", &h[0..8], &h[8..12], &h[12..16], &h[16..20], &h[20..32])
 }
 
+/// Firefox's English names of the default containers, by their ids here,
+/// where the browser names them in the user's language.
+const DEFAULT_NAMES: [(&str, &str); 4] =
+    [("personal", "Personal"), ("work", "Work"), ("banking", "Banking"), ("shopping", "Shopping")];
+
 /// Gives each container of the list a uuid: a container of the area with the
-/// same name that has no container here yet, as the add-on pairs them, then
-/// its own id if that is a uuid, else a new one.
+/// same name in any case that has no container here yet, then, for a default
+/// container, one with Firefox's English name for it, then its own id if that
+/// is a uuid, else a new one.
 fn pair(local: &Local, state: &mut State, area: &Map<String, Value>, deleted: &HashSet<String>) {
     state.uuids.retain(|id, _| local.containers.iter().any(|c| &c.id == id));
     let identities = Area(area).identities();
@@ -319,7 +325,12 @@ fn pair(local: &Local, state: &mut State, area: &Map<String, Value>, deleted: &H
         let free = |uuid: &String| {
             !taken.contains(uuid) && !deleted.contains(uuid) && !state.deleted_identities.contains(uuid)
         };
-        let by_name = identities.iter().find(|(uuid, look)| look.name == c.name && free(uuid));
+        let named = |name: &str| {
+            let name = name.to_lowercase();
+            identities.iter().find(|(uuid, look)| look.name.to_lowercase() == name && free(uuid))
+        };
+        let english = DEFAULT_NAMES.iter().find(|(id, _)| c.id == *id).map(|(_, name)| *name);
+        let by_name = named(&c.name).or_else(|| english.and_then(named));
         let uuid = match by_name {
             Some((uuid, _)) => uuid.clone(),
             None if is_uuid(&c.id) && free(&c.id) => c.id.clone(),
@@ -720,6 +731,39 @@ mod tests {
         let (set, _, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
         assert!(!set.contains_key("siteContainerMap@@_work.example"));
         assert_eq!(set["MACinstance:ours"]["siteAssignments"], json!([]));
+    }
+
+    #[test]
+    fn defaults_pair_across_languages() {
+        // A Polish profile's first sync with Firefox's English defaults, and a
+        // container of its own whose name differs only in case.
+        nss::ensure_initialized();
+        let uuids = ["a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c31", "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c32",
+                     "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c33", "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c34",
+                     "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c35"];
+        let names = ["Personal", "Work", "Banking", "Shopping", "Family"];
+        let mut incoming = Map::new();
+        for (uuid, name) in uuids.iter().zip(names) {
+            incoming.insert(identity_key(uuid), json!({
+                "name": name, "icon": "fingerprint", "color": "blue",
+                "cookieStoreId": "firefox-container-1", "macAddonUUID": uuid}));
+        }
+        let local: Local = serde_json::from_value(json!({"containers": [
+            {"id": "personal", "name": "Osobiste", "icon": "fingerprint", "color": "blue"},
+            {"id": "work", "name": "Praca", "icon": "briefcase", "color": "orange"},
+            {"id": "banking", "name": "Bankowość", "icon": "dollar", "color": "green"},
+            {"id": "shopping", "name": "Zakupy", "icon": "cart", "color": "pink"},
+            {"id": "family", "name": "family", "icon": "tree", "color": "red"},
+        ]})).unwrap();
+        let mut state = State::default();
+        state.instance = "ours".into();
+        let (set, _, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
+        for (id, uuid) in ["personal", "work", "banking", "shopping", "family"].iter().zip(uuids) {
+            assert_eq!(state.uuids[*id], uuid, "{id}");
+        }
+        let new: Vec<&String> =
+            set.keys().filter(|k| k.starts_with(IDENTITY) && !incoming.contains_key(*k)).collect();
+        assert!(new.is_empty(), "{new:?}");
     }
 
     #[test]
