@@ -1527,6 +1527,24 @@
 "b": "og",
 "o": "Helium",
 "a": "Address bar & search",
+"p": "helium/core/omnibox-suggestions",
+"w": "Helium adds switches to leave browsing history and bookmarks out of the address bar suggestions. oganesson's own address bar suggestions settings already have these switches, with open tabs, past searches and the suggestion order.",
+"s": "dropped",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Address bar & search",
+"p": "helium/settings/omnibox-suggestions-settings",
+"w": "Helium's \"Address bar\" section on the Search engine page, with those switches and the search suggestions switch, renamed \"Suggestions from the search engine\". oganesson keeps the switches in its own Address bar suggestions section, where the search suggestions switch is Chromium's \"Improve search suggestions\".",
+"s": "dropped",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Address bar & search",
 "p": "helium/core/clean-omnibox-suggestions",
 "w": "Helium removes the action suggestions in the address bar, such as manage passwords, update card, run safety check, translate and Google Docs shortcuts. oganesson keeps Chromium's suggestions.",
 "s": "dropped",
@@ -2115,15 +2133,6 @@
 "a": "Settings & flags",
 "p": "helium/settings/fix-text-on-cookies-page",
 "w": "Rewrites the help text above the third-party cookie exceptions list. It now just explains the \"[*.]\" wildcard, without the tracking-protection wording.",
-"s": "on",
-"n": ""
-},
-{
-"b": "og",
-"o": "Helium",
-"a": "Address bar & search",
-"p": "helium/settings/update-search-suggest-text",
-"w": "Renames the search suggestion toggle to \"Suggestions from the search engine\". Its text now says that what you type in the address bar is sent to your default search engine, and that this is off in Incognito.",
 "s": "on",
 "n": ""
 },
