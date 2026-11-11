@@ -3994,11 +3994,22 @@
 "o": "dubna",
 "a": "Extensions & uBlock",
 "p": "dubna/patches/firefox-add-ons",
-"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
+"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. Firefox's Manifest V3 background (background.scripts or background.page, where Chrome wants a service worker) runs as a Manifest V2 background page does, so add-ons such as LanguageTool and Keepa start in the background. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
 "s": "on",
 "n": "",
 "own": 1,
 "t": "Firefox add-on APIs"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Extensions & uBlock",
+"p": "oganesson/core/firefox-sidebar-action",
+"w": "A Firefox add-on's sidebar (sidebar_action) becomes its side panel, as Chrome's side_panel key makes one: the add-on's toolbar menu has \"Open side panel\", and the browser's side panel lists it. The sidebarAction API isn't there yet.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Firefox add-on sidebars"
 },
 {
 "b": "og",
@@ -4439,7 +4450,7 @@
 "o": "tennessine",
 "a": "Tabs & windows",
 "p": "tennessine/containers-ui",
-"w": "Open in container in a link's long-press menu, a line in the container's color on its tab in the tab switcher, and Settings > Containers for the containers, where new tabs open, and Traffic Control's rules.",
+"w": "Open in container in a link's long-press menu; New tab in container in the tab switcher button's long-press menu and on a long press of the tab switcher's New tab button; Reopen in container in a tab's menu in the tab switcher. Each container shows with Firefox's icon in its color, the tab switcher button carries the current tab's container icon, and a tab's row in the tab switcher has a line in its container's color. Settings > Containers edits the containers (name, color, icon), where new tabs open, and Traffic Control's rules.",
 "s": "on",
 "n": "",
 "own": 1,
