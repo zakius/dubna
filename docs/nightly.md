@@ -4,7 +4,7 @@ The nightly update is a chain of T3 scheduled tasks in the dubna project. The ro
 
 | Task | Id | Job |
 |---|---|---|
-| dubna nightly · router | `scheduled-task:command:mcp:355dfb00-d506-4cb7-b87d-2b35f602050b:schedule-task:dubna-upstream-watch-v1` | Status, space, what comes next, the final report, another round |
+| dubna nightly · router | `scheduled-task:d1826b95-4bfd-4bd8-b749-46bfed2cef0f` | Status, space, what comes next, the final report, another round |
 | dubna nightly · release | `scheduled-task:815cf2ed-72bb-4b97-8e17-63b6293f7159` | Release each main that is past its last release, and fix missing platforms |
 | dubna nightly · update oganesson | `scheduled-task:8625b77b-636b-4947-950f-e635b35f3548` | Update the desktop browser |
 | dubna nightly · update tennessine | `scheduled-task:d9b93584-ffe2-47ba-9feb-6e9f496ae974` | Update the Android browser |
@@ -12,7 +12,11 @@ The nightly update is a chain of T3 scheduled tasks in the dubna project. The ro
 | dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | One step of the WebExtensions climb |
 | dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site up to date |
 
-The stages have webhook triggers, so they never start on their own. The router starts them with `run_scheduled_task_now`. Each task posts in its own thread, and each run starts a fresh session.
+Every task posts in one thread, the router's: its first run makes the thread, and it binds each stage task to it. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
+
+The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
+
+Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`), never `delegate_task` or `t3_thread_launch`.
 
 ## The log
 
