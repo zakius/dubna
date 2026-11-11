@@ -11,7 +11,8 @@ The pace is the faster of two rates: the week's average so far and the last
 24 hours. The first line is "headroom: yes", "headroom: no" or
 "headroom: unknown"; the later lines show the numbers behind it.
 There is headroom when the 5-hour session is under SESSION_MAX percent and, at
-the pace, at least HEADROOM_MIN points of the week would be left at its reset.
+the pace, the week would have room left at its reset for another run (RUN_COST)
+and still keep RESERVE points for unexpected work.
 """
 import datetime, json, sys, time
 from pathlib import Path
@@ -19,7 +20,9 @@ from pathlib import Path
 LOGS = Path.home() / '.t3' / 'userdata' / 'logs' / 'provider'
 SESSION_MAX = 50
 # An evening run has cost 8 to 15 points of the week.
-HEADROOM_MIN = 25
+RUN_COST = 15
+# Kept free for the maintainer's own work, whatever runs.
+RESERVE = 25
 WEEK = datetime.timedelta(days=7)
 DAY = datetime.timedelta(days=1)
 UTC = datetime.timezone.utc
@@ -76,13 +79,14 @@ def assess(events, now):
     pace = max(week_rate, day_rate)
     left = 100 - (used + pace * ((reset - now) / DAY))
 
-    headroom = session_used < SESSION_MAX and left >= HEADROOM_MIN
+    headroom = session_used < SESSION_MAX and left >= RUN_COST + RESERVE
     return headroom, [
         f'five_hour: {session_used:.0f}% used, resets {when(session):%a %H:%M} UTC',
         f'seven_day: {used:.0f}% used, resets {reset:%a %H:%M} UTC '
         f'({(reset - now) / datetime.timedelta(hours=1):.0f} h left)',
         f'pace: {week_rate:.1f} points a day over the week, {day_rate:.1f} over the last 24 h',
-        f'at the reset: {max(left, 0):.0f} points left at this pace (needs {HEADROOM_MIN})',
+        f'at the reset: {max(left, 0):.0f} points left at this pace '
+        f'(needs {RUN_COST + RESERVE}: {RUN_COST} for a run, {RESERVE} kept free)',
         f'as of {stamp:%Y-%m-%d %H:%M} UTC',
     ]
 

@@ -27,16 +27,18 @@ def headroom(events, now):
     return assess(events, now)[0]
 
 
-# 10 points a day for 5 days: 70 at the reset, 30 left.
-steady = [event(at(day), 10 * day) for day in range(1, 6)]
+# 6 points a day for 5 days: 42 at the reset, 58 left.
+steady = [event(at(day), 6 * day) for day in range(1, 6)]
 assert headroom(steady, at(5))
-# The same week, but the last day took 30: at that pace nothing is left.
-burst = steady[:-1] + [event(at(5), 70)]
+# 10 points a day leaves 30: room for a run, but not for the reserve too.
+assert not headroom([event(at(day), 10 * day) for day in range(1, 6)], at(5))
+# The steady week, but the last day took 25: at that pace nothing is left.
+burst = steady[:-1] + [event(at(5), 49)]
 assert not headroom(burst, at(5))
 # A busy 5-hour session stops a run whatever the week says.
-assert not headroom(steady[:-1] + [event(at(5), 50, session=60)], at(5))
+assert not headroom(steady[:-1] + [event(at(5), 30, session=60)], at(5))
 # Once that session has reset, it no longer counts.
-assert headroom(steady[:-1] + [event(at(5), 50, session=60)], at(5, 4))
+assert headroom(steady[:-1] + [event(at(5), 30, session=60)], at(5, 4))
 # 80 used with a day and a half left, as on 2026-11-11: no headroom.
 assert not headroom([event(at(4, 6), 66), event(at(5, 6), 80)], at(5, 6))
 # A quiet week near its reset: little used, so a run fits.
