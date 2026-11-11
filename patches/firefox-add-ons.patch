@@ -2,7 +2,8 @@
 # Chromium lacks. The functions are in dubna's src/extensions/; this registers them
 # in their namespaces' schemas, builds them and registers their prefs. Firefox's
 # names for Chromium's APIs are aliases: browser.menus and the "menus" permission
-# are contextMenus.
+# are contextMenus. Firefox's Manifest V3 background pages (background.scripts or
+# .page) run as Manifest V2's do, unless the manifest also has a service worker.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -103,3 +104,38 @@
  
    return base::span(aliases);
  }
+--- a/extensions/common/api/_manifest_features.json
++++ b/extensions/common/api/_manifest_features.json
+@@ -72,13 +72,12 @@
+       "extension", "legacy_packaged_app", "login_screen_extension" ],
+     "max_manifest_version": 2
+   },
++  // Firefox add-ons (dubna): Firefox's Manifest V3 has background pages.
+   "background.scripts": {
+-    "channel": "stable",
+-    "max_manifest_version": 2
++    "channel": "stable"
+   },
+   "background.page": {
+-    "channel": "stable",
+-    "max_manifest_version": 2
++    "channel": "stable"
+   },
+   "background.service_worker": {
+     "channel": "stable",
+--- a/extensions/common/manifest_handlers/background_info.cc
++++ b/extensions/common/manifest_handlers/background_info.cc
+@@ -140,6 +140,13 @@
+     return false;
+   }
+ 
++  // Firefox add-ons (dubna): an add-on for both browsers lists Firefox's
++  // background page and Chromium's service worker. Chromium runs the worker.
++  if (background_service_worker_script_url_.has_value()) {
++    background_url_ = GURL();
++    background_scripts_.clear();
++  }
++
+   int background_solution_sum =
+       (background_url_.is_valid() ? 1 : 0) +
+       (!background_scripts_.empty() ? 1 : 0) +
