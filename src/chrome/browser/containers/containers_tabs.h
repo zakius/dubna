@@ -64,8 +64,8 @@ std::string ContainerToRestore(content::BrowserContext* context,
 
 // The SiteInstance to restore a tab with, from its saved `navigations` and
 // the one it shows: in the container its pages were in, or null for the
-// default. Pages of the browser itself (chrome://) restore outside containers,
-// and a deleted container's pages in a new temporary one.
+// default. A browser page (chrome://) in a container tab restores in the
+// container too, and a deleted container's pages in a new temporary one.
 scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
     content::BrowserContext* context,
     base::span<const sessions::SerializedNavigationEntry> navigations,

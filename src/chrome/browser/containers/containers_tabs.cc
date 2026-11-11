@@ -20,7 +20,6 @@
 #include "content/public/browser/site_instance.h"
 #include "content/public/browser/storage_partition_config.h"
 #include "content/public/browser/web_contents.h"
-#include "content/public/common/url_utils.h"
 #include "url/gurl.h"
 
 namespace containers {
@@ -160,14 +159,19 @@ scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
       static_cast<size_t>(selected_navigation) >= navigations.size()) {
     return nullptr;
   }
+  // The shown page's container, else any other page's: a page that didn't
+  // save one, as an older session's, mustn't take the tab out of it.
   const sessions::SerializedNavigationEntry& navigation =
       navigations[selected_navigation];
   std::string id = ContainerIdOf(navigation);
-  // Chromium sets up the SiteInstance of a restored page of its own when it
-  // loads it.
-  if (id.empty() || content::HasWebUIScheme(navigation.virtual_url())) {
+  for (size_t i = 0; id.empty() && i < navigations.size(); ++i) {
+    id = ContainerIdOf(navigations[i]);
+  }
+  if (id.empty()) {
     return nullptr;
   }
+  // A browser page (chrome://settings) loads in its tab's container, as it
+  // does when the tab goes to it, so Back reaches the container's sites.
   return SiteInstanceIn(context, ContainerToRestore(context, id),
                         navigation.virtual_url());
 }
