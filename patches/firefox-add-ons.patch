@@ -4,6 +4,8 @@
 # names for Chromium's APIs are aliases: browser.menus and the "menus" permission
 # are contextMenus. Firefox's Manifest V3 background pages (background.scripts or
 # .page) run as Manifest V2's do, unless the manifest also has a service worker.
+# A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
+# with the full string as the version name (firefox_version.cc).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -139,3 +141,38 @@
    int background_solution_sum =
        (background_url_.is_valid() ? 1 : 0) +
        (!background_scripts_.empty() ? 1 : 0) +
+--- a/extensions/common/BUILD.gn
++++ b/extensions/common/BUILD.gn
+@@ -402,6 +402,8 @@
+     "features/simple_feature.h",
+     "file_util.cc",
+     "file_util.h",
++    "firefox_version.cc",
++    "firefox_version.h",
+     "frame_context_data.h",
+     "hashed_extension_id.cc",
+     "hashed_extension_id.h",
+--- a/extensions/common/extension.cc
++++ b/extensions/common/extension.cc
+@@ -34,6 +34,7 @@
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension_id.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_version.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handler.h"
+@@ -693,6 +694,13 @@
+     return false;
+   }
+   version_ = base::Version(*version_str);
++  // Firefox add-ons (dubna): a Firefox version with a suffix, "3.4resigned1".
++  if (!version_.IsValid()) {
++    version_ = LoadFirefoxVersion(*version_str, this);
++    if (version_.IsValid()) {
++      return true;
++    }
++  }
+   if (!version_.IsValid() || version_.components().size() > 4) {
+     *error = errors::kInvalidVersion;
+     return false;
