@@ -3,8 +3,8 @@
  "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
-  "L1": 867,
-  "L2": 696
+  "L1": 922,
+  "L2": 739
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -337,7 +337,7 @@
   },
   "translator@zoli.bod": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Invalid value for 'commands[1].default': F2."
   },
   "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}": {
    "level": "L1",
@@ -352,8 +352,8 @@
    "error": "Uncaught SyntaxError: Unexpected token 'export' (interface/lib/env.js:4)"
   },
   "{6AC85730-7D0F-4de0-B3FA-21142DD85326}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "chrome-gnome-shell@gnome.org": {
    "level": "L1",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
   },
   "leechblockng@proginosko.com": {
    "level": "L2",
@@ -504,8 +504,8 @@
    "error": null
   },
   "{9350bc42-47fb-4598-ae0f-825e3dd9ceba}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{e8ffc3db-2875-4c7f-af38-d03e7f7f8ab9}": {
    "level": "L2",
@@ -532,8 +532,8 @@
    "error": "Name of a key \"first-install-body\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "{84380428-8c9d-4bdf-913d-b2c34d6562d9}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{7c42eea1-b3e4-4be4-a56f-82a5852b12dc}": {
    "level": "L1",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
+   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-9cqfhimb/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -701,7 +701,7 @@
   },
   "firefox-translations-addon@mozilla.org": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "firefox-addon@expressvpn.com": {
    "level": "L2",
@@ -840,8 +840,8 @@
    "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "{dab9a10d-f9c5-4e8d-9351-67531e85b508}": {
    "level": "L1",
@@ -932,8 +932,8 @@
    "error": null
   },
   "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: e.message is not a function (scripts/background/app/aliases.js:1)"
   },
   "extension@redux.devtools": {
    "level": "L2",
@@ -1092,8 +1092,8 @@
    "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "addon@fastforward.team": {
    "level": "L1",
@@ -1108,8 +1108,8 @@
    "error": null
   },
   "{41f9e51d-35e4-4b29-af66-422ff81c8b41}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
    "level": "L2",
@@ -1204,8 +1204,8 @@
    "error": null
   },
   "{394DCBA4-1F92-4f8e-8EC9-8D2CB90CB69B}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "offline-qr-code@rugk.github.io": {
    "level": "L0",
@@ -1252,8 +1252,8 @@
    "error": "unknown manifest key 'gecko'"
   },
   "@video_downloader_pro": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{64d3e6d6-8a71-4443-b60b-a9b12ff1ec14}": {
    "level": "L2",
@@ -1296,8 +1296,8 @@
    "error": null
   },
   "{66E978CD-981F-47DF-AC42-E3CF417C1467}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "{6c0839b6-2697-49ca-ac8c-8c65a8d9b7b9}": {
    "level": "L2",
@@ -1328,12 +1328,12 @@
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/service-worker.js:1)"
   },
   "{589e6459-3d56-49b4-9b3d-6e4b7ef16940}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "cors-everywhere@spenibus": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "knockoff@knockoff.shopping": {
    "level": "L2",
@@ -1356,8 +1356,8 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "public.proartex@gmail.com": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught TypeError: browser.proxy.register is not a function (background.js:144)"
   },
   "addon@trendingnews.com": {
    "level": "L2",
@@ -1396,8 +1396,8 @@
    "error": null
   },
   "yasearch@yandex.ru": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Failed to parse or set cookie named \"ys\". (_generated_background_page.html:0)"
   },
   "{79b2e4de-8fb4-4ccc-b9f6-362ac2fb74b2}": {
    "level": "L2",
@@ -1424,8 +1424,8 @@
    "error": null
   },
   "{46551EC9-40F0-4e47-8E18-8E5CF550CFB8}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{a8cf72f7-09b7-4cd4-9aaa-7a023bf09916}": {
    "level": "L1",
@@ -1460,8 +1460,8 @@
    "error": null
   },
   "jid1-P34HaABBBpOerQ@jetpack": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "savepage-we@DW-dev": {
    "level": "L2",
@@ -1676,8 +1676,8 @@
    "error": null
   },
   "homeutil@yandex.ru": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Failed to parse or set cookie named \"ys\". (_generated_background_page.html:0)"
   },
   "{2339288d-f701-45d0-a57f-a847e9adc6cc}": {
    "level": "L2",
@@ -1732,8 +1732,8 @@
    "error": null
   },
   "{f3bd3dd2-2888-44c5-91a2-2caeb33fb898}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{029d76e8-fbc9-4521-996a-014394515f7f}": {
    "level": "L2",
@@ -1912,8 +1912,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:43)"
   },
   "{defe5404-0b6f-4cce-a119-ee0df858e5f9}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "the background did not start"
   },
   "{4f391a9e-8717-4ba6-a5b1-488a34931fcb}": {
    "level": "L2",
@@ -1936,8 +1936,8 @@
    "error": null
   },
   "{63f3b52d-7581-42cd-9e82-fb1b2cdb0043}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "websitesnotes@saveriomorelli.com": {
    "level": "L0",
@@ -1968,8 +1968,8 @@
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
   },
   "exif_viewer@mozilla.doslash.org": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "browserassistant@adguard.com": {
    "level": "L2",
@@ -2085,7 +2085,7 @@
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-9cqfhimb/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2264,8 +2264,8 @@
    "error": null
   },
   "xd4rker@gmail.com": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "moz-addon@7tv.app": {
    "level": "L2",
@@ -2316,8 +2316,8 @@
    "error": null
   },
   "gelprec.smd@gmail.com": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{c49b13b1-5dee-4345-925e-0c793377e3fa}": {
    "level": "L1",
@@ -2409,7 +2409,7 @@
   },
   "{4cc4a13b-94a6-7568-370d-5f9de54a9c7f}": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Invalid value for 'commands[1].default': F9."
   },
   "{0545b830-f0aa-4d7e-8820-50a4629a56fe}": {
    "level": "L1",
@@ -2464,12 +2464,12 @@
    "error": null
   },
   "webext@tabmixplus.org": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "tab-counter@daawesomep.addons.mozilla.org": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{da2b93f0-35d5-461e-9bc7-6ba10aef1af4}": {
    "level": "L2",
@@ -2636,12 +2636,12 @@
    "error": "The 'webRequest' API cannot be used with event pages."
   },
   "Open-Link-with-New-Tab@sienori": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "forget-me-not@lusito.info": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-9cqfhimb/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2656,8 +2656,8 @@
    "error": null
   },
   "{ed387cfb-e57a-49e0-9bf3-017a1f7f2378}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{E6C93316-271E-4b3d-8D7E-FE11B4350AEB}": {
    "level": "L0",
@@ -2677,15 +2677,15 @@
   },
   "{a94d60a0-8408-4c53-8eec-cb349eb958b8}": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Invalid value for 'commands[1].description'."
   },
   "intgcal@egarracingteam.com.ar": {
    "level": "L2",
    "error": null
   },
   "{e25fb70d-3892-456f-a698-f8f8bd749e23}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'setLoadingState') (bg/build.js:12215)"
+   "level": "L2",
+   "error": null
   },
   "{5C46D283-ABDE-4dce-B83C-08881401921C}": {
    "level": "L1",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjI0MDA5YWU3ZTQwNmQ5YTUxOTEzOWMyOTI1MzJmZGY3MWEzMzViNTEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjMyMTc4NTQ3MDE4YjJmYWNmOTg4MjdjYWQ1ZTM5NDBkOWE5NWZkYmUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2740,8 +2740,8 @@
    "error": null
   },
   "shpassword@shpassword.fr": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "fytvdownloader@netlify.app": {
    "level": "L1",
@@ -2752,8 +2752,8 @@
    "error": "Invalid type for 'default_popup'."
   },
   "{d320c473-63c2-47ab-87f8-693b1badb5e3}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "fireapps@fire-arc.com": {
    "level": "L2",
@@ -2812,8 +2812,8 @@
    "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught ReferenceError: exportFunction is not defined (conent_script.js:8)"
   },
   "{4b7825da-0dd1-44f9-9717-bee5b2408af6}": {
    "level": "L2",
@@ -2925,7 +2925,7 @@
   },
   "private-bookmarks@rharel": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Invalid value for 'commands[2].default': Ctrl+Shift+F8."
   },
   "{7d2676a5-0546-4e2a-9019-aa9d8345be1e}": {
    "level": "L2",
@@ -2988,8 +2988,8 @@
    "error": "unknown manifest key 'data_policy'"
   },
   "disable-html5-autoplay@afnankhan": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "fvdmedia@gmail.com": {
    "level": "L2",
@@ -3028,8 +3028,8 @@
    "error": null
   },
   "FirefoxExtension@ReviewMeta.com": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "breezclickonce@breezie.be": {
    "level": "L2",
@@ -3061,7 +3061,7 @@
   },
   "tabrotator@davidfichtmueller.de": {
    "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "error": "Invalid value for 'commands[1].default': Shift+F11."
   },
   "{35dd5f9a-ca89-4643-b107-f07d09cc94b5}": {
    "level": "L0",
@@ -3148,8 +3148,8 @@
    "error": null
   },
   "jid1-Xo5SuA6qc1DFpw@jetpack": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{eed4110c-d14e-401e-83e8-b9c41b72d323}": {
    "level": "L2",
@@ -3256,16 +3256,16 @@
    "error": "Invalid value for 'commands[3].default': Ctrl+Shift+F6."
   },
   "multithreaded-download-manager@qw.linux-2g64.local": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "unknown permission 'menus.overrideContext'"
   },
   "@emojikeyboard": {
    "level": "L2",
    "error": null
   },
   "{1c7effb9-3126-48bb-824c-8b7520fa66dc}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "pagesaver@pearlcrescent.com": {
    "level": "L2",
@@ -3380,8 +3380,8 @@
    "error": null
   },
   "{b1355a29-9265-4b5e-a3ad-e9d61265d5ac}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "firefox@blancvpn.com": {
    "level": "L2",
@@ -3400,8 +3400,8 @@
    "error": null
   },
   "0.id@reloadmatic.webex": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
   },
   "unwanted@twitch.tv": {
    "level": "L2",
@@ -3480,8 +3480,8 @@
    "error": null
   },
   "{077f4ca9-a296-4624-9524-4e9b3835f512}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "sebastien@gavois.fr": {
    "level": "L2",
@@ -3532,8 +3532,8 @@
    "error": null
   },
   "{f7f203e0-9d1d-4557-891f-9865877c5b48}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "firefox@gofullpage.com": {
    "level": "L2",
@@ -3544,12 +3544,12 @@
    "error": null
   },
   "jid1-f3mYMbCpz2AZYl@jetpack": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "alldownloader@link64": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "beidconnect@bosa.be": {
    "level": "L2",
@@ -3596,8 +3596,8 @@
    "error": null
   },
   "jid1-w4wG5nJhx4LJZr@jetpack": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "firefox@getdirecto.com": {
    "level": "L2",
@@ -3660,8 +3660,8 @@
    "error": null
   },
   "administrator@pricy.ro": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "Uncaught ReferenceError: require is not defined (js/popover.min.js:6)"
   },
   "{0a3ee209-ab68-4b84-a9ef-eb0ee686dd8d}": {
    "level": "L2",
@@ -3676,12 +3676,12 @@
    "error": null
   },
   "{cbdcd14f-ec92-4385-9119-549b5a5b5519}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{b184d107-461b-4cfe-b4ba-771406e90c48}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "vrcvideocacher@clienthax.com": {
    "level": "L2",
@@ -3704,8 +3704,8 @@
    "error": "Invalid value for 'commands[1].default': MacCtrl+Comma."
   },
   "{dd10d63e-3096-4492-ab0e-5edcf4baf988}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "betterroblox@allorydante.com": {
    "level": "L2",
@@ -3852,24 +3852,24 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (view-image-info-background.js:408)"
   },
   "{f69e22c7-bc50-414a-9269-0f5c344cd94c}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L1",
+   "error": "unknown permission 'theme'"
   },
   "view-page-source@apps.jeurissen.co": {
    "level": "L2",
    "error": null
   },
   "@yset": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{364d5268-5d27-4c8f-a51d-eb3c674ff8ad}": {
    "level": "L1",
    "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 5: Value must be one of action, all, audio, browser_action, editable, frame,"
   },
   "extension@estate2023.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "jid1-W5guVoyeUR0uBg@jetpack": {
    "level": "L2",
@@ -3892,8 +3892,8 @@
    "error": null
   },
   "{75493B06-1504-4976-9A55-B6FE240FF0BF}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "contact@castorus.com": {
    "level": "L2",
@@ -3904,8 +3904,8 @@
    "error": "unknown manifest key 'data_collection_permissions'"
   },
   "{457040a2-afa9-457c-8a13-609c2327023a}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{6f376eb6-f726-4364-8662-a2fcbd03d302}": {
    "level": "L2",
@@ -3948,8 +3948,8 @@
    "error": "Uncaught (in promise) TypeError: Failed to fetch (src/background.js:1478)"
   },
   "{478a6f63-10b3-41e4-8216-ec5e7b3486fc}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{66d854c2-fd1b-4857-bd0a-7d220e4834da}": {
    "level": "L2",
@@ -3960,8 +3960,8 @@
    "error": null
   },
   "jid1-o2qEVrZ4t5FJWu@jetpack": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "batterdarkerdocs@threethan.github.io": {
    "level": "L2",
@@ -3976,8 +3976,8 @@
    "error": null
   },
   "imageblock@hemantvats.com": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{3df9c1b1-fddd-4c8f-9b79-13d23f33aa48}": {
    "level": "L2",
@@ -3996,12 +3996,12 @@
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/bg/main.mjs:3)"
   },
   "{a655a6b2-69a5-40de-a3b8-3f7f200c95a7}": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "@mousegesture": {
-   "level": "L0",
-   "error": "Required value 'version' is missing or invalid. It must be between 1-4 dot-separated integers each between 0 and 65536."
+   "level": "L2",
+   "error": null
   },
   "{717fcb94-e663-11ef-bd9e-02427e2eba50}": {
    "level": "L2",
