@@ -5,6 +5,8 @@
 #define CONTENT_PUBLIC_BROWSER_CONTAINERS_PARTITION_H_
 
 #include <optional>
+#include <string>
+#include <string_view>
 
 #include "content/common/content_export.h"
 #include "content/public/browser/storage_partition_config.h"
@@ -21,6 +23,24 @@ inline constexpr char kContainersPartitionDomain[] = "containers";
 
 inline bool IsContainersPartition(const StoragePartitionConfig& config) {
   return config.partition_domain() == kContainersPartitionDomain;
+}
+
+// A container's persistent notifications have its partition's name in their
+// ids, after this marker (notification_id_generator.cc), so that their click
+// and close events reach its service workers: Chromium finds the worker by
+// origin, in the site's own partition (notification_event_dispatcher_impl.cc).
+inline constexpr char kContainersNotificationMarker = '@';
+
+// The partition name in a persistent notification's id, or nullopt for a
+// notification from outside containers.
+inline std::optional<std::string> ContainersPartitionOfNotification(
+    std::string_view notification_id) {
+  std::string_view flags = notification_id.substr(0, notification_id.find('#'));
+  size_t marker = flags.find(kContainersNotificationMarker);
+  if (marker == std::string_view::npos) {
+    return std::nullopt;
+  }
+  return std::string(flags.substr(marker + 1));
 }
 
 // The storage partition that `entry` committed in, or nullopt when it hasn't
