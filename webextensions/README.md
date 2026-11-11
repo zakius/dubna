@@ -125,9 +125,10 @@ A step that fails twice gets the `blocked` label and a comment that says why. Th
 | Corpus list | `corpus.json`: AMO's top 1000 by users on 2026-11-09, `.xpi` files cached by `tools/amo_corpus.py fetch` | #22 |
 | Test harness | oganesson's `tools/e2e/harness.py`: an add-on from an `.xpi`, its ID, background, errors and popup | zakius/oganesson#63 |
 | Corpus runner | oganesson's `tools/e2e/corpus.py`: each add-on's level, L0 to L2; `--only` checks the add-ons a step affects. A permission counts as known by its aliases too (Chromium's `Alias()` lists) | zakius/oganesson#64 |
-| Corpus score | `score/oganesson.json`, 2026-11-10, oganesson 157.0.8103.50: L0 1000, L1 866, L2 494. Some add-ons' levels vary between runs (zakius/oganesson#85) | zakius/oganesson#64 |
+| Corpus score | `score/oganesson.json`, 2026-11-11, oganesson 157.0.8103.50: L0 1000, L1 867, L2 696. Some add-ons' levels vary between runs (zakius/oganesson#85) | zakius/oganesson#64 |
 | Static scan | `tools/amo_corpus.py scan` writes `ranking.md`: on Chromium 157.0.8103.38, 110 missing manifest keys, permissions and APIs, most of them used by one add-on | #23 |
 | `runtime.getBrowserInfo` | Both browsers (`firefox-add-ons.patch`). `name` is the browser's own, `version` Chromium's; an add-on listed in `firefox_runtime_api.cc` or in the profile pref `firefox_add_ons.named_firefox` (Gecko or extension IDs, edited by hand) gets `Firefox` and `Mozilla`. The list is empty so far. L2: 472 → 479 | #38 |
 | `menus` namespace and permission | Both browsers (`firefox-add-ons.patch`): aliases of `contextMenus`, as Chromium aliases `networking.onc`. Firefox's own parts are #43; Firefox's `icons` and contexts in `menus.create` are #82. L2: 479 → 494, 9 of it from `menus`, the rest add-ons whose level varies between runs | #63 |
+| Manifest V3 background pages | Both browsers (`firefox-add-ons.patch`): Firefox's `background.scripts` and `background.page` run in Manifest V3 as a persistent background page. A manifest that also lists a service worker runs the worker, as Chromium does. Module backgrounds are #64; `page_action` in Manifest V3 is #36. L2: 494 → 696 | #35 |
 
 Add a row for each step that ships.
