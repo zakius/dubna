@@ -3,8 +3,8 @@
  "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
-  "L1": 932,
-  "L2": 772
+  "L1": 964,
+  "L2": 784
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -89,7 +89,7 @@
   },
   "{036a55b4-5e72-4d05-a06c-cba2dfcc134a}": {
    "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+X."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack": {
    "level": "L2",
@@ -133,7 +133,7 @@
   },
   "@testpilot-containers": {
    "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "support@lastpass.com": {
    "level": "L2",
@@ -328,16 +328,16 @@
    "error": null
   },
   "treestyletab@piro.sakura.ne.jp": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F1."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "ffext_basicvideoext@startpage24": {
    "level": "L2",
    "error": null
   },
   "translator@zoli.bod": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F2."
+   "level": "L1",
+   "error": "unknown manifest key 'permissions_notes'"
   },
   "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}": {
    "level": "L1",
@@ -476,12 +476,12 @@
    "error": null
   },
   "{1018e4d6-728f-4b20-ad56-37578a4de76b}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].description'."
+   "level": "L1",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (ui.js:504)"
   },
   "{531906d3-e22f-4a6c-a102-8057b88a1a63}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[12].linux': Ctrl+Alt+S."
+   "level": "L2",
+   "error": null
   },
   "button@scholar.google.com": {
    "level": "L2",
@@ -580,8 +580,8 @@
    "error": null
   },
   "clearcache@michel.de.almeida": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F9."
+   "level": "L2",
+   "error": null
   },
   "{54e2eb33-18eb-46ad-a4e4-1329c29f6e17}": {
    "level": "L2",
@@ -644,8 +644,8 @@
    "error": null
   },
   "newtaboverride@agenedia.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Shift+F12."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "stefanvandamme@stefanvd.net": {
    "level": "L1",
@@ -660,8 +660,8 @@
    "error": null
   },
   "simple-tab-groups@drive4ik": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F8."
+   "level": "L1",
+   "error": "unknown permission 'tabHide'"
   },
   "abs@avira.com": {
    "level": "L2",
@@ -720,8 +720,8 @@
    "error": null
   },
   "Librezam@Librezam": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+E."
+   "level": "L2",
+   "error": null
   },
   "trafficlight@bitdefender.com": {
    "level": "L1",
@@ -749,7 +749,7 @@
   },
   "{3c078156-979c-498b-8990-85f7987dd929}": {
    "level": "L0",
-   "error": "Invalid value for 'commands[1].windows': F1."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "rf-firefox@siber.com": {
    "level": "L2",
@@ -892,8 +892,8 @@
    "error": null
   },
   "tranquility@ushnisha.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+T."
+   "level": "L2",
+   "error": null
   },
   "{12cf650b-1822-40aa-bff0-996df6948878}": {
    "level": "L1",
@@ -925,7 +925,7 @@
   },
   "tab-stash@condordes.net": {
    "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+T."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "contact@lukaslen.com": {
    "level": "L2",
@@ -984,8 +984,8 @@
    "error": null
   },
   "admin@fastaddons.com_GroupSpeedDial": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[3].default': F4."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "checkerplusforgmail@jasonsavard.com": {
    "level": "L2",
@@ -1120,8 +1120,8 @@
    "error": null
   },
   "emoji@saveriomorelli.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+A."
+   "level": "L2",
+   "error": null
   },
   "Easy_Games_Tab_zKsDuEzLrv@easygamestab.com": {
    "level": "L2",
@@ -1208,8 +1208,8 @@
    "error": null
   },
   "offline-qr-code@rugk.github.io": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Shift+F10."
+   "level": "L1",
+   "error": "Uncaught TypeError: browser.menus.refresh is not a function (background/modules/ContextMenu.js:58)"
   },
   "sky-follower-bridge@ryo.kawamata": {
    "level": "L2",
@@ -1268,8 +1268,8 @@
    "error": null
   },
   "jid1-QoFqdK4qzUfGWQ@jetpack": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F2."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "{799c0914-748b-41df-a25c-22d008f9e83f}": {
    "level": "L2",
@@ -1348,8 +1348,8 @@
    "error": null
   },
   "jid1-5Fs7iTLscUaZBgwr@jetpack": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+W."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "{4c421bb7-c1de-4dc6-80c7-ce8625e34d24}": {
    "level": "L0",
@@ -1544,8 +1544,8 @@
    "error": "unknown permission 'contextualIdentities'"
   },
   "notes@mozilla.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].description'."
+   "level": "L2",
+   "error": null
   },
   "jid1-TMndP6cdKgxLcQ@jetpack": {
    "level": "L1",
@@ -1564,8 +1564,8 @@
    "error": null
   },
   "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag. (scripts/function.js:231)"
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
    "level": "L2",
@@ -1892,8 +1892,8 @@
    "error": null
   },
   "bookmarksorganizer@agenedia.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Shift+F11."
+   "level": "L2",
+   "error": null
   },
   "{512b44b5-40a9-4593-b9fd-b29e4e1ab7c8}": {
    "level": "L2",
@@ -1921,7 +1921,7 @@
   },
   "{c607c8df-14a7-4f28-894f-29e8722976af}": {
    "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "{806cbba4-1bd3-4916-9ddc-e719e9ca0cbf}": {
    "level": "L2",
@@ -1940,8 +1940,8 @@
    "error": null
   },
   "websitesnotes@saveriomorelli.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+O."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'setIcon') (js/background.js:652)"
   },
   "{a17ffa88-53a1-497c-8b60-6eecddf1dccd}": {
    "level": "L2",
@@ -1976,8 +1976,8 @@
    "error": null
   },
   "tabby@whatsyouridea.com": {
-   "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "level": "L1",
+   "error": "Uncaught ReferenceError: window is not defined (background/background.js:1)"
   },
   "{3c9b993f-29b9-44c2-a913-def7b93a70b1}": {
    "level": "L2",
@@ -2012,8 +2012,8 @@
    "error": null
   },
   "downie@charliemonroe.net": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': MacCtrl+Shift+D."
+   "level": "L2",
+   "error": null
   },
   "skipredirect@sblask": {
    "level": "L2",
@@ -2276,8 +2276,8 @@
    "error": null
   },
   "{5b22cb75-8e43-4f2a-bb9b-1da0655ae564}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[2].default': Ctrl+Alt+A."
+   "level": "L2",
+   "error": null
   },
   "ich@maltegoetz.de": {
    "level": "L2",
@@ -2408,8 +2408,8 @@
    "error": null
   },
   "{4cc4a13b-94a6-7568-370d-5f9de54a9c7f}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': F9."
+   "level": "L1",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:43)"
   },
   "{0545b830-f0aa-4d7e-8820-50a4629a56fe}": {
    "level": "L1",
@@ -2660,8 +2660,8 @@
    "error": null
   },
   "{E6C93316-271E-4b3d-8D7E-FE11B4350AEB}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Shift+F7."
+   "level": "L2",
+   "error": null
   },
   "{c9cc7f63-4549-4d7a-a77a-931bfdeb09a9}": {
    "level": "L1",
@@ -2676,8 +2676,8 @@
    "error": null
   },
   "{a94d60a0-8408-4c53-8eec-cb349eb958b8}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].description'."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "intgcal@egarracingteam.com.ar": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU0ZDkyY2U2ZTJmNDcwMDNmY2M4NTVmYmZhYmU1NjA1Mzk0Nzk1NmQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImNkZWNmYjkyMWQyYzc5OWYzY2JjMWFhZTkwYWRkODk5YTU3NWM2NDAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2905,7 +2905,7 @@
   },
   "firefox_extension@calendly.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Extension context invalidated. (optibutton.js:601)"
+   "error": "Uncaught (in promise) Error: This script should only be loaded in a browser extension. (222.js:26)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -2925,7 +2925,7 @@
   },
   "private-bookmarks@rharel": {
    "level": "L0",
-   "error": "Invalid value for 'commands[2].default': Ctrl+Shift+F8."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "{7d2676a5-0546-4e2a-9019-aa9d8345be1e}": {
    "level": "L2",
@@ -3001,7 +3001,7 @@
   },
   "formhistory@yahoo.com": {
    "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "volumemaster@haseeb.com": {
    "level": "L2",
@@ -3061,11 +3061,11 @@
   },
   "tabrotator@davidfichtmueller.de": {
    "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Shift+F11."
+   "error": "Invalid value for homepage url: '[__MSG_extensionHomepage__]'."
   },
   "{35dd5f9a-ca89-4643-b107-f07d09cc94b5}": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Alt+Ctrl+T."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: browser.sessions.getWindowValue is not a function (src/persistence/UserWindowTitleRepository.js:38)"
   },
   "@youtube-mp4-downloader": {
    "level": "L2",
@@ -3080,12 +3080,12 @@
    "error": "Uncaught TypeError: cad_upd.split is not a function (background/background.js:57)"
   },
   "webscrapbook@danny0838.addons.mozilla.org": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[2].description'."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "smartproxy@salarcode.com": {
-   "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Invalid invocation (core.js:2)"
   },
   "notifier@topcashback.co.uk": {
    "level": "L2",
@@ -3160,8 +3160,8 @@
    "error": null
   },
   "{b2d4c129-6437-4847-868c-53b4832fee00}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.bundle.js:0)"
+   "level": "L2",
+   "error": null
   },
   "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}": {
    "level": "L2",
@@ -3201,7 +3201,7 @@
   },
   "{a0901e86-92df-4b8d-9fcd-7ad4746a6f95}": {
    "level": "L0",
-   "error": "Could not find key specification for 'command[1].suggested_key': Either specify a key for 'linux', or specify a default key."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "jid1-hnmMaq1milpehc6uI@jetpack": {
    "level": "L2",
@@ -3252,8 +3252,8 @@
    "error": null
   },
   "session-sync@gabrielivanica.com": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[3].default': Ctrl+Shift+F6."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "multithreaded-download-manager@qw.linux-2g64.local": {
    "level": "L1",
@@ -3388,8 +3388,8 @@
    "error": null
   },
   "fox@replace.fx": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': Ctrl+Shift+F9."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 0: Value must be one of action, all, audio, browser_action, edi"
   },
   "foxcapture@georgemike.com": {
    "level": "L2",
@@ -3468,8 +3468,8 @@
    "error": null
   },
   "{075e8f87-f625-445c-926e-e2411df98fba}": {
-   "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "level": "L2",
+   "error": null
   },
   "{a5260852-8d08-4979-8116-38f1129dfd22}": {
    "level": "L2",
@@ -3508,8 +3508,8 @@
    "error": null
   },
   "{9c0bf749-dacb-426c-8f70-882832dc6853}": {
-   "level": "L0",
-   "error": "Could not find key specification for 'command[1].suggested_key': Either specify a key for 'linux', or specify a default key."
+   "level": "L1",
+   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:10)"
   },
   "{d7e0a6e7-9a50-490a-be5c-3b448be39b42}": {
    "level": "L2",
@@ -3700,8 +3700,8 @@
    "error": null
   },
   "tridactyl.vim@cmcaine.co.uk": {
-   "level": "L0",
-   "error": "Invalid value for 'commands[1].default': MacCtrl+Comma."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "{dd10d63e-3096-4492-ab0e-5edcf4baf988}": {
    "level": "L2",
@@ -3740,8 +3740,8 @@
    "error": null
   },
   "{85b42b8f-49cd-4935-aeca-a6b32dd6ac9f}": {
-   "level": "L0",
-   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
+   "level": "L2",
+   "error": null
   },
   "{f2d56336-0f16-4870-bf64-84b3fd97c9c0}": {
    "level": "L2",
