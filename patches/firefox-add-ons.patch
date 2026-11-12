@@ -9,6 +9,9 @@
 # A background with "type": "module" loads its scripts as modules, as Firefox does.
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
 # and a placeholder the message doesn't define becomes empty.
+# Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
+# MacCtrl as Ctrl, any number of shortcuts, and a command without a description
+# or a key for this platform; the shortcuts page takes them too (function_keys.cc).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -232,3 +235,287 @@
      message->replace(beg_index - var_begin_delimiter_size,
                       end_index - beg_index + var_begin_delimiter_size +
                         var_end_delimiter.size(),
+--- a/ui/base/BUILD.gn
++++ b/ui/base/BUILD.gn
+@@ -131,6 +131,8 @@
+     "accelerators/command.cc",
+     "accelerators/command.h",
+     "accelerators/command_constants.h",
++    "accelerators/function_keys.cc",
++    "accelerators/function_keys.h",
+     "class_properties.cc",
+     "class_properties.h",
+     "class_property.cc",
+--- a/ui/base/accelerators/accelerator.cc
++++ b/ui/base/accelerators/accelerator.cc
+@@ -16,6 +16,7 @@
+ #include "base/strings/string_util.h"
+ #include "base/strings/utf_string_conversions.h"
+ #include "build/build_config.h"
++#include "ui/base/accelerators/function_keys.h"
+ #include "ui/base/l10n/l10n_util.h"
+ #include "ui/events/event.h"
+ #include "ui/events/keycodes/keyboard_code_conversion.h"
+@@ -226,6 +227,10 @@
+ #else
+   key_string = KeyCodeToName();
+ #endif
++  // Firefox add-ons (dubna): F2 to F12 by name too, as extension shortcuts.
++  if (key_string.empty()) {
++    key_string = base::ASCIIToUTF16(FunctionKeyToken(key_code_));
++  }
+ 
+   if (key_string.empty()) {
+ #if BUILDFLAG(IS_WIN)
+--- a/ui/base/accelerators/command.cc
++++ b/ui/base/accelerators/command.cc
+@@ -16,6 +16,7 @@
+ #include "build/build_config.h"
+ #include "ui/base/accelerators/accelerator.h"
+ #include "ui/base/accelerators/command_constants.h"
++#include "ui/base/accelerators/function_keys.h"
+ #include "ui/base/accelerators/media_keys_listener.h"
+ #include "ui/events/keycodes/keyboard_codes.h"
+ 
+@@ -35,7 +36,9 @@
+ 
+ bool DoesRequireModifier(ui::Accelerator accelerator) {
+   const KeyboardCode key_code = accelerator.key_code();
+-  return key_code != ui::VKEY_MEDIA_NEXT_TRACK &&
++  // Firefox add-ons (dubna): F1 to F12 work alone, as in Firefox.
++  return FunctionKeyToken(key_code).empty() &&
++         key_code != ui::VKEY_MEDIA_NEXT_TRACK &&
+          key_code != ui::VKEY_MEDIA_PLAY_PAUSE &&
+          key_code != ui::VKEY_MEDIA_PREV_TRACK &&
+          key_code != ui::VKEY_MEDIA_STOP;
+@@ -59,7 +62,8 @@
+     return false;
+   }
+ 
+-  if (accelerator.IsShiftDown()) {
++  if (accelerator.IsShiftDown() &&
++      FunctionKeyToken(accelerator.key_code()).empty()) {
+     return accelerator.IsCtrlDown() || accelerator.IsAltDown() ||
+            accelerator.IsCmdDown();
+   }
+@@ -201,7 +205,10 @@
+         shortcut += ui::kKeyMediaStop;
+         break;
+       default:
+-        return "";
++        if (FunctionKeyToken(accelerator.key_code()).empty()) {
++          return "";
++        }
++        shortcut += FunctionKeyToken(accelerator.key_code());
+     }
+   }
+   return shortcut;
+@@ -237,7 +244,9 @@
+   int modifiers = ui::EF_NONE;
+   ui::KeyboardCode key = ui::VKEY_UNKNOWN;
+   for (std::string_view token : tokens) {
+-    if (token == ui::kKeyCtrl) {
++    // Firefox add-ons (dubna): MacCtrl is Ctrl, as in Firefox. On Mac, the
++    // manifest's MacCtrl is already Ctrl here.
++    if (token == ui::kKeyCtrl || token == ui::kKeyMacCtrl) {
+       modifiers |= ui::EF_CONTROL_DOWN;
+     } else if (token == ui::kKeyCommand) {
+       if (platform_key == ui::kKeybindingPlatformMac) {
+@@ -282,7 +291,8 @@
+                token == ui::kKeySpace || token == ui::kKeyTab ||
+                token == ui::kKeyMediaNextTrack ||
+                token == ui::kKeyMediaPlayPause ||
+-               token == ui::kKeyMediaPrevTrack || token == ui::kKeyMediaStop) {
++               token == ui::kKeyMediaPrevTrack || token == ui::kKeyMediaStop ||
++               FunctionKeyFromToken(token) != ui::VKEY_UNKNOWN) {
+       if (key != ui::VKEY_UNKNOWN) {
+         // Multiple key assignments.
+         key = ui::VKEY_UNKNOWN;
+@@ -325,6 +335,8 @@
+         key = ui::VKEY_MEDIA_PREV_TRACK;
+       } else if (token == ui::kKeyMediaStop && should_parse_media_keys) {
+         key = ui::VKEY_MEDIA_STOP;
++      } else if (FunctionKeyFromToken(token) != ui::VKEY_UNKNOWN) {
++        key = FunctionKeyFromToken(token);
+       } else if (token.size() == 1 && base::IsAsciiUpper(token[0])) {
+         key = static_cast<ui::KeyboardCode>(ui::VKEY_A + (token[0] - 'A'));
+       } else if (token.size() == 1 && base::IsAsciiDigit(token[0])) {
+--- a/extensions/common/command.cc
++++ b/extensions/common/command.cc
+@@ -105,7 +105,8 @@
+                        CommandPlatform(), accelerator);
+     set_accelerator(ParseImpl(accelerator, CommandPlatform(),
+                               !IsActionRelatedCommand(command_name),
+-                              std::move(on_parse_error)));
++                              std::move(on_parse_error),
++                              /*allow_ctrl_alt=*/true));
+   }
+ }
+ 
+@@ -136,7 +137,8 @@
+                      CommandPlatform(), accelerator);
+   ui::Accelerator parsed = ParseImpl(accelerator, CommandPlatform(),
+                                      !IsActionRelatedCommand(command_name),
+-                                     std::move(on_parse_error));
++                                     std::move(on_parse_error),
++                                     /*allow_ctrl_alt=*/true);
+   return parsed;
+ }
+ 
+@@ -156,12 +158,11 @@
+   std::u16string description;
+   if (!IsActionRelatedCommand(command_name)) {
+     const std::string* description_ptr = command.FindString(keys::kDescription);
+-    if (!description_ptr || description_ptr->empty()) {
+-      *error = ErrorUtils::FormatErrorMessageUTF16(
+-          errors::kInvalidKeyBindingDescription, base::NumberToString(index));
+-      return false;
+-    }
+-    description = base::UTF8ToUTF16(*description_ptr);
++    // Firefox add-ons (dubna): the description is optional, as in Firefox.
++    // The shortcuts page shows the command's name instead.
++    description = base::UTF8ToUTF16(
++        description_ptr && !description_ptr->empty() ? *description_ptr
++                                                     : command_name);
+   }
+ 
+   // We'll build up a map of platform-to-shortcut suggestions.
+@@ -234,10 +235,9 @@
+     key = ui::kKeybindingPlatformDefault;
+   }
+   if (suggestions.find(key) == suggestions.end()) {
+-    *error = ErrorUtils::FormatErrorMessageUTF16(
+-        errors::kInvalidKeyBindingMissingPlatform, base::NumberToString(index),
+-        keys::kSuggestedKey, platform);
+-    return false;  // No platform specified and no fallback. Bail.
++    // Firefox add-ons (dubna): as in Firefox, a command with no key for this
++    // platform loads without a shortcut.
++    suggestions[key] = "";
+   }
+ 
+   // For developer convenience, we parse all the suggestions (and complain about
+@@ -256,7 +256,8 @@
+                          iter->first, iter->second);
+       accelerator = ParseImpl(normalized_shortcut, iter->first,
+                               !IsActionRelatedCommand(command_name),
+-                              std::move(on_parse_error));
++                              std::move(on_parse_error),
++                              /*allow_ctrl_alt=*/true);
+       if (accelerator.key_code() == ui::VKEY_UNKNOWN) {
+         if (error->empty()) {
+           *error = ErrorUtils::FormatErrorMessageUTF16(
+--- a/extensions/common/api/commands/commands_handler.cc
++++ b/extensions/common/api/commands/commands_handler.cc
+@@ -14,19 +14,12 @@
+ #include "extensions/common/command.h"
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/manifest_constants.h"
+-#include "extensions/common/manifest_handlers/permissions_parser.h"
+ #include "ui/base/accelerators/command.h"
+ 
+ namespace extensions {
+ 
+ namespace keys = manifest_keys;
+ 
+-namespace {
+-// The maximum number of commands (including page action/browser actions) with a
+-// keybinding an extension can have.
+-const int kMaxCommandsWithKeybindingPerExtension = 4;
+-}  // namespace
+-
+ // static
+ const char* CommandsInfo::kManifestDataKey = keys::kCommands;
+ 
+@@ -81,7 +74,6 @@
+ 
+   bool invalid_action_command_specified = false;
+   int command_index = 0;
+-  int keybindings_found = 0;
+   for (const auto item : *dict) {
+     ++command_index;
+ 
+@@ -97,23 +89,9 @@
+     if (!binding->Parse(*command, item.first, command_index, error))
+       return false;  // |error| already set.
+ 
+-    if (binding->accelerator().key_code() != ui::VKEY_UNKNOWN) {
+-      // Only media keys are allowed to work without modifiers, and because
+-      // media keys aren't registered exclusively they should not count towards
+-      // the max of four shortcuts per extension.
+-      if (!binding->accelerator().IsMediaKey()) {
+-        ++keybindings_found;
+-      }
+-
+-      if (keybindings_found > kMaxCommandsWithKeybindingPerExtension &&
+-          !PermissionsParser::HasAPIPermission(
+-              extension, mojom::APIPermissionID::kCommandsAccessibility)) {
+-        *error = ErrorUtils::FormatErrorMessageUTF16(
+-            manifest_errors::kInvalidKeyBindingTooMany,
+-            base::NumberToString(kMaxCommandsWithKeybindingPerExtension));
+-        return false;
+-      }
+-    }
++    // Firefox add-ons (dubna): any number of commands has a shortcut, as in
++    // Firefox. CommandService doesn't assign one that the browser or another
++    // extension has, so the user can set it on the shortcuts page.
+ 
+     std::string command_name = binding->command_name();
+     // Set the command only if it's correct for the manifest's action type. This
+--- a/ui/webui/resources/cr_components/cr_shortcut_input/cr_shortcut_util.ts
++++ b/ui/webui/resources/cr_components/cr_shortcut_input/cr_shortcut_util.ts
+@@ -27,6 +27,15 @@
+   UP = 38,
+ }
+ 
++// Firefox add-ons (dubna): F1 to F12, alone or with any modifiers, as in
++// Firefox and in extensions' manifests.
++const F1 = 112;
++const F12 = 123;
++
++function isFunctionKey(keyCode: number): boolean {
++  return keyCode >= F1 && keyCode <= F12;
++}
++
+ /**
+  * Enum for whether we require modifiers of a keycode.
+  */
+@@ -74,6 +83,9 @@
+   if (keyCode === Key.ESCAPE) {
+     return false;
+   }
++  if (isFunctionKey(keyCode)) {
++    return true;
++  }
+   for (const k in Key) {
+     if (Key[k as keyof typeof Key] === keyCode) {
+       return true;
+@@ -167,6 +179,9 @@
+           output.push('Up');
+           break;
+         default:
++          if (isFunctionKey(keyCode)) {
++            output.push('F' + (keyCode - F1 + 1));
++          }
+           break;
+       }
+     }
+@@ -181,6 +196,9 @@
+  * @return Whether the event is valid.
+  */
+ export function hasValidModifiers(e: KeyboardEvent): boolean {
++  if (isFunctionKey(e.keyCode)) {
++    return true;
++  }
+   switch (getModifierPolicy(e.keyCode)) {
+     case ModifierPolicy.REQUIRED:
+       return hasModifier(e, false);
+--- a/chrome/browser/resources/extensions/keyboard_shortcuts.html.ts
++++ b/chrome/browser/resources/extensions/keyboard_shortcuts.html.ts
+@@ -24,6 +24,7 @@
+                 $i18n{shortcutInputLabel}
+               </span>
+               <cr-shortcut-input .shortcut="${command.keybinding}"
++                  .allowCtrlAltShortcuts="${true}"
+                   input-aria-label="${this.i18n(
+                       'editShortcutInputLabel', command.description,
+                       item.name)}"
