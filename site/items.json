@@ -4230,6 +4230,16 @@
 {
 "b": "ts",
 "o": "tennessine",
+"a": "Tabs & windows",
+"p": "tennessine/webapp-splash-dark-mode",
+"w": "In dark mode, an installed web app whose manifest asks for a light splash screen opens on a dark one, darkened as auto dark mode darkens pages (x.com's white becomes #121212).",
+"s": "on",
+"n": "a site set to its light theme flashes from dark to white",
+"own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
 "a": "Settings & flags",
 "p": "tennessine/autofill-built-in-labels",
 "w": "Settings > Autofill services names the built-in option \"Autofill with Tennessine\", using passwords, addresses and cards saved in the browser, Firefox Sync's included, not Google.",
