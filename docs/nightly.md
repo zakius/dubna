@@ -132,4 +132,4 @@ What needs fixing:
 - A new upstream patch that adds or removes a user-visible feature, changes a default, or touches something we drop or override: carry it as the upstream ships it, and list it for review.
 - A build or test failure: fix it as a separate commit if the cause is clear and the fix is small. Otherwise stop, don't push, and leave it for the maintainer. Fix a flaky test as "Flaky tests" says.
 
-Commit messages follow the repo's own: the version, the policy rule that let it in, whether every patch applies, the fixes made, and anything new upstream worth a line. The push is a fast-forward of main: if main moved, rebase onto it.
+Commit messages follow the repo's own: the version, the policy rule that let it in, whether every patch applies, the fixes made, and anything new upstream worth a line. The push is a fast-forward of main: if main moved, rebase onto it. Push the commit you built and tested as it is: the release then finds the tree prepared and the build done (oganesson compares the inputs, tennessine also takes its versionCode from the commit's time), and compiles nothing again.
