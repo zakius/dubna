@@ -1,10 +1,10 @@
 {
- "date": "2026-11-11",
+ "date": "2026-11-12",
  "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
   "L1": 922,
-  "L2": 739
+  "L2": 765
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -24,8 +24,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/background.js:181)"
   },
   "{b9db16a4-6edc-47ec-a1f4-b86292ed211d}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use 'import.meta' outside a module (service/main.js:10)"
+   "level": "L2",
+   "error": null
   },
   "adguardadblocker@adguard.com": {
    "level": "L0",
@@ -188,8 +188,8 @@
    "error": null
   },
   "jid1-BoFifL9Vbdl2zQ@jetpack": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (code/main.js:14)"
+   "level": "L2",
+   "error": null
   },
   "{73a6fe31-595d-460b-a920-fcc0f8843232}": {
    "level": "L1",
@@ -288,8 +288,8 @@
    "error": null
   },
   "{7b1bf0b6-a1b9-42b0-b75d-252036438bdc}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/background.mjs:1)"
+   "level": "L2",
+   "error": null
   },
   "authenticator@mymindstorm": {
    "level": "L2",
@@ -348,12 +348,12 @@
    "error": null
   },
   "{c3c10168-4186-445c-9c5b-63f12b8e2c87}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Unexpected token 'export' (interface/lib/env.js:4)"
-  },
-  "{6AC85730-7D0F-4de0-B3FA-21142DD85326}": {
    "level": "L2",
    "error": null
+  },
+  "{6AC85730-7D0F-4de0-B3FA-21142DD85326}": {
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: The tab was closed. (_generated_background_page.html:0)"
   },
   "chrome-gnome-shell@gnome.org": {
    "level": "L1",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
+   "level": "L2",
+   "error": null
   },
   "leechblockng@proginosko.com": {
    "level": "L2",
@@ -536,8 +536,8 @@
    "error": null
   },
   "{7c42eea1-b3e4-4be4-a56f-82a5852b12dc}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/serviceWorker.js:1)"
+   "level": "L2",
+   "error": null
   },
   "@hoxx-vpn": {
    "level": "L1",
@@ -572,8 +572,8 @@
    "error": null
   },
   "{cb31ec5d-c49a-4e5a-b240-16c767444f62}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Unexpected token 'export' (scripts/common-functions.js:1)"
+   "level": "L2",
+   "error": null
   },
   "extension@tabliss.io": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -833,7 +833,7 @@
   },
   "firefox@teleparty.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
+   "error": "Uncaught (in promise) SyntaxError: Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
    "level": "L2",
@@ -860,8 +860,8 @@
    "error": null
   },
   "{d7742d87-e61d-4b78-b8a1-b469842139fa}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background_scripts/main.js:1)"
+   "level": "L2",
+   "error": null
   },
   "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack": {
    "level": "L2",
@@ -900,8 +900,8 @@
    "error": "unknown permission 'contextualIdentities'"
   },
   "tineye@ideeinc.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "noai@duckduckgo.com": {
    "level": "L2",
@@ -1024,8 +1024,8 @@
    "error": null
   },
   "gosuslugi@plugin": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:5)"
+   "level": "L2",
+   "error": null
   },
   "maxurl@qsniyg": {
    "level": "L2",
@@ -1060,8 +1060,8 @@
    "error": null
   },
   "cashback_letyshops@LetyShops": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading '714910594') (background/main.js:63)"
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
    "level": "L2",
@@ -1097,7 +1097,7 @@
   },
   "addon@fastforward.team": {
    "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'whitelist') (content_script.js:17)"
   },
   "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
@@ -1108,8 +1108,8 @@
    "error": null
   },
   "{41f9e51d-35e4-4b29-af66-422ff81c8b41}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (_generated_background_page.html:0)"
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
    "level": "L2",
@@ -1156,8 +1156,8 @@
    "error": null
   },
   "{6c00218c-707a-4977-84cf-36df1cef310f}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "worldwide@radio": {
    "level": "L2",
@@ -1280,8 +1280,8 @@
    "error": null
   },
   "jid1-AQqSMBYb0a8ADg@jetpack": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) #<Object> (app/app.html#/onboarding:0)"
   },
   "{03e07985-30b0-4ae0-8b3e-0c7519b9bdf6}": {
    "level": "L2",
@@ -1324,8 +1324,8 @@
    "error": null
   },
   "browser@tunnelbear.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/service-worker.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{589e6459-3d56-49b4-9b3d-6e4b7ef16940}": {
    "level": "L2",
@@ -1373,15 +1373,15 @@
   },
   "suziwen1@gmail.com": {
    "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (x-background.js:1)"
+   "error": "Uncaught TypeError: Cannot read properties of null (reading 'ready') (js/background.js:49)"
   },
   "firefoxpwa@filips.si": {
    "level": "L0",
    "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "keefox@chris.tomlinson": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use 'import.meta' outside a module (dist/background/index.js:1194)"
+   "level": "L2",
+   "error": null
   },
   "{00e68183-fc7d-4a91-b5cc-f7f8272386db}": {
    "level": "L2",
@@ -1488,8 +1488,8 @@
    "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "uBOLiteRedux@raymondhill.net": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (js/background.js:22)"
+   "level": "L2",
+   "error": null
   },
   "{d8b32864-153d-47fb-93ea-c273c4d1ef17}": {
    "level": "L2",
@@ -1604,8 +1604,8 @@
    "error": "Name of a key \"commandopenlinkinnewforegroundtab|newtab\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "{048bba8c-c62d-4967-963d-d663cae75d3f}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (service-worker-loader.js:1)"
+   "level": "L2",
+   "error": null
   },
   "markdown-viewer@outofindex.com": {
    "level": "L1",
@@ -1804,8 +1804,8 @@
    "error": null
   },
   "lock@adblock": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (js/background.js:28)"
+   "level": "L2",
+   "error": null
   },
   "uMatrix@raymondhill.net": {
    "level": "L2",
@@ -1948,8 +1948,8 @@
    "error": null
   },
   "NetflixPrime@Autoskip.io": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (service-worker-loader.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{8e515334-52b5-4cc5-b4e8-675d50af677d}": {
    "level": "L2",
@@ -1964,8 +1964,8 @@
    "error": null
   },
   "support@todoist.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "exif_viewer@mozilla.doslash.org": {
    "level": "L2",
@@ -2016,8 +2016,8 @@
    "error": "Invalid value for 'commands[1].default': MacCtrl+Shift+D."
   },
   "skipredirect@sblask": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{54BB9F3F-07E5-486c-9B39-C7398B99391C}": {
    "level": "L1",
@@ -2053,7 +2053,7 @@
   },
   "ronin-wallet@axieinfinity.com": {
    "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/pages/background/index.js:1)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'catch') (src/pages/contentInjected/index.js:1)"
   },
   "prathercc@gmail.com": {
    "level": "L2",
@@ -2085,7 +2085,7 @@
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2144,8 +2144,8 @@
    "error": null
   },
   "{143f479b-4cb2-4d8c-8c31-ae8653bc6054}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (js/eventPage.js:1)"
+   "level": "L2",
+   "error": null
   },
   "switchyomega@feliscatus.addons.mozilla.org": {
    "level": "L2",
@@ -2641,7 +2641,7 @@
   },
   "forget-me-not@lusito.info": {
    "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-dy2eenoe/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjMyMTc4NTQ3MDE4YjJmYWNmOTg4MjdjYWQ1ZTM5NDBkOWE5NWZkYmUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU5YmQyZDdjMGNhYWQ5NzViNWRmNWZlMjFhYjdmZDNlZGVlZGNkNDkiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2744,8 +2744,8 @@
    "error": null
   },
   "fytvdownloader@netlify.app": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{10758a55-48af-4c2f-bf6b-bbae95f3b87d}": {
    "level": "L0",
@@ -2856,8 +2856,8 @@
    "error": null
   },
   "developer@quetta.net": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/pages/background/index.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{1262fc44-5ec9-4088-a7a7-4cd42f3f548d}": {
    "level": "L2",
@@ -2896,8 +2896,8 @@
    "error": null
   },
   "collector@broceliand.fr": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.html:0)"
   },
   "textlink-and-googletranslate@aime": {
    "level": "L2",
@@ -2905,7 +2905,7 @@
   },
   "firefox_extension@calendly.com": {
    "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (module_background.js:1)"
+   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_frame.js:1)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -2932,8 +2932,8 @@
    "error": null
   },
   "{b13d04e3-41db-48b3-842c-8079df93c7ad}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/bg.js:1)"
+   "level": "L2",
+   "error": null
   },
   "gte@melalawi.com": {
    "level": "L1",
@@ -2956,8 +2956,8 @@
    "error": null
   },
   "inist.users@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "jid1-PmuMUcuMey5ABw@jetpack": {
    "level": "L2",
@@ -3173,7 +3173,7 @@
   },
   "ao3-enhancements@jsmnbom": {
    "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/background.js:1)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
   },
   "cookie-manager@robwu.nl": {
    "level": "L1",
@@ -3296,8 +3296,8 @@
    "error": null
   },
   "harper@writewithharper.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (service-worker-loader.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{9ff7f7f9-a625-4cbe-ee6b-8f5c13c1cd79}": {
    "level": "L2",
@@ -3356,8 +3356,8 @@
    "error": "unknown manifest key 'privacy_policy'"
   },
   "caitools.dev@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/background/background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{30b15d56-b2fa-4cb2-98fd-7b5e26306483}": {
    "level": "L2",
@@ -3401,7 +3401,7 @@
   },
   "0.id@reloadmatic.webex": {
    "level": "L1",
-   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'defaults') (reloadmatic.js:64)"
   },
   "unwanted@twitch.tv": {
    "level": "L2",
@@ -3732,8 +3732,8 @@
    "error": null
   },
   "{c1244531-aad0-4aa7-b1c1-eb09c96909b9}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{019f5290-6afb-4863-bc31-87cc0b6adb25}": {
    "level": "L2",
@@ -3748,8 +3748,8 @@
    "error": null
   },
   "hogecafe@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Unexpected token 'export' (bg.js:34)"
+   "level": "L2",
+   "error": null
   },
   "{eb8aee6c-8239-4f5f-beed-9a4c55c76e32}": {
    "level": "L1",
@@ -3792,8 +3792,8 @@
    "error": null
   },
   "{33790bb6-386a-4cab-a9d0-c760b5a467ab}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (service-worker-loader.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{da8a8994-07be-4b0e-91dd-dd99863fd2c5}": {
    "level": "L1",
@@ -3884,8 +3884,8 @@
    "error": null
   },
   "jonatas@gov": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (background/background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "trix@highlight": {
    "level": "L2",
@@ -3992,8 +3992,8 @@
    "error": null
   },
   "{0f1b4c25-4ab0-411e-ba22-e56c27f3d151}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/bg/main.mjs:3)"
+   "level": "L2",
+   "error": null
   },
   "{a655a6b2-69a5-40de-a3b8-3f7f200c95a7}": {
    "level": "L2",
