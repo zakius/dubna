@@ -7,6 +7,8 @@
 # A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
 # with the full string as the version name (firefox_version.cc).
 # A background with "type": "module" loads its scripts as modules, as Firefox does.
+# Locale files load as Firefox reads them: a message of any name ("first-install-body"),
+# and a placeholder the message doesn't define becomes empty.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -194,3 +196,39 @@
      *data += script.relative_path().AsUTF8Unsafe();
      *data += "\"></script>\n";
    }
+--- a/extensions/common/message_bundle.cc
++++ b/extensions/common/message_bundle.cc
+@@ -72,9 +72,8 @@
+   for (const auto& catalog : std::views::reverse(locale_catalogs)) {
+     for (auto message_it : catalog) {
+       std::string key(base::ToLowerASCII(message_it.first));
+-      if (!IsValidName(message_it.first)) {
+-        return BadKeyMessage(key, error);
+-      }
++      // Firefox add-ons (dubna): Firefox reads a message of any name, such as
++      // "first-install-body". Only a valid name can be used as __MSG_name__.
+       std::string value;
+       if (!GetMessageValue(message_it.first, message_it.second, &value,
+                            error)) {
+@@ -259,16 +258,14 @@
+       continue;
+     }
+     auto it = variables.find(base::ToLowerASCII(var_name));
+-    if (it == variables.end()) {
+-      *error = base::StringPrintf("Variable %s%s%s used but not defined.",
+-                                  var_begin_delimiter.c_str(),
+-                                  var_name.c_str(),
+-                                  var_end_delimiter.c_str());
+-      return false;
++    // Firefox add-ons (dubna): as in Firefox, a placeholder that the message
++    // doesn't define becomes empty, and an unknown __MSG_name__ stays as it is.
++    if (it == variables.end() && var_begin_delimiter == kMessageBegin) {
++      continue;
+     }
+ 
+     // Replace variable with its value.
+-    std::string value = it->second;
++    std::string value = it == variables.end() ? std::string() : it->second;
+     message->replace(beg_index - var_begin_delimiter_size,
+                      end_index - beg_index + var_begin_delimiter_size +
+                        var_end_delimiter.size(),
