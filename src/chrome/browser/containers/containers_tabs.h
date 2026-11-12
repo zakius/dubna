@@ -10,6 +10,7 @@
 
 #include "base/containers/span.h"
 #include "base/memory/scoped_refptr.h"
+#include "content/public/browser/session_storage_namespace_handle.h"
 
 class GURL;
 
@@ -70,6 +71,13 @@ scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
     content::BrowserContext* context,
     base::span<const sessions::SerializedNavigationEntry> navigations,
     int selected_navigation);
+
+// Moves the saved sessionStorage of a tab restored with `site_instance` from
+// the default partition, where Chromium restores it, to the tab's container,
+// whose pages use it. Leaves `map` as it is outside containers.
+void MoveSessionStorageToContainer(
+    content::SiteInstance* site_instance,
+    content::SessionStorageNamespaceHandleMap& map);
 
 // Adds the ids of the containers `navigations` were in to `ids`.
 void AddContainerIds(

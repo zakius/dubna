@@ -6,6 +6,9 @@
 #   noopener) stays in the container; content gives such a window a new default SiteInstance.
 # - navigation_entry_impl.cc: a page's committed partition, which the session handler saves as
 #   the page's extended info: the public NavigationEntry doesn't tell its SiteInstance.
+# - web_contents_impl.cc, session_service_base.cc, content_platform_specific_tab_data.cc: saved
+#   sessions and closed tabs keep a container tab's sessionStorage, its container's; Chromium
+#   keeps only the default partition's.
 # - permission_util.cc: notifications work in containers; Chromium blocks them in a partition
 #   that isn't the site's own.
 # - notification_id_generator.{h,cc}, storage_partition_impl.cc, notification_event_dispatcher_impl.cc:
@@ -164,6 +167,22 @@
      } else {
        site_instance = SiteInstance::Create(GetBrowserContext());
      }
+@@ -13566,4 +13571,15 @@
+               });
+ }
+ 
++SessionStorageNamespaceHandle* GetTabSessionStorageNamespace(
++    WebContents& contents) {
++  WebContentsImpl& impl = static_cast<WebContentsImpl&>(contents);
++  const StoragePartitionConfig& config =
++      impl.GetSiteInstance()->GetSecurityPrincipal().GetStoragePartitionConfig();
++  if (!IsContainersPartition(config)) {
++    return impl.GetController().GetDefaultSessionStorageNamespace();
++  }
++  return impl.GetController().GetSessionStorageNamespace(config);
++}
++
+ }  // namespace content
 --- a/content/browser/notifications/notification_id_generator.h
 +++ b/content/browser/notifications/notification_id_generator.h
 @@ -82,6 +82,15 @@
@@ -275,3 +294,59 @@
    PushMessagingService* push_service = GetService();
    if (!push_service) {
      if (!is_incognito_) {
+--- a/components/sessions/content/content_platform_specific_tab_data.cc
++++ b/components/sessions/content/content_platform_specific_tab_data.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "components/sessions/content/content_platform_specific_tab_data.h"
+ 
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/navigation_controller.h"
+ #include "content/public/browser/web_contents.h"
+ 
+@@ -14,7 +15,7 @@
+     :  // TODO(ajwong): This does not correctly handle storage for isolated
+        // apps.
+       session_storage_namespace_(
+-          web_contents->GetController().GetDefaultSessionStorageNamespace()) {}
++          content::GetTabSessionStorageNamespace(*web_contents)) {}
+ 
+ ContentPlatformSpecificTabData::ContentPlatformSpecificTabData() = default;
+ ContentPlatformSpecificTabData::~ContentPlatformSpecificTabData() = default;
+--- a/chrome/browser/sessions/session_service_base.cc
++++ b/chrome/browser/sessions/session_service_base.cc
+@@ -55,6 +55,7 @@
+ #include "components/tab_groups/tab_group_id.h"
+ #include "components/tabs/public/split_tab_data.h"
+ #include "components/tabs/public/tab_group.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/navigation_controller.h"
+ #include "content/public/browser/navigation_details.h"
+ #include "content/public/browser/navigation_entry.h"
+@@ -294,7 +295,7 @@
+   // just the default. This in particular will not work for tabs with only
+   // isolated apps which won't have a default partition.
+   content::SessionStorageNamespaceHandle* session_storage_namespace =
+-      contents->GetController().GetDefaultSessionStorageNamespace();
++      content::GetTabSessionStorageNamespace(*contents);
+   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
+       session_tab_helper->session_id(), session_storage_namespace->id()));
+   session_storage_namespace->SetShouldPersist(true);
+@@ -311,7 +312,7 @@
+       sessions::SessionTabHelper::FromWebContents(contents);
+   if (ShouldDeleteSessionStorageOnTabClosing(session_tab_helper->window_id())) {
+     content::SessionStorageNamespaceHandle* session_storage_namespace =
+-        contents->GetController().GetDefaultSessionStorageNamespace();
++        content::GetTabSessionStorageNamespace(*contents);
+     // Allow the associated sessionStorage to get deleted; the tab close is
+     // being committed and it won't be needed in session restore.
+     session_storage_namespace->SetShouldPersist(false);
+@@ -677,7 +678,7 @@
+ 
+   // Record the association between the sessionStorage namespace and the tab.
+   content::SessionStorageNamespaceHandle* session_storage_namespace =
+-      tab->GetController().GetDefaultSessionStorageNamespace();
++      content::GetTabSessionStorageNamespace(*tab);
+   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
+       session_tab_helper->session_id(), session_storage_namespace->id()));
+ }

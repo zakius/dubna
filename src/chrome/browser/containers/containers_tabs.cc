@@ -15,9 +15,11 @@
 #include "components/sessions/core/serialized_navigation_entry.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/containers_partition.h"
+#include "content/public/browser/dom_storage_context.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/security_principal.h"
 #include "content/public/browser/site_instance.h"
+#include "content/public/browser/storage_partition.h"
 #include "content/public/browser/storage_partition_config.h"
 #include "content/public/browser/web_contents.h"
 #include "url/gurl.h"
@@ -174,6 +176,32 @@ scoped_refptr<content::SiteInstance> SiteInstanceToRestore(
   // does when the tab goes to it, so Back reaches the container's sites.
   return SiteInstanceIn(context, ContainerToRestore(context, id),
                         navigation.virtual_url());
+}
+
+void MoveSessionStorageToContainer(
+    content::SiteInstance* site_instance,
+    content::SessionStorageNamespaceHandleMap& map) {
+  if (!site_instance) {
+    return;
+  }
+  const content::StoragePartitionConfig& config =
+      site_instance->GetSecurityPrincipal().GetStoragePartitionConfig();
+  if (!content::IsContainersPartition(config)) {
+    return;
+  }
+  content::BrowserContext* context = site_instance->GetBrowserContext();
+  auto saved = map.find(content::StoragePartitionConfig::CreateDefault(context));
+  if (saved == map.end() || !saved->second) {
+    return;
+  }
+  // The same id finds the container's saved sessionStorage: after a restart
+  // on disk, for a closed tab the one it kept alive.
+  scoped_refptr<content::SessionStorageNamespaceHandle> restored =
+      context->GetStoragePartition(config)
+          ->GetDOMStorageContext()
+          ->RecreateSessionStorage(saved->second->id());
+  map.clear();
+  map[config] = std::move(restored);
 }
 
 void AddContainerIds(

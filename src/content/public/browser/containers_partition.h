@@ -14,6 +14,8 @@
 namespace content {
 
 class NavigationEntry;
+class SessionStorageNamespaceHandle;
+class WebContents;
 
 // Tab containers (//chrome/browser/containers) keep each container's cookies
 // and site storage in a storage partition of this domain, named by the
@@ -49,6 +51,14 @@ inline std::optional<std::string> ContainersPartitionOfNotification(
 // NavigationEntry doesn't tell its SiteInstance.
 CONTENT_EXPORT std::optional<StoragePartitionConfig>
 GetCommittedStoragePartitionConfig(NavigationEntry& entry);
+
+// The sessionStorage of the tab `contents`: its container's in a container,
+// else the default partition's. Sessions and closed tabs keep this one, as
+// Chromium keeps only the default partition's, which a container tab doesn't
+// use. Defined in web_contents_impl.cc (dubna's containers.patch): the public
+// NavigationController doesn't give a partition's sessionStorage.
+CONTENT_EXPORT SessionStorageNamespaceHandle* GetTabSessionStorageNamespace(
+    WebContents& contents);
 
 }  // namespace content
 
