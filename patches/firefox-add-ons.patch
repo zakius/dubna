@@ -6,6 +6,7 @@
 # .page) run as Manifest V2's do, unless the manifest also has a service worker.
 # A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
 # with the full string as the version name (firefox_version.cc).
+# A background with "type": "module" loads its scripts as modules, as Firefox does.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -176,3 +177,20 @@
    if (!version_.IsValid() || version_.components().size() > 4) {
      *error = errors::kInvalidVersion;
      return false;
+--- a/extensions/browser/extension_protocols.cc
++++ b/extensions/browser/extension_protocols.cc
+@@ -149,8 +149,13 @@
+   *mime_type = "text/html";
+   *charset = "utf-8";
+   *data = "<!DOCTYPE html>\n<body>\n";
++  // Firefox add-ons (dubna): Firefox loads a background's scripts as modules
++  // when the manifest has "background": {"type": "module"}.
++  const std::string* type =
++      extension->manifest()->FindStringPath("background.type");
++  const bool module = type && *type == "module";
+   for (const auto& script : BackgroundInfo::GetBackgroundScripts(extension)) {
+-    *data += "<script src=\"";
++    *data += module ? "<script type=\"module\" src=\"" : "<script src=\"";
+     *data += script.relative_path().AsUTF8Unsafe();
+     *data += "\"></script>\n";
+   }
