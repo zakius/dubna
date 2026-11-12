@@ -86,6 +86,12 @@ class ContainersService : public KeyedService,
   // nothing uses. `done`, for tests, runs when it has.
   void Cleanup(base::OnceClosure done = {});
 
+  // Deletes the sessionStorage that no tab uses from the partitions of the
+  // user's containers, as Chromium's DeleteStaleSessionData() does from the
+  // default partition. Call it next to that, once the session is restored or
+  // can no longer be: tabs restored before then have recreated theirs.
+  static void DeleteStaleSessionData(Profile* profile);
+
   // KeyedService:
   void Shutdown() override;
 
@@ -98,6 +104,7 @@ class ContainersService : public KeyedService,
                std::set<std::string> in_use);
   void OnStorageDeleted(const std::string& id, bool success);
   void FinishCleanup();
+  void OnSessionStorageFound(std::vector<std::string> ids);
   // The used containers that aren't in the user's list.
   std::vector<std::string> CleanupCandidates() const;
 

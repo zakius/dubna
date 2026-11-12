@@ -25,6 +25,7 @@
 #include "base/task/thread_pool.h"
 #include "base/uuid.h"
 #include "chrome/browser/containers/containers_platform.h"
+#include "chrome/browser/containers/containers_service_factory.h"
 #include "chrome/browser/containers/containers_tabs.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/sessions/tab_restore_service_factory.h"
@@ -400,6 +401,47 @@ void ContainersService::OnStorageDeleted(const std::string& id, bool success) {
   }
   if (--pending_deletions_ == 0) {
     FinishCleanup();
+  }
+}
+
+// static
+void ContainersService::DeleteStaleSessionData(Profile* profile) {
+  ContainersService* service = ContainersServiceFactory::GetForProfile(profile);
+  if (!service) {
+    return;
+  }
+  // Only the partitions with sessionStorage on disk: loading a partition has
+  // a cost, and one without sessionStorage has nothing to delete.
+  std::vector<std::pair<std::string, base::FilePath>> partitions;
+  for (const std::string& id : service->listed_) {
+    partitions.emplace_back(id, StoragePath(profile, id));
+  }
+  base::ThreadPool::PostTaskAndReplyWithResult(
+      FROM_HERE, {base::MayBlock()},
+      base::BindOnce(
+          [](std::vector<std::pair<std::string, base::FilePath>> partitions) {
+            std::vector<std::string> ids;
+            for (const auto& [id, path] : partitions) {
+              // DomStorageDatabase's LevelDB folder, or its SQLite file.
+              if (base::PathExists(path.AppendASCII("Session Storage")) ||
+                  base::PathExists(path.AppendASCII("SessionStorage"))) {
+                ids.push_back(id);
+              }
+            }
+            return ids;
+          },
+          std::move(partitions)),
+      base::BindOnce(&ContainersService::OnSessionStorageFound,
+                     service->weak_factory_.GetWeakPtr()));
+}
+
+void ContainersService::OnSessionStorageFound(std::vector<std::string> ids) {
+  for (const std::string& id : ids) {
+    // A container deleted meanwhile loses all its storage in Cleanup().
+    if (listed_.contains(id)) {
+      profile_->GetStoragePartition(PartitionOf(profile_, id))
+          ->DeleteStaleSessionData();
+    }
   }
 }
 
