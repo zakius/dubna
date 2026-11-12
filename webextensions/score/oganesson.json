@@ -3,8 +3,8 @@
  "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
-  "L1": 922,
-  "L2": 765
+  "L1": 932,
+  "L2": 772
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -72,8 +72,8 @@
    "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
   },
   "@contain-facebook": {
-   "level": "L0",
-   "error": "Name of a key \"add-site-p1\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "jid1-93WyvpgvxzGATw@jetpack": {
    "level": "L2",
@@ -133,7 +133,7 @@
   },
   "@testpilot-containers": {
    "level": "L0",
-   "error": "Name of a key \"moz-vpn-connected\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Too many shortcuts specified for 'commands': The maximum is 4."
   },
   "support@lastpass.com": {
    "level": "L2",
@@ -329,11 +329,11 @@
   },
   "treestyletab@piro.sakura.ne.jp": {
    "level": "L0",
-   "error": "Name of a key \"tabgroupmenu_tab-group-editor-action-copy-link_label\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid value for 'commands[1].default': F1."
   },
   "ffext_basicvideoext@startpage24": {
-   "level": "L0",
-   "error": "Name of a key \"idnovideo2.1\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L2",
+   "error": null
   },
   "translator@zoli.bod": {
    "level": "L0",
@@ -352,8 +352,8 @@
    "error": null
   },
   "{6AC85730-7D0F-4de0-B3FA-21142DD85326}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: The tab was closed. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "chrome-gnome-shell@gnome.org": {
    "level": "L1",
@@ -529,7 +529,7 @@
   },
   "vpn@mozilla.com": {
    "level": "L0",
-   "error": "Name of a key \"first-install-body\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "{84380428-8c9d-4bdf-913d-b2c34d6562d9}": {
    "level": "L2",
@@ -676,8 +676,8 @@
    "error": null
   },
   "user-agent-switcher@ninetailed.ninja": {
-   "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/160/89800edd420a376d1d7fbda506c11c55f42dda9e53daa0e2251560f274c2d147/_locales/cs/messages.json': Variable $HOSTNAME$ used but not defined."
+   "level": "L1",
+   "error": "unknown manifest key '//1'"
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -925,7 +925,7 @@
   },
   "tab-stash@condordes.net": {
    "level": "L0",
-   "error": "Name of a key \"child_group.one\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid value for 'commands[1].default': Ctrl+Alt+T."
   },
   "contact@lukaslen.com": {
    "level": "L2",
@@ -965,7 +965,7 @@
   },
   "CanvasBlocker@kkapsner.de": {
    "level": "L0",
-   "error": "Name of a key \"askdenymode_options.block\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "1centext_ff@1c.ru": {
    "level": "L2",
@@ -1060,8 +1060,8 @@
    "error": null
   },
   "cashback_letyshops@LetyShops": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading '714910594') (background/main.js:63)"
+   "level": "L2",
+   "error": null
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
    "level": "L2",
@@ -1096,8 +1096,8 @@
    "error": null
   },
   "addon@fastforward.team": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'whitelist') (content_script.js:17)"
+   "level": "L2",
+   "error": null
   },
   "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
@@ -1476,8 +1476,8 @@
    "error": null
   },
   "sound-boobooster@yeahyeah": {
-   "level": "L0",
-   "error": "Variable $1$ used but not defined."
+   "level": "L2",
+   "error": null
   },
   "@forest-firefox-addon": {
    "level": "L2",
@@ -1564,8 +1564,8 @@
    "error": null
   },
   "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}": {
-   "level": "L1",
-   "error": "Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag. (scripts/function.js:231)"
+   "level": "L2",
+   "error": null
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
    "level": "L2",
@@ -1600,8 +1600,8 @@
    "error": null
   },
   "{e839c3f9-298e-4cd0-99e0-464431cb7c34}": {
-   "level": "L0",
-   "error": "Name of a key \"commandopenlinkinnewforegroundtab|newtab\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L1",
+   "error": "unknown permission 'browserSettings'"
   },
   "{048bba8c-c62d-4967-963d-d663cae75d3f}": {
    "level": "L2",
@@ -1609,7 +1609,7 @@
   },
   "markdown-viewer@outofindex.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: You cannot remove required permissions. (_generated_background_page.html:0)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'icon') (background/icon.js:7)"
   },
   "{36bdf805-c6f2-4f41-94d2-9b646342c1dc}": {
    "level": "L2",
@@ -1904,8 +1904,8 @@
    "error": null
   },
   "client@anonymox.net": {
-   "level": "L0",
-   "error": "Name of a key \"cc-at\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L1",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (proxy/proxy.js:79)"
   },
   "YandexSearchEngineExtension@space.kdev": {
    "level": "L1",
@@ -2084,8 +2084,8 @@
    "error": null
   },
   "{91aa5abe-9de4-4347-b7b5-322c38dd9271}": {
-   "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/500/b9cafb010009373491d8d3a6069b58de48a97d8b488cb1ff07ee6130563a490a/_locales/pt-BR/messages.json': Name of a key \"whatsnew-fx\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L2",
+   "error": null
   },
   "vpnfirefox@softnour.com": {
    "level": "L1",
@@ -2293,7 +2293,7 @@
   },
   "default-bookmark-folder@gustiaux.com": {
    "level": "L0",
-   "error": "Variable __MSG_manifest_shortcut_browser_action_description__ used but not defined."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "bookmarkdupes@martin-vaeth.org": {
    "level": "L2",
@@ -2380,8 +2380,8 @@
    "error": null
   },
   "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}": {
-   "level": "L0",
-   "error": "Name of a key \"notifications-profilechange\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (background.js:7)"
   },
   "bidev@ingenit.com": {
    "level": "L2",
@@ -2640,8 +2640,8 @@
    "error": null
   },
   "forget-me-not@lusito.info": {
-   "level": "L0",
-   "error": "Invalid locale file '/home/zakius/dev/oganesson/work/tmp/oganesson-corpus-0laddsip/640/0784456f4f992c143b7897ea7879ce6324d9cce295c29a848e7ed55d9c762be3/_locales/fr/messages.json': Variable $COUNTS$ used but not defined."
+   "level": "L1",
+   "error": "unknown permission 'contextualIdentities'"
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU5YmQyZDdjMGNhYWQ5NzViNWRmNWZlMjFhYjdmZDNlZGVlZGNkNDkiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU0ZDkyY2U2ZTJmNDcwMDNmY2M4NTVmYmZhYmU1NjA1Mzk0Nzk1NmQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2905,7 +2905,7 @@
   },
   "firefox_extension@calendly.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_frame.js:1)"
+   "error": "Uncaught (in promise) Error: Extension context invalidated. (optibutton.js:601)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -3389,7 +3389,7 @@
   },
   "fox@replace.fx": {
    "level": "L0",
-   "error": "Name of a key \"html.inputoutput\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "error": "Invalid value for 'commands[1].default': Ctrl+Shift+F9."
   },
   "foxcapture@georgemike.com": {
    "level": "L2",
@@ -3432,8 +3432,8 @@
    "error": "Uncaught (in promise) TypeError: Failed to construct 'URL': Invalid URL (scripts/background.js:1)"
   },
   "andrew@vnnet": {
-   "level": "L0",
-   "error": "Name of a key \"don't use temp mail\" is invalid. Only ASCII [a-z], [A-Z], [0-9] and \"_\" are allowed."
+   "level": "L1",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (src/background-ff.js:1)"
   },
   "{db722c0c-d10e-4e23-af56-bbb6c3b62cc5}": {
    "level": "L2",
