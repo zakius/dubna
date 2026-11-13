@@ -1,10 +1,10 @@
 {
  "date": "2026-11-13",
- "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
+ "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 805
+  "L2": 809
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -56,8 +56,8 @@
    "error": null
   },
   "firefox@ghostery.com": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (utils/map.js:29)"
   },
   "{762f9885-5a13-4abd-9c77-433dcd38b8fd}": {
    "level": "L2",
@@ -68,8 +68,8 @@
    "error": "unknown manifest key 'user_scripts'"
   },
   "sponsorBlocker@ajay.app": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
   },
   "@contain-facebook": {
    "level": "L1",
@@ -408,8 +408,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
   },
   "leechblockng@proginosko.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of action.setTitle(object details, optional function callback): Error at parameter 'details': Missing required property 'title'. (background.js:1081)"
+   "level": "L2",
+   "error": null
   },
   "belgiumeid@eid.belgium.be": {
    "level": "L1",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
+   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -620,8 +620,8 @@
    "error": null
   },
   "{d07ccf11-c0cd-4938-a265-2a4d6ad01189}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (src/background/script.js:1)"
+   "level": "L2",
+   "error": null
   },
   "anttoolbar@ant.com": {
    "level": "L2",
@@ -632,8 +632,8 @@
    "error": null
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'updateEnabledRulesets') (background.js:3)"
   },
   "{8AA36F4F-6DC7-4c06-77AF-5035170634FE}": {
    "level": "L2",
@@ -1052,8 +1052,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (background.js:25)"
   },
   "deArrow@ajay.app": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'sponsorBlocker@ajay.app' (js/background.js:1)"
   },
   "{dcb8caa2-63fa-41aa-a508-a45c5990ebdd}": {
    "level": "L2",
@@ -1096,8 +1096,8 @@
    "error": null
   },
   "addon@fastforward.team": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'whitelist') (content_script.js:17)"
+   "level": "L2",
+   "error": null
   },
   "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
@@ -1108,8 +1108,8 @@
    "error": null
   },
   "{41f9e51d-35e4-4b29-af66-422ff81c8b41}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (_generated_background_page.html:0)"
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
    "level": "L2",
@@ -1216,8 +1216,8 @@
    "error": null
   },
   "remove-paywall@example.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:2)"
+   "level": "L2",
+   "error": null
   },
   "addon@photoeditor.net": {
    "level": "L2",
@@ -1280,8 +1280,8 @@
    "error": null
   },
   "jid1-AQqSMBYb0a8ADg@jetpack": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) #<Object> (app/app.html#/onboarding:0)"
   },
   "{03e07985-30b0-4ae0-8b3e-0c7519b9bdf6}": {
    "level": "L2",
@@ -1972,8 +1972,8 @@
    "error": null
   },
   "browserassistant@adguard.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'context_menu_enabled') (background.js:6658)"
+   "level": "L2",
+   "error": null
   },
   "tabby@whatsyouridea.com": {
    "level": "L1",
@@ -2433,7 +2433,7 @@
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (swift-selection-search.js:603)"
+   "error": "Uncaught (in promise) Error: Cannot access a chrome:// URL (swift-selection-search.html:0)"
   },
   "secureline-vpn@avast.com": {
    "level": "L2",
@@ -2528,8 +2528,8 @@
    "error": null
   },
   "{0507f777-2480-4d48-baf1-3b9c8feeb2b4}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (js/action.js:138)"
+   "level": "L2",
+   "error": null
   },
   "{61173a74-ece7-4ef3-86a7-525538b78430}": {
    "level": "L2",
@@ -2696,8 +2696,8 @@
    "error": null
   },
   "keplr-extension@keplr.app": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjI2NjM4YzMwMTg4NDNlZjliNmY3MmE3YmRlMjhjYTgxOGQxZGM4NjgiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2905,7 +2905,7 @@
   },
   "firefox_extension@calendly.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_frame.js:1)"
+   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_optibutton.js:1)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -3000,8 +3000,8 @@
    "error": null
   },
   "formhistory@yahoo.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 0: Value must be one of action, all, audio, browser_action, edi"
+   "level": "L2",
+   "error": null
   },
   "volumemaster@haseeb.com": {
    "level": "L2",
@@ -3044,8 +3044,8 @@
    "error": null
   },
   "{146f1820-2b0d-49ef-acbf-d85a6986e10c}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:22)"
+   "level": "L2",
+   "error": null
   },
   "{ca667c1e-032b-406f-a512-0b7a220ed28d}": {
    "level": "L2",
@@ -3388,8 +3388,8 @@
    "error": null
   },
   "fox@replace.fx": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 0: Value must be one of action, all, audio, browser_action, edi"
+   "level": "L2",
+   "error": null
   },
   "foxcapture@georgemike.com": {
    "level": "L2",
@@ -3401,7 +3401,7 @@
   },
   "0.id@reloadmatic.webex": {
    "level": "L1",
-   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'defaults') (reloadmatic.js:64)"
   },
   "unwanted@twitch.tv": {
    "level": "L2",
@@ -3508,8 +3508,8 @@
    "error": null
   },
   "{9c0bf749-dacb-426c-8f70-882832dc6853}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:10)"
+   "level": "L2",
+   "error": null
   },
   "{d7e0a6e7-9a50-490a-be5c-3b448be39b42}": {
    "level": "L2",
@@ -3768,8 +3768,8 @@
    "error": null
   },
   "@translatenow": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Unexpected property: 'icons'. (background.js:187)"
+   "level": "L2",
+   "error": null
   },
   "jid1-FkPKYIvh3ElkQO@jetpack": {
    "level": "L1",
@@ -3864,8 +3864,8 @@
    "error": null
   },
   "{364d5268-5d27-4c8f-a51d-eb3c674ff8ad}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 5: Value must be one of action, all, audio, browser_action, editable, frame,"
+   "level": "L2",
+   "error": null
   },
   "extension@estate2023.com": {
    "level": "L2",
