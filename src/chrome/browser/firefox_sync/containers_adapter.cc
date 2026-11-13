@@ -103,6 +103,10 @@ void ContainersAdapter::Apply(const base::ListValue& ops) {
   base::ListValue list = prefs_->GetList(containers::kContainersList).Clone();
   base::ListValue rules =
       prefs_->GetList(containers::kTrafficControlRules).Clone();
+  // The service asks the user before it closes their tabs or deletes their
+  // storage.
+  base::ListValue sync_deleted =
+      prefs_->GetList(containers::kContainersSyncDeleted).Clone();
   size_t changed = 0;
   for (const base::Value& value : ops) {
     const base::DictValue* op = value.GetIfDict();
@@ -139,11 +143,14 @@ void ContainersAdapter::Apply(const base::ListValue& ops) {
         continue;  // Deleted here during the sync.
       }
     } else if (*kind == "delete_container" && id) {
-      list.EraseIf([&](const base::Value& entry) {
+      size_t erased = list.EraseIf([&](const base::Value& entry) {
         const std::string* entry_id =
             entry.is_dict() ? entry.GetDict().FindString("id") : nullptr;
         return entry_id && *entry_id == *id;
       });
+      if (erased && !sync_deleted.contains(*id)) {
+        sync_deleted.Append(*id);
+      }
     } else if ((*kind == "site" || *kind == "delete_site") && host) {
       const std::set<std::string> listed = Ids(list);
       auto synced = [&](const base::Value& entry) {
@@ -178,6 +185,8 @@ void ContainersAdapter::Apply(const base::ListValue& ops) {
   snapshot_sites_.clear();
   if (changed) {
     applying_ = true;
+    prefs_->SetList(containers::kContainersSyncDeleted,
+                    std::move(sync_deleted));
     prefs_->SetList(containers::kContainersList, std::move(list));
     prefs_->SetList(containers::kTrafficControlRules, std::move(rules));
     applying_ = false;

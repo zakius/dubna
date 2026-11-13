@@ -593,10 +593,13 @@ pub fn finish(local: &Local, state: &mut State, area: &Map<String, Value>) -> (V
         }
     }
     // Last: a site's rule is found by its container, which must be listed.
+    // A deleted container loses its uuid: if the user keeps it, it goes up
+    // again with a new one.
     for c in &local.containers {
         let Some(uuid) = state.uuids.get(&c.id) else { continue };
         if !target.identities.contains_key(uuid) && deleted_ids.contains(uuid) {
             ops.push(Op::DeleteContainer { id: c.id.clone() });
+            state.uuids.remove(&c.id);
         }
     }
 
@@ -731,6 +734,27 @@ mod tests {
         let (set, _, _) = stage(&local, &mut state, &Map::new(), Some(&incoming), 1);
         assert!(!set.contains_key("siteContainerMap@@_work.example"));
         assert_eq!(set["MACinstance:ours"]["siteAssignments"], json!([]));
+    }
+
+    #[test]
+    fn a_kept_container_goes_up_again() {
+        // Firefox deleted Work; the user keeps it here.
+        let uuid = "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d";
+        let local: Local = serde_json::from_value(json!({
+            "containers": [{"id": "work", "name": "Work", "icon": "briefcase", "color": "orange"}]}))
+        .unwrap();
+        let mut state = State::default();
+        state.uuids.insert("work".into(), uuid.into());
+        state.instance = "ours".into();
+        let area: Map<String, Value> =
+            serde_json::from_value(json!({ "deletedIdentityList": [uuid] })).unwrap();
+        let (ops, _) = finish(&local, &mut state, &area);
+        assert_eq!(ops, vec![Op::DeleteContainer { id: "work".into() }]);
+        let (set, _, _) = stage(&local, &mut state, &area, None, 1);
+        let up: Vec<&String> = set.keys().filter(|k| k.starts_with(IDENTITY)).collect();
+        assert_eq!(up.len(), 1);
+        assert_ne!(up[0], &identity_key(uuid));
+        assert_eq!(set[up[0]]["name"], "Work");
     }
 
     #[test]

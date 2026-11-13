@@ -42,8 +42,10 @@ namespace containers {
 // A container's storage stays while a tab, the last saved session or a
 // closed tab is in it. Deleting a container closes its tabs and forgets its
 // closed tabs; its storage goes then, or at the next start if a tab stayed
-// open. A temporary container's storage goes once nothing uses it, checked
-// at each start.
+// open or its partition was loaded. A temporary container's storage goes
+// once nothing uses it, checked at each start. When sync deletes a container
+// that has tabs or storage, the user chooses whether it goes here too or
+// comes back; until then its tabs and storage stay.
 class ContainersService : public KeyedService,
                           public sessions::TabRestoreServiceObserver {
  public:
@@ -73,6 +75,10 @@ class ContainersService : public KeyedService,
   // A new temporary container, named "Temporary <n>" with the lowest n free.
   Container CreateTemporary();
 
+  // Whether sync deleted container `id` and the user hasn't chosen yet
+  // whether it goes here too: its tabs restore in it meanwhile.
+  bool IsSyncDeleted(std::string_view id) const;
+
   // Records that container `id` has storage on disk now.
   void MarkUsed(std::string_view id);
 
@@ -97,12 +103,17 @@ class ContainersService : public KeyedService,
 
  private:
   void OnListChanged();
+  // Asks the user about each container sync deleted.
+  void AskAboutSyncDeleted();
+  void OnSyncDeletedAnswer(const std::string& id, bool delete_it);
+  void ForgetSyncDeleted(const std::string& id);
   void OnUsedChanged();
   void OnRulesChanged();
   void CheckClosedTabs();
   void OnInUse(std::vector<std::string> candidates,
                std::set<std::string> in_use);
-  void OnStorageDeleted(const std::string& id, bool success);
+  // `gone`: the storage is off the disk, not only cleared.
+  void OnStorageDeleted(const std::string& id, bool gone);
   void FinishCleanup();
   void OnSessionStorageFound(std::vector<std::string> ids);
   // The used containers that aren't in the user's list.
@@ -123,6 +134,8 @@ class ContainersService : public KeyedService,
   std::vector<Container> containers_;
   // The ids of the user's list as last seen, to tell which were deleted.
   std::set<std::string> listed_;
+  // The containers sync deleted that the user is being asked about.
+  std::set<std::string> asking_;
   // The cleanup that runs, and whether another must run after it.
   bool cleaning_ = false;
   bool clean_again_ = false;

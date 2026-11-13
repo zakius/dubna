@@ -26,6 +26,9 @@ inline constexpr char kContainersList[] = "containers.list";
 // used, temporary ones, and deleted ones until their storage is gone. Each
 // keeps its name, icon and color for the tabs still in it.
 inline constexpr char kContainersUsed[] = "containers.used";
+// The ids of containers that sync deleted while they had tabs or storage
+// here, until the user chooses to delete them here too or keep them: a list.
+inline constexpr char kContainersSyncDeleted[] = "containers.sync_deleted";
 // Traffic Control's rules, in their order: a list of TrafficRule::ToDict().
 inline constexpr char kTrafficControlRules[] = "containers.traffic_control";
 // Where the browser's new tabs open: a container's id, "temporary" for a new

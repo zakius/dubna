@@ -16,4 +16,16 @@
   <message name="IDS_CONTAINERS_TEMPORARY_NAME" desc="The name of a temporary container, a container whose cookies and site data are deleted once its tabs are closed. The number tells temporary containers apart.">
     Temporary <ph name="NUMBER">$1<ex>2</ex></ph>
   </message>
+  <message name="IDS_CONTAINERS_SYNC_DELETED_TITLE" desc="The title of a question shown when Firefox Sync deleted a container on another device while it still has tabs or cookies and site data here. The placeholder is the container's name.">
+    Delete “<ph name="NAME">$1<ex>Work</ex></ph>” here too?
+  </message>
+  <message name="IDS_CONTAINERS_SYNC_DELETED_BODY" desc="The text of the question whether to delete here too a container that Firefox Sync deleted on another device. COUNT is the number of the container's tabs open here.">
+    {COUNT, plural, =0 {The container was deleted on another device. Deleting it here also deletes its cookies and site data. If you keep it, it syncs back to your other devices.} =1 {The container was deleted on another device, and it has 1 tab open here. Deleting it here also closes the tab and deletes its cookies and site data. If you keep it, it syncs back to your other devices.} other {The container was deleted on another device, and it has # tabs open here. Deleting it here also closes the tabs and deletes its cookies and site data. If you keep it, it syncs back to your other devices.}}
+  </message>
+  <message name="IDS_CONTAINERS_SYNC_DELETED_DELETE" desc="The button that deletes here too a container that Firefox Sync deleted on another device, closing its tabs and deleting its cookies and site data.">
+    Delete it here too
+  </message>
+  <message name="IDS_CONTAINERS_SYNC_DELETED_KEEP" desc="The button that keeps a container that Firefox Sync deleted on another device: it stays here and syncs back to the other devices.">
+    Keep it
+  </message>
 </grit-part>

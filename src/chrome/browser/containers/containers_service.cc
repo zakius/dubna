@@ -123,6 +123,7 @@ void ContainersService::RegisterProfilePrefs(
     user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterListPref(kContainersList, DefaultContainers());
   registry->RegisterDictionaryPref(kContainersUsed);
+  registry->RegisterListPref(kContainersSyncDeleted);
   registry->RegisterListPref(kTrafficControlRules);
   registry->RegisterStringPref(kNewTabContainer, std::string());
 }
@@ -144,7 +145,11 @@ ContainersService::ContainersService(Profile* profile) : profile_(profile) {
     listed_.insert(container.id);
   }
   OnRulesChanged();
-  // After startup's own tasks, such as restoring the last session.
+  // After startup's own tasks, such as restoring the last session. A
+  // question the user left unanswered in the last run comes back.
+  base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+      FROM_HERE, base::BindOnce(&ContainersService::AskAboutSyncDeleted,
+                                weak_factory_.GetWeakPtr()));
   base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
       FROM_HERE, base::BindOnce(&ContainersService::Cleanup,
                                 weak_factory_.GetWeakPtr(), base::OnceClosure()));
@@ -244,17 +249,89 @@ void ContainersService::OnListChanged() {
     }
   }
   bool deleted = false;
+  bool ask = false;
   for (const std::string& id : listed_) {
-    if (!listed.contains(id)) {
-      CloseTabsInContainer(profile_, id);
-      deleted = true;
+    if (listed.contains(id)) {
+      continue;
+    }
+    // Deleted by sync, with tabs or storage here: the user chooses.
+    if (IsSyncDeleted(id) &&
+        profile_->GetPrefs()->GetDict(kContainersUsed).contains(id)) {
+      ask = true;
+      continue;
+    }
+    CloseTabsInContainer(profile_, id);
+    deleted = true;
+  }
+  // Listed again, as when sync brings a container back, or deleted with
+  // nothing to ask about.
+  for (const base::Value& id :
+       profile_->GetPrefs()->GetList(kContainersSyncDeleted).Clone()) {
+    if (id.is_string() &&
+        (listed.contains(id.GetString()) ||
+         !profile_->GetPrefs()->GetDict(kContainersUsed).contains(
+             id.GetString()))) {
+      ForgetSyncDeleted(id.GetString());
     }
   }
   listed_ = std::move(listed);
   observers_.Notify(&Observer::OnContainersChanged);
+  if (ask) {
+    AskAboutSyncDeleted();
+  }
   if (deleted) {
     Cleanup();
   }
+}
+
+void ContainersService::AskAboutSyncDeleted() {
+  for (const base::Value& id :
+       profile_->GetPrefs()->GetList(kContainersSyncDeleted).Clone()) {
+    if (!id.is_string() || listed_.contains(id.GetString()) ||
+        asking_.contains(id.GetString())) {
+      continue;
+    }
+    std::optional<Container> container = Get(id.GetString());
+    if (!container) {
+      ForgetSyncDeleted(id.GetString());
+      continue;
+    }
+    asking_.insert(id.GetString());
+    AskToDeleteSyncedContainer(
+        profile_, *container,
+        base::BindOnce(&ContainersService::OnSyncDeletedAnswer,
+                       weak_factory_.GetWeakPtr(), id.GetString()));
+  }
+}
+
+void ContainersService::OnSyncDeletedAnswer(const std::string& id,
+                                            bool delete_it) {
+  asking_.erase(id);
+  // Listed again meanwhile.
+  if (!IsSyncDeleted(id)) {
+    return;
+  }
+  ForgetSyncDeleted(id);
+  if (delete_it) {
+    CloseTabsInContainer(profile_, id);
+    Cleanup();
+    return;
+  }
+  // Back in the list, from which sync uploads it again.
+  std::optional<Container> container = Get(id);
+  if (container) {
+    ScopedListPrefUpdate(profile_->GetPrefs(), kContainersList)
+        ->Append(container->ToDict());
+  }
+}
+
+bool ContainersService::IsSyncDeleted(std::string_view id) const {
+  return profile_->GetPrefs()->GetList(kContainersSyncDeleted).contains(id);
+}
+
+void ContainersService::ForgetSyncDeleted(const std::string& id) {
+  ScopedListPrefUpdate(profile_->GetPrefs(), kContainersSyncDeleted)
+      ->EraseValue(base::Value(id));
 }
 
 void ContainersService::OnUsedChanged() {
@@ -269,7 +346,8 @@ void ContainersService::OnRulesChanged() {
 std::vector<std::string> ContainersService::CleanupCandidates() const {
   std::vector<std::string> candidates;
   for (auto [id, value] : profile_->GetPrefs()->GetDict(kContainersUsed)) {
-    if (!listed_.contains(id)) {
+    // A container sync deleted stays until the user chooses.
+    if (!listed_.contains(id) && !IsSyncDeleted(id)) {
       candidates.push_back(id);
     }
   }
@@ -367,27 +445,26 @@ void ContainersService::OnInUse(std::vector<std::string> candidates,
       continue;
     }
     ++pending_deletions_;
-    base::OnceCallback<void(bool)> deleted = base::BindOnce(
-        &ContainersService::OnStorageDeleted, weak_factory_.GetWeakPtr(), id);
-    base::FilePath path = StoragePath(profile_, id);
-    auto delete_folder = base::BindOnce(
-        [](base::FilePath path, base::OnceCallback<void(bool)> deleted) {
-          base::ThreadPool::PostTaskAndReplyWithResult(
-              FROM_HERE, {base::MayBlock()},
-              base::BindOnce(&DeleteFolder, path), std::move(deleted));
-        },
-        path, std::move(deleted));
-    // A partition loaded in this run first clears what it holds in memory.
+    // A partition loaded in this run keeps its files open: deleting them
+    // would leave it on unlinked files, whose data a container that sync
+    // brings back in this run would lose at the next start. It clears its
+    // data now, and its folder goes at the next start.
     if (content::StoragePartition* partition = profile_->GetStoragePartition(
             PartitionOf(profile_, id), /*can_create=*/false)) {
-      partition->ClearData(content::StoragePartition::REMOVE_DATA_MASK_ALL,
-                           /*filter_builder=*/nullptr,
-                           /*storage_key_policy_matcher=*/{},
-                           network::mojom::CookieDeletionFilter::New(),
-                           /*perform_storage_cleanup=*/true, base::Time(),
-                           base::Time::Max(), std::move(delete_folder));
+      partition->ClearData(
+          content::StoragePartition::REMOVE_DATA_MASK_ALL,
+          /*filter_builder=*/nullptr,
+          /*storage_key_policy_matcher=*/{},
+          network::mojom::CookieDeletionFilter::New(),
+          /*perform_storage_cleanup=*/true, base::Time(), base::Time::Max(),
+          base::BindOnce(&ContainersService::OnStorageDeleted,
+                         weak_factory_.GetWeakPtr(), id, /*gone=*/false));
     } else {
-      std::move(delete_folder).Run();
+      base::ThreadPool::PostTaskAndReplyWithResult(
+          FROM_HERE, {base::MayBlock()},
+          base::BindOnce(&DeleteFolder, StoragePath(profile_, id)),
+          base::BindOnce(&ContainersService::OnStorageDeleted,
+                         weak_factory_.GetWeakPtr(), id));
     }
   }
   if (!pending_deletions_) {
@@ -395,8 +472,8 @@ void ContainersService::OnInUse(std::vector<std::string> candidates,
   }
 }
 
-void ContainersService::OnStorageDeleted(const std::string& id, bool success) {
-  if (success && !listed_.contains(id)) {
+void ContainersService::OnStorageDeleted(const std::string& id, bool gone) {
+  if (gone && !listed_.contains(id)) {
     ScopedDictPrefUpdate(profile_->GetPrefs(), kContainersUsed)->Remove(id);
   }
   if (--pending_deletions_ == 0) {

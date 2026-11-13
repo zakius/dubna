@@ -139,7 +139,8 @@ std::string ContainerToRestore(content::BrowserContext* context,
                                std::string_view id) {
   ContainersService* service = ContainersServiceFactory::GetForProfile(
       Profile::FromBrowserContext(context));
-  if (id.empty() || !service || id.starts_with(kTemporaryIdPrefix)) {
+  if (id.empty() || !service || id.starts_with(kTemporaryIdPrefix) ||
+      service->IsSyncDeleted(id)) {
     return std::string(id);
   }
   for (const Container& container : service->GetContainers()) {

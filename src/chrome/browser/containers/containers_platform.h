@@ -24,6 +24,8 @@ class WebContents;
 // //chrome/browser/containers/platform target, which the browser links.
 namespace containers {
 
+struct Container;
+
 // Traffic Control stopped the navigation of `source` to `url` (`transition`,
 // from `initiator`) so that it opens in container `container_id`, or outside
 // containers when that is empty: opens `url` there in a new tab beside
@@ -45,6 +47,15 @@ void GetContainersInUse(
 // Closes `profile`'s tabs in container `id`, which the user deleted, without
 // keeping them as closed tabs. A tab whose page asks to stay may stay.
 void CloseTabsInContainer(Profile* profile, const std::string& id);
+
+// Sync deleted `container`, which still has tabs or storage in `profile`:
+// asks the user whether to delete it here too, saying how many tabs it has
+// open, once the profile has a window and its tabs are restored. Calls
+// `callback` with true to delete it, false to keep it, and not at all when
+// the user closes the question.
+void AskToDeleteSyncedContainer(Profile* profile,
+                                const Container& container,
+                                base::OnceCallback<void(bool)> callback);
 
 }  // namespace containers
 

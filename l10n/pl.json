@@ -238,5 +238,25 @@
     "name": "IDS_CONTAINERS_TEMPORARY_NAME",
     "source": "Temporary <ph name=\"NUMBER\">$1<ex>2</ex></ph>",
     "message": "Tymczasowy <ph name=\"NUMBER\">$1<ex>2</ex></ph>"
+  },
+  {
+    "name": "IDS_CONTAINERS_SYNC_DELETED_TITLE",
+    "source": "Delete “<ph name=\"NAME\">$1<ex>Work</ex></ph>” here too?",
+    "message": "Usunąć „<ph name=\"NAME\">$1<ex>Work</ex></ph>” również tutaj?"
+  },
+  {
+    "name": "IDS_CONTAINERS_SYNC_DELETED_BODY",
+    "source": "{COUNT, plural, =0 {The container was deleted on another device. Deleting it here also deletes its cookies and site data. If you keep it, it syncs back to your other devices.} =1 {The container was deleted on another device, and it has 1 tab open here. Deleting it here also closes the tab and deletes its cookies and site data. If you keep it, it syncs back to your other devices.} other {The container was deleted on another device, and it has # tabs open here. Deleting it here also closes the tabs and deletes its cookies and site data. If you keep it, it syncs back to your other devices.}}",
+    "message": "{COUNT, plural, =0 {Kontener został usunięty na innym urządzeniu. Usunięcie go tutaj usunie też jego pliki cookie i dane witryn. Jeśli go zachowasz, wróci na Twoje inne urządzenia.} =1 {Kontener został usunięty na innym urządzeniu, a tutaj ma otwartą 1 kartę. Usunięcie go tutaj zamknie też kartę i usunie jego pliki cookie i dane witryn. Jeśli go zachowasz, wróci na Twoje inne urządzenia.} few {Kontener został usunięty na innym urządzeniu, a tutaj ma otwarte # karty. Usunięcie go tutaj zamknie też karty i usunie jego pliki cookie i dane witryn. Jeśli go zachowasz, wróci na Twoje inne urządzenia.} many {Kontener został usunięty na innym urządzeniu, a tutaj ma otwartych # kart. Usunięcie go tutaj zamknie też karty i usunie jego pliki cookie i dane witryn. Jeśli go zachowasz, wróci na Twoje inne urządzenia.} other {Kontener został usunięty na innym urządzeniu, a tutaj ma otwarte # karty. Usunięcie go tutaj zamknie też karty i usunie jego pliki cookie i dane witryn. Jeśli go zachowasz, wróci na Twoje inne urządzenia.}}"
+  },
+  {
+    "name": "IDS_CONTAINERS_SYNC_DELETED_DELETE",
+    "source": "Delete it here too",
+    "message": "Usuń również tutaj"
+  },
+  {
+    "name": "IDS_CONTAINERS_SYNC_DELETED_KEEP",
+    "source": "Keep it",
+    "message": "Zachowaj"
   }
 ]
