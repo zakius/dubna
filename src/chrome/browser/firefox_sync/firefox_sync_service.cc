@@ -38,7 +38,7 @@
 #include "chrome/browser/history/history_service_factory.h"
 #include "chrome/browser/password_manager/factories/profile_password_store_factory.h"
 #include "chrome/browser/profiles/profile.h"
-#include "chrome/grit/generated_resources.h"
+#include "chrome/grit/oganesson_strings.h"
 #include "components/history/core/common/pref_names.h"
 #include "components/autofill/core/browser/data_manager/personal_data_manager.h"
 #include "components/keyed_service/core/service_access_type.h"

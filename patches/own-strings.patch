@@ -1,0 +1,64 @@
+# Our own strings in their own .grd, chrome/app/oganesson_strings.grd (dubna/src), with their own
+# header, grit/oganesson_strings.h. As parts of generated_resources.grd, each new string
+# renumbered the ones after it, and every file that includes generated_resources.h (about 780)
+# compiled again, in every build of both browsers. The .grd's resource IDs come last, so a new
+# string renumbers nothing; its .pak files are packed into the locale .pak files with the rest.
+--- a/chrome/app/BUILD.gn
++++ b/chrome/app/BUILD.gn
+@@ -107,11 +107,24 @@
+   output_dir = "$root_gen_dir/chrome"
+   outputs = [ "grit/generated_resources.h" ]
+ 
++  # Whatever may include generated_resources.h may include our strings'
++  # header, grit/oganesson_strings.h.
++  public_deps = [ ":oganesson_strings" ]
++
+   if (is_android) {
+     create_android_resources = true
+   }
+ }
+ 
++# Our own strings (oganesson_strings.grd), apart from Chromium's: a new one
++# then changes only their header, not generated_resources.h.
++grit_strings("oganesson_strings") {
++  source = "oganesson_strings.grd"
++  defines = chrome_grit_defines
++  output_dir = "$root_gen_dir/chrome"
++  outputs = [ "grit/oganesson_strings.h" ]
++}
++
+ if (is_android) {
+   java_strings_grd_prebuilt("branded_resources_grd") {
+     generating_target = ":branded_strings"
+--- a/chrome/chrome_repack_locales.gni
++++ b/chrome/chrome_repack_locales.gni
+@@ -25,6 +25,7 @@
+       "${root_gen_dir}/chrome/branded_strings_",
+       "${root_gen_dir}/chrome/generated_resources_",
+       "${root_gen_dir}/chrome/locale_settings_",
++      "${root_gen_dir}/chrome/oganesson_strings_",
+       "${root_gen_dir}/chrome/platform_locale_settings_",
+       "${root_gen_dir}/components/omnibox/resources/omnibox_pedal_synonyms_",
+       "${root_gen_dir}/components/strings/components_branded_strings_",
+@@ -49,6 +50,7 @@
+     deps += [
+       "//chrome/app:branded_strings",
+       "//chrome/app:generated_resources",
++      "//chrome/app:oganesson_strings",
+       "//chrome/app/resources:locale_settings",
+       "//chrome/app/resources:platform_locale_settings",
+       "//components/omnibox/resources:omnibox_pedal_synonyms",
+--- a/tools/gritsettings/resource_ids.spec
++++ b/tools/gritsettings/resource_ids.spec
+@@ -1796,6 +1796,11 @@
+     "includes": [12000],
+   },
+ 
++  # Our own strings, last: a new one then renumbers nothing else.
++  "chrome/app/oganesson_strings.grd": {
++    "messages": [12100],
++  },
++
+   # END "everything else" section.
+   # Everything but chrome/, components/, content/, and ios/
+ 

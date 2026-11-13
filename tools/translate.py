@@ -11,8 +11,10 @@ translation ("message"), the format of Helium's i18n/translations. grit matches
 a translation to its message by the English text, so a changed English text
 needs a new translation.
 
-All our messages go into chrome/app/generated_resources.grd's .xtb files.
-Applying uses the tree's own grit for the message IDs.
+Our own .grdp files are parts of chrome/app/oganesson_strings.grd; the messages
+our patches add are in Chromium's chrome/app/generated_resources.grd. Every
+translation goes into the .xtb files of both: grit takes the ones whose message
+the .grd has. Applying uses the tree's own grit for the message IDs.
 
 Usage: translate.py SRC_TREE ROOT...   apply
        translate.py --check ROOT...    each ROOT's messages have a current
@@ -101,17 +103,22 @@ def xtb_paths(grd):
             for f in ET.parse(grd).getroot().find('translations').iter('file')}
 
 
+GRDS = ('chrome/app/generated_resources.grd', 'chrome/app/oganesson_strings.grd')
+
+
 def apply(tree, roots):
-    xtbs = xtb_paths(tree / 'chrome/app/generated_resources.grd')
     for root in roots:
         for lang_file in sorted((root / 'l10n').glob('*.json')):
             entries = {message_id(text, tree): xtb_text(message)
                        for (_, text), message in load(lang_file).items()}
-            xtb = xtbs[lang_file.stem]
-            content = re.sub(r'<translation id="(\d+)">.*?</translation>\n',
-                             lambda m: '' if m[1] in entries else m[0], xtb.read_text(), flags=re.S)
             lines = ''.join(f'<translation id="{i}">{t}</translation>\n' for i, t in entries.items())
-            xtb.write_text(content.replace('</translationbundle>', lines + '</translationbundle>', 1))
+            for grd in GRDS:
+                xtb = xtb_paths(tree / grd)[lang_file.stem]
+                content = re.sub(r'<translation id="(\d+)">.*?</translation>\n',
+                                 lambda m: '' if m[1] in entries else m[0], xtb.read_text(),
+                                 flags=re.S)
+                xtb.write_text(content.replace('</translationbundle>',
+                                               lines + '</translationbundle>', 1))
             print(f'translate.py: {root.name} {lang_file.stem}: {len(entries)} translations')
 
 if __name__ == '__main__':

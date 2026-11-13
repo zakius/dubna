@@ -29,7 +29,7 @@
 #include "chrome/browser/containers/containers_tabs.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/sessions/tab_restore_service_factory.h"
-#include "chrome/grit/generated_resources.h"
+#include "chrome/grit/oganesson_strings.h"
 #include "components/pref_registry/pref_registry_syncable.h"
 #include "components/prefs/pref_service.h"
 #include "components/prefs/scoped_user_pref_update.h"
