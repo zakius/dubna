@@ -679,3 +679,24 @@
    }
  }
  
+--- a/chrome/common/extensions/chrome_extensions_client.cc
++++ b/chrome/common/extensions/chrome_extensions_client.cc
+@@ -29,6 +29,7 @@
+ #include "extensions/common/extension.h"
+ #include "extensions/common/extension_api.h"
+ #include "extensions/common/extension_urls.h"
++#include "extensions/common/firefox_page_action.h"
+ #include "extensions/common/icons/extension_icon_set.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+@@ -228,6 +229,10 @@
+   if (action && !action->default_icon.empty()) {
+     action->default_icon.GetPaths(&image_paths);
+   }
++  // Firefox add-ons (dubna): the page action next to the extension's action.
++  if (const ActionInfo* page_action = GetFirefoxPageActionInfo(*extension)) {
++    page_action->default_icon.GetPaths(&image_paths);
++  }
+ 
+   return image_paths;
+ }
