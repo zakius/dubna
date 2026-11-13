@@ -3,7 +3,8 @@
 # in their namespaces' schemas, builds them and registers their prefs. Firefox's
 # names for Chromium's APIs are aliases: browser.menus and the "menus" permission
 # are contextMenus. Firefox's Manifest V3 background pages (background.scripts or
-# .page) run as Manifest V2's do, unless the manifest also has a service worker.
+# .page) run as Manifest V2's do, unless the manifest also has a service worker;
+# runtime.getContexts() lists such a page as the background.
 # A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
 # with the full string as the version name (firefox_version.cc).
 # A background with "type": "module" loads its scripts as modules, as Firefox does.
@@ -36,6 +37,23 @@
  }
  
  template <>
+@@ -1127,12 +1128,15 @@
+       case mojom::ViewType::kAppWindow:
+       case mojom::ViewType::kBackgroundContents:
+       case mojom::ViewType::kComponent:
+-      case mojom::ViewType::kExtensionBackgroundPage:
+         DUMP_WILL_BE_NOTREACHED()
+             << "Unexpected view type found: " << (static_cast<int>(view_type))
+             << ", Extension ID: " << extension_id();
+         break;
+ 
++      // Firefox add-ons (dubna): a Manifest V3 background page, which Chromium
++      // doesn't have, is the background, as in Firefox.
++      case mojom::ViewType::kExtensionBackgroundPage:
++        return api::runtime::ContextType::kBackground;
+       case mojom::ViewType::kExtensionPopup:
+         return api::runtime::ContextType::kPopup;
+       case mojom::ViewType::kTabContents:
 --- a/extensions/browser/api/runtime/runtime_api.h
 +++ b/extensions/browser/api/runtime/runtime_api.h
 @@ -410,4 +410,7 @@
