@@ -1265,9 +1265,9 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/settings/web-push-settings",
-"w": "Adds \"Allow receiving push notifications\" to Helium's services settings, with a choice of Helium's push server or your own. Shown only with the HeliumWebPush feature on.",
+"w": "Adds \"Allow receiving push notifications\" to Helium's services page, with a choice of Helium's push server or your own, when the HeliumWebPush feature is on.",
 "s": "off",
-"n": "hidden: the HeliumWebPush feature is off"
+"n": "never shown: oganesson's Browser traffic page replaces Helium's services page, and the HeliumWebPush feature is off"
 },
 {
 "b": "og",
