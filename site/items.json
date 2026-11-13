@@ -853,7 +853,7 @@
 "p": "helium/core/services-prefs",
 "w": "Groundwork for \"Helium services\". Adds a Settings > Privacy > \"Helium services\" page with an on/off switch (on by default in Helium), a field for your own server, and a \"services changed\" notice. Helium's default server is https://services.helium.imput.net. Later Helium service patches build on it.",
 "s": "off",
-"n": "oganesson's Browser traffic page takes its place, and its settings follow browser traffic; Helium's own server is never used"
+"n": "oganesson's Browser traffic page takes its place, and its settings follow browser traffic; Helium's own services server is never used"
 },
 {
 "b": "og",
@@ -3432,7 +3432,7 @@
 "p": "oganesson/core/no-helium-services",
 "w": "No Helium servers: Helium's services, update checks, crash reports and onboarding are off, and so is fingerprint noise, which can be turned on. Chrome Web Store installs and updates and spellcheck dictionaries come from Google, as in Chromium, unless Browser traffic sends them through your own server.",
 "s": "on",
-"n": "Helium's push server only if its HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set",
+"n": "Helium's servers only if you ask: crash reports you turn on in Browser traffic go to Helium's crash server, and Helium's push server is used if its HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set",
 "own": 1
 },
 {
