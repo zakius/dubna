@@ -1,15 +1,15 @@
 {
- "date": "2026-11-12",
+ "date": "2026-11-13",
  "browser": "oganesson 157.0.8103.50 (Chromium 157.0.8103.50)",
  "levels": {
   "L0": 1000,
-  "L1": 964,
-  "L2": 784
+  "L1": 976,
+  "L2": 793
  },
  "addons": {
   "uBlock0@raymondhill.net": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'register') (js/vapi-scripting.js:184)"
+   "level": "L2",
+   "error": null
   },
   "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}": {
    "level": "L2",
@@ -28,8 +28,8 @@
    "error": null
   },
   "adguardadblocker@adguard.com": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "jid1-NIfFY2CA8fy1tg@jetpack": {
    "level": "L2",
@@ -48,24 +48,24 @@
    "error": null
   },
   "adblockultimate@adblockultimate.net": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "{446900e4-71c2-419f-a6a7-df9c091e268b}": {
    "level": "L2",
    "error": null
   },
   "firefox@ghostery.com": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (utils/map.js:29)"
   },
   "{762f9885-5a13-4abd-9c77-433dcd38b8fd}": {
    "level": "L2",
    "error": null
   },
   "firefox@tampermonkey.net": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L1",
+   "error": "unknown manifest key 'user_scripts'"
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
@@ -124,8 +124,8 @@
    "error": "unknown permission 'webRequestFilterResponse'"
   },
   "{2e5ff8c8-32fe-46d0-9fc8-6b8986621f3c}": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contextMenus.CreateProperties createProperties, optional function callback): Error at parameter 'createProperties': Error at property 'contexts': Error at index 7: Value must be one of action, all, audio, browser_action, edi"
   },
   "{aff8af88-06a9-4eee-b383-3af08c47b8c8}": {
    "level": "L2",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
   },
   "leechblockng@proginosko.com": {
    "level": "L2",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -608,8 +608,8 @@
    "error": "Uncaught TypeError: This event does not support filters (background.js:109)"
   },
   "dont-track-me-google@robwu.nl": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "KeeperFFStoreExtension@KeeperSecurityInc": {
    "level": "L2",
@@ -621,7 +621,7 @@
   },
   "{d07ccf11-c0cd-4938-a265-2a4d6ad01189}": {
    "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "error": "Only one of 'browser_action', 'page_action', and 'app' can be specified."
   },
   "anttoolbar@ant.com": {
    "level": "L2",
@@ -833,7 +833,7 @@
   },
   "firefox@teleparty.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected end of JSON input (_generated_background_page.html:1)"
+   "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
    "level": "L2",
@@ -976,8 +976,8 @@
    "error": null
   },
   "{76ef94a4-e3d0-4c6f-961a-d38a429a332b}": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "{307f416a-39c0-49e0-8e96-cf802290e33c}": {
    "level": "L2",
@@ -1040,8 +1040,8 @@
    "error": null
   },
   "{8927f234-4dd9-48b1-bf76-44a9e153eee0}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to mount content script UI: could not find anchor element (content-scripts/all.js:1)"
+   "level": "L2",
+   "error": null
   },
   "woop-NoopscooPsnSXQ@jetpack": {
    "level": "L2",
@@ -1088,8 +1088,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
+   "level": "L2",
+   "error": null
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L2",
@@ -1140,8 +1140,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'onCommand') (js/background.js:1286)"
   },
   "video-downloadhelper@miconvert.com": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "{5b1a796b-231a-4ad1-84ff-918db0818207}": {
    "level": "L2",
@@ -1352,8 +1352,8 @@
    "error": "unknown permission 'browserSettings'"
   },
   "{4c421bb7-c1de-4dc6-80c7-ce8625e34d24}": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "public.proartex@gmail.com": {
    "level": "L1",
@@ -1609,7 +1609,7 @@
   },
   "markdown-viewer@outofindex.com": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'icon') (background/icon.js:7)"
+   "error": "Uncaught (in promise) Error: You cannot remove required permissions. (_generated_background_page.html:0)"
   },
   "{36bdf805-c6f2-4f41-94d2-9b646342c1dc}": {
    "level": "L2",
@@ -1784,8 +1784,8 @@
    "error": null
   },
   "@m3u8link": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "{a138007c-5ff6-4d10-83d9-0afaf0efbe5e}": {
    "level": "L2",
@@ -2632,8 +2632,8 @@
    "error": null
   },
   "{d3e2f0a1-1234-5678-9abc-def012345659}": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "Open-Link-with-New-Tab@sienori": {
    "level": "L2",
@@ -2692,12 +2692,12 @@
    "error": "unknown manifest key 'container'"
   },
   "{d3e2f0a1-1234-5678-9abc-def012745674}": {
-   "level": "L0",
-   "error": "The 'webRequest' API cannot be used with event pages."
+   "level": "L2",
+   "error": null
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImNkZWNmYjkyMWQyYzc5OWYzY2JjMWFhZTkwYWRkODk5YTU3NWM2NDAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJ2ZXJzaW9uIjoiMC4xMy40OSIsImV2ZW50IjoiaW5zdGFsbGVkIiwiYW5hbHl0aWNzSWQiOiJhYzcwYjkyMjQ3NGZmYjcyNGZiMGQ2MDM2YTQ1MzE4NTE5ODkxY2I2IiwidjIiOnRydWUsInBsYXRmb3JtIjoiZXh0ZW5zaW9uIiwibW9iaWxlT1MiOiJub25vIiwid2ViZHJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2905,7 +2905,7 @@
   },
   "firefox_extension@calendly.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: This script should only be loaded in a browser extension. (222.js:26)"
+   "error": "Uncaught (in promise) Error: Extension context invalidated. (frame.js:22758)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -3160,8 +3160,8 @@
    "error": null
   },
   "{b2d4c129-6437-4847-868c-53b4832fee00}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.bundle.js:0)"
   },
   "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}": {
    "level": "L2",
