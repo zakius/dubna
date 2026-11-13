@@ -13,6 +13,8 @@
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
 # A Manifest V2 event page that asks for webRequest runs as a persistent page.
+# A page_action next to a browser_action or action, or in Manifest V3, is a
+# second action that pageAction.* reaches (firefox_page_action.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -132,6 +134,19 @@
    },
    "background.service_worker": {
      "channel": "stable",
+@@ -548,10 +547,10 @@
+     "channel": "stable",
+     "extension_types": ["extension", "legacy_packaged_app"]
+   },
++  // Firefox add-ons (dubna): Firefox's Manifest V3 has page actions.
+   "page_action": {
+     "channel": "stable",
+-    "extension_types": ["extension"],
+-    "max_manifest_version": 2
++    "extension_types": ["extension"]
+   },
+   "permissions": {
+     "channel": "stable",
 --- a/extensions/common/manifest_handlers/background_info.cc
 +++ b/extensions/common/manifest_handlers/background_info.cc
 @@ -140,6 +140,13 @@
@@ -165,10 +180,12 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,8 @@
+@@ -402,6 +402,10 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
++    "firefox_page_action.cc",
++    "firefox_page_action.h",
 +    "firefox_version.cc",
 +    "firefox_version.h",
      "frame_context_data.h",
@@ -535,3 +552,112 @@
                    input-aria-label="${this.i18n(
                        'editShortcutInputLabel', command.description,
                        item.name)}"
+--- a/extensions/common/manifest_handlers/extension_action_handler.cc
++++ b/extensions/common/manifest_handlers/extension_action_handler.cc
+@@ -13,6 +13,7 @@
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_page_action.h"
+ #include "extensions/common/image_util.h"
+ #include "extensions/common/manifest_constants.h"
+ 
+@@ -55,7 +56,10 @@
+     // type ACTION is correct.
+   }
+ 
+-  if (extension->manifest()->FindKey(manifest_keys::kPageAction)) {
++  // Firefox add-ons (dubna): a page action next to another action is a second
++  // action (firefox_page_action.h).
++  if (extension->manifest()->FindKey(manifest_keys::kPageAction) &&
++      !HasFirefoxPageAction(*extension)) {
+     if (key != nullptr) {
+       // An extension can only have one action.
+       *error = manifest_errors::kOneUISurfaceOnly;
+@@ -118,6 +122,9 @@
+     ActionInfo::SetExtensionActionInfo(extension, std::move(action_info));
+   }
+ 
++  if (HasFirefoxPageAction(*extension)) {
++    return ParseFirefoxPageAction(extension, error);
++  }
+   return true;
+ }
+ 
+--- a/extensions/browser/BUILD.gn
++++ b/extensions/browser/BUILD.gn
+@@ -300,6 +300,7 @@
+     "extension_action_icon_factory.h",
+     "extension_action_manager.cc",
+     "extension_action_manager.h",
++    "firefox_page_action.cc",
+     "extension_allowlist.cc",
+     "extension_allowlist.h",
+     "extension_api_frame_id_map.cc",
+--- a/extensions/browser/extension_action_manager.h
++++ b/extensions/browser/extension_action_manager.h
+@@ -46,6 +46,10 @@
+   // the manifest key.
+   ExtensionAction* GetExtensionAction(const Extension& extension) const;
+ 
++  // Firefox add-ons (dubna): the page action next to the extension's action,
++  // or null (extensions/common/firefox_page_action.h).
++  ExtensionAction* GetFirefoxPageAction(const Extension& extension) const;
++
+   // Retrieves the factory instance for the ExtensionActionManager.
+   static BrowserContextKeyedServiceFactory* GetFactory();
+ 
+@@ -67,6 +71,7 @@
+   using ExtIdToActionMap =
+       std::map<std::string, std::unique_ptr<ExtensionAction>>;
+   mutable ExtIdToActionMap actions_;
++  mutable ExtIdToActionMap firefox_page_actions_;
+ };
+ 
+ }  // namespace extensions
+--- a/extensions/browser/extension_action_manager.cc
++++ b/extensions/browser/extension_action_manager.cc
+@@ -83,6 +83,7 @@
+     const Extension* extension,
+     UnloadedExtensionReason reason) {
+   actions_.erase(extension->id());
++  firefox_page_actions_.erase(extension->id());
+ }
+ 
+ ExtensionAction* ExtensionActionManager::GetExtensionAction(
+--- a/chrome/browser/extensions/api/extension_action/extension_action_api.cc
++++ b/chrome/browser/extensions/api/extension_action/extension_action_api.cc
+@@ -9,6 +9,7 @@
+ #include <algorithm>
+ #include <memory>
+ #include <string>
++#include <string_view>
+ #include <utility>
+ 
+ #include "base/check.h"
+@@ -184,6 +185,11 @@
+   ExtensionActionManager* manager =
+       ExtensionActionManager::Get(browser_context());
+   extension_action_ = manager->GetExtensionAction(*extension());
++  // Firefox add-ons (dubna): pageAction.* of an add-on with a second action.
++  if (std::string_view(name()).starts_with("pageAction.") &&
++      manager->GetFirefoxPageAction(*extension())) {
++    extension_action_ = manager->GetFirefoxPageAction(*extension());
++  }
+   if (!extension_action_) {
+     // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
+     // exist for extensions that don't have one declared. This should come as
+--- a/chrome/browser/extensions/extension_action_dispatcher.cc
++++ b/chrome/browser/extensions/extension_action_dispatcher.cc
+@@ -147,6 +147,11 @@
+       }
+       NotifyChange(extension_action, web_contents, browser_context);
+     }
++    // Firefox add-ons (dubna): an add-on's second action, its page action.
++    if (ExtensionAction* page_action =
++            action_manager->GetFirefoxPageAction(*extension)) {
++      page_action->ClearAllValuesForTab(tab_id.id());
++    }
+   }
+ }
+ 
