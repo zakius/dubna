@@ -4104,7 +4104,7 @@
 "o": "dubna",
 "a": "Extensions & uBlock",
 "p": "dubna/patches/firefox-add-ons",
-"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. Firefox's Manifest V3 background (background.scripts or background.page, where Chrome wants a service worker) runs as a Manifest V2 background page does, so add-ons such as LanguageTool and Keepa start in the background. A background with \"type\": \"module\" loads its scripts as modules, as in Firefox, in Manifest V2 and V3. Locale files load as Firefox reads them: a message name or an undefined placeholder that Chromium refuses no longer stops an add-on from loading, so add-ons such as Tree Style Tab, Mozilla VPN and Multi-Account Containers load. Extension shortcuts that Firefox takes and Chromium refuses no longer stop an add-on from loading either: Ctrl+Alt keys, F1 to F12 alone or with Shift, MacCtrl (Ctrl outside Mac), more than four shortcuts, and a command without a description or without a key for this platform. So add-ons such as Simple Tab Groups, Tridactyl and WebScrapBook install, and the shortcuts page (chrome://extensions/shortcuts) records F1 to F12 alone and Ctrl+Alt, for Chrome extensions too. A Firefox version with a letter suffix, such as Mozilla's re-signed \"3.4resigned1\" or \"0.5rc2\", which Chromium refuses, loads as its leading numbers, and chrome://extensions shows the full version. A Manifest V2 event page (\"persistent\": false) that asks for webRequest, which Chromium refuses to load, runs as a persistent background page, so its blocking listeners are always there and add-ons such as AdGuard, AdBlocker Ultimate and Video DownloadHelper install. Chromium allows one action, and a page action only in Manifest V2; a page_action next to the add-on's browser_action or action, or in Manifest V3, becomes a second action that pageAction calls reach, so add-ons such as Sidebery, CanvasBlocker and Tab Stash install; its button in the address bar isn't there yet. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
+"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. Firefox's Manifest V3 background (background.scripts or background.page, where Chrome wants a service worker) runs as a Manifest V2 background page does, so add-ons such as LanguageTool and Keepa start in the background. A background with \"type\": \"module\" loads its scripts as modules, as in Firefox, in Manifest V2 and V3. Locale files load as Firefox reads them: a message name or an undefined placeholder that Chromium refuses no longer stops an add-on from loading, so add-ons such as Tree Style Tab, Mozilla VPN and Multi-Account Containers load. Extension shortcuts that Firefox takes and Chromium refuses no longer stop an add-on from loading either: Ctrl+Alt keys, F1 to F12 alone or with Shift, MacCtrl (Ctrl outside Mac), more than four shortcuts, and a command without a description or without a key for this platform. So add-ons such as Simple Tab Groups, Tridactyl and WebScrapBook install, and the shortcuts page (chrome://extensions/shortcuts) records F1 to F12 alone and Ctrl+Alt, for Chrome extensions too. A Firefox version with a letter suffix, such as Mozilla's re-signed \"3.4resigned1\" or \"0.5rc2\", which Chromium refuses, loads as its leading numbers, and chrome://extensions shows the full version. A Manifest V2 event page (\"persistent\": false) that asks for webRequest, which Chromium refuses to load, runs as a persistent background page, so its blocking listeners are always there and add-ons such as AdGuard, AdBlocker Ultimate and Video DownloadHelper install. Firefox's menus.create and menus.update take an item icon and the password, bookmark and tools_menu contexts, which Chromium refuses, so add-ons such as Swift Selection Search, FoxReplace and QR Code Generator start; an item shows the add-on's icon rather than its own, and those three contexts show no item yet. Chromium allows one action, and a page action only in Manifest V2; a page_action next to the add-on's browser_action or action, or in Manifest V3, becomes a second action that pageAction calls reach, so add-ons such as Sidebery, CanvasBlocker and Tab Stash install; its button in the address bar isn't there yet. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -4120,6 +4120,27 @@
 "n": "",
 "own": 1,
 "t": "Firefox add-on sidebars"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Address bar & search",
+"p": "oganesson/core/google-lens",
+"w": "A switch in Settings > Search engine, \"Search images with Google Lens\", adds \"Search image with Google Lens\" to an image's menu whatever your search engine; choosing it sends the image to Google's Lens page. When your engine already searches images with Lens, as Google does, the menu has no second item.",
+"s": "off",
+"n": "a switch in Settings > Search engine",
+"own": 1,
+"t": "Google Lens if you want it"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Build & plumbing",
+"p": "oganesson/core/pgo-pinned-profile",
+"w": "Release builds keep one Chromium PGO profile per Chromium major version, so an update within it rebuilds only what changed and ships sooner. Nothing changes in the browser.",
+"s": "on",
+"n": "",
+"own": 1
 },
 {
 "b": "og",
