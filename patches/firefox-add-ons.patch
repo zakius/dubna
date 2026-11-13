@@ -16,6 +16,8 @@
 # A Manifest V2 event page that asks for webRequest runs as a persistent page.
 # A page_action next to a browser_action or action, or in Manifest V3, is a
 # second action that pageAction.* reaches (firefox_page_action.h).
+# menus.create and update take Firefox's icons (not shown) and its password,
+# bookmark and tools_menu contexts (the item shows in its other contexts).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -700,3 +702,71 @@
  
    return image_paths;
  }
+--- a/chrome/browser/extensions/context_menu_helpers.cc
++++ b/chrome/browser/extensions/context_menu_helpers.cc
+@@ -154,6 +154,11 @@
+         // Not available for <webview>.
+         contexts.Add(MenuItem::TAB);
+         break;
++      // Firefox add-ons (dubna): see context_menus.json.
++      case api::context_menus::ContextType::kPassword:
++      case api::context_menus::ContextType::kBookmark:
++      case api::context_menus::ContextType::kToolsMenu:
++        break;
+       case api::context_menus::ContextType::kNone:
+         NOTREACHED();
+     }
+--- a/chrome/common/extensions/api/context_menus.json
++++ b/chrome/common/extensions/api/context_menus.json
+@@ -42,6 +42,22 @@
+           {
+             "name": "tab",
+             "description": "Applies to the context menu of a tab in the tab strip."
++          },
++          // Firefox add-ons (dubna): Firefox's contexts that this browser
++          // doesn't offer (a password field, a bookmark, the Tools menu).
++          // They are accepted so that the item is created, and it shows in
++          // its other contexts.
++          {
++            "name": "password",
++            "nodoc": true
++          },
++          {
++            "name": "bookmark",
++            "nodoc": true
++          },
++          {
++            "name": "tools_menu",
++            "nodoc": true
+           }
+         ],
+         "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
+@@ -203,6 +219,14 @@
+             "type": "boolean",
+             "optional": true,
+             "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
++          },
++          // Firefox add-ons (dubna): Firefox's own icon for the item, by size.
++          // Accepted and not shown: the item shows the add-on's icon.
++          "icons": {
++            "type": "object",
++            "additionalProperties": {"type": "string"},
++            "optional": true,
++            "nodoc": true
+           }
+         }
+       }
+@@ -314,6 +338,13 @@
+               "enabled": {
+                 "type": "boolean",
+                 "optional": true
++              },
++              // Firefox add-ons (dubna): as in CreateProperties.
++              "icons": {
++                "type": "object",
++                "additionalProperties": {"type": "string"},
++                "optional": true,
++                "nodoc": true
+               }
+             }
+           }
