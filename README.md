@@ -44,7 +44,7 @@ Before both browsers move their submodule to a change here, check the change wit
 
 Each browser has one entry point: `oganesson.py` for oganesson, `tennessine.py` for tennessine. Shared jobs are Python tools in this repo, stdlib only.
 
-Scripts that run inside a build container or come from an upstream stay in bash. Those are the `container-build.sh` scripts (oganesson's `linux/` and `windows/`, tennessine's `tools/`), the helium-linux scripts oganesson's Linux one runs, Titanium's `build.sh` and `common.sh`, and tennessine's `post-sync.sh`, which `build.sh` runs. The `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
+Scripts that run inside a build container or come from an upstream stay in bash. Those are the `container-build.sh` scripts (oganesson's `linux/` and `windows/`, tennessine's `tools/`), the helium-linux scripts oganesson's Linux one runs, Titanium's `build.sh` and `common.sh`, and tennessine's `post-sync.sh`, which its `container-build.sh` runs. The `build-sync-lib.sh` scripts also stay in bash, and they share nothing but the crate.
 
 ## Update policy
 
