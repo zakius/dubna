@@ -13,11 +13,20 @@ The pace is the faster of two rates: the week's average so far and the last
 There is headroom when the 5-hour session is under SESSION_MAX percent and, at
 the pace, the week would have room left at its reset for another run (RUN_COST)
 and still keep RESERVE points for unexpected work.
+
+Every push in a run waits for a Fable review, and Fable has its own weekly
+limit, which the logs don't carry. So the script also reads that limit from the
+endpoint Claude Code's /usage reads, with Claude Code's own sign-in. There is
+headroom only when FABLE_NEED points of the Fable limit are left.
 """
-import datetime, json, sys, time
+import datetime, json, subprocess, sys, time, urllib.error, urllib.request
 from pathlib import Path
 
 LOGS = Path.home() / '.t3' / 'userdata' / 'logs' / 'provider'
+USAGE_URL = 'https://api.anthropic.com/api/oauth/usage'
+CREDENTIALS = Path.home() / '.claude' / '.credentials.json'
+# A run's reviews, plus some kept free for the maintainer's own Fable work.
+FABLE_NEED = 15
 SESSION_MAX = 50
 # An evening run has cost 8 to 15 points of the week. This counts it lower,
 # so that more rounds start.
@@ -45,6 +54,41 @@ def read_events():
                 events.append((stamp, info['unifiedWindows']))
     events.sort(key=lambda event: event[0])
     return events
+
+
+def read_fable():
+    """The Fable weekly limit from the usage endpoint: {'percent', 'resets_at', ...}."""
+    token = json.loads(CREDENTIALS.read_text())['claudeAiOauth']['accessToken']
+    # The endpoint answers 429 to every client but Claude Code.
+    version = subprocess.run(['claude', '--version'], capture_output=True, text=True,
+                             check=True).stdout.split()[0]
+    request = urllib.request.Request(USAGE_URL, headers={
+        'Authorization': f'Bearer {token}',
+        'anthropic-beta': 'oauth-2025-04-20',
+        'User-Agent': f'claude-code/{version}'})
+    # Calls close together can still get a 429; one retry is enough.
+    for attempt in range(2):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                usage = json.load(response)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt:
+                raise
+            time.sleep(60)
+    for limit in usage['limits']:
+        scope = limit.get('scope') or {}
+        if (scope.get('model') or {}).get('display_name') == 'Fable':
+            return limit
+    raise KeyError('no Fable limit in the usage')
+
+
+def assess_fable(fable):
+    """(headroom, line) for the Fable weekly limit."""
+    left = 100 - fable['percent']
+    resets = datetime.datetime.fromisoformat(fable['resets_at'])
+    return left >= FABLE_NEED, (f'fable: {fable["percent"]:.0f}% used, resets {resets:%a %H:%M} UTC '
+                                f'(needs {FABLE_NEED} left for a run\'s reviews)')
 
 
 def when(window):
@@ -100,6 +144,14 @@ def main():
         print(f'T3 provider logs not readable: {e}')
         return 1
     headroom, lines = assess(events, datetime.datetime.now(UTC))
+    try:
+        fable_headroom, fable_line = assess_fable(read_fable())
+    except (OSError, KeyError, ValueError, subprocess.CalledProcessError) as e:
+        fable_headroom, fable_line = None, f'fable: limit not readable: {e}'
+    lines.append(fable_line)
+    # Fable decides only when the plan itself has headroom.
+    if headroom:
+        headroom = fable_headroom
     print({True: 'headroom: yes', False: 'headroom: no', None: 'headroom: unknown'}[headroom])
     print('\n'.join(lines))
     return 0 if headroom is not None else 1

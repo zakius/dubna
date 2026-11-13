@@ -52,7 +52,17 @@ The chain keeps its state in `/home/zakius/dev/dubna/work/nightly.log` (not in G
 2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> /home/zakius/dev/dubna/work/nightly.log`.
 3. Unless the stage was started by hand, start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
 
-Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds and the tests pass, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
+Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
+
+## Fable review before the push
+
+Every push to a main (oganesson, tennessine or dubna: an update, a batch, a climb step, a fix, a submodule move, a site or tools change) waits for a review by Fable. A push to a task-* or climb-* branch doesn't.
+
+1. When the commits are final (built and tested), make one Agent call: model `fable`, subagent_type `general-purpose`, run_in_background false. Give it the worktree, the range (origin/main..HEAD), what the change is for (issues, upstream version, policy rule) and the repo's docs to read. Give it the code, not your conclusions. Ask for real defects only, most severe first, each with file:line and how it fails: wrong behaviour, a missed upstream change, a test that doesn't test what it says, a security hole.
+2. Fix each finding you agree with in its own commit, and build and test again. Say in the report why you reject the others. After fixes, one more review of the new commits only. Don't start a third: report what is left.
+3. If the review can't run (the Fable limit is reached, or the call fails twice), don't push. Keep the branch, end the stage `stopped` with "no Fable review", and give the branch and worktree. One exception: a `zeroday` update pushes and releases anyway, and its report says the review was skipped.
+
+The report lists each finding, its fix or why it was rejected.
 
 ## Releasing
 

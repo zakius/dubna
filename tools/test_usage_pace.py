@@ -5,7 +5,7 @@ import datetime, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from usage_pace import assess
+from usage_pace import assess, assess_fable
 
 UTC = datetime.timezone.utc
 START = datetime.datetime(2026, 11, 6, 2, tzinfo=UTC)
@@ -46,4 +46,10 @@ assert headroom([event(at(5), 30), event(at(6, 12), 32)], at(6, 12))
 # No events, or none since the weekly reset: unknown.
 assert headroom([], at(1)) is None
 assert headroom(steady, at(7, 1)) is None
+
+# Fable: 85 used leaves 15, enough for a run's reviews; 90 used doesn't.
+def fable(percent):
+    return {'percent': percent, 'resets_at': RESET.isoformat()}
+assert assess_fable(fable(85))[0]
+assert not assess_fable(fable(90))[0]
 print('ok')
