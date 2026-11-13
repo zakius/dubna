@@ -3432,7 +3432,7 @@
 "p": "oganesson/core/no-helium-services",
 "w": "No Helium servers: Helium's services, update checks, crash reports and onboarding are off, and so is fingerprint noise, which can be turned on. Chrome Web Store installs and updates and spellcheck dictionaries come from Google, as in Chromium, unless Browser traffic sends them through your own server.",
 "s": "on",
-"n": "",
+"n": "Helium's push server only if its HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set",
 "own": 1
 },
 {
