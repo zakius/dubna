@@ -34,11 +34,24 @@ The chain keeps its state in `/home/zakius/dev/dubna/work/nightly.log` (not in G
 2026-11-11T21:10:00Z end chain landed
 ```
 
-- `begin` opens a chain. Only the router writes `begin`, `finding`, `space`, `start` and `end chain` lines.
+- `begin` opens a chain. Only the router writes `begin`, `round`, `finding`, `space`, `start` and `end chain` lines.
+- `round <N>` comes right after the `begin` of a chain that the router started as another round (see "Another round"). A chain begun at 18:00 or by hand has no `round` line.
 - `start <stage> [details]` comes just before the router starts the stage. The details are what the stage works on.
 - `end <stage> <result> <summary>` is the stage's last line. The result is `landed` (pushed something), `nothing`, `skipped` or `stopped` (stopped before a push, or left something broken). The router writes `end <stage> died` for a stage whose thread stopped without an end line.
 
-"Tonight" and "this chain" mean the lines after the last `begin`. "06:00" means the first 06:00 after that `begin`, so a chain begun by hand in the morning works on until the next 06:00.
+"Tonight" and "this chain" mean the lines after the last `begin`. "06:00" means the first 06:00 after that `begin`, so a chain begun by hand in the morning works on until the next 06:00. That deadline is only for a stage's own work. It never lets the router start another round: "Another round" decides that.
+
+## Another round
+
+When a chain ends `landed`, the router may begin another chain at once. Chains may run at any hour, but the router starts another round only when all of these hold:
+
+1. The chain ended `end chain landed`.
+2. The local time now (`TZ=Europe/Warsaw date +%H:%M`) is not from 05:00 to 10:00. Judge by the clock now, never by a `begin` line.
+3. Fewer than 5 rounds in a row: the chain that just ended has no `round` line, or its `round` number is under 5.
+4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no).
+5. No other T3 thread is active.
+
+For another round, the router appends `begin`, then `round <N>`, where N is the ended chain's round number plus one (1 if it had none). So a chain begun at 18:00 or by hand is followed by at most 5 more.
 
 ## Starting a stage
 
@@ -53,6 +66,8 @@ The chain keeps its state in `/home/zakius/dev/dubna/work/nightly.log` (not in G
 3. Unless the stage was started by hand, start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
 
 Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
+
+The maintainer may post a question in the thread while a stage runs. Answer it in a few lines, then carry on with the stage in the same turn. A question is not a request to stop, and never end the turn to wait for a reply. Don't ask permission for a step these rules already allow, such as a push or a release tag after the Fable review.
 
 ## Fable review before the push
 
