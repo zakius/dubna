@@ -19,10 +19,11 @@ from pathlib import Path
 
 LOGS = Path.home() / '.t3' / 'userdata' / 'logs' / 'provider'
 SESSION_MAX = 50
-# An evening run has cost 8 to 15 points of the week.
-RUN_COST = 15
+# An evening run has cost 8 to 15 points of the week. This counts it lower,
+# so that more rounds start.
+RUN_COST = 5
 # Kept free for the maintainer's own work, whatever runs.
-RESERVE = 25
+RESERVE = 7
 WEEK = datetime.timedelta(days=7)
 DAY = datetime.timedelta(days=1)
 UTC = datetime.timezone.utc

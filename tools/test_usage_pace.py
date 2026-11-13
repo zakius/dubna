@@ -30,8 +30,8 @@ def headroom(events, now):
 # 6 points a day for 5 days: 42 at the reset, 58 left.
 steady = [event(at(day), 6 * day) for day in range(1, 6)]
 assert headroom(steady, at(5))
-# 10 points a day leaves 30: room for a run, but not for the reserve too.
-assert not headroom([event(at(day), 10 * day) for day in range(1, 6)], at(5))
+# 13 points a day leaves 9: room for a run, but not for the reserve too.
+assert not headroom([event(at(day), 13 * day) for day in range(1, 6)], at(5))
 # The steady week, but the last day took 25: at that pace nothing is left.
 burst = steady[:-1] + [event(at(5), 49)]
 assert not headroom(burst, at(5))
