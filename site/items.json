@@ -68,7 +68,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/toggle-translation-via-switch",
-"w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu. A custom --translate-script-url switch brings back the offer to translate pages, not the menu item.",
+"w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu.",
 "s": "on",
 "n": ""
 },
@@ -1258,7 +1258,7 @@
 "p": "helium/core/web-push-service",
 "w": "Delivers sites' push messages through a Mozilla autopush-compatible push server in place of Google's, behind the HeliumWebPush feature (off). The browser connects only while a site is subscribed.",
 "s": "off",
-"n": "off unless the HeliumWebPush feature is turned on with a command-line switch; then an empty push server means Helium's push.helium.computer"
+"n": "off unless the HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set; then an empty push server means Helium's push.helium.computer"
 },
 {
 "b": "og",
@@ -2374,7 +2374,7 @@
 "p": "helium/ui/generic-translate-icon",
 "w": "Replaces the Google Translate logo with a generic translate icon, in the toolbar, the menus and the translate bubbles.",
 "s": "on",
-"n": "",
+"n": "shows nowhere by default: the translate action, menu items and bubbles need a translation provider",
 "t": "Generic translate icon"
 },
 {
@@ -2481,7 +2481,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/app-menu-model",
-"w": "Reorganizes the three-dot menu. Removed: the profile submenu, \"Passwords and autofill\", \"Send to your devices\", Translate, \"Reading mode\", the vertical tabs switch, the Safety Hub row and Reading List. \"Bookmarks and lists\" becomes \"Bookmarks\". \"Extensions\" opens the extensions page directly. \"Customize Chrome\" moves to the main menu and \"Exit\" into More tools. The Update item moves from the top to the normal notice area.",
+"w": "Reorganizes the three-dot menu. Removed: the profile submenu, \"Passwords and autofill\", \"Send to your devices\", \"Reading mode\", the vertical tabs switch, the Safety Hub row and Reading List. \"Bookmarks and lists\" becomes \"Bookmarks\". \"Extensions\" opens the extensions page directly. \"Customize Chrome\" moves to the main menu and \"Exit\" into More tools. The Update item moves from the top to the normal notice area.",
 "s": "on",
 "n": "\"Passwords and autofill\" stays in the menu"
 },
@@ -2589,7 +2589,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/remove-dead-toolbar-actions",
-"w": "Removes buttons for unused features from the list of actions you can pin to the toolbar or side panel: Reading list, Tabs from other devices, shopping and price insights, Google Lens, Send tab to self, Translate, Addresses, Payment methods and Passwords. Translate, password and card icons are also removed from installed web app title bars. These are mostly Google features or ones disabled by other patches.",
+"w": "Removes buttons for unused features from the list of actions you can pin to the toolbar or side panel: Reading list, Tabs from other devices, shopping and price insights, Google Lens, Send tab to self, Addresses, Payment methods and Passwords. Translate, password and card icons are also removed from installed web app title bars. These are mostly Google features or ones disabled by other patches.",
 "s": "on",
 "n": "the Password manager button stays available",
 "t": "Remove dead toolbar actions (UI)"
