@@ -68,7 +68,7 @@
 "o": "ungoogled-chromium",
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/toggle-translation-via-switch",
-"w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu. A custom --translate-script-url switch brings it back.",
+"w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu. A custom --translate-script-url switch brings back the offer to translate pages, not the menu item.",
 "s": "on",
 "n": "translation comes back as two opt-ins: on-device and Google Translate"
 },
@@ -1153,6 +1153,16 @@
 {
 "b": "og",
 "o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/sync/provider/host",
+"w": "Defines what the browser expects from a sync-storage provider, which on desktop is an extension: its kinds and its errors. Groundwork; nothing visible on its own.",
+"s": "off",
+"n": "inert: Helium's own sync vault, which Firefox Sync replaces",
+"t": "Provider: host"
+},
+{
+"b": "og",
+"o": "Helium",
 "a": "De-Googling & telemetry",
 "p": "helium/core/sync/disable-google-backed-sync-integrations",
 "w": "Makes the browser always answer \"no\" to \"is this data going to Google?\". This turns off features that need Google sync consent, such as web history, Safe Browsing lists, password-account storage and Google Wallet. Also hides Google sign-in device details when private sync is set up.",
@@ -1240,6 +1250,24 @@
 "w": "Downloads spell-check dictionaries from Helium's server instead of Google's. Adds the setting \"Allow downloading dictionary files for spell checking\" (on). The error message for a failed download names Helium's services.",
 "s": "off",
 "n": "by default oganesson downloads spellcheck dictionaries from Google's server, as Chromium does; through your own server only if you choose it in Browser traffic"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Helium services",
+"p": "helium/core/web-push-service",
+"w": "Delivers sites' push messages through a Mozilla autopush-compatible push server in place of Google's, behind the HeliumWebPush feature (off). The browser connects only while a site is subscribed.",
+"s": "off",
+"n": "off unless the HeliumWebPush feature is turned on with a command-line switch; then an empty push server means Helium's push.helium.computer"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Helium services",
+"p": "helium/settings/web-push-settings",
+"w": "Adds \"Allow receiving push notifications\" to Helium's services settings, with a choice of Helium's push server or your own. Shown only with the HeliumWebPush feature on.",
+"s": "off",
+"n": "hidden: the HeliumWebPush feature is off"
 },
 {
 "b": "og",
@@ -2085,11 +2113,52 @@
 {
 "b": "og",
 "o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/translate/provider-api",
+"w": "Adds an interface through which a translation provider can translate pages in place of Google Translate, behind the HeliumTranslate feature (off). Groundwork; nothing provides one yet.",
+"s": "off",
+"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"t": "Translate: provider API"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/translate/text-translator",
+"w": "Lets a page's translation script hand its text to the browser, which passes it to the translation provider. Groundwork for Helium's translation.",
+"s": "off",
+"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"t": "Translate: text translator"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/translate/page-script",
+"w": "A page script of Helium's own that stands in for the Google Translate Element, so a translation provider can translate a page's text. Groundwork for Helium's translation.",
+"s": "off",
+"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"t": "Translate: page script"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Build & plumbing",
+"p": "helium/core/translate/translate-manager",
+"w": "Makes page translation load Helium's page script and use the translation provider, not Google Translate, when the HeliumTranslate feature is on.",
+"s": "off",
+"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"t": "Translate: translate manager"
+},
+{
+"b": "og",
+"o": "Helium",
 "a": "Settings & flags",
-"p": "helium/settings/remove-translate-section",
-"w": "Hides the Google Translate section of Language settings: the offer to translate and the always/never translate lists. Also hides the \"translate target\" label next to languages.",
+"p": "helium/ui/translate-ui",
+"w": "Shows the Translate section of Language settings, the Translate item in the three-dot menu and page right-click menu, and the Translate toolbar action only when a translation provider is registered. The settings speak of translating pages, not of Google Translate. Translating selected text isn't offered.",
 "s": "on",
-"n": "comes back with the translation opt-ins"
+"n": "no provider is registered, so none of these shows; --translate-script-url no longer brings back the right-click Translate item",
+"t": "Translate UI"
 },
 {
 "b": "og",
@@ -2297,6 +2366,16 @@
 "w": "Address bar action icons (translate, bookmark star and so on) are always plain icons, with no text label or colored chip. The \"Open in app\" chip is replaced by a plain app icon.",
 "s": "on",
 "n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Look & layout",
+"p": "helium/ui/generic-translate-icon",
+"w": "Replaces the Google Translate logo with a generic translate icon, in the toolbar, the menus and the translate bubbles.",
+"s": "on",
+"n": "",
+"t": "Generic translate icon"
 },
 {
 "b": "og",
@@ -2541,6 +2620,16 @@
 "w": "If an extension download is blocked because Helium services or extension downloads are off, the downloads bubble says \"Extension downloads are disabled\" instead of \"Blocked by your organization\". It also has a button that opens chrome://settings/privacy/services.",
 "s": "off",
 "n": "works only for what you send through your own helium-services server in Settings > Browser traffic; Helium's own server is never used"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Input & shortcuts",
+"p": "helium/ui/add-copy-download-link-context-menu",
+"w": "Adds \"Copy download link\" to a download's right-click menu in the downloads bubble. It copies the address the file came from.",
+"s": "on",
+"n": "",
+"t": "Copy download link"
 },
 {
 "b": "og",
