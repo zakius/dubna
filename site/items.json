@@ -3636,6 +3636,27 @@
 {
 "b": "og",
 "o": "oganesson",
+"a": "Look & layout",
+"p": "oganesson/core/app-icon",
+"w": "The app icon is element 118's outer electron shell, a full ring of 8 electrons, in one of seven variants: orange (the default), teal, crimson, black, white, or the glyph alone in white or black. The choice holds for every profile, and open windows change at once. On Linux, docks and app menus follow it through a copy of the browser's .desktop entry in your own applications folder (a file of your own there is left alone); on Windows, the browser's desktop, Start menu and taskbar shortcuts point at the chosen icon.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Choose the app icon"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Look & layout",
+"p": "oganesson/settings/app-icon-settings",
+"w": "Settings > Appearance gets an App icon menu with the seven variants.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
 "a": "Address bar & search",
 "p": "oganesson/core/omnibox-suggestion-sources",
 "w": "Firefox-like address bar: choose and reorder suggestion sources, match bookmarks anywhere in title or address, and autofill sites from bookmarks and history.",
@@ -4110,6 +4131,17 @@
 "s": "on",
 "n": "",
 "own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Look & layout",
+"p": "tennessine/app-icon",
+"w": "tennessine's own app icon, not Titanium's: element 117's outer electron shell, 7 electrons and an empty place for the 8th, which oganesson's icon fills. Settings > App icon chooses indigo (the default), teal, crimson, black, white, or no background in white or black. Choosing one restarts the browser, and some launchers take the icon off the home screen until you add it back. With themed icons on, Android draws it in your wallpaper's colors.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Choose the app icon"
 },
 {
 "b": "ts",
