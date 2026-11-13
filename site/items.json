@@ -4590,16 +4590,6 @@
 {
 "b": "og",
 "o": "oganesson",
-"a": "Settings & flags",
-"p": "Optional Google services section",
-"w": "One settings page with a separate, off-by-default switch for each Google-backed feature, each saying what it sends and to whom.",
-"s": "on",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
 "a": "Tabs & windows",
 "p": "Firefox-like options in Settings",
 "w": "Tab-strip scrolling (off everywhere), close the window with the last tab, clear data on exit, close confirmation and a custom new tab page move from chrome://flags into Settings.",
