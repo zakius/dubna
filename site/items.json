@@ -4600,36 +4600,6 @@
 {
 "b": "og",
 "o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "Autofill field predictions",
-"w": "Lets autofill ask Google which form fields are which (crowdsourcing).",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "Cast to devices",
-"w": "One switch for casting and for finding devices on your network (mDNS and DIAL).",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "AI features, one switch each",
-"w": "A separate switch for each AI feature: Gemini in the browser, AI skills, AI permission prompts, page annotation models and Screen AI.",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
 "a": "Tabs & windows",
 "p": "Firefox-like options in Settings",
 "w": "Tab-strip scrolling (off everywhere), close the window with the last tab, clear data on exit, close confirmation and a custom new tab page move from chrome://flags into Settings.",
