@@ -12,6 +12,7 @@
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
+# A Manifest V2 event page that asks for webRequest runs as a persistent page.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -147,6 +148,21 @@
    int background_solution_sum =
        (background_url_.is_valid() ? 1 : 0) +
        (!background_scripts_.empty() ? 1 : 0) +
+@@ -328,6 +335,14 @@
+     return false;
+   }
+   is_persistent_ = background_persistent->GetBool();
++  // Firefox add-ons (dubna): Firefox wakes an event page for a blocking
++  // webRequest listener, Chromium doesn't, and refuses to load an event page
++  // that asks for webRequest. Such an add-on (AdGuard, Ghostery) runs as a
++  // persistent background page instead.
++  if (!is_persistent_ && PermissionsParser::HasAPIPermission(
++                             extension, APIPermissionID::kWebRequest)) {
++    is_persistent_ = true;
++  }
+ 
+   if (!has_background_page()) {
+     *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
 @@ -402,6 +402,8 @@
