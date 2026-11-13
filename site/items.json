@@ -24,8 +24,8 @@
 "a": "De-Googling & telemetry",
 "p": "inox-patchset/disable-autofill-download-manager",
 "w": "Stops Autofill from asking Google's servers what the fields in a form are, and from sending form data to them.",
-"s": "off",
-"n": "an opt-in: autofill can ask Google which form fields are which"
+"s": "on",
+"n": ""
 },
 {
 "b": "og",
@@ -70,7 +70,7 @@
 "p": "ungoogled-chromium/toggle-translation-via-switch",
 "w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu. A custom --translate-script-url switch brings back the offer to translate pages, not the menu item.",
 "s": "on",
-"n": "translation comes back as two opt-ins: on-device and Google Translate"
+"n": ""
 },
 {
 "b": "og",
@@ -96,8 +96,8 @@
 "a": "De-Googling & telemetry",
 "p": "ungoogled-chromium/disable-gcm",
 "w": "Turns off Google Cloud Messaging. The browser never connects to Google to receive push messages.",
-"s": "off",
-"n": "an opt-in: push messages from sites while none of their tabs is open"
+"s": "on",
+"n": ""
 },
 {
 "b": "og",
@@ -169,7 +169,7 @@
 "p": "ungoogled-chromium/disable-ai",
 "w": "Removes Gemini in Chrome (Glic), Screen AI (reads text from images and page layout) and other on-device AI and speech model features.",
 "s": "on",
-"n": "each feature its own opt in (Gemini/Glic, skills, AI permission prompts, page-annotation models, Screen AI)"
+"n": ""
 },
 {
 "b": "og",
@@ -224,7 +224,7 @@
 "p": "ungoogled-chromium/block-requests",
 "w": "Blocks background requests: the Google bar, backgrounds and promos on the new tab page, spellcheck dictionary and component update checks, password affiliation lookups and DevTools CSS data.",
 "s": "on",
-"n": "an opt-in that needs a component downloads only that component"
+"n": ""
 },
 {
 "b": "og",
@@ -395,8 +395,8 @@
 "a": "Build & plumbing",
 "p": "ungoogled-chromium/fix-building-without-mdns-and-service-discovery",
 "w": "Build fix so the browser compiles with mDNS and local device discovery turned off.",
-"s": "off",
-"n": "an opt-in: one switch for casting and the device discovery it needs"
+"s": "on",
+"n": ""
 },
 {
 "b": "og",
@@ -523,7 +523,7 @@
 "p": "ungoogled-chromium/disable-dial-repeating-discovery",
 "w": "Stops Cast/DIAL from sending discovery messages again and again on your local network.",
 "s": "on",
-"n": "part of the casting opt-in: device discovery works normally once casting is on"
+"n": ""
 },
 {
 "b": "og",
@@ -1964,7 +1964,7 @@
 "p": "helium/core/remove-unused-ai-resources",
 "w": "Removes Google AI pages and resources from the build: Gemini in Chrome, Lens overlay and side panel, \"Help me write\", contextual tasks, the AI agent, the AI overlay and skills.",
 "s": "on",
-"n": "AI features that come back as opt-ins bring back what they need"
+"n": ""
 },
 {
 "b": "og",
@@ -2483,7 +2483,7 @@
 "p": "helium/ui/app-menu-model",
 "w": "Reorganizes the three-dot menu. Removed: the profile submenu, \"Passwords and autofill\", \"Send to your devices\", Translate, \"Reading mode\", the vertical tabs switch, the Safety Hub row and Reading List. \"Bookmarks and lists\" becomes \"Bookmarks\". \"Extensions\" opens the extensions page directly. \"Customize Chrome\" moves to the main menu and \"Exit\" into More tools. The Update item moves from the top to the normal notice area.",
 "s": "on",
-"n": "\"Passwords and autofill\" stays in the menu; Translate returns with the translation opt-in"
+"n": "\"Passwords and autofill\" stays in the menu"
 },
 {
 "b": "og",
@@ -4603,36 +4603,6 @@
 "a": "De-Googling & telemetry",
 "p": "Autofill field predictions",
 "w": "Lets autofill ask Google which form fields are which (crowdsourcing).",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "Google Translate",
-"w": "Page translation through Google, with the Translate settings and menu item back.",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "On-device translation",
-"w": "Chromium's translation that runs on your device. It downloads only the language packs.",
-"s": "off",
-"n": "",
-"own": 1
-},
-{
-"b": "og",
-"o": "oganesson",
-"a": "De-Googling & telemetry",
-"p": "Push messages from closed sites",
-"w": "Uses Google Cloud Messaging so sites can send you push messages while none of their tabs are open.",
 "s": "off",
 "n": "",
 "own": 1

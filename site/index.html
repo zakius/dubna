@@ -359,7 +359,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="f"><div class="ic" aria-hidden="true">📱️</div><h3>One-handed Android</h3><p>Move the address bar to the bottom and the whole layout follows it: the menu, suggestions and tab list grow up from your thumb. Toasts stay out of the way, above the toolbar.</p><div class="who"><i class="t">tennessine</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">🧩️</div><h3>Extensions on a phone</h3><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">tennessine</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">🔌️</div><h3>Nothing phones home</h3><p>No Google services and no browser-vendor services by default, and Helium's own servers are never used. Crash reports stay off until you turn them on. What does connect: on a first start, oganesson's setup asks how it gets what it downloads by itself, and by default certificate revocation data, Widevine, extensions and spellcheck dictionaries come straight from Google and uBlock Origin's filter lists from uBlock's own sources. Each can go through your own helium-services server instead, or wait until you ask. tennessine downloads uBlock Origin once on first run and checks it against a pinned checksum, and updates come through your package manager, oganesson's Windows updater or F-Droid.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>Google features as opt-ins</h3><p>Translation (on-device or Google's), push messages from closed sites, casting and every AI feature have their own switches in one settings section, all off by default.</p><div class="who"><i class="o">oganesson</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>No Google features to switch off</h3><p>Google Translate, push messages through Google's servers and Gemini stay off, with no setting that brings them back. Helium's new translation and push code is carried, off as well.</p><div class="who"><i class="o">oganesson</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">🔑️</div><h3>A password manager you keep</h3><p>Some privacy browsers remove the built-in password manager; I keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
   </div>
 </div></section>
@@ -443,9 +443,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         <span class="chip off"><b>off</b> · Helium services</span>
         <span class="chip off"><b>off</b> · fingerprint noise</span>
         <span class="chip off"><b>off</b> · memory saver</span>
-        <span class="chip off"><b>opt-in</b> · translation</span>
-        <span class="chip off"><b>opt-in</b> · casting</span>
-        <span class="chip off"><b>opt-in</b> · AI features</span>
+        <span class="chip off"><b>off</b> · Google Translate (desktop)</span>
+        <span class="chip off"><b>off</b> · Gemini (desktop)</span>
       </div>
     </div>
   </div>

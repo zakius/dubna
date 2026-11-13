@@ -142,7 +142,7 @@ AREAS = [
     ('Input & shortcuts', 'Mouse gestures, editable keyboard shortcuts, context menus, zoom.'),
     ('History', 'Switches that stop saving history.'),
     ('Media', 'Autoplay and tab sound indicators.'),
-    ('De-Googling & telemetry', 'Connections to Google and telemetry, cut. Useful Google-backed features come back as opt-ins.'),
+    ('De-Googling & telemetry', 'Connections to Google and telemetry, cut.'),
     ('Fingerprinting', "Fingerprinting defenses: mostly flags, Helium's noise off by default."),
     ('Network & security', 'HTTPS-first, certificate transparency, WebRTC, DNS, TLS and network flags.'),
     ('Helium services', "Helium's own servers (proxy, bangs, updates, crash reports): carried, off by default."),
