@@ -20,7 +20,7 @@
 # bookmark and tools_menu contexts (the item shows in its other contexts).
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
-# storage.session is there in Manifest V2 too, as in Firefox.
+# storage.session is there in Manifest V2 add-ons too, as in Firefox.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -919,14 +919,15 @@
         {}},
 --- a/extensions/common/api/_api_features.json
 +++ b/extensions/common/api/_api_features.json
-@@ -877,8 +877,9 @@
+@@ -877,8 +877,10 @@
        "content_script"
      ]
    },
 +  // Firefox add-ons (dubna): Firefox has storage.session in Manifest V2 too.
++  // Chrome apps, also Manifest V2, stay without it.
    "storage.session": {
 -    "min_manifest_version": 3
-+    "min_manifest_version": 2
++    "extension_types": ["extension"]
    },
    "system.cpu": {
      "dependencies": ["permission:system.cpu"],
