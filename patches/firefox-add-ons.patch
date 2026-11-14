@@ -20,6 +20,7 @@
 # bookmark and tools_menu contexts (the item shows in its other contexts).
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
+# storage.session is there in Manifest V2 too, as in Firefox.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -916,3 +917,29 @@
        {IDS_EXTENSION_PROMPT_WARNING_SYNCFILESYSTEM,
         {APIPermissionID::kSyncFileSystem},
         {}},
+--- a/extensions/browser/api/storage/storage_utils.cc
++++ b/extensions/browser/api/storage/storage_utils.cc
+@@ -122,9 +122,7 @@
+   }
+ 
+   if (storage_area == StorageAreaNamespace::kSession) {
+-    if (extension.manifest_version() < 3) {
+-      return false;
+-    }
++    // Firefox add-ons (dubna): Manifest V2 has storage.session too.
+ 
+     api::storage::AccessLevel access_level =
+         GetAccessLevelForArea(extension.id(), browser_context, *storage_area);
+--- a/extensions/common/api/_api_features.json
++++ b/extensions/common/api/_api_features.json
+@@ -877,8 +877,9 @@
+       "content_script"
+     ]
+   },
++  // Firefox add-ons (dubna): Firefox has storage.session in Manifest V2 too.
+   "storage.session": {
+-    "min_manifest_version": 3
++    "min_manifest_version": 2
+   },
+   "system.cpu": {
+     "dependencies": ["permission:system.cpu"],
