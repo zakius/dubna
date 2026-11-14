@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 823
+  "L2": 831
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -69,7 +69,7 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
   },
   "@contain-facebook": {
    "level": "L1",
@@ -336,8 +336,8 @@
    "error": null
   },
   "translator@zoli.bod": {
-   "level": "L1",
-   "error": "unknown manifest key 'permissions_notes'"
+   "level": "L2",
+   "error": null
   },
   "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}": {
    "level": "L1",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
   },
   "leechblockng@proginosko.com": {
    "level": "L2",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -676,8 +676,8 @@
    "error": null
   },
   "user-agent-switcher@ninetailed.ninja": {
-   "level": "L1",
-   "error": "unknown manifest key '//1'"
+   "level": "L2",
+   "error": null
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -833,7 +833,7 @@
   },
   "firefox@teleparty.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
+   "error": "Uncaught (in promise) SyntaxError: Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
    "level": "L2",
@@ -932,8 +932,8 @@
    "error": null
   },
   "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: e.message is not a function (scripts/background/app/aliases.js:1)"
   },
   "extension@redux.devtools": {
    "level": "L2",
@@ -948,8 +948,8 @@
    "error": null
   },
   "connect@aspera.ibm.com": {
-   "level": "L1",
-   "error": "unknown manifest key '-ms-preload'"
+   "level": "L2",
+   "error": null
   },
   "Turbo_Converter___Custom_Web_Search_jkERzVmVos@turboconverter.co": {
    "level": "L2",
@@ -1248,8 +1248,8 @@
    "error": null
   },
   "{09acf9ff-55d4-4366-a1a9-c9b3c8877c09}": {
-   "level": "L1",
-   "error": "unknown manifest key 'gecko'"
+   "level": "L2",
+   "error": null
   },
   "@video_downloader_pro": {
    "level": "L2",
@@ -1304,8 +1304,8 @@
    "error": null
   },
   "toolbar@web.de": {
-   "level": "L1",
-   "error": "unknown manifest key '__gmxcom__permissions'"
+   "level": "L2",
+   "error": null
   },
   "Quick_Recipe_Hub___Custom_Web_Search_MTyoGHhulF@quickrecipehub.com": {
    "level": "L2",
@@ -1429,7 +1429,7 @@
   },
   "{a8cf72f7-09b7-4cd4-9aaa-7a023bf09916}": {
    "level": "L1",
-   "error": "unknown manifest key 'minimum_opera_version'"
+   "error": "Uncaught (in promise) Error: Max retries exceeded (background.js:1)"
   },
   "@addonsignalspam": {
    "level": "L2",
@@ -1552,8 +1552,8 @@
    "error": "Uncaught TypeError: ke.data.kernel.save.user_init is not a function (src/kernel/kernel.js:376)"
   },
   "toolbar@gmx.net": {
-   "level": "L1",
-   "error": "unknown manifest key '__gmxcom__permissions'"
+   "level": "L2",
+   "error": null
   },
   "redirector@einaregilsson.com": {
    "level": "L2",
@@ -2688,8 +2688,8 @@
    "error": null
   },
   "{5C46D283-ABDE-4dce-B83C-08881401921C}": {
-   "level": "L1",
-   "error": "unknown manifest key 'container'"
+   "level": "L2",
+   "error": null
   },
   "{d3e2f0a1-1234-5678-9abc-def012745674}": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjU4YjAyODIwZTdmMDJlYjUwMmQ3Mzk2MGMwMWM0NDFhMWU0MmRmNjYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjBjZjg4MmIyMGY5YjUyMmRiNDhlNjc1YzI3ZDhlYzEzNWU0NTYzMDciLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2984,8 +2984,8 @@
    "error": null
   },
   "gary@builtwith.com": {
-   "level": "L1",
-   "error": "unknown manifest key 'data_policy'"
+   "level": "L2",
+   "error": null
   },
   "disable-html5-autoplay@afnankhan": {
    "level": "L2",
@@ -3352,8 +3352,8 @@
    "error": null
   },
   "{59e0d4a0-46e9-43d4-ada7-af7622915d85}": {
-   "level": "L1",
-   "error": "unknown manifest key 'privacy_policy'"
+   "level": "L2",
+   "error": null
   },
   "caitools.dev@gmail.com": {
    "level": "L2",
@@ -3796,8 +3796,8 @@
    "error": null
   },
   "{da8a8994-07be-4b0e-91dd-dd99863fd2c5}": {
-   "level": "L1",
-   "error": "Uncaught SyntaxError: Identifier 'e' has already been declared (contentScript.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{024dd701-1855-47ee-b031-7b68e57c82c2}": {
    "level": "L2",
@@ -3900,8 +3900,8 @@
    "error": null
   },
   "housj@damddos.com": {
-   "level": "L1",
-   "error": "unknown manifest key 'data_collection_permissions'"
+   "level": "L2",
+   "error": null
   },
   "{457040a2-afa9-457c-8a13-609c2327023a}": {
    "level": "L2",
