@@ -48,6 +48,11 @@ assert headroom([event(at(5), 30), event(at(6, 12), 32)], at(6, 12))
 assert not headroom([event(at(1), 14), event(at(2), 28)], at(2))
 assert headroom([event(at(1), 6), event(at(1, 6), 14, nightly=True),
                  event(at(2), 20), event(at(2, 1), 28, nightly=True)], at(2, 1))
+# Before the nightly thread's oldest event left, every rise is of unknown origin:
+# the week's rate starts there. Here the 50 points of day 1 count for nothing,
+# and the 8 own points of day 3 make 4 a day.
+assert headroom([event(at(1), 50), event(at(2), 55, nightly=True),
+                 event(at(3), 63), event(at(3, 1), 65, nightly=True)], at(4))
 # No events, or none since the weekly reset: unknown.
 assert headroom([], at(1)) is None
 assert headroom(steady, at(7, 1)) is None

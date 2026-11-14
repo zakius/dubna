@@ -130,9 +130,17 @@ def assess(events, now):
     used = percent(week)
     session_used = 0 if when(session) <= now else percent(session)
 
-    own = own_usage(events, reset, start)
+    # The nightly thread's log rotates, so its oldest events are gone and their
+    # rises would count as the maintainer's. Take the week's rate only from the
+    # nightly thread's oldest event left on.
+    covered = start
+    for event_stamp, _, nightly in events:
+        if nightly:
+            covered = max(start, event_stamp)
+            break
+    own = own_usage(events, reset, covered)
     recent = min(now - start, DAY)
-    week_rate = own / ((now - start) / DAY)
+    week_rate = own / ((now - covered) / DAY)
     day_rate = own_usage(events, reset, now - recent) / (recent / DAY)
     pace = max(week_rate, day_rate)
     left = 100 - (used + pace * ((reset - now) / DAY))
@@ -142,8 +150,8 @@ def assess(events, now):
         f'five_hour: {session_used:.0f}% used, resets {when(session):%a %H:%M} UTC',
         f'seven_day: {used:.0f}% used, resets {reset:%a %H:%M} UTC '
         f'({(reset - now) / datetime.timedelta(hours=1):.0f} h left)',
-        f'outside the nightly thread: {own:.0f} of these points, the nightly runs the rest',
-        f'pace outside the nightly thread: {week_rate:.1f} points a day over the week, '
+        f'outside the nightly thread: {own:.0f} points since {covered:%a %H:%M} UTC',
+        f'pace outside the nightly thread: {week_rate:.1f} points a day since then, '
         f'{day_rate:.1f} over the last 24 h',
         f'at the reset: {max(left, 0):.0f} points left at this pace '
         f'(needs {RUN_COST + RESERVE}: {RUN_COST} for a run, {RESERVE} kept free)',
