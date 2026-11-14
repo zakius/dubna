@@ -4001,7 +4001,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/setup-page",
-"w": "oganesson's own setup at chrome://settings/setup opens on a first start: Welcome, Import, Firefox Sync, Browser traffic, Search, Tabs, Passwords, Privacy extras, Default browser and Done. Every step but Welcome and Browser traffic can be skipped. A profile that had the browser before gets it once, with only the Browser traffic choice. Settings > About runs it again.",
+"w": "oganesson's own setup at chrome://settings/setup opens on a first start: Welcome, Import, Firefox Sync, Browser traffic, Google features, Search, Tabs, Passwords, Privacy extras, Default browser and Done. Every step but Welcome and Browser traffic can be skipped. A profile that had the browser before gets it once, with only the Browser traffic choice. Google features has a switch for Google Lens and one for page translation, both off, and the translation engine once translation is on; each sets the same pref as Settings. Settings > About runs it again.",
 "s": "on",
 "n": "",
 "own": 1,
