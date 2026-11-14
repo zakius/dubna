@@ -111,8 +111,7 @@ def check():
     report = []
     current, shown = ours(), listed(items)
     new = sorted(current - shown)
-    gone = sorted(p for p in shown & {i['p'] for i in items if '/' in i['p']}
-                  if p not in current and is_patch(p))
+    gone = sorted(p for p in shown if '/' in p and p not in current and is_patch(p))
     if new:
         report.append('Patches not on the site:\n' + ''.join(f'  {p}\n' for p in new))
     if gone:
