@@ -82,6 +82,8 @@ std::optional<base::Value> Value(Profile& profile, std::string_view key) {
   const PrefService& prefs = *profile.GetPrefs();
 
   if (key == "homepageOverride") {
+    // On Android, the user's home page is in Java (HomepageManager), and this
+    // is the policy's or the new tab page: zakius/tennessine#44.
     return base::Value(profile.GetHomePage().spec());
   }
   if (key == "newTabPageOverride") {
