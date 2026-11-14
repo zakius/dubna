@@ -113,7 +113,8 @@ def own_usage(events, reset, since):
         used = percent(windows['seven_day'])
         if not nightly and stamp > since:
             own += max(used - before, 0)
-        before = used
+        # Threads running at once can report a slightly older, lower reading.
+        before = max(before, used)
     return own
 
 

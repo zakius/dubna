@@ -53,6 +53,10 @@ assert headroom([event(at(1), 6), event(at(1, 6), 14, nightly=True),
 # and the 8 own points of day 3 make 4 a day.
 assert headroom([event(at(1), 50), event(at(2), 55, nightly=True),
                  event(at(3), 63), event(at(3, 1), 65, nightly=True)], at(4))
+# A thread's older, lower reading (13 after 14) doesn't make the next 14 a rise.
+lines = assess([event(at(1), 10), event(at(1, 1), 14, nightly=True),
+                event(at(1, 2), 13), event(at(1, 3), 14)], at(2))[1]
+assert 'outside the nightly thread: 0 points' in lines[2], lines
 # No events, or none since the weekly reset: unknown.
 assert headroom([], at(1)) is None
 assert headroom(steady, at(7, 1)) is None
