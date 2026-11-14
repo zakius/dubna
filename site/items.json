@@ -3990,7 +3990,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/browser-traffic-settings",
-"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. A Crash reports row offers Off or Ask each time, as setup does. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers. Below the rows, a switch for push messages from closed sites, off by default, and the push server, empty for Mozilla's; the presets leave them alone.",
+"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. A Crash reports row offers Off or Ask each time, as setup does. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers. Below the rows, a switch for push messages from closed sites, off by default, and once it is on, the push server, empty for Mozilla's; the presets leave them alone.",
 "s": "on",
 "n": "",
 "own": 1,
