@@ -1258,7 +1258,7 @@
 "p": "helium/core/web-push-service",
 "w": "Delivers sites' push messages through a Mozilla autopush-compatible push server in place of Google's, behind the HeliumWebPush feature (off). The browser connects only while a site is subscribed.",
 "s": "off",
-"n": "off unless the HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set; then an empty push server means Helium's push.helium.computer"
+"n": "oganesson turns HeliumWebPush on but keeps the driver idle until Browser traffic's push switch is on (off by default); then it uses Mozilla's push server or your own, never Helium's push.helium.computer"
 },
 {
 "b": "og",
@@ -1267,7 +1267,7 @@
 "p": "helium/settings/web-push-settings",
 "w": "Adds \"Allow receiving push notifications\" to Helium's services page, with a choice of Helium's push server or your own, when the HeliumWebPush feature is on.",
 "s": "off",
-"n": "never shown: oganesson's Browser traffic page replaces Helium's services page, and the HeliumWebPush feature is off"
+"n": "never shown: oganesson's Browser traffic page replaces Helium's services page and has its own push switch and push server field"
 },
 {
 "b": "og",
@@ -3432,7 +3432,7 @@
 "p": "oganesson/core/no-helium-services",
 "w": "No Helium servers: Helium's services, update checks, crash reports and onboarding are off, and so is fingerprint noise, which can be turned on. Chrome Web Store installs and updates and spellcheck dictionaries come from Google, as in Chromium, unless Browser traffic sends them through your own server.",
 "s": "on",
-"n": "Helium's servers only if you ask: crash reports you turn on in Browser traffic go to Helium's crash server, and Helium's push server is used if its HeliumWebPush feature is turned on with a command-line switch and Browser traffic has a server set",
+"n": "Helium's servers only if you ask: crash reports you turn on in Browser traffic go to Helium's crash server; push messages never go through Helium's push server",
 "own": 1
 },
 {
@@ -3990,7 +3990,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/browser-traffic-settings",
-"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. A Crash reports row offers Off or Ask each time, as setup does. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers.",
+"w": "Settings > Privacy and security > Browser traffic replaces Helium's services page. Each kind of download has a row with Automatic or On request, and Direct or Proxy where both exist, under three presets: Direct (the default), Through my server and Shut in. A Crash reports row offers Off or Ask each time, as setup does. One server field with a Test button and a health check serves every proxied row. When certificate data isn't automatic, a red warning says revoked certificates won't be blocked in time. When uBlock Origin's filter lists go through your server, setup warns that ads aren't blocked until the server answers. Below the rows, a switch for push messages from closed sites, off by default, and the push server, empty for Mozilla's; the presets leave them alone.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -4001,7 +4001,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "oganesson/settings/setup-page",
-"w": "oganesson's own setup at chrome://settings/setup opens on a first start: Welcome, Import, Firefox Sync, Browser traffic, Google features, Search, Tabs, Passwords, Privacy extras, Default browser and Done. Every step but Welcome and Browser traffic can be skipped. A profile that had the browser before gets it once, with only the Browser traffic choice. Google features has a switch for Google Lens, one for page translation and one for casting, all off, and the translation engine once translation is on; each sets the same pref as Settings. Settings > About runs it again.",
+"w": "oganesson's own setup at chrome://settings/setup opens on a first start: Welcome, Import, Firefox Sync, Browser traffic, Google features, Search, Tabs, Passwords, Privacy extras, Default browser and Done. Every step but Welcome and Browser traffic can be skipped. A profile that had the browser before gets it once, with only the Browser traffic choice. Google features has a switch for Google Lens, one for page translation, one for casting and one for push messages from closed sites, all off, and the translation engine once translation is on; each sets the same pref as Settings. Settings > About runs it again.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -4174,6 +4174,17 @@
 "n": "a switch in Settings > System",
 "own": 1,
 "t": "Casting if you want it"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "De-Googling & telemetry",
+"p": "oganesson/core/push-opt-in",
+"w": "Push messages from closed sites are an opt-in: Settings > Privacy and security > Browser traffic gets \"Push messages from closed sites\", off by default, and setup's Google features step has the same switch. While it is off, a site's push subscription fails and the browser connects to no push server. On, sites you let show notifications can subscribe, and get their messages while none of their tabs is open. They come through Helium's autopush driver, not Google's servers: to Mozilla's push server, the one Firefox uses, while the push server field is empty, or to your own autopush server (wss, or ws on localhost). The browser connects only while a site is subscribed, never to Helium's push server, and needs no helium-services server. A push server it can't use connects nowhere instead of falling back. Google Cloud Messaging stays off.",
+"s": "off",
+"n": "a switch in Settings > Browser traffic",
+"own": 1,
+"t": "Push messages if you want them"
 },
 {
 "b": "og",
