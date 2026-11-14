@@ -3695,7 +3695,7 @@
 "o": "oganesson",
 "a": "Look & layout",
 "p": "oganesson/ui/no-media-toolbar-button",
-"w": "Removes the media controls button that pops into the toolbar while media plays; Cast stays in the app menu while casting is on.",
+"w": "On Linux, removes the media controls button that pops into the toolbar while media plays; Cast stays in the app menu while casting is on.",
 "s": "on",
 "n": "",
 "own": 1
