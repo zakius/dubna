@@ -16,11 +16,11 @@ def at(day, hour=0):
     return START + datetime.timedelta(days=day, hours=hour)
 
 
-def event(time, weekly, session=2):
+def event(time, weekly, session=2, nightly=False):
     windows = {'five_hour': {'utilization': session / 100,
                              'resetsAt': (time + datetime.timedelta(hours=3)).timestamp()},
                'seven_day': {'utilization': weekly / 100, 'resetsAt': RESET.timestamp()}}
-    return time, windows
+    return time, windows, nightly
 
 
 def headroom(events, now):
@@ -43,6 +43,11 @@ assert headroom(steady[:-1] + [event(at(5), 30, session=60)], at(5, 4))
 assert not headroom([event(at(4, 6), 66), event(at(5, 6), 80)], at(5, 6))
 # A quiet week near its reset: little used, so a run fits.
 assert headroom([event(at(5), 30), event(at(6, 12), 32)], at(6, 12))
+# 28 used in the week's first two days, as on 2026-11-14: at that pace no run fits,
+# but when the nightly runs used 16 of them, the maintainer's own pace leaves room.
+assert not headroom([event(at(1), 14), event(at(2), 28)], at(2))
+assert headroom([event(at(1), 6), event(at(1, 6), 14, nightly=True),
+                 event(at(2), 20), event(at(2, 1), 28, nightly=True)], at(2, 1))
 # No events, or none since the weekly reset: unknown.
 assert headroom([], at(1)) is None
 assert headroom(steady, at(7, 1)) is None

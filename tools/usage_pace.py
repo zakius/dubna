@@ -7,9 +7,12 @@ Usage: tools/usage_pace.py
 
 Reads the plan's usage from T3 Code's provider logs, where every Claude thread
 logs a rate_limit_event with the 5-hour and weekly windows whenever they move.
-The pace is the faster of two rates: the week's average so far and the last
-24 hours. The first line is "headroom: yes", "headroom: no" or
-"headroom: unknown"; the later lines show the numbers behind it.
+Each rise of the weekly window counts for the thread whose event shows it.
+The pace counts only the work outside the nightly thread: the runs this check
+gates would otherwise raise the pace that refuses them. It is the faster of two
+rates: the week's average so far and the last 24 hours. The first line is
+"headroom: yes", "headroom: no" or "headroom: unknown"; the later lines show
+the numbers behind it.
 There is headroom when the 5-hour session is under SESSION_MAX percent and, at
 the pace, the week would have room left at its reset for another run (RUN_COST)
 and still keep RESERVE points for unexpected work.
@@ -25,6 +28,8 @@ from pathlib import Path
 LOGS = Path.home() / '.t3' / 'userdata' / 'logs' / 'provider'
 USAGE_URL = 'https://api.anthropic.com/api/oauth/usage'
 CREDENTIALS = Path.home() / '.claude' / '.credentials.json'
+# The router's thread (its task's boundThreadId), where every nightly stage runs.
+NIGHTLY_THREAD = 'e68f137f-f5bb-4692-a8e6-db45394ca597'
 # A run's reviews, plus some kept free for the maintainer's own Fable work.
 FABLE_NEED = 15
 SESSION_MAX = 50
@@ -39,7 +44,7 @@ UTC = datetime.timezone.utc
 
 
 def read_events():
-    """(time, unifiedWindows) of every rate_limit_event of the last 8 days, oldest first."""
+    """(time, unifiedWindows, nightly) of every rate_limit_event of the last 8 days, oldest first."""
     events = []
     cutoff = time.time() - 8 * 86400
     for log in LOGS.glob('events.*.log*'):
@@ -51,7 +56,7 @@ def read_events():
             info = json.loads(line[line.index('{'):])['event']['payload']['rate_limit_info']
             if 'unifiedWindows' in info:
                 stamp = datetime.datetime.fromisoformat(line[1:line.index(']')])
-                events.append((stamp, info['unifiedWindows']))
+                events.append((stamp, info['unifiedWindows'], NIGHTLY_THREAD in line))
     events.sort(key=lambda event: event[0])
     return events
 
@@ -99,11 +104,24 @@ def percent(window):
     return 100 * window['utilization']
 
 
+def own_usage(events, reset, since):
+    """Points of the week that ends at reset, used after since outside the nightly thread."""
+    own, before = 0, 0
+    for stamp, windows, nightly in events:
+        if when(windows['seven_day']) != reset:
+            continue
+        used = percent(windows['seven_day'])
+        if not nightly and stamp > since:
+            own += max(used - before, 0)
+        before = used
+    return own
+
+
 def assess(events, now):
     """(headroom, lines): headroom is True, False or None when unknown."""
     if not events:
         return None, ['no rate_limit_event in the T3 provider logs']
-    stamp, windows = events[-1]
+    stamp, windows, _ = events[-1]
     session, week = windows['five_hour'], windows['seven_day']
     reset = when(week)
     if reset <= now:
@@ -112,15 +130,10 @@ def assess(events, now):
     used = percent(week)
     session_used = 0 if when(session) <= now else percent(session)
 
-    # The newest usage at least 24 hours old in this week, else the week's start.
-    since, used_then = start, 0
-    for event_stamp, event_windows in events:
-        if event_stamp > now - DAY:
-            break
-        if when(event_windows['seven_day']) == reset:
-            since, used_then = event_stamp, percent(event_windows['seven_day'])
-    week_rate = used / ((now - start) / DAY)
-    day_rate = (used - used_then) / ((now - since) / DAY)
+    own = own_usage(events, reset, start)
+    recent = min(now - start, DAY)
+    week_rate = own / ((now - start) / DAY)
+    day_rate = own_usage(events, reset, now - recent) / (recent / DAY)
     pace = max(week_rate, day_rate)
     left = 100 - (used + pace * ((reset - now) / DAY))
 
@@ -129,7 +142,9 @@ def assess(events, now):
         f'five_hour: {session_used:.0f}% used, resets {when(session):%a %H:%M} UTC',
         f'seven_day: {used:.0f}% used, resets {reset:%a %H:%M} UTC '
         f'({(reset - now) / datetime.timedelta(hours=1):.0f} h left)',
-        f'pace: {week_rate:.1f} points a day over the week, {day_rate:.1f} over the last 24 h',
+        f'outside the nightly thread: {own:.0f} of these points, the nightly runs the rest',
+        f'pace outside the nightly thread: {week_rate:.1f} points a day over the week, '
+        f'{day_rate:.1f} over the last 24 h',
         f'at the reset: {max(left, 0):.0f} points left at this pace '
         f'(needs {RUN_COST + RESERVE}: {RUN_COST} for a run, {RESERVE} kept free)',
         f'as of {stamp:%Y-%m-%d %H:%M} UTC',

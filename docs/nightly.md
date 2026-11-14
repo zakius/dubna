@@ -12,7 +12,7 @@ The nightly update is a chain of T3 scheduled tasks in the dubna project. The ro
 | dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | One step of the WebExtensions climb |
 | dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site up to date |
 
-Every task posts in one thread, the router's: its first run makes the thread, and it binds each stage task to it. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
+Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4764-aadc-a18c4c602b29:e68f137f-f5bb-4692-a8e6-db45394ca597`), and posts there. tools/usage_pace.py counts the usage of this thread apart, so a new thread needs its id there too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
 
 The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
 
@@ -48,7 +48,7 @@ When a chain ends `landed`, the router may begin another chain at once. Chains m
 1. The chain ended `end chain landed`.
 2. The local time now (`TZ=Europe/Warsaw date +%H:%M`) is not from 05:00 to 10:00. Judge by the clock now, never by a `begin` line.
 3. Fewer than 5 rounds in a row: the chain that just ended has no `round` line, or its `round` number is under 5.
-4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no).
+4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It projects only the work outside this thread, so the rounds don't count against themselves.
 5. No other T3 thread is active.
 
 For another round, the router appends `begin`, then `round <N>`, where N is the ended chain's round number plus one (1 if it had none). So a chain begun at 18:00 or by hand is followed by at most 5 more.
