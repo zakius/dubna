@@ -70,7 +70,7 @@
 "p": "ungoogled-chromium/toggle-translation-via-switch",
 "w": "Turns off the built-in Google Translate and hides the \"Translate to\" menu.",
 "s": "on",
-"n": ""
+"n": "oganesson's opt-in translation brings the menu back while it is on"
 },
 {
 "b": "og",
@@ -306,7 +306,7 @@
 "p": "inox-patchset/modify-default-prefs",
 "w": "Changes defaults for privacy. Off: background mode, link pings, preloading, search suggestions, translate offers, autofill, saving passwords and payment checks. Third-party cookies are blocked. The bookmarks bar is shown.",
 "s": "on",
-"n": ""
+"n": "oganesson's translation offers to translate by default once you turn translation on"
 },
 {
 "b": "og",
@@ -2115,9 +2115,9 @@
 "o": "Helium",
 "a": "Build & plumbing",
 "p": "helium/core/translate/provider-api",
-"w": "Adds an interface through which a translation provider can translate pages in place of Google Translate, behind the HeliumTranslate feature (off). Groundwork; nothing provides one yet.",
+"w": "Adds an interface through which a translation provider can translate pages in place of Google Translate, behind the HeliumTranslate feature. Helium registers no provider; oganesson registers two, for its opt-in translation.",
 "s": "off",
-"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"n": "used by oganesson's opt-in translation: works once Settings > Languages > Translation > \"Translate pages\" is on",
 "t": "Translate: provider API"
 },
 {
@@ -2127,7 +2127,7 @@
 "p": "helium/core/translate/text-translator",
 "w": "Lets a page's translation script hand its text to the browser, which passes it to the translation provider. Groundwork for Helium's translation.",
 "s": "off",
-"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"n": "used by oganesson's opt-in translation: works once Settings > Languages > Translation > \"Translate pages\" is on",
 "t": "Translate: text translator"
 },
 {
@@ -2137,7 +2137,7 @@
 "p": "helium/core/translate/page-script",
 "w": "A page script of Helium's own that stands in for the Google Translate Element, so a translation provider can translate a page's text. Groundwork for Helium's translation.",
 "s": "off",
-"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"n": "used by oganesson's opt-in translation: works once Settings > Languages > Translation > \"Translate pages\" is on",
 "t": "Translate: page script"
 },
 {
@@ -2147,7 +2147,7 @@
 "p": "helium/core/translate/translate-manager",
 "w": "Makes page translation load Helium's page script and use the translation provider, not Google Translate, when the HeliumTranslate feature is on.",
 "s": "off",
-"n": "inert: works only with the HeliumTranslate feature on (a command-line switch) and a translation provider registered, and nothing registers one",
+"n": "used by oganesson's opt-in translation: works once Settings > Languages > Translation > \"Translate pages\" is on",
 "t": "Translate: translate manager"
 },
 {
@@ -2157,7 +2157,7 @@
 "p": "helium/ui/translate-ui",
 "w": "Shows the Translate section of Language settings, the Translate item in the three-dot menu and page right-click menu, and the Translate toolbar action only when a translation provider is registered. The settings speak of translating pages, not of Google Translate. Translating selected text isn't offered.",
 "s": "on",
-"n": "no provider is registered, so none of these shows; --translate-script-url no longer brings back the right-click Translate item",
+"n": "shows once \"Translate pages\" is on in Settings > Languages > Translation; --translate-script-url no longer brings back the right-click Translate item",
 "t": "Translate UI"
 },
 {
@@ -2374,7 +2374,7 @@
 "p": "helium/ui/generic-translate-icon",
 "w": "Replaces the Google Translate logo with a generic translate icon, in the toolbar, the menus and the translate bubbles.",
 "s": "on",
-"n": "shows nowhere by default: the translate action, menu items and bubbles need a translation provider",
+"n": "shows once translation is on: the translate action, menu items and bubbles need it",
 "t": "Generic translate icon"
 },
 {
@@ -4104,11 +4104,22 @@
 "o": "dubna",
 "a": "Extensions & uBlock",
 "p": "dubna/patches/firefox-add-ons",
-"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. Firefox's Manifest V3 background (background.scripts or background.page, where Chrome wants a service worker) runs as a Manifest V2 background page does, so add-ons such as LanguageTool and Keepa start in the background. A background with \"type\": \"module\" loads its scripts as modules, as in Firefox, in Manifest V2 and V3. Locale files load as Firefox reads them: a message name or an undefined placeholder that Chromium refuses no longer stops an add-on from loading, so add-ons such as Tree Style Tab, Mozilla VPN and Multi-Account Containers load. Extension shortcuts that Firefox takes and Chromium refuses no longer stop an add-on from loading either: Ctrl+Alt keys, F1 to F12 alone or with Shift, MacCtrl (Ctrl outside Mac), more than four shortcuts, and a command without a description or without a key for this platform. So add-ons such as Simple Tab Groups, Tridactyl and WebScrapBook install, and the shortcuts page (chrome://extensions/shortcuts) records F1 to F12 alone and Ctrl+Alt, for Chrome extensions too. A Firefox version with a letter suffix, such as Mozilla's re-signed \"3.4resigned1\" or \"0.5rc2\", which Chromium refuses, loads as its leading numbers, and chrome://extensions shows the full version. A Manifest V2 event page (\"persistent\": false) that asks for webRequest, which Chromium refuses to load, runs as a persistent background page, so its blocking listeners are always there and add-ons such as AdGuard, AdBlocker Ultimate and Video DownloadHelper install. Firefox's menus.create and menus.update take an item icon and the password, bookmark and tools_menu contexts, which Chromium refuses, so add-ons such as Form History Control, FoxReplace and Translate Now start; an item shows the add-on's icon rather than its own, and those three contexts show no item yet. Chromium allows one action, and a page action only in Manifest V2; a page_action next to the add-on's browser_action or action, or in Manifest V3, becomes a second action that pageAction calls reach, so add-ons such as Sidebery, CanvasBlocker and Tab Stash install; its button in the address bar isn't there yet. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
+"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. The first is runtime.getBrowserInfo, which 92 of the 1000 add-ons with the most users on addons.mozilla.org call to check the browser. It answers with the browser's own name and Chromium's version; an add-on that works only when told it runs in Firefox can be listed to get Firefox's name. Firefox's browser.menus and its \"menus\" permission are Chromium's context menus under Firefox's name, so add-ons that ask for them, such as Firefox Relay and AdNauseam, install and add their menu items. Firefox's Manifest V3 background (background.scripts or background.page, where Chrome wants a service worker) runs as a Manifest V2 background page does, so add-ons such as LanguageTool and Keepa start in the background. A background with \"type\": \"module\" loads its scripts as modules, as in Firefox, in Manifest V2 and V3. Locale files load as Firefox reads them: a message name or an undefined placeholder that Chromium refuses no longer stops an add-on from loading, so add-ons such as Tree Style Tab, Mozilla VPN and Multi-Account Containers load. Extension shortcuts that Firefox takes and Chromium refuses no longer stop an add-on from loading either: Ctrl+Alt keys, F1 to F12 alone or with Shift, MacCtrl (Ctrl outside Mac), more than four shortcuts, and a command without a description or without a key for this platform. So add-ons such as Simple Tab Groups, Tridactyl and WebScrapBook install, and the shortcuts page (chrome://extensions/shortcuts) records F1 to F12 alone and Ctrl+Alt, for Chrome extensions too. A Firefox version with a letter suffix, such as Mozilla's re-signed \"3.4resigned1\" or \"0.5rc2\", which Chromium refuses, loads as its leading numbers, and chrome://extensions shows the full version. A Manifest V2 event page (\"persistent\": false) that asks for webRequest, which Chromium refuses to load, runs as a persistent background page, so its blocking listeners are always there and add-ons such as AdGuard, AdBlocker Ultimate and Video DownloadHelper install. Firefox's menus.create and menus.update take an item icon and the password, bookmark and tools_menu contexts, which Chromium refuses, so add-ons such as Form History Control, FoxReplace and Translate Now start; an item shows the add-on's icon rather than its own, and those three contexts show no item yet. Chromium allows one action, and a page action only in Manifest V2; a page_action next to the add-on's browser_action or action, or in Manifest V3, becomes a second action that pageAction calls reach, so add-ons such as Sidebery, CanvasBlocker and Tab Stash install; its button in the address bar isn't there yet. Firefox's browserSettings, which Chromium lacks, reads the home page, the new tab page, where new tabs open, image animation, page colors and whether notifications are blocked, so add-ons such as Gesturefy, Foxy Gestures and Zoom Page WE start; it changes no setting yet, and an add-on that asks for it gets an install warning, as in Firefox. On tennessine it gives the policy's home page or the new tab page, not the one you set. For now a Firefox add-on runs only when loaded unpacked in developer mode.",
 "s": "on",
 "n": "",
 "own": 1,
 "t": "Firefox add-on APIs"
+},
+{
+"b": "both",
+"o": "dubna",
+"a": "Build & plumbing",
+"p": "dubna/patches/own-strings",
+"w": "Our own strings are in their own resource file instead of Chromium's, so a new one recompiles only the files that use it, not the 780 that use Chromium's strings, in both browsers. Nothing changes in the browser.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Our strings in their own file"
 },
 {
 "b": "og",
@@ -4137,7 +4148,28 @@
 "o": "oganesson",
 "a": "Build & plumbing",
 "p": "oganesson/core/pgo-pinned-profile",
-"w": "Release builds keep one Chromium PGO profile per Chromium major version, so an update within it rebuilds only what changed and ships sooner. Nothing changes in the browser.",
+"w": "Release builds keep one Chromium PGO profile per Chromium major version, so an update within it rebuilds only what changed and ships sooner. tennessine's builds do the same. Nothing changes in the browser.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "De-Googling & telemetry",
+"p": "oganesson/core/translation · oganesson/settings/translation-settings",
+"w": "Page translation is an opt-in: Settings > Languages > Translation gets \"Translate pages\", off by default, and an engine. On this device (the default) Chromium's TranslateKit translates in the browser, and the browser asks before it downloads the language packs; page text stays on the device. With Google Translate, the page text goes to Google Translate's keyless endpoint, without cookies, through the page's own profile, container and proxy. Once on, \"Translate to\" in the page menu, the address bar's button, the app menu's Translate and the rest of the Translation settings work. While off, nothing is sent or downloaded for translation, TranslateKit checks for no updates, and pages can't use the Translator API.",
+"s": "off",
+"n": "a switch in Settings > Languages > Translation",
+"own": 1,
+"t": "Translation if you want it"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Build & plumbing",
+"p": "oganesson/core/v8-version-include",
+"w": "v8.h no longer includes V8's version header, whose patch level changes with each Chromium release, so an update no longer recompiles every file that uses V8 and ships sooner. tennessine's build does the same. Nothing changes in the browser.",
 "s": "on",
 "n": "",
 "own": 1
@@ -4157,7 +4189,7 @@
 "o": "project",
 "a": "Build & plumbing",
 "p": "project:browser-tests",
-"w": "Automated browser tests cover gestures, toolbar, tab behavior, web app links, autoplay, address bar suggestions and Sync before release. The tests wait for what they check rather than for fixed times, and a repeat mode runs each one many times to find the flaky ones.",
+"w": "Automated browser tests cover gestures, toolbar, tab behavior, web app links, autoplay, address bar suggestions, translation and Sync before release. The tests wait for what they check rather than for fixed times, and a repeat mode runs each one many times to find the flaky ones.",
 "s": "on",
 "n": "",
 "own": 1
