@@ -48,7 +48,7 @@ When a chain ends `landed`, the router may begin another chain at once. Chains m
 1. The chain ended `end chain landed`.
 2. The local time now (`TZ=Europe/Warsaw date +%H:%M`) is not from 05:00 to 10:00. Judge by the clock now, never by a `begin` line.
 3. Fewer than 5 rounds in a row: the chain that just ended has no `round` line, or its `round` number is under 5.
-4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It projects only the work outside this thread, so the rounds don't count against themselves.
+4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
 5. No other T3 thread is active.
 
 For another round, the router appends `begin`, then `round <N>`, where N is the ended chain's round number plus one (1 if it had none). So a chain begun at 18:00 or by hand is followed by at most 5 more.
