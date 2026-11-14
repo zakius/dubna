@@ -10,7 +10,9 @@ logs a rate_limit_event with the 5-hour and weekly windows whenever they move.
 Each rise of the weekly window counts for the thread whose event shows it.
 The pace counts only the work outside the nightly thread: the runs this check
 gates would otherwise raise the pace that refuses them. It is the faster of two
-rates: the week's average so far and the last 24 hours. The first line is
+rates: the average since the week's start, or since the nightly thread's oldest
+event if its rotated log no longer reaches that far, and the last 24 hours.
+The 18:00 chains still to come are not projected. The first line is
 "headroom: yes", "headroom: no" or "headroom: unknown"; the later lines show
 the numbers behind it.
 There is headroom when the 5-hour session is under SESSION_MAX percent and, at
@@ -140,9 +142,9 @@ def assess(events, now):
             covered = max(start, event_stamp)
             break
     own = own_usage(events, reset, covered)
-    recent = min(now - start, DAY)
     week_rate = own / ((now - covered) / DAY)
-    day_rate = own_usage(events, reset, now - recent) / (recent / DAY)
+    recent = max(now - DAY, covered)
+    day_rate = own_usage(events, reset, recent) / ((now - recent) / DAY)
     pace = max(week_rate, day_rate)
     left = 100 - (used + pace * ((reset - now) / DAY))
 
