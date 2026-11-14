@@ -1,0 +1,36 @@
+// Copyright 2026 The oganesson Authors
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+// Firefox add-ons (dubna's webextensions/README.md): Firefox's browserSettings,
+// read-only. get() gives the value (firefox_browser_settings.cc); set() and
+// clear() change nothing, and resolve without a value, where Firefox resolves
+// false. A value is any type, as in Firefox's schema, so that set() doesn't
+// throw for a value Firefox takes. Firefox's verticalTabs and colorManagement
+// have no equal here, and add-ons check that they exist.
+[
+  {
+    "namespace": "browserSettings",
+    "description": "Firefox's browserSettings: the browser's settings, read-only.",
+    "dependencies": ["types"],
+    "properties": {
+      "allowPopupsForUserEvents": {"$ref": "types.ChromeSetting", "value": ["browserSettings.allowPopupsForUserEvents", {"type": "any"}]},
+      "cacheEnabled": {"$ref": "types.ChromeSetting", "value": ["browserSettings.cacheEnabled", {"type": "any"}]},
+      "closeTabsByDoubleClick": {"$ref": "types.ChromeSetting", "value": ["browserSettings.closeTabsByDoubleClick", {"type": "any"}]},
+      "contextMenuShowEvent": {"$ref": "types.ChromeSetting", "value": ["browserSettings.contextMenuShowEvent", {"type": "any"}]},
+      "ftpProtocolEnabled": {"$ref": "types.ChromeSetting", "value": ["browserSettings.ftpProtocolEnabled", {"type": "any"}]},
+      "homepageOverride": {"$ref": "types.ChromeSetting", "value": ["browserSettings.homepageOverride", {"type": "any"}]},
+      "imageAnimationBehavior": {"$ref": "types.ChromeSetting", "value": ["browserSettings.imageAnimationBehavior", {"type": "any"}]},
+      "newTabPageOverride": {"$ref": "types.ChromeSetting", "value": ["browserSettings.newTabPageOverride", {"type": "any"}]},
+      "newTabPosition": {"$ref": "types.ChromeSetting", "value": ["browserSettings.newTabPosition", {"type": "any"}]},
+      "openBookmarksInNewTabs": {"$ref": "types.ChromeSetting", "value": ["browserSettings.openBookmarksInNewTabs", {"type": "any"}]},
+      "openSearchResultsInNewTabs": {"$ref": "types.ChromeSetting", "value": ["browserSettings.openSearchResultsInNewTabs", {"type": "any"}]},
+      "openUrlbarResultsInNewTabs": {"$ref": "types.ChromeSetting", "value": ["browserSettings.openUrlbarResultsInNewTabs", {"type": "any"}]},
+      "overrideContentColorScheme": {"$ref": "types.ChromeSetting", "value": ["browserSettings.overrideContentColorScheme", {"type": "any"}]},
+      "overrideDocumentColors": {"$ref": "types.ChromeSetting", "value": ["browserSettings.overrideDocumentColors", {"type": "any"}]},
+      "useDocumentFonts": {"$ref": "types.ChromeSetting", "value": ["browserSettings.useDocumentFonts", {"type": "any"}]},
+      "webNotificationsDisabled": {"$ref": "types.ChromeSetting", "value": ["browserSettings.webNotificationsDisabled", {"type": "any"}]},
+      "zoomFullPage": {"$ref": "types.ChromeSetting", "value": ["browserSettings.zoomFullPage", {"type": "any"}]},
+      "zoomSiteSpecific": {"$ref": "types.ChromeSetting", "value": ["browserSettings.zoomSiteSpecific", {"type": "any"}]}
+    }
+  }
+]

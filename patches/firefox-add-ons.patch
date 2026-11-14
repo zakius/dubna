@@ -18,6 +18,8 @@
 # second action that pageAction.* reaches (firefox_page_action.h).
 # menus.create and update take Firefox's icons (not shown) and its password,
 # bookmark and tools_menu contexts (the item shows in its other contexts).
+# browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
+# and the preference functions hand its key to firefox_browser_settings.cc.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -98,7 +100,19 @@
          "description": "Returns a DirectoryEntry for the package directory.",
 --- a/chrome/common/extensions/api/_api_features.json
 +++ b/chrome/common/extensions/api/_api_features.json
-@@ -282,7 +282,9 @@
+@@ -199,6 +199,11 @@
+     "dependencies": ["permission:browsingData"],
+     "contexts": ["privileged_extension"]
+   },
++  // Firefox add-ons (dubna): Firefox's browserSettings.
++  "browserSettings": {
++    "dependencies": ["permission:browserSettings"],
++    "contexts": ["privileged_extension"]
++  },
+   "chromeosInfoPrivate": [{
+     "dependencies": ["permission:chromeosInfoPrivate"],
+     "contexts": ["privileged_extension"]
+@@ -282,7 +287,9 @@
    },
    "contextMenus": {
      "dependencies": ["permission:contextMenus"],
@@ -109,7 +123,7 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -710,6 +712,12 @@
+@@ -710,6 +717,12 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
@@ -124,7 +138,16 @@
      "contexts": ["privileged_extension"]
 --- a/chrome/common/extensions/permissions/chrome_api_permissions.cc
 +++ b/chrome/common/extensions/permissions/chrome_api_permissions.cc
-@@ -231,7 +231,9 @@
+@@ -113,6 +113,8 @@
+     {APIPermissionID::kPlatformKeys, "platformKeys",
+      APIPermissionInfo::kFlagDoesNotRequireManagedSessionFullLoginWarning},
+     {APIPermissionID::kPrivacy, "privacy"},
++    // Firefox add-ons (dubna): read-only, so without a warning.
++    {APIPermissionID::kBrowserSettings, "browserSettings"},
+     {APIPermissionID::kProcesses, "processes",
+      APIPermissionInfo::kFlagRequiresManagementUIWarning},
+     {APIPermissionID::kReadingList, "readingList"},
+@@ -234,7 +236,9 @@
  base::span<const Alias> GetPermissionAliases() {
    // In alias constructor, first value is the alias name; second value is the
    // real name. See also alias.h.
@@ -770,3 +793,112 @@
                }
              }
            }
+--- a/extensions/common/mojom/api_permission_id.mojom
++++ b/extensions/common/mojom/api_permission_id.mojom
+@@ -300,6 +300,9 @@
+   kPublicSuffix = 273,
+   kEnterpriseWebrtc = 274,
+   kMimeTypesHandlerPdf = 275,
++  // Firefox add-ons (dubna): Firefox's browserSettings, past the upstreams'
++  // additions, and under the permission histograms' limit of 1000.
++  kBrowserSettings = 999,
+ 
+   // Add new entries at the end of the enum and be sure to update the
+   // "ExtensionPermission3" enum in
+--- a/chrome/common/extensions/api/_permission_features.json
++++ b/chrome/common/extensions/api/_permission_features.json
+@@ -94,6 +94,11 @@
+     "channel": "stable",
+     "extension_types": ["extension", "legacy_packaged_app"]
+   },
++  // Firefox add-ons (dubna): Firefox's browserSettings.
++  "browserSettings": {
++    "channel": "stable",
++    "extension_types": ["extension"]
++  },
+   "chromePrivate": {
+     "channel": "stable",
+     "extension_types": ["extension", "legacy_packaged_app"],
+--- a/chrome/common/extensions/api/BUILD.gn
++++ b/chrome/common/extensions/api/BUILD.gn
+@@ -49,6 +49,9 @@
+ 
+   sources += [
+     "app.json",
++
++    # Firefox add-ons (dubna): Firefox's browserSettings.
++    "browser_settings.json",
+     "declarative_content.json",
+     "privacy.json",
+     "tts.json",
+--- a/chrome/browser/extensions/api/preference/BUILD.gn
++++ b/chrome/browser/extensions/api/preference/BUILD.gn
+@@ -10,12 +10,15 @@
+ 
+ source_set("preference") {
+   sources = [
++    "firefox_browser_settings.cc",
++    "firefox_browser_settings.h",
+     "preference_api.cc",
+     "preference_api.h",
+   ]
+ 
+   deps = [
+     "//base",
++    "//chrome/browser/content_settings:content_settings_factory",
+     "//chrome/browser/extensions",
+     "//chrome/browser/profiles",
+     "//components/autofill/core/common",
+--- a/chrome/browser/extensions/api/preference/preference_api.cc
++++ b/chrome/browser/extensions/api/preference/preference_api.cc
+@@ -19,6 +19,7 @@
+ #include "base/notreached.h"
+ #include "base/values.h"
+ #include "build/build_config.h"
++#include "chrome/browser/extensions/api/preference/firefox_browser_settings.h"
+ #include "chrome/browser/extensions/extension_service.h"
+ #include "chrome/browser/extensions/pref_mapping.h"
+ #include "chrome/browser/extensions/preference/preference_helpers.h"
+@@ -274,6 +275,18 @@
+   const std::string& pref_key = args()[0].GetString();
+   const base::Value& details = args()[1];
+ 
++  // Firefox add-ons (dubna): browserSettings (firefox_browser_settings.h).
++  if (IsFirefoxBrowserSetting(pref_key)) {
++    if (!extension()->permissions_data()->HasAPIPermission(
++            APIPermissionID::kBrowserSettings)) {
++      return RespondNow(Error(kPermissionErrorMessage, pref_key));
++    }
++    std::optional<base::DictValue> result = GetFirefoxBrowserSetting(
++        *Profile::FromBrowserContext(browser_context()), pref_key);
++    EXTENSION_FUNCTION_VALIDATE(result);
++    return RespondNow(WithArguments(std::move(*result)));
++  }
++
+   bool incognito = false;
+   if (std::optional<bool> result = details.GetDict().FindBool(kIncognitoKey)) {
+     incognito = *result;
+@@ -364,6 +377,11 @@
+   const base::Value* value = details.Find(kValue);
+   EXTENSION_FUNCTION_VALIDATE(value);
+ 
++  // Firefox add-ons (dubna): browserSettings is read-only.
++  if (IsFirefoxBrowserSetting(pref_key)) {
++    return RespondNow(NoArguments());
++  }
++
+   ChromeSettingScope scope = ChromeSettingScope::kRegular;
+   if (const std::string* scope_str = details.FindString(kScopeKey)) {
+     EXTENSION_FUNCTION_VALIDATE(StringToScope(*scope_str, scope));
+@@ -469,6 +487,11 @@
+   std::string pref_key = args()[0].GetString();
+   const base::DictValue& details = args()[1].GetDict();
+ 
++  // Firefox add-ons (dubna): browserSettings is read-only.
++  if (IsFirefoxBrowserSetting(pref_key)) {
++    return RespondNow(NoArguments());
++  }
++
+   ChromeSettingScope scope = ChromeSettingScope::kRegular;
+   if (const std::string* scope_str = details.FindString(kScopeKey)) {
+     EXTENSION_FUNCTION_VALIDATE(StringToScope(*scope_str, scope));
