@@ -142,7 +142,7 @@
      {APIPermissionID::kPlatformKeys, "platformKeys",
       APIPermissionInfo::kFlagDoesNotRequireManagedSessionFullLoginWarning},
      {APIPermissionID::kPrivacy, "privacy"},
-+    // Firefox add-ons (dubna): read-only, so without a warning.
++    // Firefox add-ons (dubna).
 +    {APIPermissionID::kBrowserSettings, "browserSettings"},
      {APIPermissionID::kProcesses, "processes",
       APIPermissionInfo::kFlagRequiresManagementUIWarning},
@@ -902,3 +902,17 @@
    ChromeSettingScope scope = ChromeSettingScope::kRegular;
    if (const std::string* scope_str = details.FindString(kScopeKey)) {
      EXTENSION_FUNCTION_VALIDATE(StringToScope(*scope_str, scope));
+--- a/chrome/common/extensions/permissions/chrome_permission_message_rules.cc
++++ b/chrome/common/extensions/permissions/chrome_permission_message_rules.cc
+@@ -690,6 +690,11 @@
+        {APIPermissionID::kNativeMessaging},
+        {}},
+       {IDS_EXTENSION_PROMPT_WARNING_PRIVACY, {APIPermissionID::kPrivacy}, {}},
++      // Firefox add-ons (dubna): Firefox's browserSettings, whose warning is
++      // "Read and modify browser settings".
++      {IDS_EXTENSION_PROMPT_WARNING_SETTINGS_PRIVATE,
++       {APIPermissionID::kBrowserSettings},
++       {}},
+       {IDS_EXTENSION_PROMPT_WARNING_SYNCFILESYSTEM,
+        {APIPermissionID::kSyncFileSystem},
+        {}},
