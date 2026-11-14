@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 831
+  "L2": 835
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -57,7 +57,7 @@
   },
   "firefox@ghostery.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (utils/map.js:29)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getRegisteredContentScripts') (background/serp.js:60)"
   },
   "{762f9885-5a13-4abd-9c77-433dcd38b8fd}": {
    "level": "L2",
@@ -236,8 +236,8 @@
    "error": null
   },
   "ols@f-secure.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'set') (browser_storage.js:55)"
+   "level": "L2",
+   "error": null
   },
   "78272b6fa58f4a1abaac99321d503a20@proton.me": {
    "level": "L2",
@@ -312,8 +312,8 @@
    "error": null
   },
   "keepassxc-browser@keepassxc.org": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (background/credentials.js:14)"
+   "level": "L2",
+   "error": null
   },
   "vpn@proton.ch": {
    "level": "L2",
@@ -404,8 +404,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (js/bg.js:1)"
+   "level": "L2",
+   "error": null
   },
   "leechblockng@proginosko.com": {
    "level": "L2",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
+   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -556,12 +556,12 @@
    "error": null
   },
   "seventv-next@7tv.app": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: \"browser.storage.session\" is undefined (background.js:249)"
+   "level": "L2",
+   "error": null
   },
   "@windscribeff": {
-   "level": "L1",
-   "error": "Uncaught (in promise) ReferenceError: µBlock is not defined (static/js/background.chunk.js:1)"
+   "level": "L2",
+   "error": null
   },
   "Package_Tracking_Tab___Custom_Web_Search_JVVfIFSBVe@packagetrackingtab.com": {
    "level": "L2",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L1",
-   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
+   "level": "L2",
+   "error": null
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -632,8 +632,8 @@
    "error": null
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'updateEnabledRulesets') (background.js:3)"
+   "level": "L2",
+   "error": null
   },
   "{8AA36F4F-6DC7-4c06-77AF-5035170634FE}": {
    "level": "L2",
@@ -772,8 +772,8 @@
    "error": null
   },
   "plugin@okta.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{f2a47522-1d86-4828-b6fb-d02e849f1b69}": {
    "level": "L2",
@@ -833,7 +833,7 @@
   },
   "firefox@teleparty.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected end of JSON input (_generated_background_page.html:1)"
+   "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
    "level": "L2",
@@ -1096,8 +1096,8 @@
    "error": null
   },
   "addon@fastforward.team": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'whitelist') (content_script.js:17)"
   },
   "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
@@ -1108,8 +1108,8 @@
    "error": null
   },
   "{41f9e51d-35e4-4b29-af66-422ff81c8b41}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (_generated_background_page.html:0)"
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
    "level": "L2",
@@ -1280,8 +1280,8 @@
    "error": null
   },
   "jid1-AQqSMBYb0a8ADg@jetpack": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) #<Object> (app/app.html#/onboarding:0)"
   },
   "{03e07985-30b0-4ae0-8b3e-0c7519b9bdf6}": {
    "level": "L2",
@@ -1693,7 +1693,7 @@
   },
   "lisa@qipu.de": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (bg/bundle.js:1)"
+   "error": "Uncaught (in promise) TypeError: chrome.action.getUserSettings is not a function (bg/bundle.js:1)"
   },
   "{b3e677f4-1150-4387-8629-da738260a48e}": {
    "level": "L2",
@@ -1856,8 +1856,8 @@
    "error": null
   },
   "{f4f4223a-ff30-4961-b9c0-6a71b7a32aaf}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot use 'in' operator to search for 'setAccessLevel' in undefined (js/background.js:40)"
+   "level": "L2",
+   "error": null
   },
   "webmetering@flexera.com": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjBjZjg4MmIyMGY5YjUyMmRiNDhlNjc1YzI3ZDhlYzEzNWU0NTYzMDciLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjE4NTNkMmEyZmEyOTJmMjlhYjM5MzY0ZDJmNzdkNzNhMzJhNDk1ZDUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2728,8 +2728,8 @@
    "error": null
   },
   "{7d1f7c5e-0f6f-4bba-82a3-04d859512523}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'get') (src/background/script.js:5)"
+   "level": "L2",
+   "error": null
   },
   "{a871656a-91f6-402c-912b-6291197b9c49}": {
    "level": "L2",
@@ -2896,16 +2896,16 @@
    "error": null
   },
   "collector@broceliand.fr": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.html:0)"
   },
   "textlink-and-googletranslate@aime": {
    "level": "L2",
    "error": null
   },
   "firefox_extension@calendly.com": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_frame.js:1)"
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -3348,8 +3348,8 @@
    "error": null
   },
   "{dc0b7af2-2cfc-498d-bee5-50e710ed404a}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Failed to fetch (js/background.js:31)"
   },
   "{59e0d4a0-46e9-43d4-ada7-af7622915d85}": {
    "level": "L2",
@@ -3401,7 +3401,7 @@
   },
   "0.id@reloadmatic.webex": {
    "level": "L1",
-   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'defaults') (reloadmatic.js:64)"
   },
   "unwanted@twitch.tv": {
    "level": "L2",
@@ -3496,8 +3496,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'onClicked') (assets/background.js:1)"
   },
   "ytblock@edoan.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'get') (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "betterlyrics@boidu.dev": {
    "level": "L2",
@@ -3796,8 +3796,8 @@
    "error": null
   },
   "{da8a8994-07be-4b0e-91dd-dd99863fd2c5}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught SyntaxError: Identifier 'e' has already been declared (contentScript.js:1)"
   },
   "{024dd701-1855-47ee-b031-7b68e57c82c2}": {
    "level": "L2",
