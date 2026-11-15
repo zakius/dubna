@@ -47,10 +47,11 @@ class FirefoxUpdateFilters {
   // Whether the event takes Firefox's filter.
   static bool Takes(std::string_view event_name);
 
-  // Reads `value`, the filter object, once, as Firefox's schema of it does.
-  // nullopt, with Firefox's message in `error`, for one Firefox refuses.
+  // Reads the filter once, as Firefox's schema of it does. nullopt for one
+  // Firefox refuses, with Firefox's message in `error`; or, with no message,
+  // when a getter of the filter threw, whose exception is then pending.
   static std::optional<Filter> Read(v8::Local<v8::Context> context,
-                                    v8::Local<v8::Object> value,
+                                    v8::Local<v8::Value> value,
                                     std::string* error);
 
   void Add(v8::Isolate* isolate,

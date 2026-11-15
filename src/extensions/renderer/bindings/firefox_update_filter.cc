@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <utility>
 
+#include "base/memory/raw_ptr.h"
 #include "base/strings/strcat.h"
+#include "base/strings/string_number_conversions.h"
 #include "gin/converter.h"
 #include "url/gurl.h"
 #include "v8/include/v8-container.h"
@@ -27,58 +29,130 @@ constexpr std::string_view kPropertyNames[] = {
     "groupId",      "hidden",      "isArticle",       "mutedInfo", "pinned",
     "sharingState", "splitViewId", "status",          "title",     "url"};
 
-// `object[key]`, or an empty handle when it is missing, null or undefined.
-v8::Local<v8::Value> Get(v8::Local<v8::Context> context,
-                         v8::Local<v8::Object> object,
-                         std::string_view key) {
-  v8::Local<v8::Value> value;
-  if (!object->Get(context, gin::StringToSymbol(v8::Isolate::GetCurrent(), key))
-           .ToLocal(&value) ||
-      value->IsNullOrUndefined()) {
-    return v8::Local<v8::Value>();
-  }
-  return value;
-}
+// Firefox's UpdateFilter keys.
+constexpr std::string_view kFilterKeys[] = {"urls", "properties", "tabId",
+                                            "windowId", "cookieStoreId"};
 
-std::string TypeError(std::string_view detail) {
-  return base::StrCat({"Type error for parameter filter (", detail,
-                       ") for tabs.onUpdated.addListener."});
-}
+// Reads a filter object as Firefox's schema does, with Firefox's messages.
+// A getter of the object can throw: then the exception is pending, and the
+// read stops with no message.
+class FilterReader {
+ public:
+  FilterReader(v8::Local<v8::Context> context,
+               v8::Local<v8::Object> object,
+               std::string* error)
+      : context_(context), object_(object), error_(error) {}
 
-// `filter[key]` as a non-empty array of strings.
-std::optional<std::vector<std::string>> ReadStrings(std::string_view key,
-                                                    v8::Local<v8::Value> value,
-                                                    std::string* error) {
-  std::vector<std::string> strings;
-  if (!value->IsArray() ||
-      !gin::ConvertFromV8(v8::Isolate::GetCurrent(), value, &strings)) {
-    *error = TypeError(base::StrCat(
-        {"Error processing ", key, ": Expected an array of strings"}));
-    return std::nullopt;
-  }
-  if (strings.empty()) {
-    *error = TypeError(base::StrCat(
-        {"Error processing ", key, ": Array requires at least 1 items"}));
-    return std::nullopt;
-  }
-  return strings;
-}
+  bool failed() const { return failed_; }
 
-bool ReadInteger(v8::Local<v8::Value> value,
-                 std::string_view key,
-                 std::optional<int>* out,
-                 std::string* error) {
-  if (value.IsEmpty()) {
-    return true;
+  // Refuses the keys Firefox's schema doesn't have.
+  void CheckKeys() {
+    v8::Local<v8::Array> names;
+    std::vector<std::string> keys;
+    if (!object_->GetOwnPropertyNames(context_).ToLocal(&names)) {
+      failed_ = true;
+      return;
+    }
+    gin::ConvertFromV8(v8::Isolate::GetCurrent(), names, &keys);
+    for (const std::string& key : keys) {
+      if (std::ranges::find(kFilterKeys, key) == std::end(kFilterKeys)) {
+        Fail(base::StrCat({"Unexpected property \"", key, "\""}));
+        return;
+      }
+    }
   }
-  if (!value->IsInt32()) {
-    *error = TypeError(
-        base::StrCat({"Error processing ", key, ": Expected integer"}));
-    return false;
+
+  // `object[key]`, or an empty handle when it is missing, null or undefined.
+  v8::Local<v8::Value> Get(std::string_view key) {
+    v8::Local<v8::Value> value;
+    if (failed_) {
+      return value;
+    }
+    if (!object_
+             ->Get(context_,
+                   gin::StringToSymbol(v8::Isolate::GetCurrent(), key))
+             .ToLocal(&value)) {
+      failed_ = true;
+      return v8::Local<v8::Value>();
+    }
+    return value->IsNullOrUndefined() ? v8::Local<v8::Value>() : value;
   }
-  *out = value.As<v8::Int32>()->Value();
-  return true;
-}
+
+  // `object[key]` as a non-empty array of strings.
+  std::optional<std::vector<std::string>> Strings(std::string_view key) {
+    v8::Local<v8::Value> value = Get(key);
+    if (value.IsEmpty()) {
+      return std::nullopt;
+    }
+    if (!value->IsArray()) {
+      Fail(base::StrCat({"Error processing ", key, ": Expected array"}));
+      return std::nullopt;
+    }
+    v8::Local<v8::Array> array = value.As<v8::Array>();
+    if (array->Length() == 0) {
+      Fail(base::StrCat({"Error processing ", key,
+                         ": Array requires at least 1 items; you have 0"}));
+      return std::nullopt;
+    }
+    std::vector<std::string> strings;
+    for (uint32_t i = 0; i < array->Length(); ++i) {
+      v8::Local<v8::Value> item;
+      if (!array->Get(context_, i).ToLocal(&item)) {
+        failed_ = true;
+        return std::nullopt;
+      }
+      std::string text;
+      if (!item->IsString() ||
+          !gin::ConvertFromV8(v8::Isolate::GetCurrent(), item, &text)) {
+        Fail(base::StrCat({"Error processing ", key, ".",
+                           base::NumberToString(i), ": Expected string"}));
+        return std::nullopt;
+      }
+      strings.push_back(std::move(text));
+    }
+    return strings;
+  }
+
+  std::optional<int> Integer(std::string_view key) {
+    v8::Local<v8::Value> value = Get(key);
+    if (value.IsEmpty()) {
+      return std::nullopt;
+    }
+    if (!value->IsInt32()) {
+      Fail(base::StrCat({"Error processing ", key, ": Expected integer"}));
+      return std::nullopt;
+    }
+    return value.As<v8::Int32>()->Value();
+  }
+
+  std::optional<std::string> String(std::string_view key) {
+    v8::Local<v8::Value> value = Get(key);
+    std::string text;
+    if (value.IsEmpty()) {
+      return std::nullopt;
+    }
+    if (!value->IsString() ||
+        !gin::ConvertFromV8(v8::Isolate::GetCurrent(), value, &text)) {
+      Fail(base::StrCat({"Error processing ", key, ": Expected string"}));
+      return std::nullopt;
+    }
+    return text;
+  }
+
+  void Fail(std::string_view detail) {
+    if (!failed_) {
+      *error_ = base::StrCat({"Type error for parameter filter (", detail,
+                              ") for tabs.onUpdated."});
+      failed_ = true;
+    }
+  }
+
+ private:
+  v8::Local<v8::Context> context_;
+  v8::Local<v8::Object> object_;
+  raw_ptr<std::string> error_;
+  bool failed_ = false;
+};
 
 // An update as the filters see it: what they read of tabs.onUpdated's
 // arguments (tabId, changeInfo, tab), taken once from the objects' own data
@@ -195,16 +269,17 @@ bool FirefoxUpdateFilters::Takes(std::string_view event_name) {
 // static
 std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
     v8::Local<v8::Context> context,
-    v8::Local<v8::Object> value,
+    v8::Local<v8::Value> value,
     std::string* error) {
+  if (!value->IsObject() || value->IsArray() || value->IsFunction()) {
+    *error = "Incorrect argument types for tabs.onUpdated.";
+    return std::nullopt;
+  }
+  FilterReader reader(context, value.As<v8::Object>(), error);
+  reader.CheckKeys();
   Filter filter;
-  if (v8::Local<v8::Value> urls = Get(context, value, "urls");
-      !urls.IsEmpty()) {
-    std::optional<std::vector<std::string>> patterns =
-        ReadStrings("urls", urls, error);
-    if (!patterns) {
-      return std::nullopt;
-    }
+  if (std::optional<std::vector<std::string>> patterns =
+          reader.Strings("urls")) {
     filter.urls.emplace();
     for (const std::string& text : *patterns) {
       // Firefox builds the patterns after addListener() has returned, so one
@@ -216,36 +291,22 @@ std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
       }
     }
   }
-  if (v8::Local<v8::Value> properties = Get(context, value, "properties");
-      !properties.IsEmpty()) {
-    filter.properties = ReadStrings("properties", properties, error);
-    if (!filter.properties) {
-      return std::nullopt;
-    }
-    for (const std::string& name : *filter.properties) {
+  filter.properties = reader.Strings("properties");
+  if (filter.properties) {
+    for (size_t i = 0; i < filter.properties->size(); ++i) {
+      const std::string& name = (*filter.properties)[i];
       if (std::ranges::find(kPropertyNames, name) == std::end(kPropertyNames)) {
-        *error = TypeError(base::StrCat(
-            {"Error processing properties: Invalid enumeration value \"", name,
-             "\""}));
-        return std::nullopt;
+        reader.Fail(base::StrCat(
+            {"Error processing properties.", base::NumberToString(i),
+             ": Invalid enumeration value \"", name, "\""}));
       }
     }
   }
-  if (!ReadInteger(Get(context, value, "tabId"), "tabId", &filter.tab_id,
-                   error) ||
-      !ReadInteger(Get(context, value, "windowId"), "windowId",
-                   &filter.window_id, error)) {
+  filter.tab_id = reader.Integer("tabId");
+  filter.window_id = reader.Integer("windowId");
+  filter.cookie_store_id = reader.String("cookieStoreId");
+  if (reader.failed()) {
     return std::nullopt;
-  }
-  if (v8::Local<v8::Value> store = Get(context, value, "cookieStoreId");
-      !store.IsEmpty()) {
-    if (!store->IsString()) {
-      *error = TypeError("Error processing cookieStoreId: Expected string");
-      return std::nullopt;
-    }
-    filter.cookie_store_id = std::string();
-    gin::ConvertFromV8(v8::Isolate::GetCurrent(), store,
-                       &*filter.cookie_store_id);
   }
   return filter;
 }

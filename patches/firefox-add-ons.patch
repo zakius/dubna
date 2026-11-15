@@ -1692,7 +1692,7 @@
  }
  
  bool EventEmitter::HasListeners() const {
-@@ -155,13 +157,33 @@
+@@ -155,13 +157,36 @@
      return;
    }
  
@@ -1706,15 +1706,18 @@
 +  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
 +    v8::Local<v8::Value> value;
 +    arguments->GetNext(&value);
-+    std::string error = "Invalid invocation";
-+    if (value->IsObject()) {
++    if (!value->IsNullOrUndefined()) {
++      std::string error;
 +      firefox_filter = FirefoxUpdateFilters::Read(
-+          arguments->GetHolderCreationContext(), value.As<v8::Object>(),
-+          &error);
-+    }
-+    if (!firefox_filter && !value->IsNullOrUndefined()) {
-+      arguments->ThrowTypeError(error);
-+      return;
++          arguments->GetHolderCreationContext(), value, &error);
++      // With no message, a getter of the filter threw, and its exception is
++      // pending. A getter may also have torn the context down.
++      if (!firefox_filter || !valid_) {
++        if (!error.empty()) {
++          arguments->ThrowTypeError(error);
++        }
++        return;
++      }
 +    }
 +  } else if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
      arguments->ThrowTypeError("This event does not support filters");
@@ -1728,7 +1731,7 @@
      arguments->ThrowTypeError("Invalid invocation");
      return;
    }
-@@ -187,9 +209,15 @@
+@@ -187,9 +212,15 @@
    }
  
    std::string error;
@@ -1747,7 +1750,7 @@
    }
  }
  
-@@ -206,6 +234,7 @@
+@@ -206,6 +237,7 @@
    }
  
    listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
@@ -1755,7 +1758,7 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -265,7 +294,15 @@
+@@ -265,7 +297,15 @@
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
