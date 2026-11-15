@@ -62,7 +62,8 @@ class ThemeAPI : public BrowserContextKeyedAPI,
   base::ScopedObservation<ui::NativeTheme, ui::NativeThemeObserver>
       native_theme_observation_{this};
   bool on_updated_scheduled_ = false;
-  // The theme the last onUpdated gave.
+  // The theme at the last change, which the last onUpdated gave if anyone
+  // listened.
   std::optional<base::DictValue> last_theme_;
   base::WeakPtrFactory<ThemeAPI> weak_factory_{this};
 };

@@ -172,17 +172,18 @@ void ThemeAPI::ScheduleOnUpdated() {
 
 void ThemeAPI::DispatchOnUpdated() {
   on_updated_scheduled_ = false;
-  EventRouter* router = EventRouter::Get(profile_);
-  if (!router || !router->HasEventListener(kOnUpdated)) {
-    return;
-  }
   // The theme of a regular window: the event reaches add-ons that may not see
-  // incognito windows.
+  // incognito windows. Recorded with no listener too, so that a later change
+  // back to it fires.
   base::DictValue theme = CurrentTheme(*profile_, /*include_incognito=*/false);
   if (theme == last_theme_) {
     return;
   }
   last_theme_ = theme.Clone();
+  EventRouter* router = EventRouter::Get(profile_);
+  if (!router || !router->HasEventListener(kOnUpdated)) {
+    return;
+  }
   base::ListValue args;
   args.Append(base::DictValue().Set("theme", std::move(theme)));
   // A stub histogram value: one of our own could clash with the upstreams'
