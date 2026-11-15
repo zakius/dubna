@@ -19,7 +19,10 @@ source_set("containers") {
     "traffic_control_throttle.cc",
     "traffic_control_throttle.h",
   ]
-  public_deps = [ ":core" ]
+  public_deps = [
+    ":cleanup",
+    ":core",
+  ]
   deps = [
     "//base",
     "//chrome/app:generated_resources",
@@ -54,6 +57,19 @@ source_set("core") {
   ]
 }
 
+# Deleting the storage of containers nothing uses, without the browser.
+source_set("cleanup") {
+  sources = [
+    "containers_cleanup.cc",
+    "containers_cleanup.h",
+  ]
+  public_deps = [ "//base" ]
+  deps = [
+    ":core",
+    "//components/prefs",
+  ]
+}
+
 # With Firefox Sync's containers adapter, which needs only the prefs: the
 # firefox_sync target needs the whole browser.
 test("containers_unittests") {
@@ -63,9 +79,11 @@ test("containers_unittests") {
     "//chrome/browser/firefox_sync/containers_adapter_unittest.cc",
     "//chrome/browser/firefox_sync/sync_adapter.cc",
     "//chrome/browser/firefox_sync/sync_adapter.h",
+    "containers_cleanup_unittest.cc",
     "containers_unittest.cc",
   ]
   deps = [
+    ":cleanup",
     ":core",
     "//base",
     "//base:i18n",

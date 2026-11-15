@@ -23,6 +23,7 @@
 #include "base/observer_list_types.h"
 #include "base/scoped_observation.h"
 #include "chrome/browser/containers/container.h"
+#include "chrome/browser/containers/containers_cleanup.h"
 #include "chrome/browser/containers/traffic_control.h"
 #include "components/keyed_service/core/keyed_service.h"
 #include "components/prefs/pref_change_registrar.h"
@@ -47,6 +48,7 @@ namespace containers {
 // that has tabs or storage, the user chooses whether it goes here too or
 // comes back; until then its tabs and storage stay.
 class ContainersService : public KeyedService,
+                          public ContainersCleanup::Delegate,
                           public sessions::TabRestoreServiceObserver {
  public:
   class Observer : public base::CheckedObserver {
@@ -109,15 +111,16 @@ class ContainersService : public KeyedService,
   void ForgetSyncDeleted(const std::string& id);
   void OnUsedChanged();
   void OnRulesChanged();
-  void CheckClosedTabs();
-  void OnInUse(std::vector<std::string> candidates,
-               std::set<std::string> in_use);
-  // `gone`: the storage is off the disk, not only cleared.
-  void OnStorageDeleted(const std::string& id, bool gone);
-  void FinishCleanup();
   void OnSessionStorageFound(std::vector<std::string> ids);
-  // The used containers that aren't in the user's list.
-  std::vector<std::string> CleanupCandidates() const;
+
+  // ContainersCleanup::Delegate:
+  bool Keeps(const std::string& id) override;
+  void LoadClosedTabs(base::OnceClosure loaded) override;
+  void GetInUse(
+      const std::set<std::string>& deleted,
+      base::OnceCallback<void(std::set<std::string>)> callback) override;
+  void DeleteStorage(const std::string& id,
+                     base::OnceCallback<void(bool)> done) override;
 
   // sessions::TabRestoreServiceObserver:
   void TabRestoreServiceChanged(sessions::TabRestoreService* service) override {
@@ -136,11 +139,9 @@ class ContainersService : public KeyedService,
   std::set<std::string> listed_;
   // The containers sync deleted that the user is being asked about.
   std::set<std::string> asking_;
-  // The cleanup that runs, and whether another must run after it.
-  bool cleaning_ = false;
-  bool clean_again_ = false;
-  std::vector<base::OnceClosure> cleaned_callbacks_;
-  size_t pending_deletions_ = 0;
+  ContainersCleanup cleanup_;
+  // What runs once the closed tabs are loaded, for the cleanup.
+  base::OnceClosure closed_tabs_loaded_;
   base::ScopedObservation<sessions::TabRestoreService,
                           sessions::TabRestoreServiceObserver>
       tab_restore_observation_{this};

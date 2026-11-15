@@ -128,7 +128,8 @@ void ContainersService::RegisterProfilePrefs(
   registry->RegisterStringPref(kNewTabContainer, std::string());
 }
 
-ContainersService::ContainersService(Profile* profile) : profile_(profile) {
+ContainersService::ContainersService(Profile* profile)
+    : profile_(profile), cleanup_(profile->GetPrefs(), this) {
   prefs_.Init(profile->GetPrefs());
   prefs_.Add(kContainersList,
              base::BindRepeating(&ContainersService::OnListChanged,
@@ -159,6 +160,7 @@ ContainersService::~ContainersService() = default;
 
 void ContainersService::Shutdown() {
   weak_factory_.InvalidateWeakPtrs();
+  cleanup_.Stop();
   tab_restore_observation_.Reset();
   prefs_.RemoveAll();
 }
@@ -343,47 +345,33 @@ void ContainersService::OnRulesChanged() {
       TrafficRules(profile_->GetPrefs()->GetList(kTrafficControlRules));
 }
 
-std::vector<std::string> ContainersService::CleanupCandidates() const {
-  std::vector<std::string> candidates;
-  for (auto [id, value] : profile_->GetPrefs()->GetDict(kContainersUsed)) {
-    // A container sync deleted stays until the user chooses.
-    if (!listed_.contains(id) && !IsSyncDeleted(id)) {
-      candidates.push_back(id);
-    }
-  }
-  return candidates;
+void ContainersService::Cleanup(base::OnceClosure done) {
+  cleanup_.Run(std::move(done));
 }
 
-void ContainersService::Cleanup(base::OnceClosure done) {
-  if (done) {
-    cleaned_callbacks_.push_back(std::move(done));
-  }
-  if (cleaning_) {
-    clean_again_ = true;
-    return;
-  }
-  if (CleanupCandidates().empty()) {
-    FinishCleanup();
-    return;
-  }
-  cleaning_ = true;
+bool ContainersService::Keeps(const std::string& id) {
+  return listed_.contains(id) || IsSyncDeleted(id);
+}
+
+void ContainersService::LoadClosedTabs(base::OnceClosure loaded) {
   sessions::TabRestoreService* tab_restore =
       TabRestoreServiceFactory::GetForProfile(profile_);
-  if (tab_restore && !tab_restore->IsLoaded()) {
-    if (!tab_restore_observation_.IsObserving()) {
-      tab_restore_observation_.Observe(tab_restore);
-    }
-    tab_restore->LoadTabsFromLastSession();
+  if (!tab_restore || tab_restore->IsLoaded()) {
+    std::move(loaded).Run();
     return;
   }
-  CheckClosedTabs();
+  closed_tabs_loaded_ = std::move(loaded);
+  if (!tab_restore_observation_.IsObserving()) {
+    tab_restore_observation_.Observe(tab_restore);
+  }
+  tab_restore->LoadTabsFromLastSession();
 }
 
 void ContainersService::TabRestoreServiceLoaded(
     sessions::TabRestoreService* service) {
   tab_restore_observation_.Reset();
-  if (cleaning_) {
-    CheckClosedTabs();
+  if (closed_tabs_loaded_) {
+    std::move(closed_tabs_loaded_).Run();
   }
 }
 
@@ -392,19 +380,10 @@ void ContainersService::TabRestoreServiceDestroyed(
   tab_restore_observation_.Reset();
 }
 
-void ContainersService::CheckClosedTabs() {
-  // Taken now, with the tabs: a temporary container made while the platform
-  // answers is no candidate, though no tab of it was counted.
-  std::vector<std::string> candidates = CleanupCandidates();
-  // The closed tabs of deleted containers go; those of temporary ones keep
-  // their container.
-  std::set<std::string> deleted;
-  for (const std::string& id : candidates) {
-    if (!id.starts_with(kTemporaryIdPrefix)) {
-      deleted.insert(id);
-    }
-  }
-  std::set<std::string> in_use;
+void ContainersService::GetInUse(
+    const std::set<std::string>& deleted,
+    base::OnceCallback<void(std::set<std::string>)> callback) {
+  std::set<std::string> closed_tabs;
   if (sessions::TabRestoreService* tab_restore =
           TabRestoreServiceFactory::GetForProfile(profile_)) {
     if (!deleted.empty()) {
@@ -418,67 +397,42 @@ void ContainersService::CheckClosedTabs() {
           deleted));
     }
     for (const auto& entry : tab_restore->entries()) {
-      AddContainerIds(*entry, in_use);
+      AddContainerIds(*entry, closed_tabs);
     }
   }
   GetContainersInUse(
-      profile_, base::BindOnce(
-                    [](base::WeakPtr<ContainersService> service,
-                       std::vector<std::string> candidates,
-                       std::set<std::string> closed_tabs,
-                       std::set<std::string> in_use) {
-                      if (service) {
-                        in_use.merge(closed_tabs);
-                        service->OnInUse(std::move(candidates),
-                                         std::move(in_use));
-                      }
-                    },
-                    weak_factory_.GetWeakPtr(), std::move(candidates),
-                    std::move(in_use)));
+      profile_,
+      base::BindOnce(
+          [](std::set<std::string> closed_tabs,
+             base::OnceCallback<void(std::set<std::string>)> callback,
+             std::set<std::string> in_use) {
+            in_use.merge(closed_tabs);
+            std::move(callback).Run(std::move(in_use));
+          },
+          std::move(closed_tabs), std::move(callback)));
 }
 
-void ContainersService::OnInUse(std::vector<std::string> candidates,
-                                std::set<std::string> in_use) {
-  for (const std::string& id : candidates) {
-    // Listed again meanwhile, as when sync brings a container back.
-    if (in_use.contains(id) || listed_.contains(id)) {
-      continue;
-    }
-    ++pending_deletions_;
-    // A partition loaded in this run keeps its files open: deleting them
-    // would leave it on unlinked files, whose data a container that sync
-    // brings back in this run would lose at the next start. It clears its
-    // data now, and its folder goes at the next start.
-    if (content::StoragePartition* partition = profile_->GetStoragePartition(
-            PartitionOf(profile_, id), /*can_create=*/false)) {
-      partition->ClearData(
-          content::StoragePartition::REMOVE_DATA_MASK_ALL,
-          /*filter_builder=*/nullptr,
-          /*storage_key_policy_matcher=*/{},
-          network::mojom::CookieDeletionFilter::New(),
-          /*perform_storage_cleanup=*/true, base::Time(), base::Time::Max(),
-          base::BindOnce(&ContainersService::OnStorageDeleted,
-                         weak_factory_.GetWeakPtr(), id, /*gone=*/false));
-    } else {
-      base::ThreadPool::PostTaskAndReplyWithResult(
-          FROM_HERE, {base::MayBlock()},
-          base::BindOnce(&DeleteFolder, StoragePath(profile_, id)),
-          base::BindOnce(&ContainersService::OnStorageDeleted,
-                         weak_factory_.GetWeakPtr(), id));
-    }
+void ContainersService::DeleteStorage(const std::string& id,
+                                      base::OnceCallback<void(bool)> done) {
+  // A partition loaded in this run keeps its files open: deleting them
+  // would leave it on unlinked files, whose data a container that sync
+  // brings back in this run would lose at the next start. It clears its
+  // data now, and its folder goes at the next start.
+  if (content::StoragePartition* partition = profile_->GetStoragePartition(
+          PartitionOf(profile_, id), /*can_create=*/false)) {
+    partition->ClearData(
+        content::StoragePartition::REMOVE_DATA_MASK_ALL,
+        /*filter_builder=*/nullptr,
+        /*storage_key_policy_matcher=*/{},
+        network::mojom::CookieDeletionFilter::New(),
+        /*perform_storage_cleanup=*/true, base::Time(), base::Time::Max(),
+        base::BindOnce(std::move(done), /*gone=*/false));
+    return;
   }
-  if (!pending_deletions_) {
-    FinishCleanup();
-  }
-}
-
-void ContainersService::OnStorageDeleted(const std::string& id, bool gone) {
-  if (gone && !listed_.contains(id)) {
-    ScopedDictPrefUpdate(profile_->GetPrefs(), kContainersUsed)->Remove(id);
-  }
-  if (--pending_deletions_ == 0) {
-    FinishCleanup();
-  }
+  base::ThreadPool::PostTaskAndReplyWithResult(
+      FROM_HERE, {base::MayBlock()},
+      base::BindOnce(&DeleteFolder, StoragePath(profile_, id)),
+      std::move(done));
 }
 
 // static
@@ -519,18 +473,6 @@ void ContainersService::OnSessionStorageFound(std::vector<std::string> ids) {
       profile_->GetStoragePartition(PartitionOf(profile_, id))
           ->DeleteStaleSessionData();
     }
-  }
-}
-
-void ContainersService::FinishCleanup() {
-  cleaning_ = false;
-  if (clean_again_) {
-    clean_again_ = false;
-    Cleanup();
-    return;
-  }
-  for (base::OnceClosure& done : std::exchange(cleaned_callbacks_, {})) {
-    std::move(done).Run();
   }
 }
 
