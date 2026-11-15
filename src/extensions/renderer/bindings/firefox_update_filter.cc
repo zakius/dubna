@@ -80,47 +80,81 @@ bool ReadInteger(v8::Local<v8::Value> value,
   return true;
 }
 
-// Whether `object[key]` is `wanted`.
-bool HasInteger(v8::Local<v8::Context> context,
-                v8::Local<v8::Object> object,
-                std::string_view key,
-                int wanted) {
-  v8::Local<v8::Value> value = Get(context, object, key);
-  return !value.IsEmpty() && value->IsInt32() &&
-         value.As<v8::Int32>()->Value() == wanted;
+// An update as the filters see it: what they read of tabs.onUpdated's
+// arguments (tabId, changeInfo, tab), taken once from the objects' own data
+// properties, so that no add-on script runs while the filters are checked.
+struct Update {
+  std::optional<int> tab_id;
+  std::optional<int> window_id;
+  std::optional<std::string> cookie_store_id;
+  GURL url;
+  std::vector<std::string> changed;
+};
+
+// `object`'s own property `key`, or an empty handle.
+v8::Local<v8::Value> Own(v8::Local<v8::Context> context,
+                         v8::Local<v8::Object> object,
+                         std::string_view key) {
+  v8::Local<v8::String> name =
+      gin::StringToSymbol(v8::Isolate::GetCurrent(), key);
+  v8::Local<v8::Value> value;
+  if (!object->HasOwnProperty(context, name).FromMaybe(false) ||
+      !object->Get(context, name).ToLocal(&value)) {
+    return v8::Local<v8::Value>();
+  }
+  return value;
 }
 
-bool HasString(v8::Local<v8::Context> context,
-               v8::Local<v8::Object> object,
-               std::string_view key,
-               const std::string& wanted) {
-  v8::Local<v8::Value> value = Get(context, object, key);
+std::optional<int> OwnInteger(v8::Local<v8::Context> context,
+                              v8::Local<v8::Object> object,
+                              std::string_view key) {
+  v8::Local<v8::Value> value = Own(context, object, key);
+  if (value.IsEmpty() || !value->IsInt32()) {
+    return std::nullopt;
+  }
+  return value.As<v8::Int32>()->Value();
+}
+
+std::optional<std::string> OwnString(v8::Local<v8::Context> context,
+                                     v8::Local<v8::Object> object,
+                                     std::string_view key) {
+  v8::Local<v8::Value> value = Own(context, object, key);
   std::string text;
-  return !value.IsEmpty() &&
-         gin::ConvertFromV8(v8::Isolate::GetCurrent(), value, &text) &&
-         text == wanted;
+  if (value.IsEmpty() || !value->IsString() ||
+      !gin::ConvertFromV8(v8::Isolate::GetCurrent(), value, &text)) {
+    return std::nullopt;
+  }
+  return text;
 }
 
-bool Matches(const FirefoxUpdateFilters::Filter& filter,
-             v8::Local<v8::Context> context,
-             const v8::LocalVector<v8::Value>& args) {
-  // tabs.onUpdated's arguments are (tabId, changeInfo, tab).
+// nullopt for arguments of another shape, for which every listener runs.
+std::optional<Update> ReadUpdate(v8::Local<v8::Context> context,
+                                 const v8::LocalVector<v8::Value>& args) {
   if (args.size() < 3 || !args[1]->IsObject() || !args[2]->IsObject()) {
-    return true;
+    return std::nullopt;
   }
   v8::Local<v8::Object> changes = args[1].As<v8::Object>();
   v8::Local<v8::Object> tab = args[2].As<v8::Object>();
+  Update update;
+  if (args[0]->IsInt32()) {
+    update.tab_id = args[0].As<v8::Int32>()->Value();
+  }
+  update.window_id = OwnInteger(context, tab, "windowId");
+  update.cookie_store_id = OwnString(context, tab, "cookieStoreId");
+  // A tab whose URL the add-on may not see has none, and matches no URL.
+  update.url = GURL(OwnString(context, tab, "url").value_or(std::string()));
+  v8::Local<v8::Array> names;
+  if (changes->GetOwnPropertyNames(context).ToLocal(&names)) {
+    gin::ConvertFromV8(v8::Isolate::GetCurrent(), names, &update.changed);
+  }
+  return update;
+}
 
-  if (filter.tab_id && !(args[0]->IsInt32() &&
-                         args[0].As<v8::Int32>()->Value() == *filter.tab_id)) {
-    return false;
-  }
-  if (filter.window_id &&
-      !HasInteger(context, tab, "windowId", *filter.window_id)) {
-    return false;
-  }
-  if (filter.cookie_store_id &&
-      !HasString(context, tab, "cookieStoreId", *filter.cookie_store_id)) {
+bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
+  if ((filter.tab_id && update.tab_id != filter.tab_id) ||
+      (filter.window_id && update.window_id != filter.window_id) ||
+      (filter.cookie_store_id &&
+       update.cookie_store_id != filter.cookie_store_id)) {
     return false;
   }
   // As in Firefox, a listener for some properties runs when one of them
@@ -128,28 +162,16 @@ bool Matches(const FirefoxUpdateFilters::Filter& filter,
   // `isArticle`, `attention`, `sharingState`) never match.
   if (filter.properties &&
       std::ranges::none_of(*filter.properties, [&](const std::string& name) {
-        v8::Maybe<bool> changed = changes->HasOwnProperty(
-            context, gin::StringToSymbol(v8::Isolate::GetCurrent(), name));
-        return changed.IsJust() && changed.FromJust();
+        return std::ranges::find(update.changed, name) != update.changed.end();
       })) {
     return false;
   }
-  // The tab's URL against the patterns. A tab whose URL the add-on may not
-  // see has none, and matches none.
-  if (filter.urls) {
-    std::string spec;
-    v8::Local<v8::Value> url = Get(context, tab, "url");
-    if (url.IsEmpty() ||
-        !gin::ConvertFromV8(v8::Isolate::GetCurrent(), url, &spec)) {
-      return false;
-    }
-    GURL gurl(spec);
-    if (!gurl.is_valid() ||
-        std::ranges::none_of(*filter.urls, [&](const URLPattern& pattern) {
-          return pattern.MatchesURL(gurl);
-        })) {
-      return false;
-    }
+  if (filter.urls &&
+      (!update.url.is_valid() ||
+       std::ranges::none_of(*filter.urls, [&](const URLPattern& pattern) {
+         return pattern.MatchesURL(update.url);
+       }))) {
+    return false;
   }
   return true;
 }
@@ -249,10 +271,14 @@ std::vector<bool> FirefoxUpdateFilters::Matching(
     v8::Local<v8::Context> context,
     const v8::LocalVector<v8::Value>& args) const {
   std::vector<bool> runs(listeners.size(), true);
+  std::optional<Update> update = ReadUpdate(context, args);
+  if (!update) {
+    return runs;
+  }
   for (size_t i = 0; i < listeners.size(); ++i) {
     for (const Entry& entry : entries_) {
       if (entry.listener == listeners[i]) {
-        runs[i] = Matches(entry.filter, context, args);
+        runs[i] = Matches(entry.filter, *update);
       }
     }
   }
