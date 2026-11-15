@@ -306,11 +306,39 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
   script->set_execution_world(world && *world == "MAIN"
                                   ? mojom::ExecutionWorld::kMain
                                   : mojom::ExecutionWorld::kIsolated);
-  // cssOrigin "user" and cookieStoreId are taken but not followed yet: the
-  // styles are the page's author styles, and the scripts run in every
-  // container.
-  script->set_incognito_enabled(scripting::ScriptsShouldBeAllowedInIncognito(
-      extension.id(), browser_context()));
+  // cssOrigin "user" is taken but not followed yet: the styles are the
+  // page's author styles.
+  bool incognito = scripting::ScriptsShouldBeAllowedInIncognito(
+      extension.id(), browser_context());
+  // Firefox's cookieStoreId: the default store, private windows, or a
+  // container. Add-ons have no containers yet (zakius/dubna#45), so as in
+  // Firefox a container's ID is unknown. Scripts for private windows alone
+  // are refused rather than run in every window.
+  if (const base::Value* stores_value = options.Find("cookieStoreId")) {
+    std::optional<std::vector<std::string>> stores =
+        stores_value->is_string()
+            ? std::vector<std::string>{stores_value->GetString()}
+            : Strings(stores_value);
+    EXTENSION_FUNCTION_VALIDATE(stores);
+    bool default_store = false;
+    bool private_store = false;
+    for (const std::string& store : *stores) {
+      if (store == "firefox-default") {
+        default_store = true;
+      } else if (store == "firefox-private") {
+        private_store = true;
+      } else {
+        // Firefox's message.
+        return RespondNow(Error("Invalid cookieStoreId"));
+      }
+    }
+    if (!default_store) {
+      return RespondNow(
+          Error("Content scripts for private windows alone aren't supported"));
+    }
+    incognito = incognito && private_store;
+  }
+  script->set_incognito_enabled(incognito);
 
   // Firefox registers a script with nothing to inject too, which does
   // nothing.
