@@ -12,6 +12,7 @@
 #include "extensions/browser/extension_action.h"
 #include "extensions/browser/extension_function.h"
 #include "extensions/browser/firefox_action_window.h"
+#include "extensions/common/constants.h"
 
 namespace extensions {
 
@@ -45,13 +46,20 @@ bool TakeFirefoxWindowId(ExtensionFunction& function,
     error = "Only one of tabId and windowId can be specified.";
     return true;
   }
-  if (!WindowControllerList::GetInstance()->FindWindowForFunctionByIdWithFilter(
-          &function, *window_id, WindowController::kNoWindowFilter)) {
+  // windows.WINDOW_ID_CURRENT is the window the call comes from, or the last
+  // focused one.
+  WindowControllerList* windows = WindowControllerList::GetInstance();
+  WindowController* window =
+      *window_id == extension_misc::kCurrentWindowId
+          ? windows->CurrentWindowForFunction(&function)
+          : windows->FindWindowForFunctionByIdWithFilter(
+                &function, *window_id, WindowController::kNoWindowFilter);
+  if (!window) {
     error = "Invalid window ID: " + base::NumberToString(*window_id);
     return true;
   }
   SetFirefoxWindowOfTab(&WindowOfTab);
-  key = *window_id;
+  key = window->GetWindowId();
   return true;
 }
 

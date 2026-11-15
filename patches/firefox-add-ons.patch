@@ -859,7 +859,7 @@
          "id": "TabDetails",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): the window to query state for."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        }
@@ -867,7 +867,7 @@
                  "type": "string",
                  "description": "The string the browser action should display when moused over."
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -875,7 +875,7 @@
                  "optional": true,
                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to an icon to be set. If the icon is specified as a dictionary, the image used is chosen depending on the screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then an image with size <code>scale</code> * n is selected, where <i>n</i> is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -883,7 +883,7 @@
              "name": "details",
              "type": "object",
              "properties": {
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -891,7 +891,7 @@
                  "optional": true,
                  "description": "Any number of characters can be passed, but only about four can fit into the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -899,7 +899,7 @@
                    }
                  ]
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -926,7 +926,7 @@
 +                  {"$ref": "extensionTypes.ColorArray"}
 +                ]
 +              },
-+              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
 +              "tabId": {
 +                "type": "integer",
 +                "optional": true,
@@ -1486,7 +1486,7 @@
          "id": "TabDetails",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): the window to query state for."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        },
@@ -1494,7 +1494,7 @@
              "type": "string",
              "description": "The string the action should display when moused over."
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -1502,7 +1502,7 @@
              "optional": true,
              "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * n will be selected, where n is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -1510,7 +1510,7 @@
          "name": "details",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -1518,7 +1518,7 @@
              "optional": true,
              "description": "Any number of characters can be passed, but only about four can fit in the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -1526,7 +1526,7 @@
                }
              ]
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -1534,7 +1534,7 @@
                  }
                ]
              },
-+            "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++            "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
              "tabId": {
                "type": "integer",
                "optional": true,
