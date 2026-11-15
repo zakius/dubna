@@ -22,6 +22,8 @@ namespace extensions {
 namespace {
 
 constexpr std::string_view kPrefix = "browserSettings.";
+constexpr std::string_view kPeerConnectionEnabled =
+    "privacy.network.peerConnectionEnabled";
 
 // oganesson's tab behavior prefs (its docs/tab-behavior.md), its equals of
 // Firefox's browser.tabs.insertAfterCurrent and insertRelatedAfterCurrent.
@@ -140,16 +142,25 @@ std::optional<base::Value> Value(Profile& profile, std::string_view key) {
 }  // namespace
 
 bool IsFirefoxBrowserSetting(std::string_view key) {
-  return key.starts_with(kPrefix);
+  return key.starts_with(kPrefix) || key == kPeerConnectionEnabled;
+}
+
+mojom::APIPermissionID FirefoxSettingPermission(std::string_view key) {
+  if (key == kPeerConnectionEnabled) {
+    return mojom::APIPermissionID::kPrivacy;
+  }
+  return mojom::APIPermissionID::kBrowserSettings;
 }
 
 std::optional<base::DictValue> GetFirefoxBrowserSetting(Profile& profile,
                                                         std::string_view key) {
-  if (!IsFirefoxBrowserSetting(key)) {
-    return std::nullopt;
+  std::optional<base::Value> value;
+  if (key == kPeerConnectionEnabled) {
+    // WebRTC is on: turning it off is a later step.
+    value = base::Value(true);
+  } else if (key.starts_with(kPrefix)) {
+    value = Value(profile, key.substr(kPrefix.size()));
   }
-  key.remove_prefix(kPrefix.size());
-  std::optional<base::Value> value = Value(profile, key);
   if (!value) {
     return std::nullopt;
   }

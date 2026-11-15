@@ -20,6 +20,7 @@
 # bookmark and tools_menu contexts (the item shows in its other contexts).
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
+# So is privacy.network.peerConnectionEnabled, which is always true.
 # storage.session is there in Manifest V2 add-ons too, as in Firefox.
 # So is the scripting permission, as in Firefox.
 # Firefox's theme API, read-only: getCurrent() and onUpdated give the browser
@@ -1002,14 +1003,15 @@
  #include "chrome/browser/extensions/extension_service.h"
  #include "chrome/browser/extensions/pref_mapping.h"
  #include "chrome/browser/extensions/preference/preference_helpers.h"
-@@ -274,6 +275,18 @@
+@@ -274,6 +275,19 @@
    const std::string& pref_key = args()[0].GetString();
    const base::Value& details = args()[1];
  
-+  // Firefox add-ons (dubna): browserSettings (firefox_browser_settings.h).
++  // Firefox add-ons (dubna): browserSettings and Firefox's privacy settings
++  // (firefox_browser_settings.h).
 +  if (IsFirefoxBrowserSetting(pref_key)) {
 +    if (!extension()->permissions_data()->HasAPIPermission(
-+            APIPermissionID::kBrowserSettings)) {
++            FirefoxSettingPermission(pref_key))) {
 +      return RespondNow(Error(kPermissionErrorMessage, pref_key));
 +    }
 +    std::optional<base::DictValue> result = GetFirefoxBrowserSetting(
@@ -1021,7 +1023,7 @@
    bool incognito = false;
    if (std::optional<bool> result = details.GetDict().FindBool(kIncognitoKey)) {
      incognito = *result;
-@@ -364,6 +377,11 @@
+@@ -364,6 +378,11 @@
    const base::Value* value = details.Find(kValue);
    EXTENSION_FUNCTION_VALIDATE(value);
  
@@ -1033,7 +1035,7 @@
    ChromeSettingScope scope = ChromeSettingScope::kRegular;
    if (const std::string* scope_str = details.FindString(kScopeKey)) {
      EXTENSION_FUNCTION_VALIDATE(StringToScope(*scope_str, scope));
-@@ -469,6 +487,11 @@
+@@ -469,6 +488,11 @@
    std::string pref_key = args()[0].GetString();
    const base::DictValue& details = args()[1].GetDict();
  
@@ -1116,3 +1118,19 @@
    extensions::WebNavigationAPI::GetFactoryInstance();
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
+--- a/chrome/common/extensions/api/privacy.json
++++ b/chrome/common/extensions/api/privacy.json
+@@ -57,6 +57,13 @@
+             "$ref": "types.ChromeSetting",
+             "value": ["webRTCIPHandlingPolicy", {"$ref":"IPHandlingPolicy"}],
+             "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
++          },
++          // Firefox add-ons (dubna): Firefox's setting, read-only and always
++          // true (firefox_browser_settings.h).
++          "peerConnectionEnabled": {
++            "$ref": "types.ChromeSetting",
++            "value": ["privacy.network.peerConnectionEnabled", {"type":"boolean"}],
++            "description": "Firefox's: whether WebRTC's RTCPeerConnection is on. Read-only: always <code>true</code>."
+           }
+         }
+       },
