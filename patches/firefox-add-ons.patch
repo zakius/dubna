@@ -1674,3 +1674,115 @@
    ExtensionsBrowserClient* client = ExtensionsBrowserClient::Get();
    bool allow_original = !browser_context->IsOffTheRecord();
    bool allow_incognito =
+--- a/extensions/renderer/bindings/event_emitter.cc
++++ b/extensions/renderer/bindings/event_emitter.cc
+@@ -44,6 +44,7 @@
+ 
+ void EventEmitter::Dispose() {
+   pending_filters_.clear();
++  firefox_update_filters_.Clear();
+   listeners_.reset();
+ }
+ 
+@@ -155,13 +156,29 @@
+     return;
+   }
+ 
+-  if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
++  // Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated
++  // (firefox_update_filter.h), an object, null or undefined.
++  bool takes_firefox_filter =
++      !supports_filters_ &&
++      FirefoxUpdateFilters::Takes(listeners_->GetEventName());
++  v8::Local<v8::Object> firefox_filter;
++  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
++    v8::Local<v8::Value> value;
++    arguments->GetNext(&value);
++    if (value->IsObject()) {
++      firefox_filter = value.As<v8::Object>();
++    } else if (!value->IsNullOrUndefined()) {
++      arguments->ThrowTypeError("Invalid invocation");
++      return;
++    }
++  } else if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
+     arguments->ThrowTypeError("This event does not support filters");
+     return;
+   }
+ 
+   v8::Local<v8::Object> filter;
+-  if (!arguments->PeekNext().IsEmpty() && !arguments->GetNext(&filter)) {
++  if (!takes_firefox_filter && !arguments->PeekNext().IsEmpty() &&
++      !arguments->GetNext(&filter)) {
+     arguments->ThrowTypeError("Invalid invocation");
+     return;
+   }
+@@ -187,9 +204,15 @@
+   }
+ 
+   std::string error;
+-  if (!listeners_->AddListener(listener, filter, options, context, &error) &&
+-      !error.empty()) {
+-    arguments->ThrowTypeError(error);
++  if (!listeners_->AddListener(listener, filter, options, context, &error)) {
++    if (!error.empty()) {
++      arguments->ThrowTypeError(error);
++    }
++    return;
++  }
++  if (!firefox_filter.IsEmpty()) {
++    firefox_update_filters_.Add(arguments->isolate(), listener,
++                                firefox_filter);
+   }
+ }
+ 
+@@ -206,6 +229,7 @@
+   }
+ 
+   listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
++  firefox_update_filters_.Remove(listener);
+ }
+ 
+ bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
+@@ -266,6 +290,9 @@
+ 
+   v8::TryCatch try_catch(isolate);
+   for (const auto& listener : listeners) {
++    if (!firefox_update_filters_.Matches(listener, context, *args)) {
++      continue;
++    }
+     // NOTE(devlin): Technically, any listener here could suspend JS execution
+     // (through e.g. calling alert() or print()). That should suspend this
+     // message loop as well (though a nested message loop will run). This is a
+--- a/extensions/renderer/bindings/event_emitter.h
++++ b/extensions/renderer/bindings/event_emitter.h
+@@ -9,6 +9,7 @@
+ 
+ #include "base/memory/raw_ptr.h"
+ #include "extensions/common/mojom/event_dispatcher.mojom-forward.h"
++#include "extensions/renderer/bindings/firefox_update_filter.h"
+ #include "extensions/renderer/bindings/js_runner.h"
+ #include "gin/public/wrappable_pointer_tags.h"
+ #include "gin/wrappable.h"
+@@ -149,6 +150,9 @@
+   // The map of EventFilteringInfos for events that are pending dispatch (since
+   // JS is suspended).
+   std::map<int, mojom::EventFilteringInfoPtr> pending_filters_;
++
++  // Firefox add-ons (dubna): the filters of Firefox's tabs.onUpdated.
++  FirefoxUpdateFilters firefox_update_filters_;
+ };
+ 
+ }  // namespace extensions
+--- a/extensions/renderer/BUILD.gn
++++ b/extensions/renderer/BUILD.gn
+@@ -99,6 +99,10 @@
+     "bindings/declarative_event.h",
+     "bindings/event_emitter.cc",
+     "bindings/event_emitter.h",
++
++    # Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated.
++    "bindings/firefox_update_filter.cc",
++    "bindings/firefox_update_filter.h",
+     "bindings/exception_handler.cc",
+     "bindings/exception_handler.h",
+     "bindings/interaction_provider.h",
