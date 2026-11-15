@@ -1,0 +1,57 @@
+// Copyright 2026 The oganesson Authors
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+// Firefox add-ons (dubna's webextensions/README.md): Firefox's theme API, read
+// only. getCurrent() and onUpdated give the colours of the browser's own theme
+// in Firefox's key names (theme_api.cc), and on Android, where Firefox has no
+// theme API, Firefox's empty theme. As in Firefox, they need no permission.
+// Firefox's update() and reset() are #95.
+[
+  {
+    "namespace": "theme",
+    "description": "Firefox's theme API: the colours of the browser's theme.",
+    "types": [
+      {
+        "id": "Theme",
+        "type": "object",
+        "description": "Firefox's theme: CSS colours by Firefox's key names, or null. Images and properties are null.",
+        "properties": {
+          "colors": {"type": "any"},
+          "images": {"type": "any"},
+          "properties": {"type": "any"}
+        }
+      }
+    ],
+    "functions": [
+      {
+        "name": "getCurrent",
+        "type": "function",
+        "description": "The theme of a window, or of the last focused window.",
+        "parameters": [
+          {"name": "windowId", "type": "integer", "optional": true}
+        ],
+        "returns_async": {
+          "name": "callback",
+          "parameters": [{"name": "theme", "$ref": "Theme"}]
+        }
+      }
+    ],
+    "events": [
+      {
+        "name": "onUpdated",
+        "type": "function",
+        "description": "The browser's theme changed: the theme of the last focused window.",
+        "parameters": [
+          {
+            "name": "updateInfo",
+            "type": "object",
+            "properties": {
+              "theme": {"$ref": "Theme"},
+              "windowId": {"type": "integer", "optional": true}
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

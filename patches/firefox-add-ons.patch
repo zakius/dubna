@@ -21,6 +21,8 @@
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
 # storage.session is there in Manifest V2 add-ons too, as in Firefox.
+# Firefox's theme API, read-only: getCurrent() and onUpdated give the browser
+# theme's colours in Firefox's key names (theme_api.cc), to any add-on.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -101,7 +103,7 @@
          "description": "Returns a DirectoryEntry for the package directory.",
 --- a/chrome/common/extensions/api/_api_features.json
 +++ b/chrome/common/extensions/api/_api_features.json
-@@ -199,6 +199,11 @@
+@@ -199,6 +199,18 @@
      "dependencies": ["permission:browsingData"],
      "contexts": ["privileged_extension"]
    },
@@ -110,10 +112,17 @@
 +    "dependencies": ["permission:browserSettings"],
 +    "contexts": ["privileged_extension"]
 +  },
++  // Firefox add-ons (dubna): Firefox's theme API. As in Firefox, getCurrent()
++  // and onUpdated need no permission: the theme permission is for update().
++  "theme": {
++    "channel": "stable",
++    "extension_types": ["extension"],
++    "contexts": ["privileged_extension"]
++  },
    "chromeosInfoPrivate": [{
      "dependencies": ["permission:chromeosInfoPrivate"],
      "contexts": ["privileged_extension"]
-@@ -282,7 +287,9 @@
+@@ -282,7 +294,9 @@
    },
    "contextMenus": {
      "dependencies": ["permission:contextMenus"],
@@ -124,7 +133,7 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -710,6 +717,12 @@
+@@ -710,6 +724,12 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
@@ -139,16 +148,17 @@
      "contexts": ["privileged_extension"]
 --- a/chrome/common/extensions/permissions/chrome_api_permissions.cc
 +++ b/chrome/common/extensions/permissions/chrome_api_permissions.cc
-@@ -113,6 +113,8 @@
+@@ -113,6 +113,9 @@
      {APIPermissionID::kPlatformKeys, "platformKeys",
       APIPermissionInfo::kFlagDoesNotRequireManagedSessionFullLoginWarning},
      {APIPermissionID::kPrivacy, "privacy"},
 +    // Firefox add-ons (dubna).
 +    {APIPermissionID::kBrowserSettings, "browserSettings"},
++    {APIPermissionID::kTheme, "theme"},
      {APIPermissionID::kProcesses, "processes",
       APIPermissionInfo::kFlagRequiresManagementUIWarning},
      {APIPermissionID::kReadingList, "readingList"},
-@@ -234,7 +236,9 @@
+@@ -234,7 +237,9 @@
  base::span<const Alias> GetPermissionAliases() {
    // In alias constructor, first value is the alias name; second value is the
    // real name. See also alias.h.
@@ -796,24 +806,32 @@
            }
 --- a/extensions/common/mojom/api_permission_id.mojom
 +++ b/extensions/common/mojom/api_permission_id.mojom
-@@ -300,6 +300,9 @@
+@@ -300,6 +300,11 @@
    kPublicSuffix = 273,
    kEnterpriseWebrtc = 274,
    kMimeTypesHandlerPdf = 275,
 +  // Firefox add-ons (dubna): Firefox's browserSettings, past the upstreams'
 +  // additions, and under the permission histograms' limit of 1000.
 +  kBrowserSettings = 999,
++  // Firefox add-ons (dubna): Firefox's theme API, as browserSettings.
++  kTheme = 998,
  
    // Add new entries at the end of the enum and be sure to update the
    // "ExtensionPermission3" enum in
 --- a/chrome/common/extensions/api/_permission_features.json
 +++ b/chrome/common/extensions/api/_permission_features.json
-@@ -94,6 +94,11 @@
+@@ -94,6 +94,17 @@
      "channel": "stable",
      "extension_types": ["extension", "legacy_packaged_app"]
    },
 +  // Firefox add-ons (dubna): Firefox's browserSettings.
 +  "browserSettings": {
++    "channel": "stable",
++    "extension_types": ["extension"]
++  },
++  // Firefox add-ons (dubna): Firefox's theme permission, which theme.update()
++  // needs. Without a warning, as in Firefox.
++  "theme": {
 +    "channel": "stable",
 +    "extension_types": ["extension"]
 +  },
@@ -931,3 +949,46 @@
    },
    "system.cpu": {
      "dependencies": ["permission:system.cpu"],
+--- a/chrome/common/extensions/api/api_sources.gni
++++ b/chrome/common/extensions/api/api_sources.gni
+@@ -63,6 +63,9 @@
+   "browsing_data.json",
+   "commands.json",
+   "extension.json",
++
++  # Firefox add-ons (dubna): Firefox's theme API.
++  "theme.json",
+   "top_sites.json",
+ ]
+ 
+--- a/chrome/browser/extensions/api/BUILD.gn
++++ b/chrome/browser/extensions/api/BUILD.gn
+@@ -64,6 +64,9 @@
+   if (enable_service_discovery) {
+     public_deps += [ "//chrome/browser/extensions/api/mdns" ]
+   }
++
++  # Firefox add-ons (dubna): Firefox's theme API.
++  public_deps += [ "//chrome/browser/extensions/api/theme" ]
+ 
+   if (enable_extensions) {
+     # APIs supported on Win/Mac/Linux but NOT desktop Android go here.
+--- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
++++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
+@@ -22,6 +22,7 @@
+ #include "chrome/browser/extensions/api/tab_capture/tab_capture_registry.h"
+ #include "chrome/browser/extensions/api/tab_groups/tab_groups_event_router_factory.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_windows_api.h"
++#include "chrome/browser/extensions/api/theme/theme_api.h"
+ #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
+ #include "chrome/browser/extensions/commands/command_service.h"
+ #include "chrome/common/buildflags.h"
+@@ -106,6 +107,8 @@
+   extensions::TabCaptureRegistry::GetFactoryInstance();
+   extensions::TabGroupsEventRouterFactory::GetInstance();
+   extensions::TabsWindowsAPI::GetFactoryInstance();
++  // Firefox add-ons (dubna): Firefox's theme API.
++  extensions::ThemeAPI::GetFactoryInstance();
+   extensions::WebNavigationAPI::GetFactoryInstance();
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
