@@ -1,0 +1,29 @@
+# Copyright 2026 The oganesson Authors
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+import("//extensions/buildflags/buildflags.gni")
+
+assert(enable_extensions_core)
+
+# Firefox add-ons (dubna's webextensions/README.md): Firefox's
+# contextualIdentities API, over the browser's containers.
+source_set("contextual_identities") {
+  sources = [
+    "contextual_identities_api.cc",
+    "contextual_identities_api.h",
+  ]
+
+  public_deps = [
+    "//base",
+    "//chrome/browser/containers",
+    "//extensions/browser",
+  ]
+
+  deps = [
+    "//chrome/browser/extensions",
+    "//chrome/browser/profiles:profile",
+    "//content/public/browser",
+    "//extensions/common",
+    "//skia",
+  ]
+}

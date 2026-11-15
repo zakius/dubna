@@ -159,8 +159,15 @@
    "contentSettings": {
      "dependencies": ["permission:contentSettings"],
      "contexts": [
-@@ -282,7 +309,9 @@
+@@ -280,9 +307,16 @@
+   "contentSettings.clipboard": {
+     "feature_flag": "ApiContentSettingsClipboard"
    },
++  // Firefox add-ons (dubna): Firefox's contextualIdentities, the containers.
++  "contextualIdentities": {
++    "dependencies": ["permission:contextualIdentities"],
++    "contexts": ["privileged_extension"]
++  },
    "contextMenus": {
      "dependencies": ["permission:contextMenus"],
 -    "contexts": ["privileged_extension"]
@@ -170,7 +177,7 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -710,6 +739,12 @@
+@@ -710,6 +744,12 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
@@ -185,17 +192,18 @@
      "contexts": ["privileged_extension"]
 --- a/chrome/common/extensions/permissions/chrome_api_permissions.cc
 +++ b/chrome/common/extensions/permissions/chrome_api_permissions.cc
-@@ -113,6 +113,9 @@
+@@ -113,6 +113,10 @@
      {APIPermissionID::kPlatformKeys, "platformKeys",
       APIPermissionInfo::kFlagDoesNotRequireManagedSessionFullLoginWarning},
      {APIPermissionID::kPrivacy, "privacy"},
 +    // Firefox add-ons (dubna).
 +    {APIPermissionID::kBrowserSettings, "browserSettings"},
 +    {APIPermissionID::kTheme, "theme"},
++    {APIPermissionID::kContextualIdentities, "contextualIdentities"},
      {APIPermissionID::kProcesses, "processes",
       APIPermissionInfo::kFlagRequiresManagementUIWarning},
      {APIPermissionID::kReadingList, "readingList"},
-@@ -234,7 +237,9 @@
+@@ -234,7 +238,9 @@
  base::span<const Alias> GetPermissionAliases() {
    // In alias constructor, first value is the alias name; second value is the
    // real name. See also alias.h.
@@ -271,12 +279,13 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,12 @@
+@@ -402,6 +402,13 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
 +    "firefox_add_on.cc",
 +    "firefox_add_on.h",
++    "firefox_cookie_store.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
 +    "firefox_version.cc",
@@ -400,7 +409,15 @@
    dnr_api::ManifestKeys manifest_keys;
 --- a/chrome/browser/extensions/extension_tab_util.cc
 +++ b/chrome/browser/extensions/extension_tab_util.cc
-@@ -58,6 +58,7 @@
+@@ -25,6 +25,7 @@
+ #include "chrome/browser/extensions/browser_window_util.h"
+ #include "chrome/browser/extensions/chrome_extension_function_details.h"
+ #include "chrome/browser/extensions/extension_management.h"
++#include "chrome/browser/extensions/firefox_cookie_store.h"
+ #include "chrome/browser/extensions/window_controller_list.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/tab_group_sync/tab_group_sync_service_factory.h"
+@@ -58,6 +59,7 @@
  #include "extensions/common/constants.h"
  #include "extensions/common/error_utils.h"
  #include "extensions/common/extension.h"
@@ -408,7 +425,14 @@
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/options_page_info.h"
  #include "extensions/common/mojom/api_permission_id.mojom-shared.h"
-@@ -443,6 +444,11 @@
+@@ -438,11 +440,18 @@
+   tab_object.muted_info = CreateMutedInfo(contents);
+ 
+   tab_object.incognito = contents->GetBrowserContext()->IsOffTheRecord();
++  // Firefox add-ons (dubna): Firefox's cookieStoreId.
++  tab_object.cookie_store_id = FirefoxCookieStoreId(contents);
+   gfx::Size contents_size = contents->GetContainerBounds().size();
+   tab_object.width = contents_size.width();
    tab_object.height = contents_size.height();
  
    tab_object.url = contents->GetLastCommittedURL().spec();
@@ -1086,7 +1110,7 @@
            }
 --- a/extensions/common/mojom/api_permission_id.mojom
 +++ b/extensions/common/mojom/api_permission_id.mojom
-@@ -300,6 +300,11 @@
+@@ -300,6 +300,13 @@
    kPublicSuffix = 273,
    kEnterpriseWebrtc = 274,
    kMimeTypesHandlerPdf = 275,
@@ -1095,12 +1119,14 @@
 +  kBrowserSettings = 999,
 +  // Firefox add-ons (dubna): Firefox's theme API, as browserSettings.
 +  kTheme = 998,
++  // Firefox add-ons (dubna): Firefox's contextualIdentities, as theme.
++  kContextualIdentities = 997,
  
    // Add new entries at the end of the enum and be sure to update the
    // "ExtensionPermission3" enum in
 --- a/chrome/common/extensions/api/_permission_features.json
 +++ b/chrome/common/extensions/api/_permission_features.json
-@@ -94,6 +94,17 @@
+@@ -94,6 +94,23 @@
      "channel": "stable",
      "extension_types": ["extension", "legacy_packaged_app"]
    },
@@ -1115,10 +1141,16 @@
 +    "channel": "stable",
 +    "extension_types": ["extension"]
 +  },
++  // Firefox add-ons (dubna): Firefox's contextualIdentities permission.
++  // Without a warning, as in Firefox.
++  "contextualIdentities": {
++    "channel": "stable",
++    "extension_types": ["extension"]
++  },
    "chromePrivate": {
      "channel": "stable",
      "extension_types": ["extension", "legacy_packaged_app"],
-@@ -898,10 +909,10 @@
+@@ -898,10 +915,10 @@
        "08455FA7CB8734168378F731B00B354CEEE0088F"   // Chrome Reporting Ext. Beta
      ]
    },
@@ -1245,7 +1277,7 @@
      "dependencies": ["permission:system.cpu"],
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
-@@ -63,7 +63,14 @@
+@@ -63,7 +63,17 @@
    "browsing_data.json",
    "commands.json",
    "extension.json",
@@ -1257,22 +1289,28 @@
 +  # Firefox add-ons (dubna): Firefox's contentScripts API.
 +  "content_scripts.json",
 +  "content_scripts_internal.json",
++
++  # Firefox add-ons (dubna): Firefox's contextualIdentities API.
++  "contextual_identities.json",
  ]
  
  # Some APIs rely on types and headers from other APIs.
 --- a/chrome/browser/extensions/api/BUILD.gn
 +++ b/chrome/browser/extensions/api/BUILD.gn
-@@ -65,6 +65,9 @@
+@@ -65,6 +65,12 @@
      public_deps += [ "//chrome/browser/extensions/api/mdns" ]
    }
  
 +  # Firefox add-ons (dubna): Firefox's theme API.
 +  public_deps += [ "//chrome/browser/extensions/api/theme" ]
 +
++  # Firefox add-ons (dubna): Firefox's contextualIdentities API.
++  public_deps += [ "//chrome/browser/extensions/api/contextual_identities" ]
++
    if (enable_extensions) {
      # APIs supported on Win/Mac/Linux but NOT desktop Android go here.
      public_deps += [
-@@ -196,6 +199,13 @@
+@@ -196,6 +202,13 @@
      "web_view/chrome_web_view_internal_api.h",
    ]
  
@@ -1288,20 +1326,23 @@
      # to avoid cyclic dependency chain related to private_membership
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -22,6 +22,7 @@
+@@ -22,6 +22,8 @@
  #include "chrome/browser/extensions/api/tab_capture/tab_capture_registry.h"
  #include "chrome/browser/extensions/api/tab_groups/tab_groups_event_router_factory.h"
  #include "chrome/browser/extensions/api/tabs/tabs_windows_api.h"
 +#include "chrome/browser/extensions/api/theme/theme_api.h"
++#include "chrome/browser/extensions/api/contextual_identities/contextual_identities_api.h"
  #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
  #include "chrome/browser/extensions/commands/command_service.h"
  #include "chrome/common/buildflags.h"
-@@ -106,6 +107,8 @@
+@@ -106,6 +108,10 @@
    extensions::TabCaptureRegistry::GetFactoryInstance();
    extensions::TabGroupsEventRouterFactory::GetInstance();
    extensions::TabsWindowsAPI::GetFactoryInstance();
 +  // Firefox add-ons (dubna): Firefox's theme API.
 +  extensions::ThemeAPI::GetFactoryInstance();
++  // Firefox add-ons (dubna): Firefox's contextualIdentities API.
++  extensions::ContextualIdentitiesAPI::GetFactoryInstance();
    extensions::WebNavigationAPI::GetFactoryInstance();
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -1581,3 +1622,55 @@
  }
  
  }  // namespace
+--- a/chrome/common/extensions/api/tabs.json
++++ b/chrome/common/extensions/api/tabs.json
+@@ -82,7 +82,9 @@
+           "incognito": {"type": "boolean", "description": "Whether the tab is in an incognito window."},
+           "width": {"type": "integer", "optional": true, "description": "The width of the tab in pixels."},
+           "height": {"type": "integer", "optional": true, "description": "The height of the tab in pixels."},
+-          "sessionId": {"type": "string", "optional": true, "description": "The session ID used to uniquely identify a tab obtained from the $(ref:sessions) API."}
++          "sessionId": {"type": "string", "optional": true, "description": "The session ID used to uniquely identify a tab obtained from the $(ref:sessions) API."},
++          // Firefox add-ons (dubna): Firefox's cookie store of the tab.
++          "cookieStoreId": {"type": "string", "optional": true, "description": "Firefox's: the tab's cookie store, firefox-default, firefox-private or a container's."}
+         }
+       },
+       {
+--- a/chrome/browser/extensions/BUILD.gn
++++ b/chrome/browser/extensions/BUILD.gn
+@@ -330,6 +330,10 @@
+     "extension_special_storage_policy.h",
+     "extension_tab_util.cc",
+     "extension_tab_util.h",
++
++    # Firefox add-ons (dubna): Firefox's cookieStoreId.
++    "firefox_cookie_store.cc",
++    "firefox_cookie_store.h",
+     "extension_telemetry_service_verdict_handler.cc",
+     "extension_telemetry_service_verdict_handler.h",
+     "extension_ui_util.cc",
+--- a/extensions/browser/api/cookies/cookies_helpers.cc
++++ b/extensions/browser/api/cookies/cookies_helpers.cc
+@@ -22,6 +22,7 @@
+ #include "extensions/common/api/cookies.h"
+ #include "extensions/common/constants.h"
+ #include "extensions/common/extension.h"
++#include "extensions/common/firefox_cookie_store.h"
+ #include "extensions/common/permissions/permissions_data.h"
+ #include "mojo/public/cpp/bindings/callback_helpers.h"
+ #include "net/cookies/canonical_cookie.h"
+@@ -80,6 +81,15 @@
+     content::BrowserContext* browser_context,
+     bool include_incognito) {
+   DCHECK(browser_context);
++  // Firefox add-ons (dubna): Firefox's IDs of the same two stores, which
++  // add-ons take from Tab.cookieStoreId (firefox_cookie_store.h).
++  if (store_id == kFirefoxDefaultCookieStore ||
++      store_id == kFirefoxPrivateCookieStore) {
++    return ChooseBrowserContextFromStoreId(
++        store_id == kFirefoxDefaultCookieStore ? kOriginalProfileStoreId
++                                               : kOffTheRecordProfileStoreId,
++        browser_context, include_incognito);
++  }
+   ExtensionsBrowserClient* client = ExtensionsBrowserClient::Get();
+   bool allow_original = !browser_context->IsOffTheRecord();
+   bool allow_incognito =
