@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 997,
-  "L2": 882
+  "L2": 892
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -272,12 +272,12 @@
    "error": null
   },
   "1vpn@example.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.bundle.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{94ed9bbf-a1e2-4e58-81ae-cd16dad818d8}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (assets/background.ts-B8MclbvZ.js:1)"
+   "level": "L2",
+   "error": null
   },
   "moz-addon-prod@7tv.app": {
    "level": "L2",
@@ -528,8 +528,8 @@
    "error": null
   },
   "vpn@mozilla.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'removeListener') (background/requestHandler.js:119)"
+   "level": "L2",
+   "error": null
   },
   "{84380428-8c9d-4bdf-913d-b2c34d6562d9}": {
    "level": "L2",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -632,8 +632,8 @@
    "error": null
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'updateEnabledRulesets') (background.js:3)"
   },
   "{8AA36F4F-6DC7-4c06-77AF-5035170634FE}": {
    "level": "L2",
@@ -669,7 +669,7 @@
   },
   "@setupvpncom": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (js/background.js:11)"
+   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "{34daeb50-c2d2-4f14-886a-7160b24d66a4}": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (2b895d7d-c88f-4cbd-878f-80e697b59f87:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (ad38ed42-623a-44ac-96d8-84898cff7eaa:37)"
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -1049,7 +1049,7 @@
   },
   "firefox-webext@zenmate.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (background.js:25)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'hasOwnProperty') (background.js:1619)"
   },
   "deArrow@ajay.app": {
    "level": "L1",
@@ -1176,8 +1176,8 @@
    "error": null
   },
   "{98e5888b-e5f3-4321-a647-28bc617deda2}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{0982b844-4f35-48b7-9811-6832d916f21c}": {
    "level": "L2",
@@ -1752,8 +1752,8 @@
    "error": null
   },
   "{3e4d2037-d300-4e95-859d-3cba866f46d3}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (background.js:18)"
+   "level": "L2",
+   "error": null
   },
   "{2c5dc68a-aeca-4c36-84c7-324994d4dadc}": {
    "level": "L2",
@@ -1905,7 +1905,7 @@
   },
   "client@anonymox.net": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (proxy/proxy.js:79)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'enabled') (modules/ui.js:28)"
   },
   "YandexSearchEngineExtension@space.kdev": {
    "level": "L1",
@@ -2088,8 +2088,8 @@
    "error": null
   },
   "vpnfirefox@softnour.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:366)"
+   "level": "L2",
+   "error": null
   },
   "firefox@online-convert.com": {
    "level": "L2",
@@ -2128,8 +2128,8 @@
    "error": null
   },
   "vpn@hide-my-ip.org": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'hasListener') (lib/ProxyManager.js:87)"
+   "level": "L2",
+   "error": null
   },
   "adguard-vpn@adguard.com": {
    "level": "L2",
@@ -2352,8 +2352,8 @@
    "error": null
   },
   "{5d0d1f87-5991-42d3-98c3-54878ead1ed1}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{486ba9c7-0bfd-4148-928f-5c6044f46b56}": {
    "level": "L2",
@@ -2552,8 +2552,8 @@
    "error": null
   },
   "{0c3ab5c8-57ac-4ad8-9dd1-ee331517884d}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:133)"
+   "level": "L2",
+   "error": null
   },
   "{5f884915-160e-4276-a216-770a753a3abe}": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjU0ZGUzN2Y1OGVlMjIxMDY2MmM2NTFjY2UxYmFhMDhjYTM3YWE1ZmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjRjNTE2ODk0NzEyMWE5NzFhZjI3YzIwNjNhNWFhZTdiNTA4YjQ1YTQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -3224,8 +3224,8 @@
    "error": null
   },
   "{1c3ca161-8c6d-48ed-9993-da686bcf5310}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'hasListener') (proxy/ProxyInit_ff.js:4)"
+   "level": "L2",
+   "error": null
   },
   "{a81256d7-babd-4185-91f6-95580215661d}": {
    "level": "L2",
@@ -3364,8 +3364,8 @@
    "error": null
   },
   "contaner-proxy@bekh-ivanov.me": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/index.js:98)"
+   "level": "L2",
+   "error": null
   },
   "jid0-oFxt2GoakYukFl7Yp42Kq@jetpack": {
    "level": "L2",
@@ -3432,8 +3432,8 @@
    "error": "Uncaught (in promise) TypeError: Failed to construct 'URL': Invalid URL (scripts/background.js:1)"
   },
   "andrew@vnnet": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (src/background-ff.js:1)"
+   "level": "L2",
+   "error": null
   },
   "{db722c0c-d10e-4e23-af56-bbb6c3b62cc5}": {
    "level": "L2",
