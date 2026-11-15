@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 997,
-  "L2": 861
+  "L2": 882
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -69,11 +69,11 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
   },
   "@contain-facebook": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "jid1-93WyvpgvxzGATw@jetpack": {
    "level": "L2",
@@ -132,8 +132,8 @@
    "error": null
   },
   "@testpilot-containers": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "support@lastpass.com": {
    "level": "L2",
@@ -305,7 +305,7 @@
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of cookies.getAll(object details, optional function callback): Error at parameter 'details': Unexpected property: 'firstPartyDomain'. (bundles/common-background-popup-setting.bundle.js:2)"
   },
   "{e4a8a97b-f2ed-450b-b12d-ee082ba24781}": {
    "level": "L2",
@@ -329,7 +329,7 @@
   },
   "treestyletab@piro.sakura.ne.jp": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'menus.overrideContext'"
   },
   "ffext_basicvideoext@startpage24": {
    "level": "L2",
@@ -464,8 +464,8 @@
    "error": null
   },
   "ATBC@EasonWong": {
-   "level": "L1",
-   "error": "Uncaught TypeError: This event does not support filters (background.js:1)"
+   "level": "L2",
+   "error": null
   },
   "qwant-search-firefox@qwant.com": {
    "level": "L2",
@@ -520,8 +520,8 @@
    "error": null
   },
   "sandvpn_@sandvpn.com": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "{506e023c-7f2b-40a3-8066-bc5deb40aebe}": {
    "level": "L2",
@@ -596,16 +596,16 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L1",
-   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
+   "level": "L2",
+   "error": null
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
    "error": null
   },
   "izer@camelcamelcamel.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: This event does not support filters (background.js:109)"
+   "level": "L2",
+   "error": null
   },
   "dont-track-me-google@robwu.nl": {
    "level": "L2",
@@ -644,8 +644,8 @@
    "error": null
   },
   "newtaboverride@agenedia.com": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "stefanvandamme@stefanvd.net": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (db2451d5-7e65-4a75-a660-42a23e0c309b:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (2b895d7d-c88f-4cbd-878f-80e697b59f87:37)"
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -749,7 +749,7 @@
   },
   "{3c078156-979c-498b-8990-85f7987dd929}": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'menus.overrideContext'"
   },
   "rf-firefox@siber.com": {
    "level": "L2",
@@ -840,8 +840,8 @@
    "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "{dab9a10d-f9c5-4e8d-9351-67531e85b508}": {
    "level": "L1",
@@ -896,8 +896,8 @@
    "error": null
   },
   "{12cf650b-1822-40aa-bff0-996df6948878}": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "tineye@ideeinc.com": {
    "level": "L2",
@@ -965,7 +965,7 @@
   },
   "CanvasBlocker@kkapsner.de": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "Uncaught ReferenceError: exportFunction is not defined (lib/extension.js:107)"
   },
   "1centext_ff@1c.ru": {
    "level": "L2",
@@ -985,7 +985,7 @@
   },
   "admin@fastaddons.com_GroupSpeedDial": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'tabHide'"
   },
   "checkerplusforgmail@jasonsavard.com": {
    "level": "L2",
@@ -1485,7 +1485,7 @@
   },
   "foxytab@eros.man": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'tabHide'"
   },
   "uBOLiteRedux@raymondhill.net": {
    "level": "L2",
@@ -1516,8 +1516,8 @@
    "error": null
   },
   "{2766e9f7-7bf2-4c72-81b9-d119eb54c753}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: This event does not support filters (background/redirectShorts.js:21)"
+   "level": "L2",
+   "error": null
   },
   "{EDB6A15C-5F8C-4531-92FA-98E988CF233C}": {
    "level": "L2",
@@ -1540,8 +1540,8 @@
    "error": null
   },
   "openmultipleurls@ustat.de": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "notes@mozilla.com": {
    "level": "L2",
@@ -1601,7 +1601,7 @@
   },
   "{e839c3f9-298e-4cd0-99e0-464431cb7c34}": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'find'"
   },
   "{048bba8c-c62d-4967-963d-d663cae75d3f}": {
    "level": "L2",
@@ -1921,7 +1921,7 @@
   },
   "{c607c8df-14a7-4f28-894f-29e8722976af}": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "Uncaught (in promise) TypeError: target.join is not a function (background.js:578)"
   },
   "{806cbba4-1bd3-4916-9ddc-e719e9ca0cbf}": {
    "level": "L2",
@@ -2172,8 +2172,8 @@
    "error": null
   },
   "{d8d0bc2b-45c2-404d-bb00-ce54305fc39c}": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "{bd7ea25e-0792-4772-bc96-fbbca9344c28}": {
    "level": "L2",
@@ -2292,8 +2292,8 @@
    "error": null
   },
   "default-bookmark-folder@gustiaux.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: This event does not support filters (scripts/background/background.js:5)"
+   "level": "L2",
+   "error": null
   },
   "bookmarkdupes@martin-vaeth.org": {
    "level": "L2",
@@ -2600,8 +2600,8 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'reduce') (dist/background.bundle.js:115)"
   },
   "@contain-google": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "cb-remover@search.mozilla.org": {
    "level": "L2",
@@ -2640,8 +2640,8 @@
    "error": null
   },
   "forget-me-not@lusito.info": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "7esoorv3@alefvanoon.anonaddy.me": {
    "level": "L2",
@@ -2676,8 +2676,8 @@
    "error": null
   },
   "{a94d60a0-8408-4c53-8eec-cb349eb958b8}": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "intgcal@egarracingteam.com.ar": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImZlYTJhMjA3ZTAxOWE5YTkwYzcwNjY4MzQ0ODI2MWM0ODZjMGRhZGEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjU0ZGUzN2Y1OGVlMjIxMDY2MmM2NTFjY2UxYmFhMDhjYTM3YWE1ZmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2765,7 +2765,7 @@
   },
   "{862036c2-ee21-4b0e-a80e-d3f26a841385}": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "Uncaught (in promise) ReferenceError: IsFeatureKilled is not defined (js/background.js:1)"
   },
   "gsconnect@andyholmes.github.io": {
    "level": "L2",
@@ -2812,16 +2812,16 @@
    "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught ReferenceError: exportFunction is not defined (conent_script.js:8)"
   },
   "{4b7825da-0dd1-44f9-9717-bee5b2408af6}": {
    "level": "L2",
    "error": null
   },
   "jid0-RvYT2rGWfM8q5yWxIxAHYAeo5Qg@jetpack": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "zoom@stefanvd.net": {
    "level": "L2",
@@ -3080,8 +3080,8 @@
    "error": "Uncaught TypeError: cad_upd.split is not a function (background/background.js:57)"
   },
   "webscrapbook@danny0838.addons.mozilla.org": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "smartproxy@salarcode.com": {
    "level": "L1",
@@ -3176,8 +3176,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
   },
   "cookie-manager@robwu.nl": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "{016eeff3-2d58-4042-b81e-135bb986c200}": {
    "level": "L2",
@@ -3252,8 +3252,8 @@
    "error": null
   },
   "session-sync@gabrielivanica.com": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "multithreaded-download-manager@qw.linux-2g64.local": {
    "level": "L1",
@@ -3365,7 +3365,7 @@
   },
   "contaner-proxy@bekh-ivanov.me": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/index.js:98)"
   },
   "jid0-oFxt2GoakYukFl7Yp42Kq@jetpack": {
    "level": "L2",
@@ -3701,7 +3701,7 @@
   },
   "tridactyl.vim@cmcaine.co.uk": {
    "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "error": "unknown permission 'find'"
   },
   "{dd10d63e-3096-4492-ab0e-5edcf4baf988}": {
    "level": "L2",
@@ -3780,8 +3780,8 @@
    "error": null
   },
   "claude_usage_tracker@lugia19.com": {
-   "level": "L1",
-   "error": "unknown permission 'contextualIdentities'"
+   "level": "L2",
+   "error": null
   },
   "{a8f7e9c2-4d3b-4a1e-9f8c-7b6d5e4a3c2b}": {
    "level": "L1",
@@ -3868,8 +3868,8 @@
    "error": null
   },
   "extension@estate2023.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "jid1-W5guVoyeUR0uBg@jetpack": {
    "level": "L2",
