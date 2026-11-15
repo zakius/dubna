@@ -2,9 +2,9 @@
  "date": "2026-11-15",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
-  "L0": 1000,
-  "L1": 997,
-  "L2": 892
+  "L0": 839,
+  "L1": 836,
+  "L2": 743
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -51,10 +51,6 @@
    "level": "L2",
    "error": null
   },
-  "{446900e4-71c2-419f-a6a7-df9c091e268b}": {
-   "level": "L2",
-   "error": null
-  },
   "firefox@ghostery.com": {
    "level": "L2",
    "error": null
@@ -88,10 +84,6 @@
    "error": null
   },
   "{036a55b4-5e72-4d05-a06c-cba2dfcc134a}": {
-   "level": "L2",
-   "error": null
-  },
-  "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack": {
    "level": "L2",
    "error": null
   },
@@ -135,19 +127,7 @@
    "level": "L2",
    "error": null
   },
-  "support@lastpass.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{d634138d-c276-4fc8-924b-40a0ea21d284}": {
-   "level": "L2",
-   "error": null
-  },
   "helper@savefrom.net": {
-   "level": "L2",
-   "error": null
-  },
-  "light_plugin_7571494CE0B94E11BB762B659A4AD71F@kaspersky.com": {
    "level": "L2",
    "error": null
   },
@@ -163,10 +143,6 @@
    "level": "L2",
    "error": null
   },
-  "nordvpnproxy@nordvpn.com": {
-   "level": "L2",
-   "error": null
-  },
   "jid1-xUfzOsOFlzSOXg@jetpack": {
    "level": "L2",
    "error": null
@@ -176,10 +152,6 @@
    "error": null
   },
   "amptra@keepa.com": {
-   "level": "L2",
-   "error": null
-  },
-  "private-relay@firefox.com": {
    "level": "L2",
    "error": null
   },
@@ -194,10 +166,6 @@
   "{73a6fe31-595d-460b-a920-fcc0f8843232}": {
    "level": "L1",
    "error": "unknown permission 'webRequestFilterResponse'"
-  },
-  "browserextension@eset.com": {
-   "level": "L2",
-   "error": null
   },
   "jid1-KKzOGWgsW3Ao4Q@jetpack": {
    "level": "L2",
@@ -219,35 +187,11 @@
    "level": "L2",
    "error": null
   },
-  "appledev@soarinfotech.com": {
-   "level": "L2",
-   "error": null
-  },
   "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}": {
    "level": "L2",
    "error": null
   },
   "{20fc2e06-e3e4-4b2b-812b-ab431220cada}": {
-   "level": "L2",
-   "error": null
-  },
-  "webrootsecure@webroot.com": {
-   "level": "L2",
-   "error": null
-  },
-  "ols@f-secure.com": {
-   "level": "L2",
-   "error": null
-  },
-  "78272b6fa58f4a1abaac99321d503a20@proton.me": {
-   "level": "L2",
-   "error": null
-  },
-  "password-manager-firefox-extension@apple.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{bf855ead-d7c3-4c7b-9f88-9a7e75c0efdf}": {
    "level": "L2",
    "error": null
   },
@@ -315,18 +259,6 @@
    "level": "L2",
    "error": null
   },
-  "vpn@proton.ch": {
-   "level": "L2",
-   "error": null
-  },
-  "idsafe@norton.com": {
-   "level": "L2",
-   "error": null
-  },
-  "nordpassStandalone@nordsecurity.com": {
-   "level": "L2",
-   "error": null
-  },
   "treestyletab@piro.sakura.ne.jp": {
    "level": "L1",
    "error": "unknown permission 'menus.overrideContext'"
@@ -363,10 +295,6 @@
    "level": "L2",
    "error": null
   },
-  "firefoxdav@icloud.com": {
-   "level": "L2",
-   "error": null
-  },
   "wappalyzer@crunchlabz.com": {
    "level": "L2",
    "error": null
@@ -399,14 +327,6 @@
    "level": "L2",
    "error": null
   },
-  "{732216ec-0dab-43bb-ac85-4b5e1977599d}": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: XPCNativeWrapper is not defined (autofill.bundle.js:2)"
-  },
-  "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
-   "level": "L2",
-   "error": null
-  },
   "leechblockng@proginosko.com": {
    "level": "L2",
    "error": null
@@ -416,14 +336,6 @@
    "error": "unknown permission 'pkcs11'"
   },
   "{5efceaa7-f3a2-4e59-a54b-85319448e305}": {
-   "level": "L2",
-   "error": null
-  },
-  "jid1-YcMV6ngYmQRA2w@jetpack": {
-   "level": "L2",
-   "error": null
-  },
-  "jetpack-extension@dashlane.com": {
    "level": "L2",
    "error": null
   },
@@ -495,10 +407,6 @@
    "level": "L2",
    "error": null
   },
-  "webapps@mendeley.com": {
-   "level": "L2",
-   "error": null
-  },
   "{de22fd49-c9ab-4359-b722-b3febdc3a0b0}": {
    "level": "L2",
    "error": null
@@ -527,10 +435,6 @@
    "level": "L2",
    "error": null
   },
-  "vpn@mozilla.com": {
-   "level": "L2",
-   "error": null
-  },
   "{84380428-8c9d-4bdf-913d-b2c34d6562d9}": {
    "level": "L2",
    "error": null
@@ -538,10 +442,6 @@
   "{7c42eea1-b3e4-4be4-a56f-82a5852b12dc}": {
    "level": "L2",
    "error": null
-  },
-  "@hoxx-vpn": {
-   "level": "L1",
-   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -558,10 +458,6 @@
   "seventv-next@7tv.app": {
    "level": "L2",
    "error": null
-  },
-  "@windscribeff": {
-   "level": "L1",
-   "error": "Uncaught (in promise) ReferenceError: µBlock is not defined (static/js/background.chunk.js:1)"
   },
   "Package_Tracking_Tab___Custom_Web_Search_JVVfIFSBVe@packagetrackingtab.com": {
    "level": "L2",
@@ -608,10 +504,6 @@
    "error": null
   },
   "dont-track-me-google@robwu.nl": {
-   "level": "L2",
-   "error": null
-  },
-  "KeeperFFStoreExtension@KeeperSecurityInc": {
    "level": "L2",
    "error": null
   },
@@ -667,10 +559,6 @@
    "level": "L2",
    "error": null
   },
-  "@setupvpncom": {
-   "level": "L1",
-   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
-  },
   "{34daeb50-c2d2-4f14-886a-7160b24d66a4}": {
    "level": "L2",
    "error": null
@@ -703,10 +591,6 @@
    "level": "L1",
    "error": "unknown manifest key 'experiment_apis'"
   },
-  "firefox-addon@expressvpn.com": {
-   "level": "L2",
-   "error": null
-  },
   "addon@metricunitconverter.com": {
    "level": "L2",
    "error": null
@@ -735,25 +619,13 @@
    "level": "L2",
    "error": null
   },
-  "{E0B8C461-F8FB-49b4-8373-FE32E9252800}": {
-   "level": "L2",
-   "error": null
-  },
   "Ezy_Speed_Test___Custom_Web_Search_nybAAzaSyK@ezyspeedtest.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{5cce4ab5-3d47-41b9-af5e-8203eea05245}": {
    "level": "L2",
    "error": null
   },
   "{3c078156-979c-498b-8990-85f7987dd929}": {
    "level": "L1",
    "error": "unknown permission 'menus.overrideContext'"
-  },
-  "rf-firefox@siber.com": {
-   "level": "L2",
-   "error": null
   },
   "{00000f2a-7cde-4f20-83ed-434fcb420d71}": {
    "level": "L2",
@@ -768,14 +640,6 @@
    "error": null
   },
   "{830f38bd-efc5-45dc-a5a6-064d9a638806}": {
-   "level": "L2",
-   "error": null
-  },
-  "plugin@okta.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{f2a47522-1d86-4828-b6fb-d02e849f1b69}": {
    "level": "L2",
    "error": null
   },
@@ -811,14 +675,6 @@
    "level": "L2",
    "error": null
   },
-  "companion@pix.fr": {
-   "level": "L2",
-   "error": null
-  },
-  "{06acb1db-eb92-47f1-8b4c-7d87acce5a81}": {
-   "level": "L2",
-   "error": null
-  },
   "{60493d8c-aec8-448e-a247-5d2cfa047d69}": {
    "level": "L2",
    "error": null
@@ -826,14 +682,6 @@
   "soundfixer@unrelenting.technology": {
    "level": "L2",
    "error": null
-  },
-  "firefox@vid.io": {
-   "level": "L2",
-   "error": null
-  },
-  "firefox@teleparty.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input (_generated_background_page.html:1)"
   },
   "{adeadebb-fedc-4180-a7f4-cfdd87496551}": {
    "level": "L2",
@@ -860,14 +708,6 @@
    "error": null
   },
   "{d7742d87-e61d-4b78-b8a1-b469842139fa}": {
-   "level": "L2",
-   "error": null
-  },
-  "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack": {
-   "level": "L2",
-   "error": null
-  },
-  "{6e710c58-36cc-49d6-b772-bfc3030fa56e}": {
    "level": "L2",
    "error": null
   },
@@ -907,10 +747,6 @@
    "level": "L2",
    "error": null
   },
-  "fftmtoolbarProd@trendmicro.com": {
-   "level": "L2",
-   "error": null
-  },
   "{7809d936-7f77-4373-93cd-8cfac159d738}": {
    "level": "L2",
    "error": null
@@ -926,10 +762,6 @@
   "tab-stash@condordes.net": {
    "level": "L1",
    "error": "unknown permission 'tabHide'"
-  },
-  "contact@lukaslen.com": {
-   "level": "L2",
-   "error": null
   },
   "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}": {
    "level": "L1",
@@ -987,15 +819,7 @@
    "level": "L1",
    "error": "unknown permission 'tabHide'"
   },
-  "checkerplusforgmail@jasonsavard.com": {
-   "level": "L2",
-   "error": null
-  },
   "{e6fc2bbd-183e-4518-9ea5-04a8a913ab00}": {
-   "level": "L2",
-   "error": null
-  },
-  "passbolt@passbolt.com": {
    "level": "L2",
    "error": null
   },
@@ -1012,10 +836,6 @@
    "error": null
   },
   "{7fee47a1-8299-4576-90bf-5fd88d756926}": {
-   "level": "L2",
-   "error": null
-  },
-  "com.abr.startapp@adminbyrequest.com": {
    "level": "L2",
    "error": null
   },
@@ -1039,10 +859,6 @@
    "level": "L2",
    "error": null
   },
-  "{8927f234-4dd9-48b1-bf76-44a9e153eee0}": {
-   "level": "L2",
-   "error": null
-  },
   "woop-NoopscooPsnSXQ@jetpack": {
    "level": "L2",
    "error": null
@@ -1056,10 +872,6 @@
    "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'sponsorBlocker@ajay.app' (js/background.js:1)"
   },
   "{dcb8caa2-63fa-41aa-a508-a45c5990ebdd}": {
-   "level": "L2",
-   "error": null
-  },
-  "cashback_letyshops@LetyShops": {
    "level": "L2",
    "error": null
   },
@@ -1096,10 +908,6 @@
    "error": null
   },
   "addon@fastforward.team": {
-   "level": "L2",
-   "error": null
-  },
-  "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
    "error": null
   },
@@ -1147,10 +955,6 @@
    "level": "L2",
    "error": null
   },
-  "passwordmanager@avira.com": {
-   "level": "L2",
-   "error": null
-  },
   "320youtube@gmx.net": {
    "level": "L2",
    "error": null
@@ -1191,10 +995,6 @@
    "level": "L2",
    "error": null
   },
-  "search@kagi.com": {
-   "level": "L2",
-   "error": null
-  },
   "{08aaa0e6-3ab6-4afd-9b94-319f19e096fa}": {
    "level": "L2",
    "error": null
@@ -1210,10 +1010,6 @@
   "offline-qr-code@rugk.github.io": {
    "level": "L1",
    "error": "Uncaught TypeError: browser.menus.refresh is not a function (background/modules/ContextMenu.js:58)"
-  },
-  "sky-follower-bridge@ryo.kawamata": {
-   "level": "L2",
-   "error": null
   },
   "remove-paywall@example.com": {
    "level": "L2",
@@ -1271,10 +1067,6 @@
    "level": "L2",
    "error": null
   },
-  "{799c0914-748b-41df-a25c-22d008f9e83f}": {
-   "level": "L2",
-   "error": null
-  },
   "mozext@sk.ditec.dbridge2": {
    "level": "L2",
    "error": null
@@ -1303,10 +1095,6 @@
    "level": "L2",
    "error": null
   },
-  "toolbar@web.de": {
-   "level": "L2",
-   "error": null
-  },
   "Quick_Recipe_Hub___Custom_Web_Search_MTyoGHhulF@quickrecipehub.com": {
    "level": "L2",
    "error": null
@@ -1320,10 +1108,6 @@
    "error": null
   },
   "{59812185-ea92-4cca-8ab7-cfcacee81281}": {
-   "level": "L2",
-   "error": null
-  },
-  "browser@tunnelbear.com": {
    "level": "L2",
    "error": null
   },
@@ -1342,10 +1126,6 @@
   "{9ed7d361-ccd9-4cad-9846-977da2651fb5}": {
    "level": "L1",
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'mode') (js/options.js:132)"
-  },
-  "danabok16@gmail.com": {
-   "level": "L2",
-   "error": null
   },
   "jid1-5Fs7iTLscUaZBgwr@jetpack": {
    "level": "L2",
@@ -1403,15 +1183,7 @@
    "level": "L2",
    "error": null
   },
-  "{988dd4f5-e8d5-49bf-a766-ff75b0e19fe2}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'Reason') (js/backgroundScripts/background.bundle.js:3)"
-  },
   "antidote_uni11_firefox@druide.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{2a7c0eb8-2936-4b6f-b738-5f7183d98698}": {
    "level": "L2",
    "error": null
   },
@@ -1431,15 +1203,7 @@
    "level": "L1",
    "error": "Uncaught (in promise) Error: Max retries exceeded (background.js:1)"
   },
-  "@addonsignalspam": {
-   "level": "L2",
-   "error": null
-  },
   "dont-accept-webp@jeffersonscher.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{ad518da0-1f82-438e-9788-53e39b4b0f9c}": {
    "level": "L2",
    "error": null
   },
@@ -1448,10 +1212,6 @@
    "error": null
   },
   "{8f4bbf79-5514-4d04-a901-d5fabfe91d73}": {
-   "level": "L2",
-   "error": null
-  },
-  "{d0210f13-a970-4f1e-8322-0f76ec80adde}": {
    "level": "L2",
    "error": null
   },
@@ -1495,10 +1255,6 @@
    "level": "L2",
    "error": null
   },
-  "jid0-GjwrPchS3Ugt7xydvqVK4DQk8Ls@jetpack": {
-   "level": "L2",
-   "error": null
-  },
   "helloyanis@ageverif-bypass": {
    "level": "L1",
    "error": "unknown permission 'webRequestFilterResponse'"
@@ -1535,10 +1291,6 @@
    "level": "L2",
    "error": null
   },
-  "ms.pad.firefox@microsoft.com": {
-   "level": "L2",
-   "error": null
-  },
   "openmultipleurls@ustat.de": {
    "level": "L2",
    "error": null
@@ -1551,15 +1303,7 @@
    "level": "L1",
    "error": "Uncaught TypeError: ke.data.kernel.save.user_init is not a function (src/kernel/kernel.js:376)"
   },
-  "toolbar@gmx.net": {
-   "level": "L2",
-   "error": null
-  },
   "redirector@einaregilsson.com": {
-   "level": "L2",
-   "error": null
-  },
-  "ols_main@withsecure.com": {
    "level": "L2",
    "error": null
   },
@@ -1568,10 +1312,6 @@
    "error": null
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
-   "level": "L2",
-   "error": null
-  },
-  "synofoto-extension@synology.com": {
    "level": "L2",
    "error": null
   },
@@ -1584,10 +1324,6 @@
    "error": null
   },
   "{2ea2bfef-af69-4427-909c-34e1f3f5a418}": {
-   "level": "L2",
-   "error": null
-  },
-  "vknext-vms@vknext.net": {
    "level": "L2",
    "error": null
   },
@@ -1624,10 +1360,6 @@
    "error": null
   },
   "{9076cefe-e6f8-4883-a480-9f968bd09249}": {
-   "level": "L2",
-   "error": null
-  },
-  "{0668a87f-e3bb-4ed3-a096-e145c1e9f1d2}": {
    "level": "L2",
    "error": null
   },
@@ -1691,10 +1423,6 @@
    "level": "L2",
    "error": null
   },
-  "lisa@qipu.de": {
-   "level": "L2",
-   "error": null
-  },
   "{b3e677f4-1150-4387-8629-da738260a48e}": {
    "level": "L2",
    "error": null
@@ -1735,10 +1463,6 @@
    "level": "L2",
    "error": null
   },
-  "{029d76e8-fbc9-4521-996a-014394515f7f}": {
-   "level": "L2",
-   "error": null
-  },
   "{0da2e603-21ba-4422-8049-b6d9e013ed84}": {
    "level": "L2",
    "error": null
@@ -1748,10 +1472,6 @@
    "error": null
   },
   "{e3ec0551-9bfa-4233-b9dd-6b36f6a80962}": {
-   "level": "L2",
-   "error": null
-  },
-  "{3e4d2037-d300-4e95-859d-3cba866f46d3}": {
    "level": "L2",
    "error": null
   },
@@ -1771,15 +1491,7 @@
    "level": "L2",
    "error": null
   },
-  "{1c5afe9d-99f4-4236-b90a-08a04f589b06}": {
-   "level": "L2",
-   "error": null
-  },
   "{954142f5-7f00-4880-bee7-8a1590ac4152}": {
-   "level": "L2",
-   "error": null
-  },
-  "{4d5b7a5e-5232-9e45-97f4-f8e1ca2626e5}": {
    "level": "L2",
    "error": null
   },
@@ -1788,10 +1500,6 @@
    "error": null
   },
   "{a138007c-5ff6-4d10-83d9-0afaf0efbe5e}": {
-   "level": "L2",
-   "error": null
-  },
-  "{c84d89d9-a826-4015-957b-affebd9eb603}": {
    "level": "L2",
    "error": null
   },
@@ -1839,10 +1547,6 @@
    "level": "L2",
    "error": null
   },
-  "jid1-BYcQOfYfmBMd9A@jetpack": {
-   "level": "L2",
-   "error": null
-  },
   "{290ce447-2abb-4d96-8384-7256dd4a1c43}": {
    "level": "L2",
    "error": null
@@ -1856,10 +1560,6 @@
    "error": null
   },
   "{f4f4223a-ff30-4961-b9c0-6a71b7a32aaf}": {
-   "level": "L2",
-   "error": null
-  },
-  "webmetering@flexera.com": {
    "level": "L2",
    "error": null
   },
@@ -1892,10 +1592,6 @@
    "error": null
   },
   "bookmarksorganizer@agenedia.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{512b44b5-40a9-4593-b9fd-b29e4e1ab7c8}": {
    "level": "L2",
    "error": null
   },
@@ -1947,10 +1643,6 @@
    "level": "L2",
    "error": null
   },
-  "NetflixPrime@Autoskip.io": {
-   "level": "L2",
-   "error": null
-  },
   "{8e515334-52b5-4cc5-b4e8-675d50af677d}": {
    "level": "L2",
    "error": null
@@ -1960,10 +1652,6 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'createDocument') (background-script.js:2)"
   },
   "headereditor-amo@addon.firefoxcn.net": {
-   "level": "L2",
-   "error": null
-  },
-  "support@todoist.com": {
    "level": "L2",
    "error": null
   },
@@ -1979,10 +1667,6 @@
    "level": "L1",
    "error": "Uncaught ReferenceError: window is not defined (background/background.js:1)"
   },
-  "{3c9b993f-29b9-44c2-a913-def7b93a70b1}": {
-   "level": "L2",
-   "error": null
-  },
   "screen-recorder@freebusinessapps": {
    "level": "L2",
    "error": null
@@ -1990,14 +1674,6 @@
   "{580efa7d-66f9-474d-857a-8e2afc6b1181}": {
    "level": "L2",
    "error": null
-  },
-  "insensitivex@orca.pet": {
-   "level": "L2",
-   "error": null
-  },
-  "jid1-NI2sWc3cvsAJsg@jetpack": {
-   "level": "L1",
-   "error": "Uncaught (in promise) OrmError: storage driver error: Failed to initialize adapter: chrome/3/storage. Error: Adapter not found in registry for chrome/3/storage (background.js:3)"
   },
   "{4ee0a760-13e0-4ee5-af22-03099a45936d}": {
    "level": "L2",
@@ -2039,10 +1715,6 @@
    "level": "L2",
    "error": null
   },
-  "d2seasonpasswaybackmachine@id.com": {
-   "level": "L2",
-   "error": null
-  },
   "fefnkplkicihcoenmljhbihhaaagjhpp@gomino.com": {
    "level": "L2",
    "error": null
@@ -2055,10 +1727,6 @@
    "level": "L1",
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'catch') (src/pages/contentInjected/index.js:1)"
   },
-  "prathercc@gmail.com": {
-   "level": "L2",
-   "error": null
-  },
   "ai-overview-hider-for-google@jbscript.dev": {
    "level": "L2",
    "error": null
@@ -2068,14 +1736,6 @@
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:339)"
   },
   "{db420ff1-427a-4cda-b5e7-7d395b9f16e1}": {
-   "level": "L2",
-   "error": null
-  },
-  "{2b38cb05-9cff-44a7-b9f1-7cc575afab8a}": {
-   "level": "L2",
-   "error": null
-  },
-  "ebatesca@ebates.com": {
    "level": "L2",
    "error": null
   },
@@ -2111,10 +1771,6 @@
    "level": "L2",
    "error": null
   },
-  "tasksforcanvas@jtchengdev.com": {
-   "level": "L2",
-   "error": null
-  },
   "juraj.masiar@gmail.com_ScrollAnywhere": {
    "level": "L2",
    "error": null
@@ -2128,10 +1784,6 @@
    "error": null
   },
   "vpn@hide-my-ip.org": {
-   "level": "L2",
-   "error": null
-  },
-  "adguard-vpn@adguard.com": {
    "level": "L2",
    "error": null
   },
@@ -2160,14 +1812,6 @@
    "error": null
   },
   "{c23d8eea-4e71-4573-a245-4c97f8e1a1e0}": {
-   "level": "L2",
-   "error": null
-  },
-  "{ffed5dfa-f0e1-403d-905d-ac3f698660a7}": {
-   "level": "L2",
-   "error": null
-  },
-  "{ecb80162-dfbd-4d91-a8da-17b35ba4707a}": {
    "level": "L2",
    "error": null
   },
@@ -2207,15 +1851,7 @@
    "level": "L2",
    "error": null
   },
-  "sync2@poeoverlay.com": {
-   "level": "L2",
-   "error": null
-  },
   "xdm-v8-browser-helper@subhra74.github.io": {
-   "level": "L2",
-   "error": null
-  },
-  "syncshare@naloaty.me": {
    "level": "L2",
    "error": null
   },
@@ -2323,15 +1959,7 @@
    "level": "L1",
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/pages/background/index.js:1)"
   },
-  "floccus@handmadeideas.org": {
-   "level": "L2",
-   "error": null
-  },
   "{228a49ed-af0c-452c-bc77-630f99cb0470}": {
-   "level": "L2",
-   "error": null
-  },
-  "addon@simplelogin": {
    "level": "L2",
    "error": null
   },
@@ -2344,10 +1972,6 @@
    "error": null
   },
   "context@reverso.net": {
-   "level": "L2",
-   "error": null
-  },
-  "enquiry@purevpn.com": {
    "level": "L2",
    "error": null
   },
@@ -2435,10 +2059,6 @@
    "level": "L1",
    "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (swift-selection-search.html:0)"
   },
-  "secureline-vpn@avast.com": {
-   "level": "L2",
-   "error": null
-  },
   "recipioapp@togonetworksltd.com": {
    "level": "L2",
    "error": null
@@ -2448,10 +2068,6 @@
    "error": null
   },
   "{c5f935cf-9b17-4b85-bed8-9277861b4116}": {
-   "level": "L2",
-   "error": null
-  },
-  "{7dd882da-eb07-4d46-8343-3a181cdc4c3f}": {
    "level": "L2",
    "error": null
   },
@@ -2475,10 +2091,6 @@
    "level": "L2",
    "error": null
   },
-  "toggl-button@toggl.com": {
-   "level": "L2",
-   "error": null
-  },
   "{3e4b4578-e3d0-486e-ab0b-743fba91a5f7}": {
    "level": "L2",
    "error": null
@@ -2492,10 +2104,6 @@
    "error": "unknown permission 'trialML'"
   },
   "admin@2fas.com": {
-   "level": "L2",
-   "error": null
-  },
-  "sabre@simplify.jobs": {
    "level": "L2",
    "error": null
   },
@@ -2559,19 +2167,7 @@
    "level": "L2",
    "error": null
   },
-  "{878c5814-8eb9-4262-9b4b-f46e74dd7cfa}": {
-   "level": "L2",
-   "error": null
-  },
   "swisscows@swisscows.ch": {
-   "level": "L2",
-   "error": null
-  },
-  "betterfacebook@mattkruse.com": {
-   "level": "L2",
-   "error": null
-  },
-  "twitchinventoryclaimer@schulzjona": {
    "level": "L2",
    "error": null
   },
@@ -2631,10 +2227,6 @@
    "level": "L2",
    "error": null
   },
-  "{d3e2f0a1-1234-5678-9abc-def012345659}": {
-   "level": "L2",
-   "error": null
-  },
   "Open-Link-with-New-Tab@sienori": {
    "level": "L2",
    "error": null
@@ -2655,17 +2247,9 @@
    "level": "L2",
    "error": null
   },
-  "{ed387cfb-e57a-49e0-9bf3-017a1f7f2378}": {
-   "level": "L2",
-   "error": null
-  },
   "{E6C93316-271E-4b3d-8D7E-FE11B4350AEB}": {
    "level": "L2",
    "error": null
-  },
-  "{c9cc7f63-4549-4d7a-a77a-931bfdeb09a9}": {
-   "level": "L1",
-   "error": "unknown permission 'webRequestFilterResponse'"
   },
   "newspass@newspass.com": {
    "level": "L2",
@@ -2675,23 +2259,11 @@
    "level": "L2",
    "error": null
   },
-  "{a94d60a0-8408-4c53-8eec-cb349eb958b8}": {
-   "level": "L2",
-   "error": null
-  },
-  "intgcal@egarracingteam.com.ar": {
-   "level": "L2",
-   "error": null
-  },
   "{e25fb70d-3892-456f-a698-f8f8bd749e23}": {
    "level": "L2",
    "error": null
   },
   "{5C46D283-ABDE-4dce-B83C-08881401921C}": {
-   "level": "L2",
-   "error": null
-  },
-  "{d3e2f0a1-1234-5678-9abc-def012745674}": {
    "level": "L2",
    "error": null
   },
@@ -2775,10 +2347,6 @@
    "level": "L2",
    "error": null
   },
-  "{809ea8a3-a45d-41a2-9cb0-e7c7d7321db5}": {
-   "level": "L2",
-   "error": null
-  },
   "admin@myprivacytools.com": {
    "level": "L2",
    "error": null
@@ -2859,10 +2427,6 @@
    "level": "L2",
    "error": null
   },
-  "{1262fc44-5ec9-4088-a7a7-4cd42f3f548d}": {
-   "level": "L2",
-   "error": null
-  },
   "jid1-D7momAzRw417Ag@jetpack": {
    "level": "L2",
    "error": null
@@ -2872,10 +2436,6 @@
    "error": null
   },
   "{cf02b1a7-a01a-4e37-a609-516a283f1ed3}": {
-   "level": "L2",
-   "error": null
-  },
-  "2026@spotify-adblock": {
    "level": "L2",
    "error": null
   },
@@ -2891,19 +2451,7 @@
    "level": "L2",
    "error": null
   },
-  "alldebrid@alldebrid.com": {
-   "level": "L2",
-   "error": null
-  },
-  "collector@broceliand.fr": {
-   "level": "L2",
-   "error": null
-  },
   "textlink-and-googletranslate@aime": {
-   "level": "L2",
-   "error": null
-  },
-  "firefox_extension@calendly.com": {
    "level": "L2",
    "error": null
   },
@@ -2951,15 +2499,7 @@
    "level": "L2",
    "error": null
   },
-  "{3754707b-1aa4-4c6f-96e7-5b1cdc1de5f9}": {
-   "level": "L2",
-   "error": null
-  },
   "inist.users@gmail.com": {
-   "level": "L2",
-   "error": null
-  },
-  "jid1-PmuMUcuMey5ABw@jetpack": {
    "level": "L2",
    "error": null
   },
@@ -2988,10 +2528,6 @@
    "error": null
   },
   "disable-html5-autoplay@afnankhan": {
-   "level": "L2",
-   "error": null
-  },
-  "fvdmedia@gmail.com": {
    "level": "L2",
    "error": null
   },
@@ -3071,10 +2607,6 @@
    "level": "L2",
    "error": null
   },
-  "{8e41107d-2be2-454d-b4b8-c3d7e54d77de}": {
-   "level": "L2",
-   "error": null
-  },
   "SpeedPitch_changer@despaa.id": {
    "level": "L1",
    "error": "Uncaught TypeError: cad_upd.split is not a function (background/background.js:57)"
@@ -3087,10 +2619,6 @@
    "level": "L1",
    "error": "Uncaught (in promise) TypeError: Invalid invocation (core.js:2)"
   },
-  "notifier@topcashback.co.uk": {
-   "level": "L2",
-   "error": null
-  },
   "xl_webbrowserstore@xunlei.com": {
    "level": "L2",
    "error": null
@@ -3100,14 +2628,6 @@
    "error": null
   },
   "{29428906-aec3-11f0-beb4-6f7e24e82795}": {
-   "level": "L2",
-   "error": null
-  },
-  "privacy@privacy.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{631d447a-17e8-43af-b541-3bf88cb55800}": {
    "level": "L2",
    "error": null
   },
@@ -3143,10 +2663,6 @@
    "level": "L2",
    "error": null
   },
-  "{e84c7711-c738-409a-879d-3f20cb087563}": {
-   "level": "L2",
-   "error": null
-  },
   "jid1-Xo5SuA6qc1DFpw@jetpack": {
    "level": "L2",
    "error": null
@@ -3156,10 +2672,6 @@
    "error": null
   },
   "{bd97f89b-17ba-4539-9fec-06852d07f917}": {
-   "level": "L2",
-   "error": null
-  },
-  "{b2d4c129-6437-4847-868c-53b4832fee00}": {
    "level": "L2",
    "error": null
   },
@@ -3195,10 +2707,6 @@
    "level": "L2",
    "error": null
   },
-  "findandremind@easyfundraising.org.uk": {
-   "level": "L2",
-   "error": null
-  },
   "{a0901e86-92df-4b8d-9fcd-7ad4746a6f95}": {
    "level": "L1",
    "error": "unknown permission 'tabHide'"
@@ -3219,10 +2727,6 @@
    "level": "L2",
    "error": null
   },
-  "{e7476172-097c-4b77-b56e-f56a894adca9}": {
-   "level": "L2",
-   "error": null
-  },
   "{1c3ca161-8c6d-48ed-9993-da686bcf5310}": {
    "level": "L2",
    "error": null
@@ -3236,10 +2740,6 @@
    "error": null
   },
   "addon@speedtestmeter.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{bd40e25c-7e66-4602-b8ef-35b979b78cbb}": {
    "level": "L2",
    "error": null
   },
@@ -3303,10 +2803,6 @@
    "level": "L2",
    "error": null
   },
-  "{7eac736e-bef2-462b-bdac-334f7f91e338}": {
-   "level": "L2",
-   "error": null
-  },
   "{536b14f1-381e-49f5-a2f5-8cb33ac17402}": {
    "level": "L2",
    "error": null
@@ -3343,19 +2839,11 @@
    "level": "L2",
    "error": null
   },
-  "{37fa1426-b82d-11db-8314-0800200c9a66}": {
-   "level": "L2",
-   "error": null
-  },
   "{dc0b7af2-2cfc-498d-bee5-50e710ed404a}": {
    "level": "L2",
    "error": null
   },
   "{59e0d4a0-46e9-43d4-ada7-af7622915d85}": {
-   "level": "L2",
-   "error": null
-  },
-  "caitools.dev@gmail.com": {
    "level": "L2",
    "error": null
   },
@@ -3407,10 +2895,6 @@
    "level": "L2",
    "error": null
   },
-  "gmail_panel@alejandrobrizuela.com.ar": {
-   "level": "L2",
-   "error": null
-  },
   "{07046613-1993-4b66-9dd1-9dd1ce581cb7}": {
    "level": "L2",
    "error": null
@@ -3422,10 +2906,6 @@
   "jid1-AoXeeOB4j7kFdw@jetpack": {
    "level": "L1",
    "error": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'url') (src/assets/js/p24.js:526)"
-  },
-  "firefox@hunter.io": {
-   "level": "L2",
-   "error": null
   },
   "{85252760-c586-4180-8788-c50234c0ac08}": {
    "level": "L1",
@@ -3439,27 +2919,11 @@
    "level": "L2",
    "error": null
   },
-  "team@readwise.io": {
-   "level": "L2",
-   "error": null
-  },
   "@youtube-download-ytd": {
    "level": "L2",
    "error": null
   },
-  "{52e126d4-d2d7-483a-a0a1-6e8aace23253}": {
-   "level": "L2",
-   "error": null
-  },
-  "toolbar-ff@payback.de": {
-   "level": "L2",
-   "error": null
-  },
   "firefox@getsharex.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{2b6c25c8-0c7e-4692-957f-c4ae6af0c34b}": {
    "level": "L2",
    "error": null
   },
@@ -3515,10 +2979,6 @@
    "level": "L2",
    "error": null
   },
-  "{09993eda-1986-4e10-886e-5c63815338c5}": {
-   "level": "L2",
-   "error": null
-  },
   "amazineurope@founderedeveloper.com": {
    "level": "L2",
    "error": null
@@ -3559,10 +3019,6 @@
    "level": "L2",
    "error": null
   },
-  "{62e31096-34e6-4503-8806-3d7a6004a1f4}": {
-   "level": "L2",
-   "error": null
-  },
   "{7c2a67fe-1184-46b4-8d17-6a4d66e9f601}": {
    "level": "L2",
    "error": null
@@ -3580,10 +3036,6 @@
    "error": null
   },
   "{8fea972f-c152-4f9d-b859-845c6d39bb3c}": {
-   "level": "L2",
-   "error": null
-  },
-  "jid1-jAUWJuglb1SqUQ@jetpack": {
    "level": "L2",
    "error": null
   },
@@ -3607,10 +3059,6 @@
    "level": "L2",
    "error": null
   },
-  "gyazo-extension@gyazo.com": {
-   "level": "L2",
-   "error": null
-  },
   "{45a77b05-36c2-4f0f-864b-309d1916bb2a}": {
    "level": "L2",
    "error": null
@@ -3620,10 +3068,6 @@
    "error": null
   },
   "{56b215f4-29b6-4898-bf2a-152d8bc189ed}": {
-   "level": "L2",
-   "error": null
-  },
-  "@buyee-cart-extension": {
    "level": "L2",
    "error": null
   },
@@ -3655,10 +3099,6 @@
    "level": "L2",
    "error": null
   },
-  "passwordmanager@avast.com": {
-   "level": "L2",
-   "error": null
-  },
   "administrator@pricy.ro": {
    "level": "L1",
    "error": "Uncaught ReferenceError: require is not defined (js/popover.min.js:6)"
@@ -3687,18 +3127,6 @@
    "level": "L2",
    "error": null
   },
-  "aws-extend-switch-roles@toshi.tilfin.com": {
-   "level": "L2",
-   "error": null
-  },
-  "{99482dab-18e1-49ac-868a-90bd802785b7}": {
-   "level": "L2",
-   "error": null
-  },
-  "{8e1ef2d7-d78f-47f9-9b69-c2806eb534fc}": {
-   "level": "L2",
-   "error": null
-  },
   "tridactyl.vim@cmcaine.co.uk": {
    "level": "L1",
    "error": "unknown permission 'find'"
@@ -3715,15 +3143,7 @@
    "level": "L2",
    "error": null
   },
-  "{a5df0009-71e3-4048-bb02-38e1ee2ed33f}": {
-   "level": "L2",
-   "error": null
-  },
   "{2f182d41-fd03-4a6d-938d-081419586c37}": {
-   "level": "L2",
-   "error": null
-  },
-  "{076d8ebb-5df6-48e0-a619-99315c395644}": {
    "level": "L2",
    "error": null
   },
@@ -3743,25 +3163,13 @@
    "level": "L2",
    "error": null
   },
-  "{f2d56336-0f16-4870-bf64-84b3fd97c9c0}": {
-   "level": "L2",
-   "error": null
-  },
   "hogecafe@gmail.com": {
    "level": "L2",
    "error": null
   },
-  "{eb8aee6c-8239-4f5f-beed-9a4c55c76e32}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'fingerprint') (background.js:1)"
-  },
   "quickdial@matmoul.com": {
    "level": "L1",
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (js/background.js:582)"
-  },
-  "{264206b8-8ba0-4824-8eeb-9d8d0520086f}": {
-   "level": "L2",
-   "error": null
   },
   "{b21882eb-3211-44dc-964b-e6f35b33061f}": {
    "level": "L2",
@@ -3775,23 +3183,11 @@
    "level": "L1",
    "error": "Uncaught ReferenceError: exportFunction is not defined (content.js:63)"
   },
-  "ahrefs@AhrefsPteLtd": {
-   "level": "L2",
-   "error": null
-  },
-  "claude_usage_tracker@lugia19.com": {
-   "level": "L2",
-   "error": null
-  },
   "{a8f7e9c2-4d3b-4a1e-9f8c-7b6d5e4a3c2b}": {
    "level": "L1",
    "error": "unknown permission 'webRequestFilterResponse'"
   },
   "google-page-translator-en-ja@id.pokemori.jp": {
-   "level": "L2",
-   "error": null
-  },
-  "{33790bb6-386a-4cab-a9d0-c760b5a467ab}": {
    "level": "L2",
    "error": null
   },
@@ -3835,15 +3231,7 @@
    "level": "L2",
    "error": null
   },
-  "netpanel@gemius.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'onMessage') (lib/backgrounds/sw_modules/adpage.js:917)"
-  },
   "{a50b0ef8-7ffe-4628-b2f7-57ea96a6ae84}": {
-   "level": "L2",
-   "error": null
-  },
-  "shopcbbuttonFF@befrugal.com": {
    "level": "L2",
    "error": null
   },
@@ -3871,19 +3259,7 @@
    "level": "L2",
    "error": null
   },
-  "jid1-W5guVoyeUR0uBg@jetpack": {
-   "level": "L2",
-   "error": null
-  },
   "{c5b32a48-5514-4a46-81f2-075ebf3cbc29}": {
-   "level": "L2",
-   "error": null
-  },
-  "{294b9016-c306-4f99-b4d4-d410e01e867f}": {
-   "level": "L2",
-   "error": null
-  },
-  "jonatas@gov": {
    "level": "L2",
    "error": null
   },
@@ -3896,10 +3272,6 @@
    "error": null
   },
   "contact@castorus.com": {
-   "level": "L2",
-   "error": null
-  },
-  "housj@damddos.com": {
    "level": "L2",
    "error": null
   },
@@ -3931,10 +3303,6 @@
    "level": "L2",
    "error": null
   },
-  "{0e991294-458a-41a8-8f30-37cc4b3e1700}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Rule with id 10001 does not have a unique ID. (service.js:263)"
-  },
   "{62818d18-03a3-4ae9-bbe6-d7e7d8b03a0d}": {
    "level": "L2",
    "error": null
@@ -3942,10 +3310,6 @@
   "videoplayer@sharkiller.dev": {
    "level": "L2",
    "error": null
-  },
-  "info@virustotal.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Failed to fetch (src/background.js:1478)"
   },
   "{478a6f63-10b3-41e4-8216-ec5e7b3486fc}": {
    "level": "L2",
@@ -3967,10 +3331,6 @@
    "level": "L2",
    "error": null
   },
-  "real-time-stable@reveddit.com": {
-   "level": "L2",
-   "error": null
-  },
   "{2e0fa8dd-c43c-438c-b77b-95ddc3d893ec}": {
    "level": "L2",
    "error": null
@@ -3988,10 +3348,6 @@
    "error": null
   },
   "jid1-vs5odTmtIydjMg@jetpack": {
-   "level": "L2",
-   "error": null
-  },
-  "{0f1b4c25-4ab0-411e-ba22-e56c27f3d151}": {
    "level": "L2",
    "error": null
   },

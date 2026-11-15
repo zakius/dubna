@@ -88,14 +88,6 @@
   "sha256": "24d9ebe887fc2781544e6d58669aa36c131dc75231446eaaaed1ee40c9954a7e"
  },
  {
-  "id": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
-  "slug": "bitwarden-password-manager",
-  "users": 1053057,
-  "version": "2026.10.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5198653/bitwarden_password_manager-2026.10.2.xpi",
-  "sha256": "abf9d7273dd55ac0583ecc6997f7f7ae3d29de11e2ad0a4838b80e2b941daa73"
- },
- {
   "id": "firefox@ghostery.com",
   "slug": "ghostery",
   "users": 1029354,
@@ -166,14 +158,6 @@
   "version": "10.2.1.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4962745/traduzir_paginas_web-10.2.1.0.xpi",
   "sha256": "67f4b90279426590ccf88f85aef14509948b4e661682d938a93c0bcce94c523b"
- },
- {
-  "id": "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack",
-  "slug": "grammarly-1",
-  "users": 534803,
-  "version": "8.937.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4774290/grammarly_1-8.937.0.xpi",
-  "sha256": "d8f2deca5a0d23d8d072ed24548d3897eef19bc871556b18d7c09e91c07139b7"
  },
  {
   "id": "jid1-q4sG8pYhq8KGHs@jetpack",
@@ -256,36 +240,12 @@
   "sha256": "10936d682e17bd2e8afa018bde94f927b50cf05973d6ef8ca3c54f807b2cf7ba"
  },
  {
-  "id": "support@lastpass.com",
-  "slug": "lastpass-password-manager",
-  "users": 393937,
-  "version": "4.157.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5210227/lastpass_password_manager-4.157.0.xpi",
-  "sha256": "8a5a1ca5f8c6b5a86f0fe19b069c9f373441cff5f13a48036dc6dc5cf4798ba1"
- },
- {
-  "id": "{d634138d-c276-4fc8-924b-40a0ea21d284}",
-  "slug": "1password-x-password-manager",
-  "users": 387220,
-  "version": "8.12.41.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5097307/1password_x_password_manager-8.12.41.1.xpi",
-  "sha256": "6b00acff73253865303af49e99329245a940348484cbd931ea39f9fa215134f5"
- },
- {
   "id": "helper@savefrom.net",
   "slug": "savefromnet-helper",
   "users": 340962,
   "version": "10.63",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5200364/savefromnet_helper-10.63.xpi",
   "sha256": "281481e6c217b02894f638114290a9052d0911ff1eb148ef80ee38f0700e0893"
- },
- {
-  "id": "light_plugin_7571494CE0B94E11BB762B659A4AD71F@kaspersky.com",
-  "slug": "kaspersky-protection-2021",
-  "users": 339757,
-  "version": "2.16.2.4",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5211223/kaspersky_protection_2021-2.16.2.4.xpi",
-  "sha256": "817d38bb1c49cf9da930a8416ebc0be1f0cc8c3cf49ed43ffcdf76da3db53d85"
  },
  {
   "id": "nortonsafeweb@symantec.com",
@@ -312,14 +272,6 @@
   "sha256": "54919c8f79989646e9ea4db5901eec7ce123170838b6db909cfd0e1e262854ae"
  },
  {
-  "id": "nordvpnproxy@nordvpn.com",
-  "slug": "nordvpn-proxy-extension",
-  "users": 311997,
-  "version": "6.3.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5178132/nordvpn_proxy_extension-6.3.1.xpi",
-  "sha256": "f7cd43356957348db28f1a7ac22312ba303e8b06658e54d4f984b383ad88c57d"
- },
- {
   "id": "jid1-xUfzOsOFlzSOXg@jetpack",
   "slug": "reddit-enhancement-suite",
   "users": 298931,
@@ -344,14 +296,6 @@
   "sha256": "e03a74556f47be7a5892d798565cb9a242ae14ef6f6e12e28b1c48445c5c608b"
  },
  {
-  "id": "private-relay@firefox.com",
-  "slug": "private-relay",
-  "users": 254241,
-  "version": "2.8.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4205650/private_relay-2.8.1.xpi",
-  "sha256": "4a85ddc1cd19d2a156c4efe76225d424c0c32e700ab77601f8c1e50d7975cd9d"
- },
- {
   "id": "simple-translate@sienori",
   "slug": "simple-translate",
   "users": 251143,
@@ -374,14 +318,6 @@
   "version": "13.6.37",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5173524/noscript-13.6.37.xpi",
   "sha256": "a4733ee2383a4e0debcd4930a2a6e1fe0a8a526332c2cbedaac8d1a563ba921b"
- },
- {
-  "id": "browserextension@eset.com",
-  "slug": "eset-browser-privacy-security",
-  "users": 240240,
-  "version": "1.2.10",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5208866/eset_browser_privacy_security-1.2.10.xpi",
-  "sha256": "a136494b27f87a55a8b5f7d45ecb33804ca877cc5a6709dde97d3c77ff81ab69"
  },
  {
   "id": "jid1-KKzOGWgsW3Ao4Q@jetpack",
@@ -424,14 +360,6 @@
   "sha256": "ba069f14843f33b3a36e4149dd63e3d05cea5362d108d69a0743975180471302"
  },
  {
-  "id": "appledev@soarinfotech.com",
-  "slug": "coupert",
-  "users": 208942,
-  "version": "6.90.96",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5207210/coupert-6.90.96.xpi",
-  "sha256": "9c8241580d90dd9407673cad6a3cd75c0acbde7baf0b2c0a63827e4f699c30f1"
- },
- {
   "id": "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}",
   "slug": "violentmonkey",
   "users": 206247,
@@ -446,46 +374,6 @@
   "version": "2.1.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4783898/startpage_private_search-2.1.1.xpi",
   "sha256": "660d16d1f9ecbde5f4db6ade380b7de77b3a922c98f236c49cec5ea19a751e88"
- },
- {
-  "id": "webrootsecure@webroot.com",
-  "slug": "web-threat-shield",
-  "users": 200328,
-  "version": "2.3.26191.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4896593/web_threat_shield-2.3.26191.1.xpi",
-  "sha256": "cf6e8ee698f4e25673b03c88c411ac0f2f57da5d09bb66348b2a256c3ab9d53a"
- },
- {
-  "id": "ols@f-secure.com",
-  "slug": "ols-f-secure",
-  "users": 198045,
-  "version": "8.1.16",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5087041/ols_f_secure-8.1.16.xpi",
-  "sha256": "249382030ea79e1e921b4bf038e47d9024e83cb10fcea1214c1c060e443ac7a6"
- },
- {
-  "id": "78272b6fa58f4a1abaac99321d503a20@proton.me",
-  "slug": "proton-pass",
-  "users": 196853,
-  "version": "1.41.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5055526/proton_pass-1.41.1.xpi",
-  "sha256": "f67c5836e5eff3f82ac38e03a7b27d30b84dbb5246f74bb21b8b5bb15d3cd936"
- },
- {
-  "id": "password-manager-firefox-extension@apple.com",
-  "slug": "icloud-passwords",
-  "users": 196023,
-  "version": "3.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5070185/icloud_passwords-3.4.0.xpi",
-  "sha256": "0cffb1716a9eff72e44a592bdef05e32d102d68253fdc508e5e6bdb5880ecbef"
- },
- {
-  "id": "{bf855ead-d7c3-4c7b-9f88-9a7e75c0efdf}",
-  "slug": "zoom-new-scheduler",
-  "users": 195810,
-  "version": "2.2.13",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4945459/zoom_new_scheduler-2.2.13.xpi",
-  "sha256": "1fcfe6f9af09ae0c1e8da60085b9f46cd4d2c2486a7115fb86bb06428f27a239"
  },
  {
   "id": "{DDC359D1-844A-42a7-9AA1-88A850A938A8}",
@@ -616,30 +504,6 @@
   "sha256": "ae41157a3f017b0773abba2097d5b0056241631d0a38ad36d68d0b24b1a409c1"
  },
  {
-  "id": "vpn@proton.ch",
-  "slug": "proton-vpn-firefox-extension",
-  "users": 153888,
-  "version": "1.3.6",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4951998/proton_vpn_firefox_extension-1.3.6.xpi",
-  "sha256": "552281ee274aeece0f83052f2fc6da3b526021b6739c3decb0390a9b5efc37a3"
- },
- {
-  "id": "idsafe@norton.com",
-  "slug": "norton-password-manager",
-  "users": 149412,
-  "version": "8.3.1.1559",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5039032/norton_password_manager-8.3.1.1559.xpi",
-  "sha256": "8b65da9c6c4bbd90424d90a41b4fa58142eaf8ffe58a5aa035ee7ecd76780661"
- },
- {
-  "id": "nordpassStandalone@nordsecurity.com",
-  "slug": "nordpass-password-management",
-  "users": 146365,
-  "version": "7.12.16",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5206440/nordpass_password_management-7.12.16.xpi",
-  "sha256": "c47662d8c3e84b86404cdbaac1aa2af6ae9190cad1df127e9a3dcd81adbbef7a"
- },
- {
   "id": "treestyletab@piro.sakura.ne.jp",
   "slug": "tree-style-tab",
   "users": 140803,
@@ -712,14 +576,6 @@
   "sha256": "2058c38ad5816dcf0b4f6958e2787ffcd2280f640c359a03a2fc6b40649af226"
  },
  {
-  "id": "firefoxdav@icloud.com",
-  "slug": "icloud-bookmarks",
-  "users": 127546,
-  "version": "2.3.40",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4031495/icloud_bookmarks-2.3.40.xpi",
-  "sha256": "942990e713d347392831fadc12922c632118d16a1a2aa3f74cdc770fafffe88b"
- },
- {
   "id": "wappalyzer@crunchlabz.com",
   "slug": "wappalyzer",
   "users": 124199,
@@ -784,22 +640,6 @@
   "sha256": "42922f61cfc53e2103e492ddbe5736caf503d9dad4a88690efc4c64dac10d5c7"
  },
  {
-  "id": "{732216ec-0dab-43bb-ac85-4b5e1977599d}",
-  "slug": "surfshark-vpn-proxy",
-  "users": 115867,
-  "version": "5.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5099294/surfshark_vpn_proxy-5.4.0.xpi",
-  "sha256": "4424f70ebb57fe720981325464a0ab29d3f722245e997524aee63fbe4e766b11"
- },
- {
-  "id": "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}",
-  "slug": "ebates",
-  "users": 115801,
-  "version": "26.16.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5015694/ebates-26.16.0.xpi",
-  "sha256": "25895489c73f74371915ea8a6af9b728a54b83a9897d834d52e240ca0f5d80b1"
- },
- {
   "id": "leechblockng@proginosko.com",
   "slug": "leechblock-ng",
   "users": 114067,
@@ -822,22 +662,6 @@
   "version": "1.34.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5142743/immersive_translate-1.34.2.xpi",
   "sha256": "bd678a421b345f49e8f841a095e5e6a265626c383768ba6a01f5ff7dbe13cd8a"
- },
- {
-  "id": "jid1-YcMV6ngYmQRA2w@jetpack",
-  "slug": "pinterest",
-  "users": 113025,
-  "version": "4.2.103",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/3916013/pinterest-4.2.103.xpi",
-  "sha256": "6fce6910ef4901ff6315269160d03b042d11e5ae470c162b70536c64b512c380"
- },
- {
-  "id": "jetpack-extension@dashlane.com",
-  "slug": "dashlane",
-  "users": 111244,
-  "version": "6.2645.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5197230/dashlane-6.2645.0.xpi",
-  "sha256": "880b85ac9326fb9b39e7033c56b1c5a305356e9b2a2ca3a28ba6eb69c930f1f0"
  },
  {
   "id": "{32af1358-428a-446d-873e-5f8eb5f2a72e}",
@@ -976,14 +800,6 @@
   "sha256": "d8039f0b61aa532c75bad80d70ddb0784d73446cc92974ded034910bb1261d3c"
  },
  {
-  "id": "webapps@mendeley.com",
-  "slug": "mendeley-web-importer",
-  "users": 91395,
-  "version": "3.2.78",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/3999604/mendeley_web_importer-3.2.78.xpi",
-  "sha256": "7a288bde4ad791885069d0f408d351640332318b015ab5273a88378749534f47"
- },
- {
   "id": "{de22fd49-c9ab-4359-b722-b3febdc3a0b0}",
   "slug": "popup-blocker",
   "users": 90300,
@@ -1040,14 +856,6 @@
   "sha256": "03e7b5e0939123be873f79597e2ef0d7cb22acfae5d5ce4df83c1998011e8e5c"
  },
  {
-  "id": "vpn@mozilla.com",
-  "slug": "mozilla-vpn-extension",
-  "users": 83784,
-  "version": "1.35.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4482969/mozilla_vpn_extension-1.35.0.xpi",
-  "sha256": "4807e3027901ad8d5b1301b0de261b4289aafcc848b6141b209d1e9ac5308bd4"
- },
- {
   "id": "{84380428-8c9d-4bdf-913d-b2c34d6562d9}",
   "slug": "logitechsmoothscrolling",
   "users": 83752,
@@ -1062,14 +870,6 @@
   "version": "25.16.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4488518/phantom_app-25.16.0.xpi",
   "sha256": "1de1b9bf831a572056748638e93b4b89e07dffcc25c0f71f5f5c198546c3f53e"
- },
- {
-  "id": "@hoxx-vpn",
-  "slug": "hoxx-vpn-proxy",
-  "users": 80792,
-  "version": "3.50.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4418789/hoxx_vpn_proxy-3.50.8.xpi",
-  "sha256": "d49b62c49ffa601de73f330c968665447e320d2f5731df6571e0ab10fef1a8cb"
  },
  {
   "id": "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack",
@@ -1102,14 +902,6 @@
   "version": "1.10.8",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5217988/7tv_new-1.10.8.xpi",
   "sha256": "0678ba1daa02a945abad69c7e1acd1eec859eec2f5eeac64affaec1ec88dd2a8"
- },
- {
-  "id": "@windscribeff",
-  "slug": "windscribe",
-  "users": 79181,
-  "version": "3.4.14.4",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5006622/windscribe-3.4.14.4.xpi",
-  "sha256": "80d1f4d78f83c7bc83e62b7fc317cae640742e53b06c05fb11b139418406e7dc"
  },
  {
   "id": "Package_Tracking_Tab___Custom_Web_Search_JVVfIFSBVe@packagetrackingtab.com",
@@ -1206,14 +998,6 @@
   "version": "4.30",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4998037/dont_track_me_google1-4.30.xpi",
   "sha256": "311a46a2f96a020cc2c5b1550cb2e41e0fb8308bdf6e72929a8e19be4a1371e9"
- },
- {
-  "id": "KeeperFFStoreExtension@KeeperSecurityInc",
-  "slug": "keeper-password-manager",
-  "users": 70290,
-  "version": "18.2.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5130911/keeper_password_manager-18.2.0.xpi",
-  "sha256": "69fdaa39dab22843d5ef87e3f37c82c642e1ae61af2050e4d23b0f23ffd401c3"
  },
  {
   "id": "clipper@obsidian.md",
@@ -1320,14 +1104,6 @@
   "sha256": "81deec1ec409a1dba654186addd8bf3e28e1e7bf92930e671263a855cc41c59f"
  },
  {
-  "id": "@setupvpncom",
-  "slug": "setupvpn",
-  "users": 63983,
-  "version": "3.12.25",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4306606/setupvpn-3.12.25.xpi",
-  "sha256": "6fe837d49e50940812173d1ae3fc4ec770bb75dcc9d2d9f5004f82d78d86daba"
- },
- {
   "id": "{34daeb50-c2d2-4f14-886a-7160b24d66a4}",
   "slug": "youtube-shorts-block",
   "users": 63530,
@@ -1392,14 +1168,6 @@
   "sha256": "d2ad4d71079754aec1fab2a03294a5ab5992bd377c57561cfa331e61b5c440e3"
  },
  {
-  "id": "firefox-addon@expressvpn.com",
-  "slug": "expressvpn",
-  "users": 58563,
-  "version": "8.2.0.2109",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5215690/expressvpn-8.2.0.2109.xpi",
-  "sha256": "7a8ddae0a02a5a58527e59525e74502e35e33cd1e4d93236acb69adf740ee06a"
- },
- {
   "id": "addon@metricunitconverter.com",
   "slug": "metric-unit-converter-search",
   "users": 58432,
@@ -1456,14 +1224,6 @@
   "sha256": "d6fb209ba0e36bfce7abd8b8e557fdf0385973f015fb5d6806387efe81efbca7"
  },
  {
-  "id": "{E0B8C461-F8FB-49b4-8373-FE32E9252800}",
-  "slug": "evernote-web-clipper",
-  "users": 56202,
-  "version": "7.42.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5102220/evernote_web_clipper-7.42.0.xpi",
-  "sha256": "30de8f95b0f0b08fba8fd02f2117c2db688180f9f811df687590d6a127a4790e"
- },
- {
   "id": "Ezy_Speed_Test___Custom_Web_Search_nybAAzaSyK@ezyspeedtest.com",
   "slug": "ezy-speed-test-customwebsearch",
   "users": 55948,
@@ -1472,28 +1232,12 @@
   "sha256": "9e15e7b12bad414726d74d9c75d33612f84e52de4659bbae29170c19df73b006"
  },
  {
-  "id": "{5cce4ab5-3d47-41b9-af5e-8203eea05245}",
-  "slug": "control-panel-for-twitter",
-  "users": 55598,
-  "version": "4.25.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5115146/control_panel_for_twitter-4.25.1.xpi",
-  "sha256": "8af1388ce0c9edf27fad3d2fac480591c03389fa7090029a718b63eee14f5d6c"
- },
- {
   "id": "{3c078156-979c-498b-8990-85f7987dd929}",
   "slug": "sidebery",
   "users": 55231,
   "version": "5.6.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4903712/sidebery-5.6.1.xpi",
   "sha256": "e8a0a4b556ab7dd536897c1816af9d0918030223068ea6683a04376103a6caf2"
- },
- {
-  "id": "rf-firefox@siber.com",
-  "slug": "roboform",
-  "users": 54829,
-  "version": "9.9.9.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4936282/roboform-9.9.9.1.xpi",
-  "sha256": "d441d1ab2b280285378bae619cc11129e59868c8657487374a6dbf572aa08581"
  },
  {
   "id": "{00000f2a-7cde-4f20-83ed-434fcb420d71}",
@@ -1526,22 +1270,6 @@
   "version": "2.3.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3610609/dark_mode_by_albert_inc-2.3.0.xpi",
   "sha256": "f23038340a3cb61237f4cd56160dced0af489edf77fcd8de66c04b623c701a86"
- },
- {
-  "id": "plugin@okta.com",
-  "slug": "okta-browser-plugin",
-  "users": 52260,
-  "version": "6.49.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5103729/okta_browser_plugin-6.49.0.xpi",
-  "sha256": "56d0ac99fa2428cd44459b0cb3cc8c576448aec7710279133353cf04c3c02ec1"
- },
- {
-  "id": "{f2a47522-1d86-4828-b6fb-d02e849f1b69}",
-  "slug": "norton-antitrack",
-  "users": 51855,
-  "version": "4.13.0.6830",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4955453/norton_antitrack-4.13.0.6830.xpi",
-  "sha256": "417b702565a7802ac3934f0dd7bbe4e54913aa323b84753f8c601d80d1317b82"
  },
  {
   "id": "{9a3104a2-02c2-464c-b069-82344e5ed4ec}",
@@ -1608,22 +1336,6 @@
   "sha256": "09417d44e8a29b7094edb9eb537e654c21e06336c4a1600464cdbd969512297b"
  },
  {
-  "id": "companion@pix.fr",
-  "slug": "pix-companion",
-  "users": 50053,
-  "version": "1.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5039841/pix_companion-1.4.0.xpi",
-  "sha256": "d2d733b10d072c84d9304ac518c9c7c4dc611a9c4c6d6879a52bbf1011835354"
- },
- {
-  "id": "{06acb1db-eb92-47f1-8b4c-7d87acce5a81}",
-  "slug": "avast-antitrack",
-  "users": 49563,
-  "version": "4.14.2.7230",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5090098/avast_antitrack-4.14.2.7230.xpi",
-  "sha256": "31f9907d4fcfcc2b2419f2d05d3fa829ca305b7d67836e7abcda747e404fc7ef"
- },
- {
   "id": "{60493d8c-aec8-448e-a247-5d2cfa047d69}",
   "slug": "ambient-light-for-youtube",
   "users": 49387,
@@ -1638,22 +1350,6 @@
   "version": "1.4.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4205769/soundfixer-1.4.1.xpi",
   "sha256": "b229c77635e4e89ab586144aea2fcc977a2c5e51509a84ac884fa59e29ee7792"
- },
- {
-  "id": "firefox@vid.io",
-  "slug": "vidiq-vision-youtube",
-  "users": 48937,
-  "version": "3.238.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5207556/vidiq_vision_youtube-3.238.0.xpi",
-  "sha256": "63e068e926d60c10c5da73217b90d96944cd0bcb240c85316ff9a51b68c64169"
- },
- {
-  "id": "firefox@teleparty.com",
-  "slug": "netflix-party-is-now-teleparty",
-  "users": 48055,
-  "version": "4.6.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4261723/netflix_party_is_now_teleparty-4.6.1.xpi",
-  "sha256": "c91243615e3a66bcd243c9e923ca1fb0ac549ec9b8474555325c050893a173e5"
  },
  {
   "id": "{adeadebb-fedc-4180-a7f4-cfdd87496551}",
@@ -1710,22 +1406,6 @@
   "version": "2.4.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4717567/vimium_ff-2.4.2.xpi",
   "sha256": "131e2a67580e7ae9125ab19781159e61409fac47b441fc2782aab76396ead196"
- },
- {
-  "id": "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack",
-  "slug": "raindropio",
-  "users": 44062,
-  "version": "6.6.91",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4570192/raindropio-6.6.91.xpi",
-  "sha256": "643aa5fff66f0c41e648003127f44253b6eadf997d2632fb76ad390d2eaed1e4"
- },
- {
-  "id": "{6e710c58-36cc-49d6-b772-bfc3030fa56e}",
-  "slug": "xkit-rewritten",
-  "users": 43546,
-  "version": "1.3.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5173646/xkit_rewritten-1.3.8.xpi",
-  "sha256": "3e7281d23f285449a156647b280f56708838bdf7a2075a54a44fa8800e51ae11"
  },
  {
   "id": "Ezy_Photo_Tab___Custom_Web_Search_YALalKMirg@ezyphototab.com",
@@ -1800,14 +1480,6 @@
   "sha256": "6f76a21945caf2ea0b3c875028baecbf5f27bba840b36b07e95d8300c5779ed3"
  },
  {
-  "id": "fftmtoolbarProd@trendmicro.com",
-  "slug": "trend-micro-toolbar",
-  "users": 41075,
-  "version": "17.0.1935.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5013758/trend_micro_toolbar-17.0.1935.0.xpi",
-  "sha256": "31f5775bd93ae1011c3de05c9d29c530adeb97d78216bdad7e86250c3f2c7d2f"
- },
- {
   "id": "{7809d936-7f77-4373-93cd-8cfac159d738}",
   "slug": "eparaksts-signing-extension",
   "users": 40997,
@@ -1838,14 +1510,6 @@
   "version": "3.5",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5028003/tab_stash-3.5.xpi",
   "sha256": "27471446d599cdc626f91fedf6b572fb4b1c4964e9b2c2b47169d7537c3c9524"
- },
- {
-  "id": "contact@lukaslen.com",
-  "slug": "privacy-extension-for-whatsapp",
-  "users": 40538,
-  "version": "3.4.4.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4931372/privacy_extension_for_whatsapp-3.4.4.1.xpi",
-  "sha256": "d37db2e463d0e7789458977d2b073f33a79e4c4d024c134bbd3c19aaf369ee11"
  },
  {
   "id": "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}",
@@ -1960,28 +1624,12 @@
   "sha256": "af3218947742acdc1493575584f8dbc4ad8137be0bcf704ad727d77badcb3508"
  },
  {
-  "id": "checkerplusforgmail@jasonsavard.com",
-  "slug": "checker-plus-gmail",
-  "users": 36822,
-  "version": "36.6",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5152141/checker_plus_gmail-36.6.xpi",
-  "sha256": "994d869ad81429435b68c78b667ac9958f93f997a86eb5588f732ad4b5a03c54"
- },
- {
   "id": "{e6fc2bbd-183e-4518-9ea5-04a8a913ab00}",
   "slug": "repeek",
   "users": 36663,
   "version": "5.6.20",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5209070/repeek-5.6.20.xpi",
   "sha256": "8a005ab67d0a81d0dcdb742c557a3a4da57ec5a484656e7b0f634b693efb4564"
- },
- {
-  "id": "passbolt@passbolt.com",
-  "slug": "passbolt",
-  "users": 36604,
-  "version": "5.17.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5168512/passbolt-5.17.1.xpi",
-  "sha256": "afd60004139e92ec7a02827e0680940f56b9191c4d0648807b238f12e6ce7d52"
  },
  {
   "id": "addon@manualshunt.com",
@@ -2014,14 +1662,6 @@
   "version": "0.2.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4784581/tab_auto_refresh-0.2.3.xpi",
   "sha256": "ec24d8b0336af334d7e33e7815cad4917bf8f9c6d9e4566a8c89217908b642ee"
- },
- {
-  "id": "com.abr.startapp@adminbyrequest.com",
-  "slug": "admin-by-request",
-  "users": 35985,
-  "version": "1.4.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4784694/admin_by_request-1.4.1.xpi",
-  "sha256": "2ad522473641c9c0e9fc8b6e7db1af93bff115d14b73c8e15c20273b6f0a65fe"
  },
  {
   "id": "addon@shippingdetails.com",
@@ -2064,14 +1704,6 @@
   "sha256": "9b196fe1f8c193d2dea76b19926ba5b7e91362373ee57cddaeccc0eb6bd93a66"
  },
  {
-  "id": "{8927f234-4dd9-48b1-bf76-44a9e153eee0}",
-  "slug": "better-canvas",
-  "users": 34744,
-  "version": "9.8.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5022826/better_canvas-9.8.8.xpi",
-  "sha256": "0167b4ab6478cacc32ec6e3db0b1e3d36267832f042c868248d43c73c05162f0"
- },
- {
   "id": "woop-NoopscooPsnSXQ@jetpack",
   "slug": "privacy-possum",
   "users": 34715,
@@ -2102,14 +1734,6 @@
   "version": "1.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/1748637/zjm_whatfont-1.3.xpi",
   "sha256": "f3ded17571aafc3ab32f102be24d6397712336bfc52584492f3a07b85652e266"
- },
- {
-  "id": "cashback_letyshops@LetyShops",
-  "slug": "addon-letyshops",
-  "users": 34457,
-  "version": "5.0.13",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5016767/addon_letyshops-5.0.13.xpi",
-  "sha256": "97cb51d661fbcb9739517bcd63e03bbfecd63e35b858b28dcede1c36961415cc"
  },
  {
   "id": "{4a313247-8330-4a81-948e-b79936516f78}",
@@ -2182,14 +1806,6 @@
   "version": "0.2383",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4258067/fastforwardteam-0.2383.xpi",
   "sha256": "eec6328df3df1afe2cb6a331f6907669d804235551ea766d48655f8f831caf28"
- },
- {
-  "id": "{dbac9680-d559-4cd4-9765-059879e8c467}",
-  "slug": "igraal",
-  "users": 32334,
-  "version": "10.1.9",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5212711/igraal-10.1.9.xpi",
-  "sha256": "9bae0e9d8a0607245326eb551a65459a4acd4edf83d5b6dbdfd64d792a0b78e7"
  },
  {
   "id": "momentum@momentumdash.com",
@@ -2280,14 +1896,6 @@
   "sha256": "5664ab9a866bdacef67e973b82678dde0aacb83e7ab00047bd4e21eece59dc35"
  },
  {
-  "id": "passwordmanager@avira.com",
-  "slug": "avira-password-manager",
-  "users": 30198,
-  "version": "2.19.13.44521",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4137739/avira_password_manager-2.19.13.44521.xpi",
-  "sha256": "75a963c5868ee7a2b776293d98d23cb518af96d0c9757d3861f01d5a76d86572"
- },
- {
   "id": "320youtube@gmx.net",
   "slug": "youtube-mp3-converter",
   "users": 29313,
@@ -2368,14 +1976,6 @@
   "sha256": "30f6daad5645da0c697c460cc3f2127450e1454a89fd603e3f8750b410b1cf72"
  },
  {
-  "id": "search@kagi.com",
-  "slug": "kagi-search-for-firefox",
-  "users": 26994,
-  "version": "0.7.7",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5130000/kagi_search_for_firefox-0.7.7.xpi",
-  "sha256": "e24cdc2ac8579a022a25850972d0e821138054dd9d9d15e8e04f064c553cd002"
- },
- {
   "id": "{08aaa0e6-3ab6-4afd-9b94-319f19e096fa}",
   "slug": "youtube-downloader-udl-helper",
   "users": 26859,
@@ -2406,14 +2006,6 @@
   "version": "1.9",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4349427/offline_qr_code_generator-1.9.xpi",
   "sha256": "448c63fbd4036ed913b85a93ea57480fd7a8f8dbcaa7d8a24f99b34443a9fad1"
- },
- {
-  "id": "sky-follower-bridge@ryo.kawamata",
-  "slug": "sky-follower-bridge",
-  "users": 26007,
-  "version": "3.2.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4752187/sky_follower_bridge-3.2.0.xpi",
-  "sha256": "d9810e5012eaf1345c961a0d86c8ae3323d777d1658ab85f74333cacc34dc97e"
  },
  {
   "id": "remove-paywall@example.com",
@@ -2528,14 +2120,6 @@
   "sha256": "a2094b43e77b81aa156327f7e7201211f8770e7da4e55124de5b581ef90c425b"
  },
  {
-  "id": "{799c0914-748b-41df-a25c-22d008f9e83f}",
-  "slug": "web-scrobbler",
-  "users": 24105,
-  "version": "3.22.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4832008/web_scrobbler-3.22.0.xpi",
-  "sha256": "f3c6b8859ef73ed2772979429719642bb378144dbe881902a9e81a00475714aa"
- },
- {
   "id": "mozext@sk.ditec.dbridge2",
   "slug": "d-bridge-2",
   "users": 24099,
@@ -2592,14 +2176,6 @@
   "sha256": "f8f2fd1b99bfb5522daa9f96f64368b2bab48643d6013f0c3e6d1982b073556b"
  },
  {
-  "id": "toolbar@web.de",
-  "slug": "webde-mailcheck",
-  "users": 23109,
-  "version": "8.0.20",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4855621/webde_mailcheck-8.0.20.xpi",
-  "sha256": "b985d622f3630781eeb09ee0cd0d22f83c2edc40d73a565db56f8f388c556efb"
- },
- {
   "id": "Quick_Recipe_Hub___Custom_Web_Search_MTyoGHhulF@quickrecipehub.com",
   "slug": "quickrecipehubcustomwebsearch",
   "users": 22972,
@@ -2632,14 +2208,6 @@
   "sha256": "a24cac3457060a541ec886218b363f57c891fcd880f84275dd9c7972cb0758d7"
  },
  {
-  "id": "browser@tunnelbear.com",
-  "slug": "tunnelbear-vpn-firefox",
-  "users": 22348,
-  "version": "4.5.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4970889/tunnelbear_vpn_firefox-4.5.0.xpi",
-  "sha256": "bfa5ee24dba2549ab8b3c07bf7e00471e406bcdca330711a4f7fb48091796efa"
- },
- {
   "id": "{589e6459-3d56-49b4-9b3d-6e4b7ef16940}",
   "slug": "image-downloader-addon",
   "users": 22309,
@@ -2670,14 +2238,6 @@
   "version": "1.4.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4947744/automatic_dark-1.4.3.xpi",
   "sha256": "ec7283505f938c55ada35fe29c8aff63118ab07e77d5deb3baee10dadb6aae25"
- },
- {
-  "id": "danabok16@gmail.com",
-  "slug": "youtube-subscription-groups",
-  "users": 22105,
-  "version": "18.11.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5225493/youtube_subscription_groups-18.11.0.xpi",
-  "sha256": "92e5bc6e3c9e84f3967ae339b95a878996cfb8f2313004bd7d40fa947b7f02e2"
  },
  {
   "id": "jid1-5Fs7iTLscUaZBgwr@jetpack",
@@ -2792,28 +2352,12 @@
   "sha256": "0d6bbdc887d8fa2c59115336209faab420c33d2801ccef96f71322975d966274"
  },
  {
-  "id": "{988dd4f5-e8d5-49bf-a766-ff75b0e19fe2}",
-  "slug": "csgo-trader-steam-trading",
-  "users": 21038,
-  "version": "3.7",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5010806/csgo_trader_steam_trading-3.7.xpi",
-  "sha256": "fa9d57802b3dfb31b23fe8a21659e0f636b16b10884bb7ec8673820f77a22cb4"
- },
- {
   "id": "antidote_uni11_firefox@druide.com",
   "slug": "connecteur-pour-a11",
   "users": 20951,
   "version": "12.4.6",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5173089/connecteur_pour_a11-12.4.6.xpi",
   "sha256": "62b13adfb88a8a2495588edce6f5941f5ba5176f220faaa8ef764fe816be41ec"
- },
- {
-  "id": "{2a7c0eb8-2936-4b6f-b738-5f7183d98698}",
-  "slug": "avg-antitrack1",
-  "users": 20920,
-  "version": "4.14.3.7264",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5094259/avg_antitrack1-4.14.3.7264.xpi",
-  "sha256": "9f020f19350cd808542e13880f0d1077c12a6add98766fce0edc3c66a7b32c1e"
  },
  {
   "id": "{d867162c-4c38-4c5f-aca4-db6a6592d7da}",
@@ -2848,28 +2392,12 @@
   "sha256": "bae93eb5c78b1414de99b1c9b502fadb9f9fe965c809f5137dda0bea2b2192f0"
  },
  {
-  "id": "@addonsignalspam",
-  "slug": "extension-signal-spam",
-  "users": 20601,
-  "version": "4.3.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4879196/extension_signal_spam-4.3.0.xpi",
-  "sha256": "e27183e53b46c30756025b0721b17e4393ca9af940be51a375f2e1b84af2bc99"
- },
- {
   "id": "dont-accept-webp@jeffersonscher.com",
   "slug": "dont-accept-webp",
   "users": 20535,
   "version": "0.9",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4191562/dont_accept_webp-0.9.xpi",
   "sha256": "9d5177cfde905232efde79aa5b617b1a3430f896988f7034a8cd954e64d24ad6"
- },
- {
-  "id": "{ad518da0-1f82-438e-9788-53e39b4b0f9c}",
-  "slug": "sellersprite-amazon-tool",
-  "users": 20476,
-  "version": "5.0.6",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5068121/sellersprite_amazon_tool-5.0.6.xpi",
-  "sha256": "f57e636e6f41aa748d5d9832fdab57f798752a5985ae2c56c2ce7917602df045"
  },
  {
   "id": "{287dcf75-bec6-4eec-b4f6-71948a2eea29}",
@@ -2886,14 +2414,6 @@
   "version": "1.7",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4587161/youtube_converter_button-1.7.xpi",
   "sha256": "837fa2cb6d3e8739497e4d3d7de4f6571ba5de3494039c82ff586886acc03dca"
- },
- {
-  "id": "{d0210f13-a970-4f1e-8322-0f76ec80adde}",
-  "slug": "instapaper-official",
-  "users": 20328,
-  "version": "3.1.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4381949/instapaper_official-3.1.3.xpi",
-  "sha256": "ce344ecddaf1e894b628345b909224b4120528d94844d6ef10abdbdd88b43ba1"
  },
  {
   "id": "save-as-pdf-ff@pdfcrowd.com",
@@ -2976,14 +2496,6 @@
   "sha256": "b09eaedad09af35403e9f708aeac7f7056785caf5d176ceefb9de30613783e2c"
  },
  {
-  "id": "jid0-GjwrPchS3Ugt7xydvqVK4DQk8Ls@jetpack",
-  "slug": "gmail-notifier-restartless",
-  "users": 19619,
-  "version": "1.2.5",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5086709/gmail_notifier_restartless-1.2.5.xpi",
-  "sha256": "e716c8ee6649d796054bce5758a259993e48f08e23b7eb979b939b88a9168d49"
- },
- {
   "id": "helloyanis@ageverif-bypass",
   "slug": "age-verification-bypass",
   "users": 19534,
@@ -3056,14 +2568,6 @@
   "sha256": "2db58fa392a4fef85fbdd27fae60fbbdddecfad58e8daab430dc0b1e574a6017"
  },
  {
-  "id": "ms.pad.firefox@microsoft.com",
-  "slug": "microsoft-power-automate",
-  "users": 18949,
-  "version": "2.73.0.36",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5064238/microsoft_power_automate-2.73.0.36.xpi",
-  "sha256": "a5ce19fe3629be9509586652861f77aa356aaaa0f8bfb4b07eece562b1433526"
- },
- {
   "id": "openmultipleurls@ustat.de",
   "slug": "open-multiple-urls",
   "users": 18892,
@@ -3088,28 +2592,12 @@
   "sha256": "34efe058be85dc9b0bc25d59a51a780b4d300b918dfa2a8b3d72639284757b0b"
  },
  {
-  "id": "toolbar@gmx.net",
-  "slug": "gmx-mailcheck",
-  "users": 18811,
-  "version": "8.0.20",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4855553/gmx_mailcheck-8.0.20.xpi",
-  "sha256": "3c93c9c5a5cf94d4ed2435815d8abfcc3b54ec1a72eff7dd9957ef8ac70bb207"
- },
- {
   "id": "redirector@einaregilsson.com",
   "slug": "redirector",
   "users": 18732,
   "version": "3.5.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3535009/redirector-3.5.3.xpi",
   "sha256": "eddbd3d5944e748d0bd6ecb6d9e9cf0e0c02dced6f42db21aab64190e71c0f71"
- },
- {
-  "id": "ols_main@withsecure.com",
-  "slug": "ols-withsecure",
-  "users": 18583,
-  "version": "5.1.12",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5227653/ols_withsecure-5.1.12.xpi",
-  "sha256": "4f7d97b6eea2cfb80a8af0f65cca479c6ba53edb82bc37fef6b49af5a519b78e"
  },
  {
   "id": "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}",
@@ -3126,14 +2614,6 @@
   "version": "0.6.6",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5211030/font_inspect-0.6.6.xpi",
   "sha256": "98fceac8b5fa89e4dc8b039ed2d03a15c14c36548aa531c687cace1aee64513b"
- },
- {
-  "id": "synofoto-extension@synology.com",
-  "slug": "synology-image-assistant",
-  "users": 18300,
-  "version": "1.0.33",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4336523/synology_image_assistant-1.0.33.xpi",
-  "sha256": "a6cdadc05e67f0b06487b8554c3524335a068fd69f4290dbcdd88938e540768c"
  },
  {
   "id": "{e662576a-2f73-4069-bcca-ddf440fea62b}",
@@ -3158,14 +2638,6 @@
   "version": "0.6.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5210962/live_stream_downloader-0.6.1.xpi",
   "sha256": "d4e01fc1a641948dc49bca65e8722d76638af88853a8b2f90dba0194f39897d1"
- },
- {
-  "id": "vknext-vms@vknext.net",
-  "slug": "vk-music-saver",
-  "users": 17777,
-  "version": "2.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4879249/vk_music_saver-2.13.0.xpi",
-  "sha256": "10e7dbe9a8edf192bc48342703bca9bc7c11b6529e1f824bcd922d72a89d209a"
  },
  {
   "id": "{7a73dc4b-1b38-40e7-ac56-7d356dd4af34}",
@@ -3238,14 +2710,6 @@
   "version": "0.11.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5017957/reddit_nsfw_unblocker-0.11.1.xpi",
   "sha256": "0c8e87c9bfd5fd3996321c95a90911b7793265d5f410b716e1b665083839b8e6"
- },
- {
-  "id": "{0668a87f-e3bb-4ed3-a096-e145c1e9f1d2}",
-  "slug": "foe-helper",
-  "users": 17130,
-  "version": "4.8.8.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5220912/foe_helper-4.8.8.0.xpi",
-  "sha256": "76aa661c2945845811017a82b037ba304ba91577fcc4348a6f43be93871dcb0b"
  },
  {
   "id": "{ac87cfd8-47b1-4401-b32e-f033af5ed96b}",
@@ -3368,14 +2832,6 @@
   "sha256": "de3ed81f03bdc9179812c188d6bfcb8a0bc59e0ffbb33e3e2b9ab935525fda21"
  },
  {
-  "id": "lisa@qipu.de",
-  "slug": "shoop-cashback-assistent",
-  "users": 16237,
-  "version": "3.2.17.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4362749/shoop_cashback_assistent-3.2.17.2.xpi",
-  "sha256": "05b97cf7393742d111bd0c1f51a16fee3912369643f89c9ec372af5a3feea19c"
- },
- {
   "id": "{b3e677f4-1150-4387-8629-da738260a48e}",
   "slug": "smart-https-revived",
   "users": 16219,
@@ -3456,14 +2912,6 @@
   "sha256": "10023e5d1e1c82ac762dbbc210704fe1717d73c2e92d4411ff9c852912c93dc7"
  },
  {
-  "id": "{029d76e8-fbc9-4521-996a-014394515f7f}",
-  "slug": "season-pass-pass",
-  "users": 15719,
-  "version": "1.1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4123578/season_pass_pass-1.1.0.xpi",
-  "sha256": "31502adacd9ff6c848c7b79aab352509a45251568de715bd6a8fa027b0634843"
- },
- {
   "id": "{0da2e603-21ba-4422-8049-b6d9e013ed84}",
   "slug": "image-reverse-search",
   "users": 15702,
@@ -3486,14 +2934,6 @@
   "version": "5.5.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4921585/hls_downloader-5.5.0.xpi",
   "sha256": "52a65ad236cbd64c55f3ce3ed203ca92e1aae4bce2f23a192b3e68e9ca601bd3"
- },
- {
-  "id": "{3e4d2037-d300-4e95-859d-3cba866f46d3}",
-  "slug": "private-internet-access-ext",
-  "users": 15431,
-  "version": "4.0.5",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4409196/private_internet_access_ext-4.0.5.xpi",
-  "sha256": "21cc78a366a1dea1e230b22e81b5be3d0d2b05064513398437ff43c501b727dd"
  },
  {
   "id": "{2c5dc68a-aeca-4c36-84c7-324994d4dadc}",
@@ -3528,28 +2968,12 @@
   "sha256": "a4a76620c6507ebf6d1b4a139561a83c82c0a5019054da0f500b43d809de3e73"
  },
  {
-  "id": "{1c5afe9d-99f4-4236-b90a-08a04f589b06}",
-  "slug": "joko",
-  "users": 15177,
-  "version": "2.1.84",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4592418/joko-2.1.84.xpi",
-  "sha256": "2498043bffe45cdb8f1b010d6b3c5e62a42d8e8feec807f186f984bc63c52492"
- },
- {
   "id": "{954142f5-7f00-4880-bee7-8a1590ac4152}",
   "slug": "video-hunter-downloader",
   "users": 15163,
   "version": "2.0.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4811127/video_hunter_downloader-2.0.1.xpi",
   "sha256": "2cf0bf5369a6c14eb865fa41db21c955959f37254d92acca32dde9f5a33fc5a7"
- },
- {
-  "id": "{4d5b7a5e-5232-9e45-97f4-f8e1ca2626e5}",
-  "slug": "capital-one-eno",
-  "users": 15149,
-  "version": "6.1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5023429/capital_one_eno-6.1.0.xpi",
-  "sha256": "e7a40761568e85e7b2588e49129d379c86906a37195350c8783e154fb5c73138"
  },
  {
   "id": "@m3u8link",
@@ -3566,14 +2990,6 @@
   "version": "1.7.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4403189/history_cleaner-1.7.0.xpi",
   "sha256": "9ea2580067ebb99273e5a5b1a68e3e647b8e057d7246a58c6512599c07fcf14d"
- },
- {
-  "id": "{c84d89d9-a826-4015-957b-affebd9eb603}",
-  "slug": "mal-sync",
-  "users": 14892,
-  "version": "0.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5211961/mal_sync-0.13.0.xpi",
-  "sha256": "fc249ab022b91f08846be13d5ff7a12178f293db158bdb37365194296a92b88f"
  },
  {
   "id": "{5ac8c0a3-ce21-4c47-972d-b45e685cca5d}",
@@ -3664,14 +3080,6 @@
   "sha256": "d4ccc4ab4221e0550df5d822aee1c784ea1f96c34ec254e8aa30a7bbe50b0a7e"
  },
  {
-  "id": "jid1-BYcQOfYfmBMd9A@jetpack",
-  "slug": "pushbullet",
-  "users": 14358,
-  "version": "366",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4088745/pushbullet-366.xpi",
-  "sha256": "556d3b42a71ac1c032cbcd0c91106a5773fbd07fb65a3362a908a89823cad96f"
- },
- {
   "id": "{290ce447-2abb-4d96-8384-7256dd4a1c43}",
   "slug": "\u043e\u0431\u0445\u043e\u0434-\u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043e\u043a-\u0440\u0443\u043d\u0435\u0442\u0430",
   "users": 14318,
@@ -3702,14 +3110,6 @@
   "version": "2.1.67.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5156167/roseal-2.1.67.0.xpi",
   "sha256": "ed7155478be3f7ce91c6c6a48a6813169b9eac0111617917ae20a0dfbca7ba16"
- },
- {
-  "id": "webmetering@flexera.com",
-  "slug": "flexera-web-metering",
-  "users": 13918,
-  "version": "26.1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4739431/flexera_web_metering-26.1.0.xpi",
-  "sha256": "bd540f01066aa42f39422de7eff5e6ee569a89bf37a85b4d56925dd1bdde8e08"
  },
  {
   "id": "{48748554-4c01-49e8-94af-79662bf34d50}",
@@ -3774,14 +3174,6 @@
   "version": "4.1.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4163388/bookmarks_organizer-4.1.1.xpi",
   "sha256": "3e36258af3ef8c486f42fd13bf8a0d9a05fa4533ed3db9afded7388e6ce15d85"
- },
- {
-  "id": "{512b44b5-40a9-4593-b9fd-b29e4e1ab7c8}",
-  "slug": "fantasypros",
-  "users": 13561,
-  "version": "16.5.12",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5076528/fantasypros-16.5.12.xpi",
-  "sha256": "e414cea3668c62d3e1527ddc7b91c8debe57ea005f406c4365d83f3f3ef3bc90"
  },
  {
   "id": "{21368c2e-1e43-414c-9c63-e1b87782681f}",
@@ -3880,14 +3272,6 @@
   "sha256": "83ab7125be7c838c09cf97d1f32c64beac4ac1684d138309ac0023d84a547a9c"
  },
  {
-  "id": "NetflixPrime@Autoskip.io",
-  "slug": "netflix-prime-auto-skip",
-  "users": 13204,
-  "version": "1.1.111",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5204207/netflix_prime_auto_skip-1.1.111.xpi",
-  "sha256": "098bfb4f6ab533b21a006645b45da8be6406085c57f4fc47dc5d3f93b3dae79c"
- },
- {
   "id": "{8e515334-52b5-4cc5-b4e8-675d50af677d}",
   "slug": "scriptcat",
   "users": 13155,
@@ -3910,14 +3294,6 @@
   "version": "5.2.12",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4822302/header_editor-5.2.12.xpi",
   "sha256": "2b5ecfe5fc76e65c29cb2cb1dfa61de2c2320c4f504c42cdbce6c438f97333ab"
- },
- {
-  "id": "support@todoist.com",
-  "slug": "todoist",
-  "users": 13048,
-  "version": "12.21.10",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5188301/todoist-12.21.10.xpi",
-  "sha256": "1c7df4a9e4573ce3597ef25edc30b998182002f311ca1f29c7d6df48d74fb74a"
  },
  {
   "id": "exif_viewer@mozilla.doslash.org",
@@ -3944,14 +3320,6 @@
   "sha256": "88e1f39569f8309654857489c44b91b4b072cd5554e044157c612afe62ef8edc"
  },
  {
-  "id": "{3c9b993f-29b9-44c2-a913-def7b93a70b1}",
-  "slug": "twitch-points-autoclicker",
-  "users": 12927,
-  "version": "1.7.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4870381/twitch_points_autoclicker-1.7.1.xpi",
-  "sha256": "99979140ddd92bbde24d13799b212cda34394e55d0c07cb32f69501204f5d729"
- },
- {
   "id": "screen-recorder@freebusinessapps",
   "slug": "screen-recorder-freebusinessap",
   "users": 12906,
@@ -3966,22 +3334,6 @@
   "version": "1.1.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5136713/youtube_audio-1.1.1.xpi",
   "sha256": "7a7998e143336039575155018f0b00ea3cdbbdf5dd7b2747439ddadf48e7bc4e"
- },
- {
-  "id": "insensitivex@orca.pet",
-  "slug": "insensitivex",
-  "users": 12880,
-  "version": "1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4553987/insensitivex-1.0.xpi",
-  "sha256": "48a6863447f4cae755ad0c1dac97f71b16bf5bf5d907304896072cef1b123025"
- },
- {
-  "id": "jid1-NI2sWc3cvsAJsg@jetpack",
-  "slug": "meliuz",
-  "users": 12879,
-  "version": "11.8.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5102817/meliuz-11.8.0.xpi",
-  "sha256": "e7244e5c035da4e6e038c138f3ee61a79adca1936a8eb0107573cfc85b9b7c67"
  },
  {
   "id": "{4ee0a760-13e0-4ee5-af22-03099a45936d}",
@@ -4064,14 +3416,6 @@
   "sha256": "955883ad75ab755bc688c24b08480c083adf9489a01b19a6a190d08529926ec4"
  },
  {
-  "id": "d2seasonpasswaybackmachine@id.com",
-  "slug": "d2-season-pass-wayback-machine",
-  "users": 12571,
-  "version": "1.1.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4552823/d2_season_pass_wayback_machine-1.1.1.xpi",
-  "sha256": "c4a89cdd2a968e0688c29eaab0ca9670bcb12435d15ba1175a1714d4ca902ae2"
- },
- {
   "id": "fefnkplkicihcoenmljhbihhaaagjhpp@gomino.com",
   "slug": "mino-automatic-coupons",
   "users": 12559,
@@ -4096,14 +3440,6 @@
   "sha256": "0df060fdc6a7c313746e3ba3c3e2c08a0d659ed86f1a73f111b69004e14fd5c0"
  },
  {
-  "id": "prathercc@gmail.com",
-  "slug": "discrub",
-  "users": 12526,
-  "version": "2.2.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5198509/discrub-2.2.8.xpi",
-  "sha256": "7149509cb13482622b3fd5f4687fcec0f3ef09374f751ff1ced614dd5e7c026b"
- },
- {
   "id": "ai-overview-hider-for-google@jbscript.dev",
   "slug": "ai-overview-hider-for-google",
   "users": 12513,
@@ -4126,22 +3462,6 @@
   "version": "0.9.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4441395/to_deepl-0.9.3.xpi",
   "sha256": "1596674c306b15daec916e25c19682d367d6729715347b8e1791e8ecbce8d4aa"
- },
- {
-  "id": "{2b38cb05-9cff-44a7-b9f1-7cc575afab8a}",
-  "slug": "whatsapp-in-sidebar",
-  "users": 12420,
-  "version": "2.1.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4278417/whatsapp_in_sidebar-2.1.2.xpi",
-  "sha256": "c417390d8bba5ee6959c6b5379b52f430130cf82ca7f6d38ec21f18c8fc05292"
- },
- {
-  "id": "ebatesca@ebates.com",
-  "slug": "ebates-express-cash-back",
-  "users": 12385,
-  "version": "7.8.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/3952935/ebates_express_cash_back-7.8.1.xpi",
-  "sha256": "7d0b79886ea02e3b97ae3734978f300e514c11e94946a5681ab7a9d98147d713"
  },
  {
   "id": "imageye@marenauta.com",
@@ -4208,14 +3528,6 @@
   "sha256": "ef17dcef7e2034a25982a106e54d19e24c9f226434a396a808195ef0de021a40"
  },
  {
-  "id": "tasksforcanvas@jtchengdev.com",
-  "slug": "tasks-for-canvas",
-  "users": 12041,
-  "version": "1.3.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4180681/tasks_for_canvas-1.3.2.xpi",
-  "sha256": "37b29242329754a9c937c02a979e79ec995b9ecd44c41bdeb176e69bb023686e"
- },
- {
   "id": "juraj.masiar@gmail.com_ScrollAnywhere",
   "slug": "scroll_anywhere",
   "users": 11989,
@@ -4246,14 +3558,6 @@
   "version": "11.5.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3464812/hide_my_ip_vpn-11.5.1.xpi",
   "sha256": "98448bc646415edf126b508978f4e8cb4009293cc84d404ce65359ad9eb2e9a2"
- },
- {
-  "id": "adguard-vpn@adguard.com",
-  "slug": "adguard-vpn",
-  "users": 11907,
-  "version": "2.12.0.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5182610/adguard_vpn-2.12.0.3.xpi",
-  "sha256": "30f62f6eb35bdd2f2ae47d391507647d9c8b2626ace6a522b69ab433ff90bca4"
  },
  {
   "id": "{6d72262a-b243-4dc6-8f4f-be96c74e0a86}",
@@ -4310,22 +3614,6 @@
   "version": "4.93.4",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5180925/photoshow-4.93.4.xpi",
   "sha256": "dea586ed5027cc96efdbec57c7c6a1ab2586c89af3495f61e356dd4129ed6f29"
- },
- {
-  "id": "{ffed5dfa-f0e1-403d-905d-ac3f698660a7}",
-  "slug": "roll20-enhancement-suite",
-  "users": 11475,
-  "version": "1.28.22",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4362860/roll20_enhancement_suite-1.28.22.xpi",
-  "sha256": "807324161945640f35c8ec14d4bb8f15a9e839e3d96dc4e24328d24368cdc4d0"
- },
- {
-  "id": "{ecb80162-dfbd-4d91-a8da-17b35ba4707a}",
-  "slug": "sticky-password-extension",
-  "users": 11424,
-  "version": "8.9.11.1350",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5016837/sticky_password_extension-8.9.11.1350.xpi",
-  "sha256": "fb294e83b6d59940983ce89cf066ea1410c8c389e757de99bb6dc0db616e03bd"
  },
  {
   "id": "{d8d0bc2b-45c2-404d-bb00-ce54305fc39c}",
@@ -4400,28 +3688,12 @@
   "sha256": "fbc7623cb771dee2426ef2c75e3f72407b70b3f972733f14286225a55dedb3f0"
  },
  {
-  "id": "sync2@poeoverlay.com",
-  "slug": "poe-overlay-ii-sync",
-  "users": 11145,
-  "version": "0.0.1.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4854617/poe_overlay_ii_sync-0.0.1.1.xpi",
-  "sha256": "bd8cb5be1fff8ce920e229ffc8e2e67ed7b80ca2b09fc47bde682ef064706a65"
- },
- {
   "id": "xdm-v8-browser-helper@subhra74.github.io",
   "slug": "xdm-browser-monitor-v8",
   "users": 11119,
   "version": "3.4",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4095144/xdm_browser_monitor_v8-3.4.xpi",
   "sha256": "fb703ac17dc239600389a86953fbf63df6d31280a7745147c11cba932d1657c9"
- },
- {
-  "id": "syncshare@naloaty.me",
-  "slug": "syncshare",
-  "users": 11097,
-  "version": "2.22.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5209221/syncshare-2.22.0.xpi",
-  "sha256": "77462665c4d1e23f57e0921d55cc2a7068059e151579b8c0c810f96ce3e8b4e0"
  },
  {
   "id": "{1935b298-ac62-11ec-b909-0242ac120003}",
@@ -4632,28 +3904,12 @@
   "sha256": "23104b2c30aaf46dac2ec183115fbf715f869b6ca799be65a70935f6a7ec1b42"
  },
  {
-  "id": "floccus@handmadeideas.org",
-  "slug": "floccus",
-  "users": 10353,
-  "version": "5.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5224106/floccus-5.13.0.xpi",
-  "sha256": "71f658e689e67c17b3c605503e64400fa05c730618365b8d023b8e63bd1c8473"
- },
- {
   "id": "{228a49ed-af0c-452c-bc77-630f99cb0470}",
   "slug": "eagle-app",
   "users": 10353,
   "version": "3.1.19",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4602674/eagle_app-3.1.19.xpi",
   "sha256": "92297d18f60bb68cc4df25e75250a4deedc09cdacc77b403fa7c085c28ac5fec"
- },
- {
-  "id": "addon@simplelogin",
-  "slug": "simplelogin",
-  "users": 10285,
-  "version": "3.0.7",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4458602/simplelogin-3.0.7.xpi",
-  "sha256": "8e91d0b7e2bc76746818dd8cc533ea525b9c3cfd433fba52da4766a83f579ded"
  },
  {
   "id": "michal.simonfy@gmail.com",
@@ -4678,14 +3934,6 @@
   "version": "2.2.205",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3926343/reverso_context_beta-2.2.205.xpi",
   "sha256": "3cabddc983b6837584751eefa9a8253463415d94f66ced9c811d1d80803dd70b"
- },
- {
-  "id": "enquiry@purevpn.com",
-  "slug": "purevpn-for-privacy-security",
-  "users": 10212,
-  "version": "3.14.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4235926/purevpn_for_privacy_security-3.14.1.xpi",
-  "sha256": "0d9d8109f587e9a72f496f41d50f698fd3d5f6b611e175f1fadf2d300b5fdaa2"
  },
  {
   "id": "{5d0d1f87-5991-42d3-98c3-54878ead1ed1}",
@@ -4856,14 +4104,6 @@
   "sha256": "39c2073636f7d8c3e49002a930e0b569efc751e7beb46f7ed7f17c44b3c1680f"
  },
  {
-  "id": "secureline-vpn@avast.com",
-  "slug": "avast-secureline-vpn",
-  "users": 9608,
-  "version": "2.8.0.1043",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4890895/avast_secureline_vpn-2.8.0.1043.xpi",
-  "sha256": "a9620119502669377d065ee16da37b04cfec9f62a85b7bf0d457709477ba20b0"
- },
- {
   "id": "recipioapp@togonetworksltd.com",
   "slug": "recipio",
   "users": 9583,
@@ -4886,14 +4126,6 @@
   "version": "0.2.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4898490/access_control_allow_origin-0.2.3.xpi",
   "sha256": "079df652830e09bb0fa0a5023139fe483c434b6e5c9cce724b1459180f4f7d11"
- },
- {
-  "id": "{7dd882da-eb07-4d46-8343-3a181cdc4c3f}",
-  "slug": "norton-vpn-fast-secure",
-  "users": 9480,
-  "version": "2.7.0.995",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4814556/norton_vpn_fast_secure-2.7.0.995.xpi",
-  "sha256": "b1436e27db0841c95447d761ca40fbfd66b79034a162f063172abc6891e74b9f"
  },
  {
   "id": "{a6afa2be-9b78-4dba-9dda-d89e52b13b7d}",
@@ -4936,14 +4168,6 @@
   "sha256": "3409b64a8ed987f8ab128f7bef24b22041e42d1d5069797b6dafa6b5232a4c51"
  },
  {
-  "id": "toggl-button@toggl.com",
-  "slug": "toggl-button-time-tracker",
-  "users": 9360,
-  "version": "4.11.24",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5187124/toggl_button_time_tracker-4.11.24.xpi",
-  "sha256": "3eedd6792662e08dc594c2eb52d69d6cc6e8a4a4e78c5eef62dab1f66444bf9f"
- },
- {
   "id": "{3e4b4578-e3d0-486e-ab0b-743fba91a5f7}",
   "slug": "dj-rivolta",
   "users": 9317,
@@ -4974,14 +4198,6 @@
   "version": "1.9.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5155897/2fas_two_factor_authentication-1.9.3.xpi",
   "sha256": "024c8ca86e6d2883257bf0d379c9d796018b55ab7838f5e2a44133bd85e7552f"
- },
- {
-  "id": "sabre@simplify.jobs",
-  "slug": "simplify-jobs",
-  "users": 9252,
-  "version": "3.1.14",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5218603/simplify_jobs-3.1.14.xpi",
-  "sha256": "a20c8c1b4175807955e0a783d256c742b4bf1acecaf3c641fd6075c819be2d66"
  },
  {
   "id": "{20a9bb38-ed7c-4faf-9aaf-7c5d241fd747}",
@@ -5104,36 +4320,12 @@
   "sha256": "b0c40d1ac8732f81eef9b96e221a89283a0d8831c347205ec9238d0e73d891c1"
  },
  {
-  "id": "{878c5814-8eb9-4262-9b4b-f46e74dd7cfa}",
-  "slug": "star-citizen-ccu-game",
-  "users": 8913,
-  "version": "6.2.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4936720/star_citizen_ccu_game-6.2.0.xpi",
-  "sha256": "49c57104aea4d224c80c3c9b3f83292a9a2abaa29adf8ac8e0bc3fed8c62ddae"
- },
- {
   "id": "swisscows@swisscows.ch",
   "slug": "swisscows-search",
   "users": 8909,
   "version": "1.4",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3729573/swisscows_search-1.4.xpi",
   "sha256": "a7e104f230be11733e2cdda556ba2fe423cf6c883a7150c9c078c516b3b183db"
- },
- {
-  "id": "betterfacebook@mattkruse.com",
-  "slug": "socialfixer",
-  "users": 8908,
-  "version": "31.1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4165126/socialfixer-31.1.0.xpi",
-  "sha256": "0d9d6e00ffbac71062b68e95ae9bdba61d91284d67e1baf3174f9e4cd711cd96"
- },
- {
-  "id": "twitchinventoryclaimer@schulzjona",
-  "slug": "twitch-inventory-claimer",
-  "users": 8887,
-  "version": "6.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5117652/twitch_inventory_claimer-6.4.0.xpi",
-  "sha256": "ae7b66fa9c4eb4fd70667d1bc584024302c246795fafa0d27565090968560dc0"
  },
  {
   "id": "{7079d3c5-b1a0-4964-8a7a-add0d2af8f52}",
@@ -5248,14 +4440,6 @@
   "sha256": "4bc73e07fddd8c7f67861d2aa96ca4b9d998167699bbd8e2b4fd61d82875c3be"
  },
  {
-  "id": "{d3e2f0a1-1234-5678-9abc-def012345659}",
-  "slug": "seqrite-web-protection",
-  "users": 8654,
-  "version": "2.7",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5180693/seqrite_web_protection-2.7.xpi",
-  "sha256": "b2d152a7430939391785e44b8d6287b95a04ed21e6ef909fda8e4e6a4dcf1288"
- },
- {
   "id": "Open-Link-with-New-Tab@sienori",
   "slug": "open-link-with-new-tab",
   "users": 8649,
@@ -5296,28 +4480,12 @@
   "sha256": "1fbe84c618b164ebeb1095d8adc799f966b0ace10d8c89e0d3d6cc3230694d12"
  },
  {
-  "id": "{ed387cfb-e57a-49e0-9bf3-017a1f7f2378}",
-  "slug": "telegram-web",
-  "users": 8456,
-  "version": "3.1resigned1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4272070/telegram_web-3.1resigned1.xpi",
-  "sha256": "8d65e843ddadd2d7cbb280704aeb6068281d65fadcafd19a7e655908b6a00e4d"
- },
- {
   "id": "{E6C93316-271E-4b3d-8D7E-FE11B4350AEB}",
   "slug": "always-on-top",
   "users": 8404,
   "version": "6.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3835348/always_on_top-6.3.xpi",
   "sha256": "e867d8350585f4d9a6cf3ec0958825e1c6df2c6383cf2c1ee5bf3a61ebc08b53"
- },
- {
-  "id": "{c9cc7f63-4549-4d7a-a77a-931bfdeb09a9}",
-  "slug": "telegram-downloader",
-  "users": 8393,
-  "version": "1.8.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4655058/telegram_downloader-1.8.3.xpi",
-  "sha256": "dd9c392261d44ede0f88ae0830ff5238061392e20b4617f9cad75a3bcfaf38bb"
  },
  {
   "id": "newspass@newspass.com",
@@ -5336,22 +4504,6 @@
   "sha256": "272b0bd3ffdb9ddaa6eab4299a2d7bf77ee166bb2c7f189eaf1b6fc6a05b3019"
  },
  {
-  "id": "{a94d60a0-8408-4c53-8eec-cb349eb958b8}",
-  "slug": "google-keep-notes",
-  "users": 8363,
-  "version": "65.0.1resigned1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4270988/google_keep_notes-65.0.1resigned1.xpi",
-  "sha256": "c0a12cd6705da504328ad39c179201c2ae28d03a2a92b78077bf5c9f00e3dd1c"
- },
- {
-  "id": "intgcal@egarracingteam.com.ar",
-  "slug": "pinned-google-calendar",
-  "users": 8356,
-  "version": "2.3.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5037197/pinned_google_calendar-2.3.0.xpi",
-  "sha256": "f8bfd41ad2ea0d5418d1f2d22bc6b54ac3bf3fbce4b6781756a0146f5dfcbd71"
- },
- {
   "id": "{e25fb70d-3892-456f-a698-f8f8bd749e23}",
   "slug": "urban-shield",
   "users": 8351,
@@ -5366,14 +4518,6 @@
   "version": "32.1.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5222193/google_shortcuts_all_google_se-32.1.2.xpi",
   "sha256": "112584579dbc129d00fe8e8672c35680312102aeff85ea1179c183ab15149f46"
- },
- {
-  "id": "{d3e2f0a1-1234-5678-9abc-def012745674}",
-  "slug": "qh-web-protection",
-  "users": 8185,
-  "version": "2.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4951400/qh_web_protection-2.2.xpi",
-  "sha256": "5729731c6d45bf347b670bf729d8b456afc0ae2ff48c4bd6befb31c43e22a117"
  },
  {
   "id": "keplr-extension@keplr.app",
@@ -5536,14 +4680,6 @@
   "sha256": "e88d199e1a2cf315932550ba9e461f43faffeeaa133565718cd960e78efcaf6a"
  },
  {
-  "id": "{809ea8a3-a45d-41a2-9cb0-e7c7d7321db5}",
-  "slug": "library_access",
-  "users": 7763,
-  "version": "2026.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5186032/library_access-2026.13.0.xpi",
-  "sha256": "904131e0b01f7a94bf0a549868b9fda4c2f54b163ab4923f4d4d88ac534b405e"
- },
- {
   "id": "admin@myprivacytools.com",
   "slug": "hide-my-ip-free",
   "users": 7749,
@@ -5704,14 +4840,6 @@
   "sha256": "f29e1a92f432d463fd2ae99bbadba3fdf7d2105b3c68d4c7be3cf3850dc02d80"
  },
  {
-  "id": "{1262fc44-5ec9-4088-a7a7-4cd42f3f548d}",
-  "slug": "clockify-time-tracker",
-  "users": 7469,
-  "version": "2.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5173028/clockify_time_tracker-2.13.0.xpi",
-  "sha256": "424dd7eaaad353b6973c4f129a8ba6a5b92629c62cb320dfd21dab6081636cb8"
- },
- {
   "id": "jid1-D7momAzRw417Ag@jetpack",
   "slug": "wikiwand-wikipedia-modernized",
   "users": 7465,
@@ -5734,14 +4862,6 @@
   "version": "5.1.7",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4228030/ultrawidify-5.1.7.xpi",
   "sha256": "b94370379d13938a0cf026d65586eb899910464b71eb3392da014123d1580a9c"
- },
- {
-  "id": "2026@spotify-adblock",
-  "slug": "spotify-adblock",
-  "users": 7447,
-  "version": "2.0.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4747992/spotify_adblock-2.0.8.xpi",
-  "sha256": "3ef49cbe67f0076dbc1ccdc17b56379902a9de972e214a38c29026bdc3c37caa"
  },
  {
   "id": "{b5dd9324-33b6-4ef0-81b6-97496dd6e81d}",
@@ -5768,36 +4888,12 @@
   "sha256": "c1be4032168b3a0fbafb6eabe2d35eb2949bbbe83e99c17ef1768e13bad30d36"
  },
  {
-  "id": "alldebrid@alldebrid.com",
-  "slug": "alldebrid-addon",
-  "users": 7413,
-  "version": "13.1.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5065583/alldebrid_addon-13.1.2.xpi",
-  "sha256": "cf887c770a3d53df2f691d72dc1dc52c2459e19d8c6d1041fde5196f37efc8d4"
- },
- {
-  "id": "collector@broceliand.fr",
-  "slug": "pearltrees",
-  "users": 7400,
-  "version": "8.1.4",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4161752/pearltrees-8.1.4.xpi",
-  "sha256": "c0856ac2a1d6adb8c3af9c2f3b41bd41f4ad4c6096609bf86a85f7b742ba0f5a"
- },
- {
   "id": "textlink-and-googletranslate@aime",
   "slug": "text-link-google-translate",
   "users": 7369,
   "version": "0.5.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3691998/text_link_google_translate-0.5.3.xpi",
   "sha256": "c326051e7099218feb9e4caa35d83d86b7c4d85c3891b1fff42e24687922063f"
- },
- {
-  "id": "firefox_extension@calendly.com",
-  "slug": "calendly-meeting-scheduling",
-  "users": 7369,
-  "version": "5.0.0.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4979144/calendly_meeting_scheduling-5.0.0.0.xpi",
-  "sha256": "8d3dab83b4d3d03a42c3b298383e0a079fd59cbb23fcaac1903c387eb89109fa"
  },
  {
   "id": "rotate-and-zoom-image@mikk.cz",
@@ -5888,28 +4984,12 @@
   "sha256": "384c83e30e508817e43ed13c43116cb00773eafd455701c55845fc7aa6ab89be"
  },
  {
-  "id": "{3754707b-1aa4-4c6f-96e7-5b1cdc1de5f9}",
-  "slug": "torn-tools",
-  "users": 7213,
-  "version": "9.3.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5154535/torn_tools-9.3.3.xpi",
-  "sha256": "fac7f72f1a0a2b11bbcac43cc585ce4860ae7c447a377ff399dabb1445c5c0bb"
- },
- {
   "id": "inist.users@gmail.com",
   "slug": "click-and-read",
   "users": 7196,
   "version": "4.7.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5129450/click_and_read-4.7.2.xpi",
   "sha256": "71d36ff6b7d6aa0ce4946da0f70a792f1e2b5894f1e715bfc916534e38c64b54"
- },
- {
-  "id": "jid1-PmuMUcuMey5ABw@jetpack",
-  "slug": "keywords-everywhere",
-  "users": 7195,
-  "version": "11.56",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5160911/keywords_everywhere-11.56.xpi",
-  "sha256": "0ff3908147dccbf434c5dc23e72718fe6a311d10ebb6a4acea9cb0adbeeb1b8d"
  },
  {
   "id": "jobcentertycoon@gmail.com",
@@ -5966,14 +5046,6 @@
   "version": "2018.10.4resigned1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4271494/disable_autoplay-2018.10.4resigned1.xpi",
   "sha256": "a2c114fd23100c12a7dc2741736a8a123879dcb6204703c291d1cf1419b5650f"
- },
- {
-  "id": "fvdmedia@gmail.com",
-  "slug": "fvd-synchronizer",
-  "users": 7050,
-  "version": "20.3.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4156969/fvd_synchronizer-20.3.2.xpi",
-  "sha256": "7294cba8ba3134ada92a457e09e79ae66d66dd4c7f765c70277f53a536b99a6b"
  },
  {
   "id": "{09b8dba2-ae33-4bea-8bf1-d85e50691408}",
@@ -6128,14 +5200,6 @@
   "sha256": "43d501144be7fd2171b2e890d7fa351d9b6310c8f5d10621e66b00fa8e327e58"
  },
  {
-  "id": "{8e41107d-2be2-454d-b4b8-c3d7e54d77de}",
-  "slug": "igplus-extension",
-  "users": 6824,
-  "version": "3.2.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5184287/igplus_extension-3.2.1.xpi",
-  "sha256": "7b604dcfc1706bd8b2214191608b46897fb98b917a1e8ef90ff2bed886985b9c"
- },
- {
   "id": "SpeedPitch_changer@despaa.id",
   "slug": "speed-pitch-changer",
   "users": 6823,
@@ -6160,14 +5224,6 @@
   "sha256": "9da2d936a0445084b5deb1cf272221235fb3ca6ccb544efa26d877cfc6d0191c"
  },
  {
-  "id": "notifier@topcashback.co.uk",
-  "slug": "topcashback-browser-extension",
-  "users": 6764,
-  "version": "7.16.0.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5201798/topcashback_browser_extension-7.16.0.0.xpi",
-  "sha256": "70ff8689a969ffa9f1abaf5d5546b99f989d6d187cf26ae93b0b1454d2a5b6ee"
- },
- {
   "id": "xl_webbrowserstore@xunlei.com",
   "slug": "\u8fc5\u96f7x\u4e0b\u8f7d\u652f\u6301",
   "users": 6758,
@@ -6190,22 +5246,6 @@
   "version": "1.1.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5058709/ai_warning_for_steam-1.1.2.xpi",
   "sha256": "b13eaf77b53ae5e8becafaca005e1aab983f084451d3a9637a5b7b538feb19fe"
- },
- {
-  "id": "privacy@privacy.com",
-  "slug": "pay-by-privacy",
-  "users": 6713,
-  "version": "2.4.17",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4823381/pay_by_privacy-2.4.17.xpi",
-  "sha256": "8caa53ce0e62e04cd371708a25032f2737d44e0e72630159ff26c82c72c98975"
- },
- {
-  "id": "{631d447a-17e8-43af-b541-3bf88cb55800}",
-  "slug": "twitch-auto-claim",
-  "users": 6708,
-  "version": "1.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/3849838/twitch_auto_claim-1.2.xpi",
-  "sha256": "60e3731163a93f321884005bc6658b438745c57c460ae0d435a1143e7e3ccec1"
  },
  {
   "id": "{530f7c6c-6077-4703-8f71-cb368c663e35}",
@@ -6272,14 +5312,6 @@
   "sha256": "40b5538e975c474a8b1b5638c4bb788b186e1200726f480f3904e3a42c65fc59"
  },
  {
-  "id": "{e84c7711-c738-409a-879d-3f20cb087563}",
-  "slug": "lingq-importer2",
-  "users": 6660,
-  "version": "2.3.52",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4962526/lingq_importer2-2.3.52.xpi",
-  "sha256": "e3972366733ebef9d247bdd1318524d7df24eb364bd7cae943cb4cd4d2f029c9"
- },
- {
   "id": "jid1-Xo5SuA6qc1DFpw@jetpack",
   "slug": "emoji-cheatsheet",
   "users": 6650,
@@ -6302,14 +5334,6 @@
   "version": "1.6.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3594420/checkmarks_web_ext-1.6.1.xpi",
   "sha256": "c3ccf4b302ee96c9b883c4a1f7d26395ab4e276b976cab2d65c9cd898964e4f0"
- },
- {
-  "id": "{b2d4c129-6437-4847-868c-53b4832fee00}",
-  "slug": "milanote-clipper",
-  "users": 6627,
-  "version": "2.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5048160/milanote_clipper-2.4.0.xpi",
-  "sha256": "e96b0d05063f6b410dbb421dc6696ba599f5450a6e9e73fbbd907fbebf3bf296"
  },
  {
   "id": "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}",
@@ -6376,14 +5400,6 @@
   "sha256": "4fd59644eca7888bad69e07cf30c5e188e0cc47f3d5c8a5fa16fa8bec527baa7"
  },
  {
-  "id": "findandremind@easyfundraising.org.uk",
-  "slug": "donation-reminder",
-  "users": 6516,
-  "version": "6.33.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5033742/donation_reminder-6.33.0.xpi",
-  "sha256": "fd243070885d7b10230c1a3b4450a6a3c4f7ce0d629bb8fe5c40ae22f2aeaab4"
- },
- {
   "id": "{a0901e86-92df-4b8d-9fcd-7ad4746a6f95}",
   "slug": "google-translate-elemen",
   "users": 6456,
@@ -6424,14 +5440,6 @@
   "sha256": "52321091d47c8a14ab6b0f9e8d21d112f823daf038002eb279187cfb08bca349"
  },
  {
-  "id": "{e7476172-097c-4b77-b56e-f56a894adca9}",
-  "slug": "minimaltwitter",
-  "users": 6360,
-  "version": "6.5.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4967711/minimaltwitter-6.5.0.xpi",
-  "sha256": "7019bd589ea51c447543a9c0036c2b7cff95db14c192be96abb51f1848e900dd"
- },
- {
   "id": "{1c3ca161-8c6d-48ed-9993-da686bcf5310}",
   "slug": "rutracker_torrent_search",
   "users": 6354,
@@ -6462,14 +5470,6 @@
   "version": "1.0.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5124174/speed_test_meter_and_search-1.0.3.xpi",
   "sha256": "2ef9e17a933955d95faa534b9fb4c00451a34be5dd59bab70d81a69fbaa5c68d"
- },
- {
-  "id": "{bd40e25c-7e66-4602-b8ef-35b979b78cbb}",
-  "slug": "save-to-notion",
-  "users": 6288,
-  "version": "4.3.19",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5194296/save_to_notion-4.3.19.xpi",
-  "sha256": "7cc23dbf92f3735140cf4fbe53d1c1fe6800f58a0343fbdef768c8fab78223c0"
  },
  {
   "id": "{bd3d8e6a-1518-40b9-92ff-e21f2d968152}",
@@ -6592,14 +5592,6 @@
   "sha256": "c11622dd8eaf7840ec1656933600e47445fa7bef14ac32f168b111846258d895"
  },
  {
-  "id": "{7eac736e-bef2-462b-bdac-334f7f91e338}",
-  "slug": "aura-password-manager",
-  "users": 6101,
-  "version": "3.13.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5144468/aura_password_manager-3.13.0.xpi",
-  "sha256": "8b0061c534eafd52990c21c291058b93ae57fc7d351af3d2bc66c13a49004f7e"
- },
- {
   "id": "{536b14f1-381e-49f5-a2f5-8cb33ac17402}",
   "slug": "ssstwitter-downloader",
   "users": 6100,
@@ -6672,14 +5664,6 @@
   "sha256": "5bcd60023d69ad3bc6e274a48fc9f4bf91af679107da3453a31203fcb7206442"
  },
  {
-  "id": "{37fa1426-b82d-11db-8314-0800200c9a66}",
-  "slug": "xnotifier",
-  "users": 6023,
-  "version": "4.2.23",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4105337/xnotifier-4.2.23.xpi",
-  "sha256": "9e20d3b108667795253ebe290b6b488523b5c2e71f38b97fa6e99668feb84119"
- },
- {
   "id": "{dc0b7af2-2cfc-498d-bee5-50e710ed404a}",
   "slug": "fadblock-origin",
   "users": 6006,
@@ -6694,14 +5678,6 @@
   "version": "0.26",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4666625/danfeonline-0.26.xpi",
   "sha256": "369bc9359de58a0146a95d4d4cb5512f2e976c605d7b7baa82f5e55bb4f302f6"
- },
- {
-  "id": "caitools.dev@gmail.com",
-  "slug": "cai-tools",
-  "users": 5990,
-  "version": "3.8.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5125233/cai_tools-3.8.3.xpi",
-  "sha256": "c4e3daa1d824390a6ab4d84b43c7f04fd9c9d790d6c42c86bc52fe124e4e6d9b"
  },
  {
   "id": "{30b15d56-b2fa-4cb2-98fd-7b5e26306483}",
@@ -6800,14 +5776,6 @@
   "sha256": "0b2eed050909e632d96ae7e76597c765a61756ed2f1553846336dc853b482dfc"
  },
  {
-  "id": "gmail_panel@alejandrobrizuela.com.ar",
-  "slug": "pinned-gmail",
-  "users": 5864,
-  "version": "2.4.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4132394/pinned_gmail-2.4.0.xpi",
-  "sha256": "b0776a09f48773c491e628a06c0aa97d28dfc6a48027d0641ac7c57a51eb85cb"
- },
- {
   "id": "{07046613-1993-4b66-9dd1-9dd1ce581cb7}",
   "slug": "block-site-2",
   "users": 5855,
@@ -6830,14 +5798,6 @@
   "version": "10.2.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3867158/przelewy24_addons-10.2.0.xpi",
   "sha256": "0973ccc9465ef9724d7adc304830e8d319e1b8f9c921d458ed06bb22f7f3b96d"
- },
- {
-  "id": "firefox@hunter.io",
-  "slug": "hunterio",
-  "users": 5813,
-  "version": "3.3.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5116878/hunterio-3.3.2.xpi",
-  "sha256": "1597cecbbccdbfbcaef9d0b09fb17373a270997cd37e52bb7f6beb7a4ebfa057"
  },
  {
   "id": "{85252760-c586-4180-8788-c50234c0ac08}",
@@ -6864,14 +5824,6 @@
   "sha256": "5f065a19e7a8d8dc82e66a0f178c65779d31bd4a9ecc2457ca4218699f2d75af"
  },
  {
-  "id": "team@readwise.io",
-  "slug": "readwise-highlighter",
-  "users": 5762,
-  "version": "0.18.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5055403/readwise_highlighter-0.18.3.xpi",
-  "sha256": "16917743ac16f651d0944b0d472876fe8040bec978e29446a134c6e8e828131f"
- },
- {
   "id": "@youtube-download-ytd",
   "slug": "youtube-download-ytd",
   "users": 5759,
@@ -6880,36 +5832,12 @@
   "sha256": "f983845a4137b11d8794a3b3ce6455d9089aeef093d75124f13fd270c3129cbe"
  },
  {
-  "id": "{52e126d4-d2d7-483a-a0a1-6e8aace23253}",
-  "slug": "abovevtt",
-  "users": 5758,
-  "version": "1.61",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5215998/abovevtt-1.61.xpi",
-  "sha256": "d7948d9ed8a0cbcc31154058fca6d52e7a9126f46123096d73fc71b6a527ecb8"
- },
- {
-  "id": "toolbar-ff@payback.de",
-  "slug": "pia",
-  "users": 5757,
-  "version": "3.82.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5206670/pia-3.82.1.xpi",
-  "sha256": "dc6a123aeb928efcb54e4309f47b3864f1460be2015a99bbdb3f6428470ffece"
- },
- {
   "id": "firefox@getsharex.com",
   "slug": "sharex",
   "users": 5751,
   "version": "2.1.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4251045/sharex-2.1.0.xpi",
   "sha256": "d1cc8e0a3b3aaa36e66d39e9be164f5086d610d633e243d97175ebf78c899363"
- },
- {
-  "id": "{2b6c25c8-0c7e-4692-957f-c4ae6af0c34b}",
-  "slug": "improve-crunchyroll",
-  "users": 5739,
-  "version": "5.1.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5026207/improve_crunchyroll-5.1.1.xpi",
-  "sha256": "574b0efbb9bbdad2ea2195d527bcffee8b6e4db33216dfbd2bda8692e437b513"
  },
  {
   "id": "@hideyoutubecontrolls",
@@ -7016,14 +5944,6 @@
   "sha256": "37e1c3b007f680edbb9cf7ac1b62a6c49dbe736f27eb3581b4ba70beb0961602"
  },
  {
-  "id": "{09993eda-1986-4e10-886e-5c63815338c5}",
-  "slug": "prolific-assistant",
-  "users": 5610,
-  "version": "5.31.7",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5217224/prolific_assistant-5.31.7.xpi",
-  "sha256": "b33361aba9a693a30f2e8f7e5470b0c7e3d205ffe71c1b2c61ec0b2103cb4c1b"
- },
- {
   "id": "amazineurope@founderedeveloper.com",
   "slug": "eurosaver",
   "users": 5609,
@@ -7104,14 +6024,6 @@
   "sha256": "07f63de70d4b2b8048d08bf5c950641a1278f2a1ba7d022c3887d1f9a9a06f6d"
  },
  {
-  "id": "{62e31096-34e6-4503-8806-3d7a6004a1f4}",
-  "slug": "adless-spotify",
-  "users": 5510,
-  "version": "1.5",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4098050/adless_spotify-1.5.xpi",
-  "sha256": "53e6d09dd42483434321f466480c2edeb6c3e82c7e1ab0bf238dee3ecf823114"
- },
- {
   "id": "{7c2a67fe-1184-46b4-8d17-6a4d66e9f601}",
   "slug": "phishfinderak",
   "users": 5493,
@@ -7150,14 +6062,6 @@
   "version": "1.2.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4694319/tiktok_download_buttons-1.2.2.xpi",
   "sha256": "699aa5c7adbe2e5cb1bbe96230e015e4698b0ad91001734a32fc5059fd751b4f"
- },
- {
-  "id": "jid1-jAUWJuglb1SqUQ@jetpack",
-  "slug": "zoho-vault",
-  "users": 5428,
-  "version": "6.10.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5072096/zoho_vault-6.10.1.xpi",
-  "sha256": "7ad65989c2c204b8eeaf05692f932e6561b69e24714f446bf5dc6941ef2d6363"
  },
  {
   "id": "playbackSpeed@waldemar.b",
@@ -7200,14 +6104,6 @@
   "sha256": "83178a544a8c4301df6c807561d0bbc93f64ff44cc83e3e42cba02d543a30d70"
  },
  {
-  "id": "gyazo-extension@gyazo.com",
-  "slug": "gyazo-official",
-  "users": 5387,
-  "version": "4.2.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4312628/gyazo_official-4.2.0.xpi",
-  "sha256": "a62d4676aafe52c17759f4f22807bc205c43eb18bb6f93286e5792edc83db775"
- },
- {
   "id": "{45a77b05-36c2-4f0f-864b-309d1916bb2a}",
   "slug": "pkmn-randbats-tooltip",
   "users": 5379,
@@ -7230,14 +6126,6 @@
   "version": "1.8",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3935307/foxscroller-1.8.xpi",
   "sha256": "76e3df60531c6d7ab947afffeb3c3148d5f8baa37dc6ccadfbea508867aa02e4"
- },
- {
-  "id": "@buyee-cart-extension",
-  "slug": "add-to-buyee",
-  "users": 5368,
-  "version": "5.94.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5171362/add_to_buyee-5.94.0.xpi",
-  "sha256": "566ae9f752a2fa23de4a6981de3482d7b24edd02669eb76e78442302c2f65f4a"
  },
  {
   "id": "{174c6ce0-6775-45b7-82b3-92105d110a4d}",
@@ -7296,14 +6184,6 @@
   "sha256": "ce44970f698c989e57c76da65922fb540f84b84639b885e78b5694c7d7de28b3"
  },
  {
-  "id": "passwordmanager@avast.com",
-  "slug": "avast-password-manager",
-  "users": 5313,
-  "version": "1.0.2.1307",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4746841/avast_password_manager-1.0.2.1307.xpi",
-  "sha256": "435e1a8d1f83a08849afceeb6e9f52a6a42017aeba3108b16b5c625dffab72d4"
- },
- {
   "id": "administrator@pricy.ro",
   "slug": "pricy",
   "users": 5302,
@@ -7360,30 +6240,6 @@
   "sha256": "4b1bd693af1fdd4293d5d6d094881e0c52bc90c06462f2d230ab43d6099684a3"
  },
  {
-  "id": "aws-extend-switch-roles@toshi.tilfin.com",
-  "slug": "aws-extend-switch-roles3",
-  "users": 5206,
-  "version": "6.2.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4889102/aws_extend_switch_roles3-6.2.1.xpi",
-  "sha256": "9c6466605202c58eb0d4d347603ccdedc97b0c560329835e75fa7e9e308acc38"
- },
- {
-  "id": "{99482dab-18e1-49ac-868a-90bd802785b7}",
-  "slug": "claude-in-the-sidebar",
-  "users": 5202,
-  "version": "3.1.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5053346/claude_in_the_sidebar-3.1.0.xpi",
-  "sha256": "2b92c2c8977f6b46abcbe313a3573a850262ed9d1df44076f1f8618acb783a26"
- },
- {
-  "id": "{8e1ef2d7-d78f-47f9-9b69-c2806eb534fc}",
-  "slug": "auto-claim-twitch-chnnl-points",
-  "users": 5184,
-  "version": "2.0.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4869273/auto_claim_twitch_chnnl_points-2.0.3.xpi",
-  "sha256": "17f18813a18e06b7bbb79f25631b9b736b9b6655beeaa780975b87c42778fc57"
- },
- {
   "id": "tridactyl.vim@cmcaine.co.uk",
   "slug": "tridactyl-vim",
   "users": 5181,
@@ -7416,28 +6272,12 @@
   "sha256": "90916e35902aae93125afd0292816dd8cd948467de5c1f7669b5fbf3bf14da79"
  },
  {
-  "id": "{a5df0009-71e3-4048-bb02-38e1ee2ed33f}",
-  "slug": "poulpeo",
-  "users": 5148,
-  "version": "20.12.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5200365/poulpeo-20.12.1.xpi",
-  "sha256": "85c2c0ea2109e833f0cff4bf2e63be2ecfe6108c16823d9b0c21252ffe7d23a3"
- },
- {
   "id": "{2f182d41-fd03-4a6d-938d-081419586c37}",
   "slug": "google-analytics-opt-out",
   "users": 5135,
   "version": "0.3.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4401790/google_analytics_opt_out-0.3.0.xpi",
   "sha256": "dafd308a828cb9c6dd9d348a367009173430cb252cb884602c545b42b3e2fa69"
- },
- {
-  "id": "{076d8ebb-5df6-48e0-a619-99315c395644}",
-  "slug": "twitch-auto-points",
-  "users": 5126,
-  "version": "1.3.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4742373/twitch_auto_points-1.3.2.xpi",
-  "sha256": "ca8f168344c768c2f6cba637f5d6d4b4d7a6bec19d5ba3240c553eeefebaf332"
  },
  {
   "id": "@retire.js",
@@ -7472,14 +6312,6 @@
   "sha256": "f2199e31039239927050dd979e814db4420978ee7e303fe6f43d85a46052cc3d"
  },
  {
-  "id": "{f2d56336-0f16-4870-bf64-84b3fd97c9c0}",
-  "slug": "whatsapp-pinned",
-  "users": 5081,
-  "version": "1.1.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4278479/whatsapp_pinned-1.1.3.xpi",
-  "sha256": "86215f06e5927c38ea488154fb17409befb4d452403040f6c4f4b2d7d9de034f"
- },
- {
   "id": "hogecafe@gmail.com",
   "slug": "sakuracheckerplus",
   "users": 5081,
@@ -7488,28 +6320,12 @@
   "sha256": "1684dd0fa00c4fcb0895a821a91eb143ed9c536bbdc19ad053150a2f056ea44c"
  },
  {
-  "id": "{eb8aee6c-8239-4f5f-beed-9a4c55c76e32}",
-  "slug": "ai-exporter-chatgpt-to-pdf",
-  "users": 5079,
-  "version": "4.1.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4808195/ai_exporter_chatgpt_to_pdf-4.1.3.xpi",
-  "sha256": "1f1e0f58067b50405e93c65efd3a309ed88302f700fbe2945607f7c87f4bc9ae"
- },
- {
   "id": "quickdial@matmoul.com",
   "slug": "quick-dial",
   "users": 5078,
   "version": "0.1.24",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4872425/quick_dial-0.1.24.xpi",
   "sha256": "68fa0bf8ce3ac16c57290b24d74a1f99e450dcbc8bf13b0d628c820b1bdb3577"
- },
- {
-  "id": "{264206b8-8ba0-4824-8eeb-9d8d0520086f}",
-  "slug": "multiviewer-companion",
-  "users": 5070,
-  "version": "2.1.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4620615/multiviewer_companion-2.1.2.xpi",
-  "sha256": "68c0b8a7d05d6e63150c0b26d1ec5640f082ad7af5d804f4653cf8f9f129f0e7"
  },
  {
   "id": "{b21882eb-3211-44dc-964b-e6f35b33061f}",
@@ -7536,22 +6352,6 @@
   "sha256": "ec22d21735b140a614c1e85841ceb693ca48f42b8677afc4c7350502ab1ce14e"
  },
  {
-  "id": "ahrefs@AhrefsPteLtd",
-  "slug": "ahrefs-seo-toolbar",
-  "users": 5046,
-  "version": "3.2.14",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5204346/ahrefs_seo_toolbar-3.2.14.xpi",
-  "sha256": "ebf8816aef3149885bed1309626a5aa65f12aa236840861a33b1cc7920fc0c46"
- },
- {
-  "id": "claude_usage_tracker@lugia19.com",
-  "slug": "claude-usage-tracker",
-  "users": 5035,
-  "version": "6.1.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5107000/claude_usage_tracker-6.1.3.xpi",
-  "sha256": "d778878c54c2b9db85804a0b27a2e2d5d4b5e0ba6688a14fd0572eb282fd69e1"
- },
- {
   "id": "{a8f7e9c2-4d3b-4a1e-9f8c-7b6d5e4a3c2b}",
   "slug": "geo-spoof",
   "users": 5035,
@@ -7566,14 +6366,6 @@
   "version": "2.2.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4181992/google_page_translator_en_ja-2.2.0.xpi",
   "sha256": "f2469a34b8764f0bda894bbf79f4b8f47b2ec530e3d1a181774d2860b40d2178"
- },
- {
-  "id": "{33790bb6-386a-4cab-a9d0-c760b5a467ab}",
-  "slug": "youtube-summary-with-chatgpt",
-  "users": 5014,
-  "version": "2.4.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5131431/youtube_summary_with_chatgpt-2.4.1.xpi",
-  "sha256": "2cf42b8e836424ee91b051ef5da68742c42ebc21bc9f38a3e5d32578cc8d4bcb"
  },
  {
   "id": "{da8a8994-07be-4b0e-91dd-dd99863fd2c5}",
@@ -7656,28 +6448,12 @@
   "sha256": "123629ab8d86791d7b0072062c3d2fbc1438e4b7505ea781989c10952e1580f6"
  },
  {
-  "id": "netpanel@gemius.com",
-  "slug": "netpanel-study-light",
-  "users": 4931,
-  "version": "1.96.1",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5197355/netpanel_study_light-1.96.1.xpi",
-  "sha256": "2ae5e3ca9c7e42e78fb8933f246871716b8e42f6ed75baa5e7c6ecad01fa97ee"
- },
- {
   "id": "{a50b0ef8-7ffe-4628-b2f7-57ea96a6ae84}",
   "slug": "clearmind-block-porn-websites",
   "users": 4926,
   "version": "2.2.0",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5198340/clearmind_block_porn_websites-2.2.0.xpi",
   "sha256": "125afe1cf5eb1db4c26cfda851ba1e63e5cf8d18aa64b18f1b29b68dd76185dd"
- },
- {
-  "id": "shopcbbuttonFF@befrugal.com",
-  "slug": "befrugal-automatic-coupons",
-  "users": 4914,
-  "version": "2026.6.261.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5174531/befrugal_automatic_coupons-2026.6.261.0.xpi",
-  "sha256": "c8b32adaf6e0e410c9f593fd461e25a508324d76674b909bd32ef7724ce897f9"
  },
  {
   "id": "view-image-info@jeffersonscher.com",
@@ -7728,36 +6504,12 @@
   "sha256": "428ca6af477e6a089aab5f432ff8915f62e0cebb5060b4f159100b629d397226"
  },
  {
-  "id": "jid1-W5guVoyeUR0uBg@jetpack",
-  "slug": "tumblr-savior",
-  "users": 4877,
-  "version": "2.7.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4605595/tumblr_savior-2.7.0.xpi",
-  "sha256": "e1a6b52006d23f4de08693688e5abe812005fb2869ff976a84f700aff43d07db"
- },
- {
   "id": "{c5b32a48-5514-4a46-81f2-075ebf3cbc29}",
   "slug": "bulkurlopener",
   "users": 4873,
   "version": "1.11.3",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3964817/bulkurlopener-1.11.3.xpi",
   "sha256": "7de50750a715d1c21a6d42b6526c323d4b0b1758b32aabf64c3280082be718c1"
- },
- {
-  "id": "{294b9016-c306-4f99-b4d4-d410e01e867f}",
-  "slug": "claude-sidebar-free",
-  "users": 4872,
-  "version": "4.3.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5050295/claude_sidebar_free-4.3.0.xpi",
-  "sha256": "fab0de3e3991fe48e6fcb8b0c3fd9a63c93039ce46de8bb0241fdb4c26f6be60"
- },
- {
-  "id": "jonatas@gov",
-  "slug": "sei",
-  "users": 4856,
-  "version": "6.0.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4890828/sei-6.0.2.xpi",
-  "sha256": "b851a9f50cd3a892fa6b35173113dcb2ab16086923560c9c7f4df527b0079a2e"
  },
  {
   "id": "trix@highlight",
@@ -7782,14 +6534,6 @@
   "version": "5.25",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/5117998/castorus-5.25.xpi",
   "sha256": "1ae5336e16ec4be0f36467bb1d122d42cdb93cf16445b8789dac41bfdaa2b397"
- },
- {
-  "id": "housj@damddos.com",
-  "slug": "ctct-dlp-extension",
-  "users": 4820,
-  "version": "3.1.5",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4891469/ctct_dlp_extension-3.1.5.xpi",
-  "sha256": "ed8e3e81863f0eb8f370b9c541d6bd23967e2f85103edd1f799985cf4a6b86e4"
  },
  {
   "id": "{457040a2-afa9-457c-8a13-609c2327023a}",
@@ -7848,14 +6592,6 @@
   "sha256": "6066b9e3c8e285911d35413b428c90408c39c498341c4c062400f5f4ce4c0bd1"
  },
  {
-  "id": "{0e991294-458a-41a8-8f30-37cc4b3e1700}",
-  "slug": "claude-omni",
-  "users": 4783,
-  "version": "3.3.8",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5037598/claude_omni-3.3.8.xpi",
-  "sha256": "d0b3156f69c97d284d1930eda03272ccf292bde8506d920c984414a2e32a9d13"
- },
- {
   "id": "{62818d18-03a3-4ae9-bbe6-d7e7d8b03a0d}",
   "slug": "fandom-enhance",
   "users": 4772,
@@ -7870,14 +6606,6 @@
   "version": "26.3.14.8388",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4726455/videoplayer_mpd_m3u8_iptv_epg-26.3.14.8388.xpi",
   "sha256": "9acfbf0ccbdcc2705e8a631b5895e8f85df629ef2587b7c49427c33803dad002"
- },
- {
-  "id": "info@virustotal.com",
-  "slug": "vt4browsers",
-  "users": 4747,
-  "version": "5.0.3",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4755915/vt4browsers-5.0.3.xpi",
-  "sha256": "06468d6025297ec9e2f12bdfd8fa7e7a4be3afff4a2013bc2841a4da27e8cced"
  },
  {
   "id": "{478a6f63-10b3-41e4-8216-ec5e7b3486fc}",
@@ -7920,14 +6648,6 @@
   "sha256": "427269938272afd2eaed49f676238b86750ee0196b89229e2c8c1ac603aaf9d0"
  },
  {
-  "id": "real-time-stable@reveddit.com",
-  "slug": "reveddit-real-time",
-  "users": 4734,
-  "version": "0.0.5.32",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/5224600/reveddit_real_time-0.0.5.32.xpi",
-  "sha256": "70ff803bb0b5b9f62f278a14867eb0c315dfea20b937f0a9afbbb965b9c67dd3"
- },
- {
   "id": "{2e0fa8dd-c43c-438c-b77b-95ddc3d893ec}",
   "slug": "add-brave-search",
   "users": 4734,
@@ -7966,14 +6686,6 @@
   "version": "2.4.1",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/3860788/copy_selected_links-2.4.1.xpi",
   "sha256": "f32e2a30518dfcf72cfd39eda5015c85795d694c09b9d29ed0c62f67ed8768e1"
- },
- {
-  "id": "{0f1b4c25-4ab0-411e-ba22-e56c27f3d151}",
-  "slug": "sauce4strava",
-  "users": 4704,
-  "version": "8.10.2",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/4881297/sauce4strava-8.10.2.xpi",
-  "sha256": "033b2deac00a69e56c8ff145f08c14a3a9d379056d9bf9b878710b97cd96b871"
  },
  {
   "id": "{a655a6b2-69a5-40de-a3b8-3f7f200c95a7}",
