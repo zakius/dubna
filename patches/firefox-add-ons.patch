@@ -1857,7 +1857,16 @@
  }  // namespace extensions
 --- a/extensions/renderer/BUILD.gn
 +++ b/extensions/renderer/BUILD.gn
-@@ -99,6 +99,10 @@
+@@ -29,6 +29,8 @@
+     "api/file_system_natives.h",
+     "api/i18n_hooks_delegate.cc",
+     "api/i18n_hooks_delegate.h",
++    "api/messaging/firefox_message_target.cc",
++    "api/messaging/firefox_message_target.h",
+     "api/messaging/gin_port.cc",
+     "api/messaging/gin_port.h",
+     "api/messaging/message_target.cc",
+@@ -99,6 +101,10 @@
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -1980,20 +1989,20 @@
  }
 --- a/extensions/renderer/api/messaging/messaging_util.cc
 +++ b/extensions/renderer/api/messaging/messaging_util.cc
-@@ -18,6 +18,7 @@
- #include "extensions/common/api/messaging/messaging_endpoint.h"
- #include "extensions/common/extension.h"
- #include "extensions/common/extension_features.h"
-+#include "extensions/common/firefox_gecko_id.h"
- #include "extensions/common/manifest.h"
- #include "extensions/common/manifest_handlers/background_info.h"
+@@ -23,6 +23,7 @@
  #include "extensions/common/manifest_handlers/message_serialization_info.h"
+ #include "extensions/common/mojom/context_type.mojom.h"
+ #include "extensions/common/mojom/message_port.mojom.h"
++#include "extensions/renderer/api/messaging/firefox_message_target.h"
+ #include "extensions/renderer/extension_interaction_provider.h"
+ #include "extensions/renderer/get_script_context.h"
+ #include "extensions/renderer/script_context.h"
 @@ -401,6 +402,10 @@
    } else {
      DCHECK(v8_target_id->IsString());
      target_id = gin::V8ToString(script_context->isolate(), v8_target_id);
 +    // Firefox add-ons (dubna): an add-on is reached by its Gecko ID too.
-+    if (ExtensionId id = ExtensionIdFromGeckoId(target_id); !id.empty()) {
++    if (ExtensionId id = ExtensionIdForGeckoId(target_id); !id.empty()) {
 +      target_id = std::move(id);
 +    }
      // NOTE(devlin): JS bindings only validate that the extension id is present,
@@ -2078,3 +2087,47 @@
    if (root_binding.IsEmpty())
      return v8::Local<v8::Object>();
  
+--- a/chrome/browser/extensions/installed_loader.cc
++++ b/chrome/browser/extensions/installed_loader.cc
+@@ -57,6 +57,7 @@
+ #include "extensions/common/extension_urls.h"
+ #include "extensions/common/features/feature_developer_mode_only.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_gecko_id.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+@@ -282,9 +283,13 @@
+   scoped_refptr<const Extension> extension;
+   std::u16string error;
+   if (info.extension_manifest) {
+-    extension = Extension::Create(info.extension_path, info.extension_location,
+-                                  *info.extension_manifest,
+-                                  GetCreationFlags(&info), &error);
++    // Firefox add-ons (dubna): see LoadAllExtensions().
++    extension = Extension::Create(
++        info.extension_path, info.extension_location, *info.extension_manifest,
++        GetCreationFlags(&info),
++        KeptExtensionId(info.extension_path, *info.extension_manifest,
++                        info.extension_id),
++        &error);
+   } else {
+     error = base::UTF8ToUTF16(
+         std::string_view(manifest_errors::kManifestUnreadable));
+@@ -383,6 +388,16 @@
+       scoped_refptr<const Extension> extension(
+           file_util::LoadExtension(info.extension_path, info.extension_location,
+                                    GetCreationFlags(&info), &error));
++      // Firefox add-ons (dubna): an add-on installed before its ID came from
++      // its Gecko ID keeps the ID of its folder.
++      if (extension && extension->id() != info.extension_id &&
++          !KeptExtensionId(info.extension_path,
++                           *extension->manifest()->value(), info.extension_id)
++               .empty()) {
++        extension = file_util::LoadExtension(
++            info.extension_path, info.extension_id, info.extension_location,
++            GetCreationFlags(&info), &error);
++      }
+ 
+       if (!extension.get() || extension->id() != info.extension_id) {
+         invalid_extensions_.insert(info.extension_path);

@@ -6,6 +6,7 @@
 
 #include <string_view>
 
+#include "base/files/file_path.h"
 #include "base/values.h"
 #include "extensions/common/extension_id.h"
 
@@ -19,10 +20,20 @@ namespace extensions {
 // neither.
 ExtensionId ExtensionIdFromGeckoId(std::string_view gecko_id);
 
-// The extension ID from the Gecko ID in `manifest`, in
-// browser_specific_settings.gecko.id or the older applications.gecko.id, or
-// empty.
+// The Gecko ID in `manifest`, in browser_specific_settings.gecko.id or the
+// older applications.gecko.id, if Firefox would take it, or empty.
+std::string_view GeckoId(const base::DictValue& manifest);
+
+// The extension ID from the Gecko ID in `manifest`, or empty.
 ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest);
+
+// The ID that an add-on installed unpacked from the folder `path`, as
+// `installed_id`, keeps: `installed_id` when it is the folder's ID while the
+// add-on's `manifest` has a Gecko ID and no key, as for an add-on installed
+// before its ID came from its Gecko ID; else empty, for Chromium's ID.
+ExtensionId KeptExtensionId(const base::FilePath& path,
+                            const base::DictValue& manifest,
+                            const ExtensionId& installed_id);
 
 }  // namespace extensions
 

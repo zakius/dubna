@@ -48,14 +48,29 @@ ExtensionId ExtensionIdFromGeckoId(std::string_view gecko_id) {
   return crx_file::id_util::GenerateId(gecko_id);
 }
 
-ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest) {
+std::string_view GeckoId(const base::DictValue& manifest) {
   for (const char* path :
        {"browser_specific_settings.gecko.id", "applications.gecko.id"}) {
     if (const std::string* gecko_id = manifest.FindStringByDottedPath(path)) {
-      return ExtensionIdFromGeckoId(*gecko_id);
+      return IsGeckoId(*gecko_id) ? std::string_view(*gecko_id)
+                                  : std::string_view();
     }
   }
-  return ExtensionId();
+  return std::string_view();
+}
+
+ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest) {
+  return ExtensionIdFromGeckoId(GeckoId(manifest));
+}
+
+ExtensionId KeptExtensionId(const base::FilePath& path,
+                            const base::DictValue& manifest,
+                            const ExtensionId& installed_id) {
+  if (manifest.Find("key") || ExtensionIdFromManifest(manifest).empty() ||
+      installed_id != crx_file::id_util::GenerateIdForPath(path)) {
+    return ExtensionId();
+  }
+  return installed_id;
 }
 
 }  // namespace extensions
