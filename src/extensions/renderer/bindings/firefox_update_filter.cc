@@ -190,7 +190,6 @@ struct Update {
   GURL url;
   std::vector<std::string> changed;
   // proxy.onRequest's.
-  std::optional<std::string> type;
   std::optional<bool> incognito;
 };
 
@@ -234,10 +233,7 @@ std::optional<std::string> OwnString(v8::Local<v8::Context> context,
 Update ReadRequest(v8::Local<v8::Context> context,
                    v8::Local<v8::Object> details) {
   Update request;
-  request.tab_id = OwnInteger(context, details, "tabId");
-  request.window_id = OwnInteger(context, details, "windowId");
   request.url = GURL(OwnString(context, details, "url").value_or(std::string()));
-  request.type = OwnString(context, details, "type");
   v8::Local<v8::Value> incognito = Own(context, details, "incognito");
   if (!incognito.IsEmpty() && incognito->IsBoolean()) {
     request.incognito = incognito.As<v8::Boolean>()->Value();
@@ -291,11 +287,6 @@ bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
       (filter.cookie_store_id &&
        update.cookie_store_id != filter.cookie_store_id) ||
       (filter.incognito && update.incognito != filter.incognito)) {
-    return false;
-  }
-  if (filter.types && (!update.type || std::ranges::find(*filter.types,
-                                                         *update.type) ==
-                                           filter.types->end())) {
     return false;
   }
   // As in Firefox, a listener for some properties runs when one of them
@@ -364,7 +355,12 @@ std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
     if (!filter.urls) {
       reader.Fail("Property \"urls\" is required");
     }
-    filter.types = reader.Strings("types");
+    // The proxy resolution doesn't know a request's type, tab or window
+    // (proxy_internal_api.h). These are checked as Firefox checks them, but
+    // filter nothing, rather than keep the listener from every request.
+    reader.Strings("types");
+    reader.Integer("tabId");
+    reader.Integer("windowId");
     filter.incognito = reader.Boolean("incognito");
   } else {
     filter.properties = reader.Strings("properties");
@@ -379,10 +375,8 @@ std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
         }
       }
     }
-  }
-  filter.tab_id = reader.Integer("tabId");
-  filter.window_id = reader.Integer("windowId");
-  if (event_name != kProxyOnRequest) {
+    filter.tab_id = reader.Integer("tabId");
+    filter.window_id = reader.Integer("windowId");
     filter.cookie_store_id = reader.String("cookieStoreId");
   }
   if (reader.failed()) {

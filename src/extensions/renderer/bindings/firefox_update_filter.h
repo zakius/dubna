@@ -20,8 +20,9 @@ namespace extensions {
 // tabs.onUpdated.addListener() takes after the listener, its extraParameters:
 // `urls`, `properties`, `tabId`, `windowId` and `cookieStoreId`; and the
 // RequestFilter of proxy.onRequest: `urls`, `types`, `tabId`, `windowId` and
-// `incognito`. The listener runs only for an update or a request that matches
-// each one given. Chromium's event filters are another thing, which these
+// `incognito`, of which only `urls` and `incognito` filter: a request's type,
+// tab and window aren't known where its proxy is decided. The listener runs
+// only for an update or a request that matches each one that filters. Chromium's event filters are another thing, which these
 // events don't support, so these are kept here, next to the event's
 // listeners, and checked as it dispatches.
 class FirefoxUpdateFilters {
@@ -40,7 +41,6 @@ class FirefoxUpdateFilters {
     std::optional<int> window_id;
     std::optional<std::string> cookie_store_id;
     // proxy.onRequest's.
-    std::optional<std::vector<std::string>> types;
     std::optional<bool> incognito;
   };
 
