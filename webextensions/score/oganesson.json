@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 850
+  "L2": 851
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -69,7 +69,7 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
   },
   "@contain-facebook": {
    "level": "L1",
@@ -932,8 +932,8 @@
    "error": null
   },
   "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: e.message is not a function (scripts/background/app/aliases.js:1)"
   },
   "extension@redux.devtools": {
    "level": "L2",
@@ -1088,8 +1088,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
+   "level": "L2",
+   "error": null
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L2",
@@ -1348,8 +1348,8 @@
    "error": null
   },
   "jid1-5Fs7iTLscUaZBgwr@jetpack": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'set') (js/disable_webrtc.js:14)"
+   "level": "L2",
+   "error": null
   },
   "{4c421bb7-c1de-4dc6-80c7-ce8625e34d24}": {
    "level": "L2",
@@ -2433,7 +2433,7 @@
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (swift-selection-search.html:0)"
+   "error": "Uncaught (in promise) Error: Cannot access a chrome:// URL (swift-selection-search.html:0)"
   },
   "secureline-vpn@avast.com": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImRjYjY0MTU4YjYwZDg2YTkwMjczMGU3OTNiNDE3NGFjNjk2NTNkNDkiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjE4YjQyNGFjNDEzZmFlYjJmNjZiMjIxNzNjZWQzYzk3MTk0YTNjODAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
