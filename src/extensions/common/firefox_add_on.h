@@ -12,7 +12,10 @@ class Extension;
 // written for Firefox, that is, its manifest has Firefox's own key, gecko in
 // browser_specific_settings or in the older applications. Where Firefox and
 // Chromium give the same thing a different value, a Firefox add-on gets
-// Firefox's, and a Chrome Web Store extension keeps Chromium's.
+// Firefox's, and an extension without the key keeps Chromium's. So a Chrome
+// Web Store extension that ships one manifest for both stores counts as a
+// Firefox add-on, and an AMO add-on without the key, which AMO allows in
+// Manifest V2, doesn't.
 bool IsFirefoxAddOn(const Extension& extension);
 
 }  // namespace extensions
