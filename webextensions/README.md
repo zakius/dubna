@@ -85,18 +85,26 @@ Before filing, search open and closed `climb` issues. If one already covers the 
 
 ## When a step runs
 
-The evening task (dubna `README.md`, "Update policy") does one climb step when:
+The evening task (dubna `README.md`, "Update policy") does a batch of climb steps when:
 
 - no update was due, and
-- the tracker batch was empty, or it was small enough that a step can still be released by 06:00. The agent decides.
+- the tracker batch was empty, or it was small enough that the climb batch can still be released by 06:00. The agent decides.
 
 The 06:00 is the first one after the run starts: a run started early in the day, by hand or on schedule, works on until then. Builds run at any hour; during the day the system gives them fewer CPUs.
 
-It takes the open `climb` step with the best gain for its size whose `Depends on` steps are closed. It doesn't take a `blocked` step.
+The batch is two or three `size: nit` or `size: minor` steps, or one `size: medium` step alone. With less time left, it takes fewer. It picks the open `climb` steps with the best gain for their size whose `Depends on` steps are closed, regressions first ("Keeping what works"). It doesn't take a `blocked` step. Each step is its own commit and its own row in the status table, but the batch shares one build, one corpus run of the affected add-ons and one release per browser. A step that breaks the build or the tests without a small fix is dropped from the batch, and the rest ship.
 
-If a step isn't released by about 06:00, the agent stops it, pushes the work to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
+If a step isn't released by about 06:00, the agent releases the steps of the batch that are done, stops the rest, pushes each to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
 
-When the last full corpus run is more than 7 days old, the climb work for that evening is a full corpus run and a score update instead of a step.
+When the last full corpus run is more than 7 days old, or ran on an older oganesson version than main's, the climb work for that evening is a full corpus run and a score update instead of a batch.
+
+## Keeping what works
+
+Each Chromium update can break a step that already shipped: a patch hunk moves, an API changes shape, MV2 loses more code. Shipped steps stay checked:
+
+- Each step's end-to-end test stays in oganesson's `tools/e2e/`, so every update's test run covers it.
+- Each oganesson update that is not a zero-day runs the full corpus after its build. tennessine shares the patch, so its patch check catches a moved hunk. A zero-day update ships without it, and the next climb run does the full corpus run first.
+- An add-on that drops a level on an update doesn't hold the update back. If the fix is small and clear, the update stage fixes it. Otherwise it files a `climb` step for the regression ("Firefox add-ons: <what> broke on Chromium <N>"), with the add-ons it drops and the step that added the code, and records the lower score with the reason. The next climb batch takes regressions before new steps.
 
 ## Done
 

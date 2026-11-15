@@ -9,7 +9,7 @@ The nightly update is a chain of T3 scheduled tasks in the dubna project. The ro
 | dubna nightly · update oganesson | `scheduled-task:8625b77b-636b-4947-950f-e635b35f3548` | Update the desktop browser |
 | dubna nightly · update tennessine | `scheduled-task:d9b93584-ffe2-47ba-9feb-6e9f496ae974` | Update the Android browser |
 | dubna nightly · tasks | `scheduled-task:59929e97-ca31-4513-828a-2bc54e01ce67` | A batch of open issues |
-| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | One step of the WebExtensions climb |
+| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps: two or three small ones, or one medium |
 | dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site up to date |
 
 Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4764-aadc-a18c4c602b29:e68f137f-f5bb-4692-a8e6-db45394ca597`), and posts there. tools/usage_pace.py counts the usage of this thread apart, so a new thread needs its id there too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
@@ -156,5 +156,6 @@ What needs fixing:
 - A drop that no longer matches its patch, or now catches a patch it wasn't meant for: fix the drop line.
 - A new upstream patch that adds or removes a user-visible feature, changes a default, or touches something we drop or override: carry it as the upstream ships it, and list it for review.
 - A build or test failure: fix it as a separate commit if the cause is clear and the fix is small. Otherwise stop, don't push, and leave it for the maintainer. Fix a flaky test as "Flaky tests" says.
+- Firefox add-ons (dubna `webextensions/README.md`, "Keeping what works"): an oganesson update that is not a zero-day runs the full corpus (oganesson `tools/e2e/corpus.py`) after its build. An add-on that drops a level doesn't hold the update back: fix it if the fix is small, otherwise file a `climb` step for the regression. Commit the new score to dubna.
 
 Commit messages follow the repo's own: the version, the policy rule that let it in, whether every patch applies, the fixes made, and anything new upstream worth a line. The push is a fast-forward of main: if main moved, rebase onto it. Push the commit you built and tested as it is: the release then finds the tree prepared and the build done (oganesson compares the inputs, tennessine also takes its versionCode from the commit's time), and compiles nothing again.
