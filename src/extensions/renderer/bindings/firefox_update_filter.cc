@@ -207,12 +207,13 @@ std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
     }
     filter.urls.emplace();
     for (const std::string& text : *patterns) {
+      // Firefox builds the patterns after addListener() has returned, so one
+      // that doesn't parse throws nothing there: it matches no URL. So do
+      // Firefox's own schemes here, such as moz-extension:.
       URLPattern pattern(URLPattern::SCHEME_ALL);
-      if (pattern.Parse(text) != URLPattern::ParseResult::kSuccess) {
-        *error = base::StrCat({"Invalid url pattern: ", text});
-        return std::nullopt;
+      if (pattern.Parse(text) == URLPattern::ParseResult::kSuccess) {
+        filter.urls->push_back(std::move(pattern));
       }
-      filter.urls->push_back(std::move(pattern));
     }
   }
   if (v8::Local<v8::Value> properties = Get(context, value, "properties");
