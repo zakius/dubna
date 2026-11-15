@@ -1,0 +1,807 @@
+[
+ {
+  "id": "{446900e4-71c2-419f-a6a7-df9c091e268b}",
+  "slug": "bitwarden-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "87677a2c52b84ad3a151a4a72f5bd3c4@jetpack",
+  "slug": "grammarly-1",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "support@lastpass.com",
+  "slug": "lastpass-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "{d634138d-c276-4fc8-924b-40a0ea21d284}",
+  "slug": "1password-x-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "light_plugin_7571494CE0B94E11BB762B659A4AD71F@kaspersky.com",
+  "slug": "kaspersky-protection-2021",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "nordvpnproxy@nordvpn.com",
+  "slug": "nordvpn-proxy-extension",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "private-relay@firefox.com",
+  "slug": "private-relay",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "browserextension@eset.com",
+  "slug": "eset-browser-privacy-security",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "appledev@soarinfotech.com",
+  "slug": "coupert",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "webrootsecure@webroot.com",
+  "slug": "web-threat-shield",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "ols@f-secure.com",
+  "slug": "ols-f-secure",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "78272b6fa58f4a1abaac99321d503a20@proton.me",
+  "slug": "proton-pass",
+  "needs": "password manager"
+ },
+ {
+  "id": "password-manager-firefox-extension@apple.com",
+  "slug": "icloud-passwords",
+  "needs": "password manager"
+ },
+ {
+  "id": "{bf855ead-d7c3-4c7b-9f88-9a7e75c0efdf}",
+  "slug": "zoom-new-scheduler",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "vpn@proton.ch",
+  "slug": "proton-vpn-firefox-extension",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "idsafe@norton.com",
+  "slug": "norton-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "nordpassStandalone@nordsecurity.com",
+  "slug": "nordpass-password-management",
+  "needs": "password manager"
+ },
+ {
+  "id": "firefoxdav@icloud.com",
+  "slug": "icloud-bookmarks",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{732216ec-0dab-43bb-ac85-4b5e1977599d}",
+  "slug": "surfshark-vpn-proxy",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}",
+  "slug": "ebates",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "jid1-YcMV6ngYmQRA2w@jetpack",
+  "slug": "pinterest",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "jetpack-extension@dashlane.com",
+  "slug": "dashlane",
+  "needs": "password manager"
+ },
+ {
+  "id": "webapps@mendeley.com",
+  "slug": "mendeley-web-importer",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "vpn@mozilla.com",
+  "slug": "mozilla-vpn-extension",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "@hoxx-vpn",
+  "slug": "hoxx-vpn-proxy",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "@windscribeff",
+  "slug": "windscribe",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "KeeperFFStoreExtension@KeeperSecurityInc",
+  "slug": "keeper-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "@setupvpncom",
+  "slug": "setupvpn",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "firefox-addon@expressvpn.com",
+  "slug": "expressvpn",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "{E0B8C461-F8FB-49b4-8373-FE32E9252800}",
+  "slug": "evernote-web-clipper",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{5cce4ab5-3d47-41b9-af5e-8203eea05245}",
+  "slug": "control-panel-for-twitter",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "rf-firefox@siber.com",
+  "slug": "roboform",
+  "needs": "password manager"
+ },
+ {
+  "id": "plugin@okta.com",
+  "slug": "okta-browser-plugin",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "{f2a47522-1d86-4828-b6fb-d02e849f1b69}",
+  "slug": "norton-antitrack",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "companion@pix.fr",
+  "slug": "pix-companion",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{06acb1db-eb92-47f1-8b4c-7d87acce5a81}",
+  "slug": "avast-antitrack",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "firefox@vid.io",
+  "slug": "vidiq-vision-youtube",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "firefox@teleparty.com",
+  "slug": "netflix-party-is-now-teleparty",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "jid0-adyhmvsP91nUO8pRv0Mn2VKeB84@jetpack",
+  "slug": "raindropio",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{6e710c58-36cc-49d6-b772-bfc3030fa56e}",
+  "slug": "xkit-rewritten",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "fftmtoolbarProd@trendmicro.com",
+  "slug": "trend-micro-toolbar",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "contact@lukaslen.com",
+  "slug": "privacy-extension-for-whatsapp",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "checkerplusforgmail@jasonsavard.com",
+  "slug": "checker-plus-gmail",
+  "needs": "mail account"
+ },
+ {
+  "id": "passbolt@passbolt.com",
+  "slug": "passbolt",
+  "needs": "password manager"
+ },
+ {
+  "id": "com.abr.startapp@adminbyrequest.com",
+  "slug": "admin-by-request",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "{8927f234-4dd9-48b1-bf76-44a9e153eee0}",
+  "slug": "better-canvas",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "cashback_letyshops@LetyShops",
+  "slug": "addon-letyshops",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{dbac9680-d559-4cd4-9765-059879e8c467}",
+  "slug": "igraal",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "passwordmanager@avira.com",
+  "slug": "avira-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "search@kagi.com",
+  "slug": "kagi-search-for-firefox",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "sky-follower-bridge@ryo.kawamata",
+  "slug": "sky-follower-bridge",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{799c0914-748b-41df-a25c-22d008f9e83f}",
+  "slug": "web-scrobbler",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "toolbar@web.de",
+  "slug": "webde-mailcheck",
+  "needs": "mail account"
+ },
+ {
+  "id": "browser@tunnelbear.com",
+  "slug": "tunnelbear-vpn-firefox",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "danabok16@gmail.com",
+  "slug": "youtube-subscription-groups",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{988dd4f5-e8d5-49bf-a766-ff75b0e19fe2}",
+  "slug": "csgo-trader-steam-trading",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{2a7c0eb8-2936-4b6f-b738-5f7183d98698}",
+  "slug": "avg-antitrack1",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "@addonsignalspam",
+  "slug": "extension-signal-spam",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{ad518da0-1f82-438e-9788-53e39b4b0f9c}",
+  "slug": "sellersprite-amazon-tool",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{d0210f13-a970-4f1e-8322-0f76ec80adde}",
+  "slug": "instapaper-official",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "jid0-GjwrPchS3Ugt7xydvqVK4DQk8Ls@jetpack",
+  "slug": "gmail-notifier-restartless",
+  "needs": "mail account"
+ },
+ {
+  "id": "ms.pad.firefox@microsoft.com",
+  "slug": "microsoft-power-automate",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "toolbar@gmx.net",
+  "slug": "gmx-mailcheck",
+  "needs": "mail account"
+ },
+ {
+  "id": "ols_main@withsecure.com",
+  "slug": "ols-withsecure",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "synofoto-extension@synology.com",
+  "slug": "synology-image-assistant",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "vknext-vms@vknext.net",
+  "slug": "vk-music-saver",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{0668a87f-e3bb-4ed3-a096-e145c1e9f1d2}",
+  "slug": "foe-helper",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "lisa@qipu.de",
+  "slug": "shoop-cashback-assistent",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{029d76e8-fbc9-4521-996a-014394515f7f}",
+  "slug": "season-pass-pass",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{3e4d2037-d300-4e95-859d-3cba866f46d3}",
+  "slug": "private-internet-access-ext",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "{1c5afe9d-99f4-4236-b90a-08a04f589b06}",
+  "slug": "joko",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{4d5b7a5e-5232-9e45-97f4-f8e1ca2626e5}",
+  "slug": "capital-one-eno",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{c84d89d9-a826-4015-957b-affebd9eb603}",
+  "slug": "mal-sync",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "jid1-BYcQOfYfmBMd9A@jetpack",
+  "slug": "pushbullet",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "webmetering@flexera.com",
+  "slug": "flexera-web-metering",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "{512b44b5-40a9-4593-b9fd-b29e4e1ab7c8}",
+  "slug": "fantasypros",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "NetflixPrime@Autoskip.io",
+  "slug": "netflix-prime-auto-skip",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "support@todoist.com",
+  "slug": "todoist",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{3c9b993f-29b9-44c2-a913-def7b93a70b1}",
+  "slug": "twitch-points-autoclicker",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "insensitivex@orca.pet",
+  "slug": "insensitivex",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "jid1-NI2sWc3cvsAJsg@jetpack",
+  "slug": "meliuz",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "d2seasonpasswaybackmachine@id.com",
+  "slug": "d2-season-pass-wayback-machine",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "prathercc@gmail.com",
+  "slug": "discrub",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{2b38cb05-9cff-44a7-b9f1-7cc575afab8a}",
+  "slug": "whatsapp-in-sidebar",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "ebatesca@ebates.com",
+  "slug": "ebates-express-cash-back",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "tasksforcanvas@jtchengdev.com",
+  "slug": "tasks-for-canvas",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "adguard-vpn@adguard.com",
+  "slug": "adguard-vpn",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "{ffed5dfa-f0e1-403d-905d-ac3f698660a7}",
+  "slug": "roll20-enhancement-suite",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{ecb80162-dfbd-4d91-a8da-17b35ba4707a}",
+  "slug": "sticky-password-extension",
+  "needs": "password manager"
+ },
+ {
+  "id": "sync2@poeoverlay.com",
+  "slug": "poe-overlay-ii-sync",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "syncshare@naloaty.me",
+  "slug": "syncshare",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "floccus@handmadeideas.org",
+  "slug": "floccus",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "addon@simplelogin",
+  "slug": "simplelogin",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "enquiry@purevpn.com",
+  "slug": "purevpn-for-privacy-security",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "secureline-vpn@avast.com",
+  "slug": "avast-secureline-vpn",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "{7dd882da-eb07-4d46-8343-3a181cdc4c3f}",
+  "slug": "norton-vpn-fast-secure",
+  "needs": "VPN subscription"
+ },
+ {
+  "id": "toggl-button@toggl.com",
+  "slug": "toggl-button-time-tracker",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "sabre@simplify.jobs",
+  "slug": "simplify-jobs",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{878c5814-8eb9-4262-9b4b-f46e74dd7cfa}",
+  "slug": "star-citizen-ccu-game",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "betterfacebook@mattkruse.com",
+  "slug": "socialfixer",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "twitchinventoryclaimer@schulzjona",
+  "slug": "twitch-inventory-claimer",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{d3e2f0a1-1234-5678-9abc-def012345659}",
+  "slug": "seqrite-web-protection",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "{ed387cfb-e57a-49e0-9bf3-017a1f7f2378}",
+  "slug": "telegram-web",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{c9cc7f63-4549-4d7a-a77a-931bfdeb09a9}",
+  "slug": "telegram-downloader",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{a94d60a0-8408-4c53-8eec-cb349eb958b8}",
+  "slug": "google-keep-notes",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "intgcal@egarracingteam.com.ar",
+  "slug": "pinned-google-calendar",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{d3e2f0a1-1234-5678-9abc-def012745674}",
+  "slug": "qh-web-protection",
+  "needs": "security suite subscription"
+ },
+ {
+  "id": "{809ea8a3-a45d-41a2-9cb0-e7c7d7321db5}",
+  "slug": "library_access",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "{1262fc44-5ec9-4088-a7a7-4cd42f3f548d}",
+  "slug": "clockify-time-tracker",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "2026@spotify-adblock",
+  "slug": "spotify-adblock",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "alldebrid@alldebrid.com",
+  "slug": "alldebrid-addon",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "collector@broceliand.fr",
+  "slug": "pearltrees",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "firefox_extension@calendly.com",
+  "slug": "calendly-meeting-scheduling",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{3754707b-1aa4-4c6f-96e7-5b1cdc1de5f9}",
+  "slug": "torn-tools",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "jid1-PmuMUcuMey5ABw@jetpack",
+  "slug": "keywords-everywhere",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "fvdmedia@gmail.com",
+  "slug": "fvd-synchronizer",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{8e41107d-2be2-454d-b4b8-c3d7e54d77de}",
+  "slug": "igplus-extension",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "notifier@topcashback.co.uk",
+  "slug": "topcashback-browser-extension",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "privacy@privacy.com",
+  "slug": "pay-by-privacy",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{631d447a-17e8-43af-b541-3bf88cb55800}",
+  "slug": "twitch-auto-claim",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{e84c7711-c738-409a-879d-3f20cb087563}",
+  "slug": "lingq-importer2",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{b2d4c129-6437-4847-868c-53b4832fee00}",
+  "slug": "milanote-clipper",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "findandremind@easyfundraising.org.uk",
+  "slug": "donation-reminder",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{e7476172-097c-4b77-b56e-f56a894adca9}",
+  "slug": "minimaltwitter",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{bd40e25c-7e66-4602-b8ef-35b979b78cbb}",
+  "slug": "save-to-notion",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{7eac736e-bef2-462b-bdac-334f7f91e338}",
+  "slug": "aura-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "{37fa1426-b82d-11db-8314-0800200c9a66}",
+  "slug": "xnotifier",
+  "needs": "mail account"
+ },
+ {
+  "id": "caitools.dev@gmail.com",
+  "slug": "cai-tools",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "gmail_panel@alejandrobrizuela.com.ar",
+  "slug": "pinned-gmail",
+  "needs": "mail account"
+ },
+ {
+  "id": "firefox@hunter.io",
+  "slug": "hunterio",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "team@readwise.io",
+  "slug": "readwise-highlighter",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{52e126d4-d2d7-483a-a0a1-6e8aace23253}",
+  "slug": "abovevtt",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "toolbar-ff@payback.de",
+  "slug": "pia",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{2b6c25c8-0c7e-4692-957f-c4ae6af0c34b}",
+  "slug": "improve-crunchyroll",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{09993eda-1986-4e10-886e-5c63815338c5}",
+  "slug": "prolific-assistant",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "{62e31096-34e6-4503-8806-3d7a6004a1f4}",
+  "slug": "adless-spotify",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "jid1-jAUWJuglb1SqUQ@jetpack",
+  "slug": "zoho-vault",
+  "needs": "password manager"
+ },
+ {
+  "id": "gyazo-extension@gyazo.com",
+  "slug": "gyazo-official",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "@buyee-cart-extension",
+  "slug": "add-to-buyee",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "passwordmanager@avast.com",
+  "slug": "avast-password-manager",
+  "needs": "password manager"
+ },
+ {
+  "id": "aws-extend-switch-roles@toshi.tilfin.com",
+  "slug": "aws-extend-switch-roles3",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{99482dab-18e1-49ac-868a-90bd802785b7}",
+  "slug": "claude-in-the-sidebar",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{8e1ef2d7-d78f-47f9-9b69-c2806eb534fc}",
+  "slug": "auto-claim-twitch-chnnl-points",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{a5df0009-71e3-4048-bb02-38e1ee2ed33f}",
+  "slug": "poulpeo",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "{076d8ebb-5df6-48e0-a619-99315c395644}",
+  "slug": "twitch-auto-points",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{f2d56336-0f16-4870-bf64-84b3fd97c9c0}",
+  "slug": "whatsapp-pinned",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{eb8aee6c-8239-4f5f-beed-9a4c55c76e32}",
+  "slug": "ai-exporter-chatgpt-to-pdf",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{264206b8-8ba0-4824-8eeb-9d8d0520086f}",
+  "slug": "multiviewer-companion",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "ahrefs@AhrefsPteLtd",
+  "slug": "ahrefs-seo-toolbar",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "claude_usage_tracker@lugia19.com",
+  "slug": "claude-usage-tracker",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{33790bb6-386a-4cab-a9d0-c760b5a467ab}",
+  "slug": "youtube-summary-with-chatgpt",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "netpanel@gemius.com",
+  "slug": "netpanel-study-light",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "shopcbbuttonFF@befrugal.com",
+  "slug": "befrugal-automatic-coupons",
+  "needs": "cashback or rewards account"
+ },
+ {
+  "id": "jid1-W5guVoyeUR0uBg@jetpack",
+  "slug": "tumblr-savior",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{294b9016-c306-4f99-b4d4-d410e01e867f}",
+  "slug": "claude-sidebar-free",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "jonatas@gov",
+  "slug": "sei",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "housj@damddos.com",
+  "slug": "ctct-dlp-extension",
+  "needs": "an organization's account"
+ },
+ {
+  "id": "{0e991294-458a-41a8-8f30-37cc4b3e1700}",
+  "slug": "claude-omni",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "info@virustotal.com",
+  "slug": "vt4browsers",
+  "needs": "the service's own account"
+ },
+ {
+  "id": "real-time-stable@reveddit.com",
+  "slug": "reveddit-real-time",
+  "needs": "a site that shows its content only when signed in"
+ },
+ {
+  "id": "{0f1b4c25-4ab0-411e-ba22-e56c27f3d151}",
+  "slug": "sauce4strava",
+  "needs": "a site that shows its content only when signed in"
+ }
+]
