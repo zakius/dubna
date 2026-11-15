@@ -4,7 +4,7 @@
 
 Firefox add-ons run in oganesson and tennessine as they run in Firefox. The goal has two measures:
 
-1. The 1000 add-ons with the most users on addons.mozilla.org (AMO) install and work.
+1. The 1000 add-ons with the most users on addons.mozilla.org (AMO) install and work. The ones that need an account wait until the others work ("Add-ons that need an account").
 2. Firefox's own WebExtensions tests pass, after we port them to our test harness.
 
 We get there in small steps (the "climb"). Each step is one API, one install flow, one behaviour or one improvement to the tools. Each step is released, so each step is useful alone.
@@ -25,7 +25,7 @@ The WebExtensions work from Chromium 154 is archived in `~/dev/oganesson-webexte
 
 ### Corpus score
 
-`corpus.json` lists the top 1000 add-ons on AMO by users: the Gecko ID, the version and the SHA-256 of the `.xpi`. The list is fixed. Refresh it once a quarter, in its own commit, so a score change never comes from a list change. The `.xpi` files are cached outside the repo.
+`corpus.json` lists the top 1000 add-ons on AMO by users, without the ones in `needs-account.json`: the Gecko ID, the version and the SHA-256 of the `.xpi`. The list is fixed. Refresh it once a quarter, in its own commit, so a score change never comes from a list change. A refresh brings in new add-ons: check each one, and add the ones that need an account to `needs-account.json` before the commit. The `.xpi` files are cached outside the repo.
 
 Each add-on gets the highest level it passes:
 
@@ -52,6 +52,22 @@ Port tests together with the API they test, not all at once.
 ### Choosing the next step
 
 The static scan (`tools/amo_corpus.py scan`) reads every add-on in the corpus. It lists the manifest keys and the `browser.*` calls that Chromium doesn't have, and the number of add-ons each one blocks. The next step is the one that unblocks the most add-ons for its size. This is the hill-climb rule: the order isn't fixed in advance. Check it again after each step.
+
+## Add-ons that need an account
+
+An add-on that can't do its main job until the user signs in isn't in the corpus. It needs one of these:
+
+- an account with its own service: password managers, paid VPNs, cashback, web clippers, mail checkers, time trackers;
+- a security suite's subscription, or an organization's account;
+- an account on the site it works on, when that site shows its content only to signed-in users: WhatsApp, Telegram, Gmail, X's timeline, streaming services, AI chats, online games.
+
+An add-on that changes a site that is also public, such as YouTube, Twitch, Reddit or the Steam store, stays in the corpus. An add-on that needs a desktop app but no account (KeePassXC-Browser, a download manager's integration) stays too.
+
+`needs-account.json` lists these add-ons, with what each needs: 161 of the top 1000 on 2026-11-15. Climb work for them waits:
+
+- The static scan and the corpus runner don't read them, so the ranking and the score don't count them.
+- A missing API or manifest key that only they use gets no step. A step that also unlocks account-free add-ons is ranked by those.
+- When the account-free add-ons work, we check these by hand, with real accounts, and file steps for what breaks.
 
 ## Steps
 

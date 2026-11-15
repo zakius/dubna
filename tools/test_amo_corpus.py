@@ -10,7 +10,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from amo_corpus import Chromium, cached, entries, ranking, scan
+from amo_corpus import Chromium, cached, entries, ranking, scan, without
 
 
 def result(guid, users):
@@ -47,6 +47,14 @@ class EntriesTest(unittest.TestCase):
         other['current_version']['file']['hash'] = 'sha1:ab12'
         with self.assertRaises(ValueError):
             entries([{'results': [other]}], size=1)
+
+
+class WithoutTest(unittest.TestCase):
+
+    def test_leaves_out_by_id(self):
+        corpus = [{'id': 'a@x'}, {'id': 'b@x'}, {'id': 'c@x'}]
+        needs_account = [{'id': 'b@x', 'slug': 'b', 'needs': 'password manager'}]
+        self.assertEqual(without(corpus, needs_account), [{'id': 'a@x'}, {'id': 'c@x'}])
 
 
 class CacheTest(unittest.TestCase):
