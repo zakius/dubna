@@ -532,7 +532,8 @@ fn dispatch(method: &str, args: &Value) -> Result<Value> {
 }
 
 /// Registers the browser's HTTP callback and this device's name (UTF-8) and
-/// type, and initializes NSS (a no-op if the browser already did). Call once.
+/// type, and initializes NSS (a no-op if the browser already did) and
+/// rc_crypto's backends for it. Call once.
 ///
 /// # Safety
 /// `device_name` is a NUL-terminated string.
@@ -542,6 +543,11 @@ pub unsafe extern "C" fn og_init(http: http::HttpFn, device_name: *const c_char,
     let device_type = if mobile { sync15::DeviceType::Mobile } else { sync15::DeviceType::Desktop };
     let _ = DEVICE.set((name, device_type));
     nss::ensure_initialized();
+    // subscribe_push's keys come from rc_crypto::ece, which panics without the
+    // backend this registers. Sync and the account's command keys register it
+    // too, but subscribe_push can be a process's first call: tennessine hands
+    // its push endpoint over at start.
+    rc_crypto::ensure_initialized();
     http::init(http);
 }
 
