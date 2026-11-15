@@ -9,7 +9,8 @@
 # with the full string as the version name (firefox_version.cc).
 # A background with "type": "module" loads its scripts as modules, as Firefox does.
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
-# and a placeholder the message doesn't define becomes empty.
+# a placeholder the message doesn't define becomes empty, and homepage_url
+# is localized too.
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
@@ -352,6 +353,19 @@
      message->replace(beg_index - var_begin_delimiter_size,
                       end_index - beg_index + var_begin_delimiter_size +
                         var_end_delimiter.size(),
+--- a/extensions/common/extension_l10n_util.cc
++++ b/extensions/common/extension_l10n_util.cc
+@@ -271,6 +271,10 @@
+   if (!LocalizeManifestValue(keys::kDescription, messages, manifest, error))
+     return false;
+ 
++  // Firefox add-ons (dubna): Firefox localizes homepage_url too.
++  if (!LocalizeManifestValue(keys::kHomepageURL, messages, manifest, error))
++    return false;
++
+   // Returns the key for the "default_title" entry in the given
+   // `action_key`'s manifest entry.
+   auto get_title_key = [](const char* action_key) {
 --- a/ui/base/BUILD.gn
 +++ b/ui/base/BUILD.gn
 @@ -131,6 +131,8 @@
