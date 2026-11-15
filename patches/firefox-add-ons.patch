@@ -21,6 +21,7 @@
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
 # storage.session is there in Manifest V2 add-ons too, as in Firefox.
+# So is the scripting permission, as in Firefox.
 # Firefox's theme API, read-only: getCurrent() and onUpdated give the browser
 # theme's colours in Firefox's key names (theme_api.cc), to any add-on.
 --- a/extensions/browser/api/runtime/BUILD.gn
@@ -838,6 +839,19 @@
    "chromePrivate": {
      "channel": "stable",
      "extension_types": ["extension", "legacy_packaged_app"],
+@@ -898,10 +909,10 @@
+       "08455FA7CB8734168378F731B00B354CEEE0088F"   // Chrome Reporting Ext. Beta
+     ]
+   },
++  // Firefox add-ons (dubna): Firefox has scripting in Manifest V2 too.
+   "scripting": {
+     "channel": "stable",
+-    "extension_types": ["extension"],
+-    "min_manifest_version": 3
++    "extension_types": ["extension"]
+   },
+   "search": {
+     "channel": "stable",
 --- a/chrome/common/extensions/api/BUILD.gn
 +++ b/chrome/common/extensions/api/BUILD.gn
 @@ -49,6 +49,9 @@
