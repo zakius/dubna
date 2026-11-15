@@ -3,6 +3,8 @@
 needs an update.
 
   site/site.py build      everything.html from everything.html.in and items.json,
+                          and releases.html with its RSS feeds from the browsers'
+                          GitHub releases (through gh, as the repos are private),
                           into site/www with the other pages and site/img; the
                           pages' {{name}}s get the current versions, dates and
                           minimum systems (facts())
@@ -14,8 +16,10 @@ needs an update.
   site/site.py check      what changed in our repos since the site was last
                           reviewed (reviewed.json): patches added to or removed
                           from a series but not in items.json or still in it, and
-                          commits touching what users see; prints nothing when
-                          the site is current
+                          commits touching what users see; and each browser's
+                          newest release when the published site doesn't list it
+                          yet (a publish fixes that, no commit needed); prints
+                          nothing when the site is current
   site/site.py reviewed   record the repos' current commits in reviewed.json,
                           after updating the site
 
@@ -24,6 +28,7 @@ OGANESSON and TENNESSINE. Only our changes are checked: Helium's series (we move
 it), our own patches and docs. Titanium and Vanadium are summarized on the site,
 not listed patch by patch.
 """
+import email.utils
 import html
 import json
 import os
@@ -32,9 +37,13 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
+from datetime import datetime
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent
+SITE_URL = 'https://dubna.zakius.xyz'
 DUBNA = SITE.parent
 REPOS = {
     'dubna': DUBNA,
@@ -122,6 +131,10 @@ def check():
                   *WATCHED[name])
         if log:
             report.append(f'{name}: commits since the site was reviewed:\n{log}\n')
+    missing = unpublished()
+    if missing:
+        report.append('Releases not on the published site yet (publish it):\n'
+                      + ''.join(f'  {r["title"]}\n' for r in missing))
     print('\n'.join(report), end='')
 
 
@@ -291,6 +304,7 @@ def build():
         if page == 'index.html':
             text = re.sub(r'id="count">\d+ →', f'id="count">{len(items)} →', text)
         (www / page).write_text(text)
+    build_releases(www)
     shutil.copytree(SITE / 'img', www / 'img', dirs_exist_ok=True)
 
 
@@ -328,6 +342,121 @@ def publish():
     restart = ' && docker compose restart site' if 'nginx.conf' in changed else ''
     subprocess.run(['ssh', host, f'cd {project} && docker compose up -d --quiet-pull{restart}'],
                    check=True)
+
+
+# Releases each browser lists on releases.html, and items per RSS feed.
+RELEASES_SHOWN = 50
+FEED_ITEMS = 30
+
+
+def releases():
+    """The newest RELEASES_SHOWN releases of each browser on GitHub, newest first."""
+    out = []
+    for key, name in BROWSER.items():
+        data = json.loads(subprocess.run(
+            ['gh', 'api', f'repos/zakius/{name}/releases?per_page={RELEASES_SHOWN}'],
+            check=True, capture_output=True, text=True).stdout)
+        found = [r for r in data if not r['draft']]
+        if not found:
+            sys.exit(f'site.py: no releases of {name} on GitHub')
+        for r in found:
+            out.append({'b': key, 'tag': r['tag_name'], 'title': r['name'] or r['tag_name'],
+                        'date': r['published_at'], 'notes': r['body'] or ''})
+    return sorted(out, key=lambda r: r['date'], reverse=True)
+
+
+def anchor(release):
+    return f"{BROWSER[release['b']]}-{release['tag']}"
+
+
+def notes_html(text):
+    """A release's notes as HTML. release_notes.py writes them as paragraphs and
+    "- subject (hash)" lists. The hashes link nowhere, as the repos are private."""
+    out, items = [], []
+    for line in text.splitlines() + ['']:
+        line = line.strip()
+        if line.startswith('- '):
+            items.append(re.sub(r' \(([0-9a-f]{7,40})\)$', r' <code>\1</code>',
+                                html.escape(line[2:])))
+            continue
+        if items:
+            out.append('<ul>' + ''.join(f'<li>{i}</li>' for i in items) + '</ul>')
+            items = []
+        if line:
+            out.append(f'<p>{html.escape(line)}</p>')
+    return ''.join(out)
+
+
+def when(release):
+    return datetime.fromisoformat(release['date'].replace('Z', '+00:00'))
+
+
+def release_list(rels):
+    """releases.html's list: one card per release."""
+    e = html.escape
+    out = ''
+    for r in rels:
+        t = when(r)
+        stamp = f'{t.day} {MONTHS[t.month - 1]} {t.year}, {t:%H:%M} UTC'
+        out += (f'\n<article class="rel" id="{e(anchor(r))}" data-b="{r["b"]}"><div class="head">'
+                f'<span class="b {r["b"]}">{BROWSER[r["b"]]}</span>'
+                f'<h2><a href="#{e(anchor(r))}">{e(r["title"])}</a></h2>'
+                f'<time datetime="{e(r["date"])}">{stamp}</time></div>'
+                f'<div class="notes">{notes_html(r["notes"])}</div></article>')
+    return out
+
+
+def feed(path, title, rels):
+    """An RSS 2.0 feed of the newest FEED_ITEMS of RELS. Its date is the newest
+    release's, so a build without new releases writes the same file."""
+    e = html.escape
+    rels = rels[:FEED_ITEMS]
+    date = lambda r: email.utils.format_datetime(when(r), usegmt=True)
+    items = ''
+    for r in rels:
+        link = f'{SITE_URL}/releases.html#{anchor(r)}'
+        items += (f'<item><title>{e(r["title"])}</title><link>{e(link)}</link>'
+                  f'<guid>{e(link)}</guid><pubDate>{date(r)}</pubDate>'
+                  f'<category>{BROWSER[r["b"]]}</category>'
+                  f'<description>{e(notes_html(r["notes"]))}</description></item>\n')
+    path.write_text(
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>\n'
+        f'<title>{e(title)}</title><link>{SITE_URL}/releases.html</link>\n'
+        f'<description>{e(title)}: what changed in each release.</description><language>en</language>\n'
+        f'<atom:link href="{SITE_URL}/{path.name}" rel="self" type="application/rss+xml"/>\n'
+        f'<lastBuildDate>{date(rels[0])}</lastBuildDate>\n'
+        f'{items}</channel></rss>\n')
+
+
+def build_releases(www):
+    rels = releases()
+    page = (SITE / 'releases.html.in').read_text()
+    page = page.replace('__SHOWN__', str(RELEASES_SHOWN)).replace('__RELEASES__', release_list(rels))
+    (www / 'releases.html').write_text(page)
+    feed(www / 'releases.xml', 'oganesson and tennessine releases', rels)
+    for key, name in BROWSER.items():
+        feed(www / f'releases-{name}.xml', f'{name} releases', [r for r in rels if r['b'] == key])
+
+
+def unpublished():
+    """Each browser's newest release that its feed on the published site doesn't list."""
+    newest = {}
+    for r in releases():
+        newest.setdefault(r['b'], r)
+    missing = []
+    for r in newest.values():
+        try:
+            with urllib.request.urlopen(f'{SITE_URL}/releases-{BROWSER[r["b"]]}.xml',
+                                        timeout=60) as response:
+                live = response.read().decode()
+        except urllib.error.HTTPError as err:
+            if err.code != 404:
+                raise
+            live = ''
+        if f'<guid>{SITE_URL}/releases.html#{anchor(r)}</guid>' not in live:
+            missing.append(r)
+    return missing
 
 
 def mark_reviewed():

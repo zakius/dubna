@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Release notes: oganesson & tennessine</title>
+<meta name="description" content="What changed in each release of oganesson and tennessine, newest first, with an RSS feed per browser.">
+<meta property="og:title" content="Release notes: oganesson & tennessine">
+<meta property="og:description" content="What changed in each release of oganesson and tennessine, newest first, with an RSS feed per browser.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0b10">
+<link rel="canonical" href="https://dubna.zakius.xyz/releases.html">
+<link rel="alternate" type="application/rss+xml" title="oganesson and tennessine releases" href="releases.xml">
+<link rel="alternate" type="application/rss+xml" title="oganesson releases" href="releases-oganesson.xml">
+<link rel="alternate" type="application/rss+xml" title="tennessine releases" href="releases-tennessine.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23151824%22/%3E%3Ctext x=%2232%22 y=%2244%22 font-family=%22sans-serif%22 font-size=%2232%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23ff9a5a%22%3EOg%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
+  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;height:56px;max-width:1240px}
+nav a{text-decoration:none;color:var(--dim);font-size:14px} nav a:hover{color:var(--text)}
+nav b{font-family:var(--mono);white-space:nowrap}
+header{padding:48px 0 28px}
+h1{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.025em;margin:0 0 10px;line-height:1.05}
+h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--dim);margin:0;font-size:17px}
+.feeds{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;align-items:center;color:var(--faint);font-size:13.5px}
+.feeds a{font:12.5px var(--mono);padding:4px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--dim)}
+.feeds a:hover{color:var(--text);border-color:#3b4260}
+.bar{position:sticky;top:0;z-index:4;background:rgba(10,11,16,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 0}
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{all:unset;cursor:pointer;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--dim)}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--text)}
+main{padding:28px 24px 80px}
+.rel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:14px}
+.rel .head{display:flex;gap:10px 14px;align-items:baseline;flex-wrap:wrap}
+.rel h2{font-size:17px;margin:0;letter-spacing:-.005em}
+.rel h2 a{text-decoration:none}
+.rel h2 a:hover{text-decoration:underline}
+.rel time{margin-left:auto;font:12.5px var(--mono);color:var(--faint);white-space:nowrap}
+.b{font:11.5px var(--mono);padding:2px 8px;border-radius:6px;border:1px solid var(--line);white-space:nowrap}
+.b.og{color:var(--og);border-color:rgba(255,154,90,.35)} .b.ts{color:var(--ts);border-color:rgba(180,140,255,.35)}
+.notes{color:var(--dim);font-size:14.5px;margin-top:8px}
+.notes p{margin:6px 0}
+.notes ul{margin:6px 0;padding-left:20px}
+.notes li{margin:3px 0}
+.notes code{font:12px var(--mono);color:var(--faint)}
+[hidden]{display:none!important}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
+.skip:focus{top:10px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (max-width:600px){.rel time{margin-left:0;flex-basis:100%}}
+footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1240px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="install.html">Install</a><a href="everything.html">Everything</a></div></nav>
+<header><div class="wrap">
+  <h1>Release <em>notes</em></h1>
+  <p class="lede">What changed in each release of both browsers, newest first: the latest __SHOWN__ of each. Every line is one change, with its commit. A browser updates to its newest release through its repository; <a href="install.html">Install</a> says how.</p>
+  <div class="feeds">RSS: <a href="releases-oganesson.xml">oganesson</a><a href="releases-tennessine.xml">tennessine</a><a href="releases.xml">both</a></div>
+</div></header>
+
+<div class="bar" hidden><div class="wrap">
+  <div class="seg" id="br" role="group" aria-label="Browser"><button data-v="all" aria-pressed="true">Both</button><button data-v="og" aria-pressed="false">oganesson</button><button data-v="ts" aria-pressed="false">tennessine</button></div>
+</div></div>
+
+<main id="main" class="wrap">__RELEASES__</main>
+
+<footer><div class="wrap">
+  <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
+  <span>Licenses: oganesson GPL-3.0-only · tennessine GPL-2.0-only · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+</div></footer>
+
+<script>
+// The build writes every release into the page, so it reads in full without JS; this only
+// filters by browser.
+document.querySelector('.bar').hidden=false;
+const buttons=document.querySelectorAll('#br button');
+buttons.forEach(b=>b.onclick=()=>{
+  buttons.forEach(x=>x.setAttribute('aria-pressed',x===b));
+  for(const r of document.querySelectorAll('.rel'))r.hidden=b.dataset.v!=='all'&&r.dataset.b!==b.dataset.v;
+});
+</script>
+</body>
+</html>
