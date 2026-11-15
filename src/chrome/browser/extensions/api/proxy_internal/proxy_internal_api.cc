@@ -77,7 +77,11 @@ std::optional<int> ReadPort(const base::Value* value) {
 std::optional<net::ProxyChain> ReadProxy(const base::Value& value,
                                          std::string* error) {
   const base::DictValue* dict = value.GetIfDict();
-  const std::string* type = dict ? dict->FindString("type") : nullptr;
+  if (!dict) {
+    *error = "ProxyInfoData: proxyData must be an object or array of objects";
+    return std::nullopt;
+  }
+  const std::string* type = dict->FindString("type");
   std::string lower = type ? base::ToLowerASCII(*type) : std::string();
   if (lower == "direct") {
     return net::ProxyChain::Direct();

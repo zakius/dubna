@@ -34,7 +34,14 @@ bindingUtil.registerEventArgumentMassager(
           error ??= errorMessage(reason);
         });
       }
-      settled.then(() => proxyInternal.reportResult(requestId, result, error));
+      settled.then(() => {
+        try {
+          proxyInternal.reportResult(requestId, result, error);
+        } catch (refused) {
+          // An answer that can't be sent, such as NaN.
+          proxyInternal.reportResult(requestId, null, errorMessage(refused));
+        }
+      });
     });
 
 // proxy.onError's listeners get an Error, as in Firefox.
