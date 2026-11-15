@@ -4365,7 +4365,7 @@
 "o": "tennessine",
 "a": "Sync",
 "p": "tennessine/firefox-sync-receive-tabs",
-"w": "Sent tabs and close requests are fetched each time the browser comes to the front, and in the background every 15, 30 or 60 minutes, or only with each sync, as set under Settings > Firefox Sync. With Sunup, a UnifiedPush app, installed, Settings > Firefox Sync > Receive tabs instantly (off by default) brings them at once through Mozilla's push server; if Sunup uses another push server, Mozilla accounts refuse it and the switch says so.",
+"w": "Sent tabs and close requests are fetched each time the browser comes to the front, and in the background every 15, 30 or 60 minutes, or only with each sync, as set under Settings > Firefox Sync. Signed in, with Sunup, a UnifiedPush app, installed, Settings > Firefox Sync > Receive tabs instantly (via Sunup), off by default, brings them at once through Mozilla's push server. Mozilla accounts take no other push server, so if Sunup uses another, the switch says so.",
 "s": "on",
 "n": "",
 "own": 1,
