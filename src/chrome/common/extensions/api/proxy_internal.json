@@ -12,11 +12,11 @@
       {
         "name": "reportResult",
         "type": "function",
-        "description": "The answer to the request with this ID: Firefox's ProxyInfo, a list of them, or null; or the message of the error the answer's promise rejected with.",
+        "description": "The answers of the listeners to the request with this ID, in their order: each Firefox's ProxyInfo, a list of them, or null; and the messages of the errors their promises rejected with.",
         "parameters": [
           {"name": "requestId", "type": "integer"},
-          {"name": "result", "type": "any", "optional": true},
-          {"name": "error", "type": "string", "optional": true}
+          {"name": "answers", "type": "array", "items": {"type": "any"}},
+          {"name": "errors", "type": "array", "items": {"type": "string"}}
         ]
       }
     ]

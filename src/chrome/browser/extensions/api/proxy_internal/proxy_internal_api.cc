@@ -133,27 +133,62 @@ std::optional<net::ProxyChain> ReadProxy(const base::Value& value,
   return net::ProxyChain(std::move(server));
 }
 
-// A listener's answer: one ProxyInfo, or a list of them to try in turn. An
-// empty list is no answer.
-std::optional<net::ProxyList> ReadProxies(const base::Value& value,
-                                          std::string* error) {
+// Applies a listener's answer to `current`, the proxies decided so far, as
+// Firefox's createProxyInfoFromData() does: null is a direct connection; else
+// the answer's proxies in turn, one ProxyInfo or a list of them, up to a
+// null, which ends them, or a direct one, which hands over to what was
+// decided before, as the end of the list also does. nullopt in `current` is
+// the browser's own settings. False, with Firefox's message in `error`, for
+// an answer it refuses, which changes nothing.
+bool ApplyAnswer(const base::Value& answer,
+                 std::optional<net::ProxyList>& current,
+                 std::string* error) {
   net::ProxyList proxies;
-  if (value.is_list()) {
-    for (const base::Value& item : value.GetList()) {
-      std::optional<net::ProxyChain> chain = ReadProxy(item, error);
-      if (!chain) {
-        return std::nullopt;
-      }
-      proxies.AddProxyChain(std::move(*chain));
-    }
+  if (answer.is_none()) {
+    proxies.AddProxyChain(net::ProxyChain::Direct());
+    current = std::move(proxies);
+    return true;
+  }
+  base::ListValue single;
+  const base::ListValue* items;
+  if (answer.is_list()) {
+    items = &answer.GetList();
   } else {
-    std::optional<net::ProxyChain> chain = ReadProxy(value, error);
+    single.Append(answer.Clone());
+    items = &single;
+  }
+  bool hand_over = true;
+  for (const base::Value& item : *items) {
+    if (item.is_none()) {
+      hand_over = false;
+      break;
+    }
+    std::optional<net::ProxyChain> chain = ReadProxy(item, error);
     if (!chain) {
-      return std::nullopt;
+      return false;
+    }
+    if (chain->is_direct()) {
+      break;
     }
     proxies.AddProxyChain(std::move(*chain));
   }
-  return proxies;
+  if (hand_over) {
+    if (!current) {
+      // The browser's own settings stay, or come after none of these.
+      if (!proxies.IsEmpty()) {
+        current = std::move(proxies);
+      }
+      return true;
+    }
+    for (const net::ProxyChain& chain : current->AllChains()) {
+      proxies.AddProxyChain(chain);
+    }
+  }
+  if (proxies.IsEmpty()) {
+    proxies.AddProxyChain(net::ProxyChain::Direct());
+  }
+  current = std::move(proxies);
+  return true;
 }
 
 // The http: or https: URL of a ws: or wss: one.
@@ -189,7 +224,8 @@ bool MaySee(const Extension& extension, const GURL& url) {
 struct FirefoxProxyRequests::Request {
   GURL url;
   bool incognito = false;
-  // The add-ons still to ask, the one asked now, and the last answer.
+  // The add-ons still to ask, the one asked now, and the proxies decided so
+  // far, nullopt for the browser's own settings.
   std::vector<ExtensionId> left;
   ExtensionId asked;
   std::optional<net::ProxyList> proxies;
@@ -321,8 +357,8 @@ void FirefoxProxyRequests::AskNext(int request_id) {
 
 void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
                                     int request_id,
-                                    const base::Value* result,
-                                    const std::string* error) {
+                                    const base::ListValue& answers,
+                                    const std::vector<std::string>& errors) {
   auto it = requests_.find(request_id);
   // Only the add-on asked may answer, once.
   if (it == requests_.end() || it->second->asked != extension_id) {
@@ -330,16 +366,13 @@ void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
   }
   Request& request = *it->second;
   request.asked.clear();
-  if (error) {
-    DispatchError(extension_id, *error);
+  for (const std::string& error : errors) {
+    DispatchError(extension_id, error);
   }
-  if (result && !result->is_none()) {
+  for (const base::Value& answer : answers) {
     std::string message;
-    std::optional<net::ProxyList> proxies = ReadProxies(*result, &message);
-    if (!proxies) {
+    if (!ApplyAnswer(answer, request.proxies, &message)) {
       DispatchError(extension_id, message);
-    } else if (!proxies->IsEmpty()) {
-      request.proxies = std::move(proxies);
     }
   }
   AskNext(request_id);
@@ -371,15 +404,17 @@ void BrowserContextKeyedAPIFactory<
 }
 
 ExtensionFunction::ResponseAction ProxyInternalReportResultFunction::Run() {
-  EXTENSION_FUNCTION_VALIDATE(!args().empty() && args()[0].is_int());
-  const base::Value* result =
-      args().size() > 1 && !args()[1].is_none() ? &args()[1] : nullptr;
-  const std::string* error =
-      args().size() > 2 && args()[2].is_string() ? &args()[2].GetString()
-                                                 : nullptr;
+  EXTENSION_FUNCTION_VALIDATE(args().size() == 3 && args()[0].is_int() &&
+                              args()[1].is_list() && args()[2].is_list());
+  std::vector<std::string> errors;
+  for (const base::Value& error : args()[2].GetList()) {
+    EXTENSION_FUNCTION_VALIDATE(error.is_string());
+    errors.push_back(error.GetString());
+  }
   if (FirefoxProxyRequests* requests =
           FirefoxProxyRequests::Get(browser_context())) {
-    requests->OnAnswer(extension_id(), args()[0].GetInt(), result, error);
+    requests->OnAnswer(extension_id(), args()[0].GetInt(),
+                       args()[1].GetList(), errors);
   }
   return RespondNow(NoArguments());
 }

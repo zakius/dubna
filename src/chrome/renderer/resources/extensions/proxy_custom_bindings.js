@@ -3,9 +3,11 @@
 
 // Firefox add-ons (dubna's webextensions/README.md): Firefox's
 // proxy.onRequest, whose listeners answer with the request's proxy, a list of
-// them, or a promise of either. The browser sends the request's ID before
-// Firefox's details (proxy_internal_api.h): this passes the details on and
-// reports the answer, and the first error a listener's promise rejected with.
+// them, null, or a promise of any of these. The browser sends the request's
+// ID before Firefox's details (proxy_internal_api.h): this passes the details
+// on and reports the listeners' answers in their order, however their
+// promises settle, and the errors they rejected with. The browser builds the
+// proxy from them as Firefox does.
 
 const proxyInternal = getInternalApi('proxyInternal');
 
@@ -20,26 +22,26 @@ bindingUtil.registerEventArgumentMassager(
       // listener that threw is reported as any listener's error is.
       const dispatched = dispatch([args[1]]);
       const answers = dispatched ? dispatched.results : [];
-      // As in Firefox, each answer that isn't empty replaces the one before,
-      // in the listeners' order, however their promises settle.
-      let result = null;
-      let error;
+      const reported = [];
+      const errors = [];
       let settled = Promise.resolve();
       for (const answer of answers) {
         settled = settled.then(() => answer).then(value => {
-          if (value !== undefined && value !== null) {
-            result = value;
+          // As in Firefox, undefined is no answer, and null is one.
+          if (value !== undefined) {
+            reported.push(value);
           }
         }, reason => {
-          error ??= errorMessage(reason);
+          errors.push(errorMessage(reason));
         });
       }
       settled.then(() => {
         try {
-          proxyInternal.reportResult(requestId, result, error);
+          proxyInternal.reportResult(requestId, reported, errors);
         } catch (refused) {
-          // An answer that can't be sent, such as NaN.
-          proxyInternal.reportResult(requestId, null, errorMessage(refused));
+          // Answers that can't be sent, such as NaN.
+          proxyInternal.reportResult(
+              requestId, [], [...errors, errorMessage(refused)]);
         }
       });
     });
