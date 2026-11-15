@@ -54,12 +54,22 @@ source_set("core") {
   ]
 }
 
+# With Firefox Sync's containers adapter, which needs only the prefs: the
+# firefox_sync target needs the whole browser.
 test("containers_unittests") {
-  sources = [ "containers_unittest.cc" ]
+  sources = [
+    "//chrome/browser/firefox_sync/containers_adapter.cc",
+    "//chrome/browser/firefox_sync/containers_adapter.h",
+    "//chrome/browser/firefox_sync/containers_adapter_unittest.cc",
+    "//chrome/browser/firefox_sync/sync_adapter.cc",
+    "//chrome/browser/firefox_sync/sync_adapter.h",
+    "containers_unittest.cc",
+  ]
   deps = [
     ":core",
     "//base",
     "//base:i18n",
+    "//components/prefs",
     "//testing/gtest",
     "//url",
   ]
