@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 997,
-  "L2": 858
+  "L2": 861
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -36,8 +36,8 @@
    "error": null
   },
   "addon@darkreader.org": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background/index.html:0)"
+   "level": "L2",
+   "error": null
   },
   "easyscreenshot@mozillaonline.com": {
    "level": "L2",
@@ -69,7 +69,7 @@
   },
   "sponsorBlocker@ajay.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/options.js:2)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): Invalid extension id: 'deArrow@ajay.app' (js/help.js:1)"
   },
   "@contain-facebook": {
    "level": "L1",
@@ -596,8 +596,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (db2b6c1b-460b-4833-a6e9-084ad71d8441:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (db2451d5-7e65-4a75-a660-42a23e0c309b:37)"
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -1268,8 +1268,8 @@
    "error": null
   },
   "jid1-QoFqdK4qzUfGWQ@jetpack": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome:// URL (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{799c0914-748b-41df-a25c-22d008f9e83f}": {
    "level": "L2",
@@ -2224,8 +2224,8 @@
    "error": null
   },
   "{49bd4b24-e5b9-4238-a241-3487486f9235}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of browserAction.setIcon(object details, optional function callback): Error at parameter 'details': Unexpected property: 'windowId'. (utils/iconupdater.js:71)"
+   "level": "L2",
+   "error": null
   },
   "{cac6293f-5570-4186-a217-c8985fd59228}": {
    "level": "L2",
@@ -2413,7 +2413,7 @@
   },
   "{0545b830-f0aa-4d7e-8820-50a4629a56fe}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Failed to construct 'URL': Invalid URL (background.js:30)"
+   "error": "Uncaught (in promise) TypeError: browser.theme.update is not a function (background.js:204)"
   },
   "showdex@tize.io": {
    "level": "L2",
@@ -2433,7 +2433,7 @@
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (swift-selection-search.html:0)"
+   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (swift-selection-search.html:0)"
   },
   "secureline-vpn@avast.com": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjQ2NWRjYTQzMDFkYzBlMzY2M2RiZWI1ZTdmY2E1NTk4OGYzMDhkODAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImZlYTJhMjA3ZTAxOWE5YTkwYzcwNjY4MzQ0ODI2MWM0ODZjMGRhZGEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2732,8 +2732,8 @@
    "error": null
   },
   "{a871656a-91f6-402c-912b-6291197b9c49}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot destructure property 'merchant' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined. (background/background.js:9)"
+   "level": "L2",
+   "error": null
   },
   "{84c8edb0-65ca-43a5-bc53-0e80f41486e1}": {
    "level": "L2",
@@ -2964,8 +2964,8 @@
    "error": null
   },
   "jobcentertycoon@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of action.setIcon(object details, optional function callback): Error at parameter 'details': Unexpected property: 'windowId'. (background-script.js:137)"
+   "level": "L2",
+   "error": null
   },
   "gt@giphy.com": {
    "level": "L2",
@@ -3160,8 +3160,8 @@
    "error": null
   },
   "{b2d4c129-6437-4847-868c-53b4832fee00}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.bundle.js:0)"
+   "level": "L2",
+   "error": null
   },
   "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}": {
    "level": "L2",
@@ -3660,8 +3660,8 @@
    "error": null
   },
   "administrator@pricy.ro": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught ReferenceError: require is not defined (js/popover.min.js:6)"
   },
   "{0a3ee209-ab68-4b84-a9ef-eb0ee686dd8d}": {
    "level": "L2",
@@ -3868,8 +3868,8 @@
    "error": null
   },
   "extension@estate2023.com": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (_generated_background_page.html:0)"
   },
   "jid1-W5guVoyeUR0uBg@jetpack": {
    "level": "L2",
