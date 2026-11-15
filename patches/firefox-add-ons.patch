@@ -1755,11 +1755,17 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -266,6 +295,9 @@
+@@ -265,7 +294,15 @@
+   uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
++  // Firefox add-ons (dubna): which listeners Firefox's filters of
++  // tabs.onUpdated let run, decided before any of them runs.
++  std::vector<bool> runs =
++      firefox_update_filters_.Matching(listeners, context, *args);
++  size_t index = 0;
    for (const auto& listener : listeners) {
-+    if (!firefox_update_filters_.Matches(listener, context, *args)) {
++    if (!runs[index++]) {
 +      continue;
 +    }
      // NOTE(devlin): Technically, any listener here could suspend JS execution

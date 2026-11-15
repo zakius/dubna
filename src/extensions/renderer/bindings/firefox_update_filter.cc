@@ -244,16 +244,19 @@ void FirefoxUpdateFilters::Clear() {
   entries_.clear();
 }
 
-bool FirefoxUpdateFilters::Matches(
-    v8::Local<v8::Function> listener,
+std::vector<bool> FirefoxUpdateFilters::Matching(
+    const v8::LocalVector<v8::Function>& listeners,
     v8::Local<v8::Context> context,
     const v8::LocalVector<v8::Value>& args) const {
-  for (const Entry& entry : entries_) {
-    if (entry.listener == listener) {
-      return extensions::Matches(entry.filter, context, args);
+  std::vector<bool> runs(listeners.size(), true);
+  for (size_t i = 0; i < listeners.size(); ++i) {
+    for (const Entry& entry : entries_) {
+      if (entry.listener == listeners[i]) {
+        runs[i] = Matches(entry.filter, context, args);
+      }
     }
   }
-  return true;
+  return runs;
 }
 
 }  // namespace extensions

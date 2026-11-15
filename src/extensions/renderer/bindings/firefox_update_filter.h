@@ -59,11 +59,13 @@ class FirefoxUpdateFilters {
   void Remove(v8::Local<v8::Function> listener);
   void Clear();
 
-  // Whether `listener` runs for an update with these arguments: the tab's id,
-  // the changes and the tab. A listener without a filter always runs.
-  bool Matches(v8::Local<v8::Function> listener,
-               v8::Local<v8::Context> context,
-               const v8::LocalVector<v8::Value>& args) const;
+  // For each of `listeners`, whether it runs for an update with these
+  // arguments: the tab's id, the changes and the tab. A listener without a
+  // filter always runs. Decided for all before any runs, so that a listener
+  // another one removes keeps its filter for this update.
+  std::vector<bool> Matching(const v8::LocalVector<v8::Function>& listeners,
+                             v8::Local<v8::Context> context,
+                             const v8::LocalVector<v8::Value>& args) const;
 
  private:
   struct Entry {
