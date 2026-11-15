@@ -213,7 +213,8 @@ bool MaySee(const Extension& extension, const GURL& url) {
        permissions->active_permissions().explicit_hosts()) {
     if ((pattern.scheme() == "*" || pattern.match_all_urls()) &&
         pattern.MatchesURL(http)) {
-      return true;
+      // Unless policy or the user blocks the host.
+      return permissions->HasHostPermission(http);
     }
   }
   return false;
