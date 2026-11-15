@@ -80,12 +80,17 @@ std::string CssColor(SkColor color) {
                             SkColorGetA(color) / 255.0);
 }
 
-// The profile's last focused window.
-BrowserWindowInterface* LastActiveWindow(Profile& profile) {
+// The profile's last focused window, an incognito one too when the add-on may
+// see it.
+BrowserWindowInterface* LastActiveWindow(Profile& profile,
+                                         bool include_incognito) {
   BrowserWindowInterface* found = nullptr;
   GlobalBrowserCollection::GetInstance()->ForEach(
       [&](BrowserWindowInterface* window) {
-        if (window->GetProfile() != &profile) {
+        const bool seen = include_incognito
+                              ? profile.IsSameOrParent(window->GetProfile())
+                              : window->GetProfile() == &profile;
+        if (!seen) {
           return true;
         }
         found = window;
@@ -122,12 +127,12 @@ base::DictValue Theme(base::Value colors) {
 }
 
 // The theme of the profile's last focused window.
-base::DictValue CurrentTheme(Profile& profile) {
+base::DictValue CurrentTheme(Profile& profile, bool include_incognito) {
 #if BUILDFLAG(IS_ANDROID)
   // Firefox's empty theme.
   return Theme(base::Value());
 #else
-  return Theme(Colors(LastActiveWindow(profile)));
+  return Theme(Colors(LastActiveWindow(profile, include_incognito)));
 #endif
 }
 
@@ -171,7 +176,9 @@ void ThemeAPI::DispatchOnUpdated() {
   if (!router || !router->HasEventListener(kOnUpdated)) {
     return;
   }
-  base::DictValue theme = CurrentTheme(*profile_);
+  // The theme of a regular window: the event reaches add-ons that may not see
+  // incognito windows.
+  base::DictValue theme = CurrentTheme(*profile_, /*include_incognito=*/false);
   if (theme == last_theme_) {
     return;
   }
@@ -179,9 +186,11 @@ void ThemeAPI::DispatchOnUpdated() {
   base::ListValue args;
   args.Append(base::DictValue().Set("theme", std::move(theme)));
   // A stub histogram value: one of our own could clash with the upstreams'
-  // additions to that enum, and UNKNOWN fails a DCHECK.
-  router->BroadcastEvent(std::make_unique<Event>(
-      events::FOR_TEST, kOnUpdated, std::move(args), profile_));
+  // additions to that enum, and UNKNOWN fails a DCHECK. Not restricted to the
+  // regular profile, so that the incognito background of a split mode add-on
+  // gets it too.
+  router->BroadcastEvent(
+      std::make_unique<Event>(events::FOR_TEST, kOnUpdated, std::move(args)));
 }
 
 template <>
@@ -194,10 +203,11 @@ void BrowserContextKeyedAPIFactory<ThemeAPI>::DeclareFactoryDependencies() {
 ExtensionFunction::ResponseAction ThemeGetCurrentFunction::Run() {
   Profile* profile = Profile::FromBrowserContext(browser_context());
 #if BUILDFLAG(IS_ANDROID)
-  return RespondNow(WithArguments(CurrentTheme(*profile)));
+  return RespondNow(WithArguments(CurrentTheme(*profile, false)));
 #else
   if (args().empty() || !args()[0].is_int()) {
-    return RespondNow(WithArguments(CurrentTheme(*profile)));
+    return RespondNow(WithArguments(
+        CurrentTheme(*profile, include_incognito_information())));
   }
   std::string error;
   WindowController* controller = ExtensionTabUtil::GetControllerFromWindowID(
