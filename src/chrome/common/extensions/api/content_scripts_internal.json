@@ -1,0 +1,29 @@
+// Copyright 2026 The oganesson Authors
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+// Firefox add-ons (dubna's webextensions/README.md): the unregister() of the
+// object that contentScripts.register() resolves to
+// (content_scripts_custom_bindings.js). Add-ons don't see this namespace.
+[
+  {
+    "namespace": "contentScriptsInternal",
+    "description": "Removes scripts that contentScripts.register() added.",
+    "compiler_options": {
+      "implemented_in": "extensions/browser/api/scripting/firefox_content_scripts.h"
+    },
+    "functions": [
+      {
+        "name": "unregister",
+        "type": "function",
+        "description": "Removes the scripts that register() answered with this ID.",
+        "parameters": [
+          {"name": "scriptId", "type": "string"}
+        ],
+        "returns_async": {
+          "name": "callback",
+          "parameters": []
+        }
+      }
+    ]
+  }
+]

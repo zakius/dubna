@@ -1,0 +1,87 @@
+// Copyright 2026 The oganesson Authors
+// SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+// Firefox add-ons (dubna's webextensions/README.md): Firefox's contentScripts
+// API, in Manifest V2 as in Firefox. The browser answers register() with the
+// scripts' ID (firefox_content_scripts.cc), which the custom binding
+// (content_scripts_custom_bindings.js) turns into an object with unregister().
+// Chromium's own "contentScripts" schema only types the content_scripts
+// manifest key, and is left out of the schemas the bindings read.
+[
+  {
+    "namespace": "contentScripts",
+    "description": "Firefox's contentScripts API: content scripts registered at run time.",
+    "compiler_options": {
+      "implemented_in": "extensions/browser/api/scripting/firefox_content_scripts.h"
+    },
+    "types": [
+      {
+        "id": "ExecutionWorld",
+        "type": "string",
+        "description": "Firefox's worlds: the content scripts' own, or the page's.",
+        "enum": ["ISOLATED", "MAIN"]
+      },
+      {
+        "id": "CSSOrigin",
+        "type": "string",
+        "description": "Whose styles the CSS adds to.",
+        "enum": ["author", "user"]
+      },
+      {
+        "id": "ExtensionFileOrCode",
+        "type": "object",
+        "description": "A file of the add-on, from its root, or code.",
+        "properties": {
+          "file": {"type": "string", "optional": true},
+          "code": {"type": "string", "optional": true}
+        }
+      },
+      {
+        "id": "RegisteredContentScriptOptions",
+        "type": "object",
+        "description": "The content scripts to register, as Firefox takes them.",
+        "properties": {
+          "matches": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "excludeMatches": {"type": "array", "optional": true, "minItems": 1, "items": {"type": "string"}},
+          "includeGlobs": {"type": "array", "optional": true, "items": {"type": "string"}},
+          "excludeGlobs": {"type": "array", "optional": true, "items": {"type": "string"}},
+          "css": {"type": "array", "optional": true, "items": {"$ref": "ExtensionFileOrCode"}},
+          "js": {"type": "array", "optional": true, "items": {"$ref": "ExtensionFileOrCode"}},
+          "allFrames": {"type": "boolean", "optional": true},
+          "matchAboutBlank": {"type": "boolean", "optional": true},
+          "matchOriginAsFallback": {"type": "boolean", "optional": true},
+          "runAt": {"$ref": "extensionTypes.RunAt", "optional": true},
+          "world": {"$ref": "ExecutionWorld", "optional": true},
+          "cssOrigin": {"$ref": "CSSOrigin", "optional": true},
+          "cookieStoreId": {
+            "choices": [
+              {"type": "array", "minItems": 1, "items": {"type": "string"}},
+              {"type": "string"}
+            ],
+            "optional": true
+          }
+        }
+      }
+    ],
+    "functions": [
+      {
+        "name": "register",
+        "type": "function",
+        "description": "Registers content scripts until unregister(), or until the page that registered them closes.",
+        "parameters": [
+          {"name": "contentScriptOptions", "$ref": "RegisteredContentScriptOptions"}
+        ],
+        "returns_async": {
+          "name": "callback",
+          "parameters": [
+            {
+              "name": "registeredContentScript",
+              "type": "any",
+              "description": "An object whose unregister() removes the scripts."
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

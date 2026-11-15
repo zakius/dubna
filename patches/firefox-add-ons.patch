@@ -27,6 +27,10 @@
 # theme's colours in Firefox's key names (theme_api.cc), to any add-on.
 # browserAction has action's setBadgeTextColor, getBadgeTextColor and
 # getUserSettings, as in Firefox (firefox_browser_action.h).
+# contentScripts.register() is Firefox's (firefox_content_scripts.cc): dynamic
+# content scripts, with code as well as files, that the scripting API doesn't
+# list or remove. Chromium's contentScripts schema, which only types the
+# content_scripts manifest key, is left out of the schemas the bindings read.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -126,7 +130,29 @@
    "chromeosInfoPrivate": [{
      "dependencies": ["permission:chromeosInfoPrivate"],
      "contexts": ["privileged_extension"]
-@@ -282,7 +294,9 @@
+@@ -271,6 +283,21 @@
+     "dependencies": ["manifest:commands"],
+     "contexts": ["privileged_extension"]
+   },
++  // Firefox add-ons (dubna): Firefox's contentScripts, in Manifest V2 as in
++  // Firefox. contentScriptsInternal is the unregister() of what it returns.
++  "contentScripts": {
++    "channel": "stable",
++    "extension_types": ["extension"],
++    "max_manifest_version": 2,
++    "contexts": ["privileged_extension"]
++  },
++  "contentScriptsInternal": {
++    "internal": true,
++    "channel": "stable",
++    "extension_types": ["extension"],
++    "max_manifest_version": 2,
++    "contexts": ["privileged_extension"]
++  },
+   "contentSettings": {
+     "dependencies": ["permission:contentSettings"],
+     "contexts": [
+@@ -282,7 +309,9 @@
    },
    "contextMenus": {
      "dependencies": ["permission:contextMenus"],
@@ -137,7 +163,7 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -710,6 +724,12 @@
+@@ -710,6 +739,12 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
@@ -1077,7 +1103,7 @@
      "dependencies": ["permission:system.cpu"],
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
-@@ -63,6 +63,9 @@
+@@ -63,7 +63,14 @@
    "browsing_data.json",
    "commands.json",
    "extension.json",
@@ -1085,20 +1111,39 @@
 +  # Firefox add-ons (dubna): Firefox's theme API.
 +  "theme.json",
    "top_sites.json",
++
++  # Firefox add-ons (dubna): Firefox's contentScripts API.
++  "content_scripts.json",
++  "content_scripts_internal.json",
  ]
  
+ # Some APIs rely on types and headers from other APIs.
 --- a/chrome/browser/extensions/api/BUILD.gn
 +++ b/chrome/browser/extensions/api/BUILD.gn
-@@ -64,6 +64,9 @@
-   if (enable_service_discovery) {
+@@ -65,6 +65,9 @@
      public_deps += [ "//chrome/browser/extensions/api/mdns" ]
    }
-+
+ 
 +  # Firefox add-ons (dubna): Firefox's theme API.
 +  public_deps += [ "//chrome/browser/extensions/api/theme" ]
- 
++
    if (enable_extensions) {
      # APIs supported on Win/Mac/Linux but NOT desktop Android go here.
+     public_deps += [
+@@ -196,6 +199,13 @@
+     "web_view/chrome_web_view_internal_api.h",
+   ]
+ 
++  # Firefox add-ons (dubna): Firefox's contentScripts API, next to scripting.
++  custom_impl_schemas += [
++    "content_scripts",
++    "content_scripts_internal",
++  ]
++  inputs += [ "//extensions/browser/api/scripting/firefox_content_scripts.h" ]
++
+   deps = [
+     # This is not directly included by the target, but specified here
+     # to avoid cyclic dependency chain related to private_membership
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 @@ -22,6 +22,7 @@
@@ -1134,3 +1179,128 @@
            }
          }
        },
+--- a/extensions/common/api/BUILD.gn
++++ b/extensions/common/api/BUILD.gn
+@@ -42,6 +42,10 @@
+   sources = extensions_api_schema_files + extensions_types_only_schema_files +
+             extensions_api_uncompiled_sources +
+             extensions_api_uncompiled_bundle_schema_sources
++
++  # Firefox add-ons (dubna): contentScripts is Firefox's API, in chrome's
++  # schemas. This one only types the content_scripts manifest key.
++  sources -= [ "//extensions/common/api/content_scripts.webidl" ]
+   bundle_name = ""
+   root_namespace = extensions_api_root_namespace
+   deps = [
+--- a/extensions/browser/api/scripting/BUILD.gn
++++ b/extensions/browser/api/scripting/BUILD.gn
+@@ -9,6 +9,9 @@
+ 
+ source_set("scripting") {
+   sources = [
++    # Firefox add-ons (dubna): Firefox's contentScripts API.
++    "firefox_content_scripts.cc",
++    "firefox_content_scripts.h",
+     "scripting_api.cc",
+     "scripting_api.h",
+   ]
+--- a/extensions/browser/api/scripting/scripting_api.cc
++++ b/extensions/browser/api/scripting/scripting_api.cc
+@@ -13,6 +13,7 @@
+ #include "base/types/optional_util.h"
+ #include "content/public/browser/navigation_controller.h"
+ #include "content/public/browser/navigation_entry.h"
++#include "extensions/browser/api/scripting/firefox_content_scripts.h"
+ #include "extensions/browser/extension_api_frame_id_map.h"
+ #include "extensions/browser/extension_file_task_runner.h"
+ #include "extensions/browser/extension_registry.h"
+@@ -791,6 +792,10 @@
+     if (script->GetSource() != UserScript::Source::kDynamicContentScript) {
+       continue;
+     }
++    // Firefox add-ons (dubna): contentScripts.register()'s scripts.
++    if (firefox_content_scripts::IsFirefoxScriptId(script->id())) {
++      continue;
++    }
+ 
+     if (!id_filter.empty() && !id_filter.contains(script->id())) {
+       continue;
+@@ -830,6 +835,11 @@
+   if (filter && filter->ids && !filter->ids->empty()) {
+     ids = std::move(filter->ids);
+   }
++  // Firefox add-ons (dubna): all is all but contentScripts.register()'s.
++  if (!ids) {
++    ids = firefox_content_scripts::ScriptingScriptIds(browser_context(),
++                                                      extension()->id());
++  }
+ 
+   std::string error;
+   bool removal_triggered = scripting::RemoveScripts(
+--- a/extensions/browser/extension_user_script_loader.cc
++++ b/extensions/browser/extension_user_script_loader.cc
+@@ -519,6 +519,14 @@
+       content->set_content(std::move(inline_code));
+     }
+   }
++  // Firefox add-ons (dubna): contentScripts.register() takes CSS code too.
++  for (size_t i = 0; i < script_metadata->css_scripts().size(); i++) {
++    auto& content = script_metadata->css_scripts().at(i);
++    if (content->source() == UserScript::Content::Source::kInlineCode) {
++      content->set_content(
++          std::string(script.css_scripts().at(i)->GetContent()));
++    }
++  }
+ 
+   return script_metadata;
+ }
+--- a/extensions/common/utils/content_script_utils.cc
++++ b/extensions/common/utils/content_script_utils.cc
+@@ -463,6 +463,11 @@
+ 
+     for (const std::unique_ptr<UserScript::Content>& css_script :
+          script->css_scripts()) {
++      // Firefox add-ons (dubna): contentScripts.register() takes CSS code too.
++      if (css_script->source() == UserScript::Content::Source::kInlineCode) {
++        continue;
++      }
++
+       // Files with invalid mime types will be ignored.
+       if (!ValidateMimeTypeFromFileExtension(css_script->relative_path(),
+                                              ContentScriptType::kCss, error)) {
+--- a/chrome/renderer/resources/extensions/BUILD.gn
++++ b/chrome/renderer/resources/extensions/BUILD.gn
+@@ -15,6 +15,9 @@
+   input_files = [
+     "action_custom_bindings.js",
+     "browser_action_custom_bindings.js",
++
++    # Firefox add-ons (dubna): Firefox's contentScripts API.
++    "content_scripts_custom_bindings.js",
+     "declarative_content_custom_bindings.js",
+     "desktop_capture_custom_bindings.js",
+     "developer_private_custom_bindings.js",
+--- a/chrome/renderer/resources/BUILD.gn
++++ b/chrome/renderer/resources/BUILD.gn
+@@ -76,6 +76,9 @@
+     "controlled_frame/html_controlled_frame_element.js",
+     "extensions/action_custom_bindings.js",
+     "extensions/browser_action_custom_bindings.js",
++
++    # Firefox add-ons (dubna): Firefox's contentScripts API.
++    "extensions/content_scripts_custom_bindings.js",
+     "extensions/declarative_content_custom_bindings.js",
+     "extensions/desktop_capture_custom_bindings.js",
+     "extensions/developer_private_custom_bindings.js",
+--- a/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
++++ b/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
+@@ -140,6 +140,9 @@
+       {"action", IDR_RENDERER_RESOURCES_EXTENSIONS_ACTION_CUSTOM_BINDINGS_JS},
+       {"browserAction",
+        IDR_RENDERER_RESOURCES_EXTENSIONS_BROWSER_ACTION_CUSTOM_BINDINGS_JS},
++      // Firefox add-ons (dubna): Firefox's contentScripts API.
++      {"contentScripts",
++       IDR_RENDERER_RESOURCES_EXTENSIONS_CONTENT_SCRIPTS_CUSTOM_BINDINGS_JS},
+       {"declarativeContent",
+        IDR_RENDERER_RESOURCES_EXTENSIONS_DECLARATIVE_CONTENT_CUSTOM_BINDINGS_JS},
+       {"desktopCapture",
