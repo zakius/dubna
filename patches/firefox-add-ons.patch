@@ -1214,7 +1214,20 @@
  #include "extensions/browser/extension_api_frame_id_map.h"
  #include "extensions/browser/extension_file_task_runner.h"
  #include "extensions/browser/extension_registry.h"
-@@ -791,6 +792,10 @@
+@@ -205,6 +206,12 @@
+ api::scripting::RegisteredContentScript CreateRegisteredContentScriptInfo(
+     const UserScript& script) {
+   CHECK_EQ(UserScript::Source::kDynamicContentScript, script.GetSource());
++  // Firefox add-ons (dubna): contentScripts.register()'s scripts may hold
++  // code, which this can't describe. The scripting API never shows them, and
++  // updateContentScripts() can't name them.
++  if (firefox_content_scripts::IsFirefoxScriptId(script.id())) {
++    return api::scripting::RegisteredContentScript();
++  }
+ 
+   // To convert a `UserScript`, we first go through our script_internal
+   // serialization; this allows us to do simple conversions and avoid any
+@@ -791,6 +798,10 @@
      if (script->GetSource() != UserScript::Source::kDynamicContentScript) {
        continue;
      }
@@ -1225,7 +1238,7 @@
  
      if (!id_filter.empty() && !id_filter.contains(script->id())) {
        continue;
-@@ -830,6 +835,11 @@
+@@ -830,6 +841,11 @@
    if (filter && filter->ids && !filter->ids->empty()) {
      ids = std::move(filter->ids);
    }
