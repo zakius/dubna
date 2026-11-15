@@ -1,10 +1,10 @@
 {
- "date": "2026-11-14",
+ "date": "2026-11-15",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 835
+  "L2": 846
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -37,7 +37,7 @@
   },
   "addon@darkreader.org": {
    "level": "L1",
-   "error": "unknown permission 'theme'"
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background/index.html:0)"
   },
   "easyscreenshot@mozillaonline.com": {
    "level": "L2",
@@ -252,8 +252,8 @@
    "error": null
   },
   "{DDC359D1-844A-42a7-9AA1-88A850A938A8}": {
-   "level": "L1",
-   "error": "unknown permission 'theme'"
+   "level": "L2",
+   "error": null
   },
   "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}": {
    "level": "L2",
@@ -388,8 +388,8 @@
    "error": null
   },
   "FirefoxColor@mozilla.com": {
-   "level": "L1",
-   "error": "unknown permission 'theme'"
+   "level": "L2",
+   "error": null
   },
   "fdm_ffext2@freedownloadmanager.org": {
    "level": "L2",
@@ -465,7 +465,7 @@
   },
   "ATBC@EasonWong": {
    "level": "L1",
-   "error": "unknown permission 'theme'"
+   "error": "Uncaught TypeError: This event does not support filters (background.js:1)"
   },
   "qwant-search-firefox@qwant.com": {
    "level": "L2",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -560,8 +560,8 @@
    "error": null
   },
   "@windscribeff": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) ReferenceError: µBlock is not defined (static/js/background.chunk.js:1)"
   },
   "Package_Tracking_Tab___Custom_Web_Search_JVVfIFSBVe@packagetrackingtab.com": {
    "level": "L2",
@@ -632,8 +632,8 @@
    "error": null
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'updateEnabledRulesets') (background.js:3)"
   },
   "{8AA36F4F-6DC7-4c06-77AF-5035170634FE}": {
    "level": "L2",
@@ -648,8 +648,8 @@
    "error": "unknown permission 'contextualIdentities'"
   },
   "stefanvandamme@stefanvd.net": {
-   "level": "L1",
-   "error": "unknown permission 'theme'"
+   "level": "L2",
+   "error": null
   },
   "qwantcomforfirefox@jetpack": {
    "level": "L2",
@@ -853,7 +853,7 @@
   },
   "{4853d046-c5a3-436b-bc36-220fd935ee1d}": {
    "level": "L1",
-   "error": "unknown permission 'theme'"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:207)"
   },
   "{174b2d58-b983-4501-ab4b-07e71203cb43}": {
    "level": "L2",
@@ -1096,8 +1096,8 @@
    "error": null
   },
   "addon@fastforward.team": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'whitelist') (content_script.js:17)"
+   "level": "L2",
+   "error": null
   },
   "{dbac9680-d559-4cd4-9765-059879e8c467}": {
    "level": "L2",
@@ -1108,8 +1108,8 @@
    "error": null
   },
   "{41f9e51d-35e4-4b29-af66-422ff81c8b41}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": null
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
    "level": "L2",
@@ -1280,8 +1280,8 @@
    "error": null
   },
   "jid1-AQqSMBYb0a8ADg@jetpack": {
-   "level": "L1",
-   "error": "Uncaught (in promise) #<Object> (app/app.html#/onboarding:0)"
+   "level": "L2",
+   "error": null
   },
   "{03e07985-30b0-4ae0-8b3e-0c7519b9bdf6}": {
    "level": "L2",
@@ -1341,7 +1341,7 @@
   },
   "{9ed7d361-ccd9-4cad-9846-977da2651fb5}": {
    "level": "L1",
-   "error": "unknown permission 'theme'"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'mode') (js/options.js:132)"
   },
   "danabok16@gmail.com": {
    "level": "L2",
@@ -2225,7 +2225,7 @@
   },
   "{49bd4b24-e5b9-4238-a241-3487486f9235}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'onUpdated') (utils/iconupdater.js:84)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of browserAction.setIcon(object details, optional function callback): Error at parameter 'details': Unexpected property: 'windowId'. (utils/iconupdater.js:71)"
   },
   "{cac6293f-5570-4186-a217-c8985fd59228}": {
    "level": "L2",
@@ -2413,7 +2413,7 @@
   },
   "{0545b830-f0aa-4d7e-8820-50a4629a56fe}": {
    "level": "L1",
-   "error": "unknown permission 'theme'"
+   "error": "Uncaught (in promise) TypeError: Failed to construct 'URL': Invalid URL (background.js:30)"
   },
   "showdex@tize.io": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjE4NTNkMmEyZmEyOTJmMjlhYjM5MzY0ZDJmNzdkNzNhMzJhNDk1ZDUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjM4MTliNzAyZTZmMDE5M2UzMmE4NWUwOGI3NjZhMTAzZGNjMWFkNmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2812,8 +2812,8 @@
    "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: exportFunction is not defined (conent_script.js:8)"
+   "level": "L2",
+   "error": null
   },
   "{4b7825da-0dd1-44f9-9717-bee5b2408af6}": {
    "level": "L2",
@@ -2896,16 +2896,16 @@
    "error": null
   },
   "collector@broceliand.fr": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (background.html:0)"
+   "level": "L2",
+   "error": null
   },
   "textlink-and-googletranslate@aime": {
    "level": "L2",
    "error": null
   },
   "firefox_extension@calendly.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Extension context invalidated. (module_async_frame.js:1)"
+   "level": "L2",
+   "error": null
   },
   "rotate-and-zoom-image@mikk.cz": {
    "level": "L2",
@@ -3328,8 +3328,8 @@
    "error": null
   },
   "{8fbc7259-8015-4172-9af1-20e1edfbbd3a}": {
-   "level": "L1",
-   "error": "unknown permission 'theme'"
+   "level": "L2",
+   "error": null
   },
   "glitterdrag@harytfw": {
    "level": "L1",
@@ -3348,8 +3348,8 @@
    "error": null
   },
   "{dc0b7af2-2cfc-498d-bee5-50e710ed404a}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Failed to fetch (js/background.js:31)"
+   "level": "L2",
+   "error": null
   },
   "{59e0d4a0-46e9-43d4-ada7-af7622915d85}": {
    "level": "L2",
@@ -3401,7 +3401,7 @@
   },
   "0.id@reloadmatic.webex": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'defaults') (reloadmatic.js:64)"
+   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
   },
   "unwanted@twitch.tv": {
    "level": "L2",
@@ -3588,8 +3588,8 @@
    "error": null
   },
   "playbackSpeed@waldemar.b": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'onUpdated') (bg.js:55)"
+   "level": "L2",
+   "error": null
   },
   "{75ed68d9-52d0-4dd3-8138-de2afa3e7c53}": {
    "level": "L2",
@@ -3852,8 +3852,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (view-image-info-background.js:408)"
   },
   "{f69e22c7-bc50-414a-9269-0f5c344cd94c}": {
-   "level": "L1",
-   "error": "unknown permission 'theme'"
+   "level": "L2",
+   "error": null
   },
   "view-page-source@apps.jeurissen.co": {
    "level": "L2",
