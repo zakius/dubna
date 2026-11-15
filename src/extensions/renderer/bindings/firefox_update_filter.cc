@@ -271,6 +271,20 @@ std::optional<Update> ReadUpdate(v8::Local<v8::Context> context,
   return update;
 }
 
+// In Firefox a pattern's scheme * also covers ws: and wss:, which in
+// Chromium it doesn't.
+bool PatternMatches(const URLPattern& pattern, const GURL& url) {
+  if (pattern.MatchesURL(url)) {
+    return true;
+  }
+  if (!url.SchemeIsWSOrWSS() || pattern.scheme() != "*") {
+    return false;
+  }
+  GURL::Replacements replacements;
+  replacements.SetSchemeStr(url.SchemeIs("wss") ? "https" : "http");
+  return pattern.MatchesURL(url.ReplaceComponents(replacements));
+}
+
 bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
   if ((filter.tab_id && update.tab_id != filter.tab_id) ||
       (filter.window_id && update.window_id != filter.window_id) ||
@@ -296,7 +310,7 @@ bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
   if (filter.urls &&
       (!update.url.is_valid() ||
        std::ranges::none_of(*filter.urls, [&](const URLPattern& pattern) {
-         return pattern.MatchesURL(update.url);
+         return PatternMatches(pattern, update.url);
        }))) {
     return false;
   }

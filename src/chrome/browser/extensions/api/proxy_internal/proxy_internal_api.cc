@@ -21,7 +21,9 @@
 #include "extensions/browser/extensions_browser_client.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_cookie_store.h"
+#include "extensions/common/permissions/permission_set.h"
 #include "extensions/common/permissions/permissions_data.h"
+#include "extensions/common/url_pattern.h"
 #include "net/base/host_port_pair.h"
 #include "net/base/proxy_chain.h"
 #include "net/base/proxy_server.h"
@@ -154,6 +156,34 @@ std::optional<net::ProxyList> ReadProxies(const base::Value& value,
   return proxies;
 }
 
+// The http: or https: URL of a ws: or wss: one.
+GURL AsHttp(const GURL& url) {
+  GURL::Replacements replacements;
+  replacements.SetSchemeStr(url.SchemeIs("wss") ? "https" : "http");
+  return url.ReplaceComponents(replacements);
+}
+
+// Whether the add-on has host permission for `url`. In Firefox a pattern's
+// scheme * also covers ws: and wss:, which in Chromium it doesn't.
+bool MaySee(const Extension& extension, const GURL& url) {
+  const PermissionsData* permissions = extension.permissions_data();
+  if (permissions->HasHostPermission(url)) {
+    return true;
+  }
+  if (!url.SchemeIsWSOrWSS()) {
+    return false;
+  }
+  GURL http = AsHttp(url);
+  for (const URLPattern& pattern :
+       permissions->active_permissions().explicit_hosts()) {
+    if ((pattern.scheme() == "*" || pattern.match_all_urls()) &&
+        pattern.MatchesURL(http)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 }  // namespace
 
 struct FirefoxProxyRequests::Request {
@@ -230,8 +260,7 @@ std::vector<ExtensionId> FirefoxProxyRequests::Listeners(
       continue;
     }
     // As in Firefox, an add-on sees the requests to its host permissions.
-    if (!url.is_empty() &&
-        !extension->permissions_data()->HasHostPermission(url)) {
+    if (!url.is_empty() && !MaySee(*extension, url)) {
       continue;
     }
     ids.push_back(id);
