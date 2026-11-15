@@ -13,6 +13,8 @@
 # is localized too.
 # declarative_net_request without its permission loads without its rulesets,
 # as in Firefox.
+# A tab that hasn't committed a navigation has the URL about:blank for a Firefox
+# add-on (firefox_add_on.h), as in Firefox.
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
@@ -267,10 +269,12 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,10 @@
+@@ -402,6 +402,12 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
++    "firefox_add_on.cc",
++    "firefox_add_on.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
 +    "firefox_version.cc",
@@ -392,6 +396,28 @@
    }
  
    dnr_api::ManifestKeys manifest_keys;
+--- a/chrome/browser/extensions/extension_tab_util.cc
++++ b/chrome/browser/extensions/extension_tab_util.cc
+@@ -58,6 +58,7 @@
+ #include "extensions/common/constants.h"
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/options_page_info.h"
+ #include "extensions/common/mojom/api_permission_id.mojom-shared.h"
+@@ -443,6 +444,11 @@
+   tab_object.height = contents_size.height();
+ 
+   tab_object.url = contents->GetLastCommittedURL().spec();
++  // Firefox add-ons (dubna): a tab that hasn't committed a navigation shows
++  // its initial empty document, which Firefox gives as about:blank.
++  if (tab_object.url->empty() && extension && IsFirefoxAddOn(*extension)) {
++    tab_object.url = url::kAboutBlankURL;
++  }
+   NavigationEntry* pending_entry = contents->GetController().GetPendingEntry();
+   if (pending_entry) {
+     tab_object.pending_url = pending_entry->GetVirtualURL().spec();
 --- a/ui/base/BUILD.gn
 +++ b/ui/base/BUILD.gn
 @@ -131,6 +131,8 @@
