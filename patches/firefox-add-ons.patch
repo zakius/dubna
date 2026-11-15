@@ -2056,3 +2056,25 @@
        return RespondNow(Error(bookmarks_errors::kInvalidIdError));
      }
  
+--- a/extensions/renderer/native_extension_bindings_system.cc
++++ b/extensions/renderer/native_extension_bindings_system.cc
+@@ -992,9 +992,16 @@
+   CHECK(
+       gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
+ 
+-  v8::Local<v8::Object> root_binding = CreateFullBinding(
+-      context, script_context, &data->bindings_system->api_system_,
+-      FeatureProvider::GetAPIFeatures(), api_name_string);
++  // Firefox add-ons (dubna): menus, Firefox's name for contextMenus, is the
++  // same object. A second instance would load contextMenus' custom bindings
++  // into the context again, which stops its scripts.
++  v8::Local<v8::Object> root_binding =
++      api_name_string == "menus"
++          ? GetAPIHelper(context, gin::StringToSymbol(isolate, "contextMenus"))
++          : CreateFullBinding(context, script_context,
++                              &data->bindings_system->api_system_,
++                              FeatureProvider::GetAPIFeatures(),
++                              api_name_string);
+   if (root_binding.IsEmpty())
+     return v8::Local<v8::Object>();
+ 
