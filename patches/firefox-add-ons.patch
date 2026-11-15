@@ -1565,3 +1565,19 @@
    v8::Local<v8::Object> dict = dict_builder.Build();
    set_null_prototype(dict);
  
+--- a/extensions/browser/extension_action.cc
++++ b/extensions/browser/extension_action.cc
+@@ -64,7 +64,12 @@
+ 
+ template <class T>
+ bool HasValue(const std::map<int, T>& map, ExtensionAction::TabID tab_id) {
+-  return map.contains(tab_id);
++  // Firefox add-ons (dubna): the value of the tab's window counts as the
++  // tab's own (firefox_action_window.h).
++  const int window_id = FirefoxWindowOfTab(tab_id);
++  return map.contains(tab_id) ||
++         (window_id != ExtensionAction::kDefaultTabId &&
++          map.contains(window_id));
+ }
+ 
+ }  // namespace
