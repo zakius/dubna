@@ -16,13 +16,19 @@ ExtensionId ExtensionIdForGeckoId(std::string_view target) {
   if (id.empty() || registry->Contains(id)) {
     return id;
   }
+  // Chromium lets more than one add-on name a Gecko ID, as Firefox doesn't:
+  // then none of them is the target.
+  ExtensionId found;
   for (const ExtensionId& installed : registry->GetIDs()) {
     const Extension* extension = registry->GetByID(installed);
     if (extension && GeckoId(*extension->manifest()->value()) == target) {
-      return installed;
+      if (!found.empty()) {
+        return id;
+      }
+      found = installed;
     }
   }
-  return id;
+  return found.empty() ? id : found;
 }
 
 }  // namespace extensions

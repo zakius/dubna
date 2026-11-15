@@ -12,7 +12,7 @@ namespace extensions {
 
 // Firefox add-ons (dubna's webextensions/README.md): the ID of the add-on that
 // `target`, a Gecko ID given to runtime.sendMessage or runtime.connect, names:
-// the installed add-on with that Gecko ID, which has the key's ID if its
+// the one installed add-on with that Gecko ID, which has the key's ID if its
 // manifest has a key, or else the ID that the Gecko ID gives. Empty when
 // `target` isn't a Gecko ID.
 ExtensionId ExtensionIdForGeckoId(std::string_view target);

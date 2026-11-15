@@ -24,16 +24,16 @@ ExtensionId ExtensionIdFromGeckoId(std::string_view gecko_id);
 // older applications.gecko.id, if Firefox would take it, or empty.
 std::string_view GeckoId(const base::DictValue& manifest);
 
-// The extension ID from the Gecko ID in `manifest`, or empty.
-ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest);
+// The extension ID from the Gecko ID in `manifest`, for the add-on in the
+// folder `path`, or empty. Empty too for a folder that KeepFolderId() named.
+ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest,
+                                    const base::FilePath& path);
 
-// The ID that an add-on installed unpacked from the folder `path`, as
-// `installed_id`, keeps: `installed_id` when it is the folder's ID while the
-// add-on's `manifest` has a Gecko ID and no key, as for an add-on installed
-// before its ID came from its Gecko ID; else empty, for Chromium's ID.
-ExtensionId KeptExtensionId(const base::FilePath& path,
-                            const base::DictValue& manifest,
-                            const ExtensionId& installed_id);
+// An add-on is installed from the folder `path` as `installed_id`. When that
+// is the folder's ID, as for an add-on installed unpacked before its ID came
+// from its Gecko ID, the add-on keeps it, and its storage, whenever it loads
+// from that folder, in this process.
+void KeepFolderId(const base::FilePath& path, const ExtensionId& installed_id);
 
 }  // namespace extensions
 

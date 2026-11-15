@@ -3,9 +3,13 @@
 
 #include "extensions/common/firefox_gecko_id.h"
 
+#include <set>
 #include <string>
 
+#include "base/no_destructor.h"
 #include "base/strings/string_util.h"
+#include "base/synchronization/lock.h"
+#include "base/thread_annotations.h"
 #include "components/crx_file/id_util.h"
 
 namespace extensions {
@@ -39,6 +43,18 @@ bool IsGeckoId(std::string_view id) {
   return true;
 }
 
+struct Folders {
+  base::Lock lock;
+  std::set<base::FilePath> paths GUARDED_BY(lock);
+};
+
+// The folders that KeepFolderId() named. Loads run on the UI thread and on
+// the extension file task runner.
+Folders& KeptFolders() {
+  static base::NoDestructor<Folders> folders;
+  return *folders;
+}
+
 }  // namespace
 
 ExtensionId ExtensionIdFromGeckoId(std::string_view gecko_id) {
@@ -59,18 +75,22 @@ std::string_view GeckoId(const base::DictValue& manifest) {
   return std::string_view();
 }
 
-ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest) {
+ExtensionId ExtensionIdFromManifest(const base::DictValue& manifest,
+                                    const base::FilePath& path) {
+  {
+    base::AutoLock lock(KeptFolders().lock);
+    if (KeptFolders().paths.contains(path)) {
+      return ExtensionId();
+    }
+  }
   return ExtensionIdFromGeckoId(GeckoId(manifest));
 }
 
-ExtensionId KeptExtensionId(const base::FilePath& path,
-                            const base::DictValue& manifest,
-                            const ExtensionId& installed_id) {
-  if (manifest.Find("key") || ExtensionIdFromManifest(manifest).empty() ||
-      installed_id != crx_file::id_util::GenerateIdForPath(path)) {
-    return ExtensionId();
+void KeepFolderId(const base::FilePath& path, const ExtensionId& installed_id) {
+  if (installed_id == crx_file::id_util::GenerateIdForPath(path)) {
+    base::AutoLock lock(KeptFolders().lock);
+    KeptFolders().paths.insert(path);
   }
-  return installed_id;
 }
 
 }  // namespace extensions

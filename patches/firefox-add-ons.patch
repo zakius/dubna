@@ -322,7 +322,7 @@
  
 +  // Firefox add-ons (dubna): the ID from the Gecko ID, which an add-on keeps
 +  // wherever it is installed from.
-+  *extension_id = ExtensionIdFromManifest(manifest);
++  *extension_id = ExtensionIdFromManifest(manifest, path);
 +  if (!extension_id->empty()) {
 +    return true;
 +  }
@@ -2097,37 +2097,36 @@
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/background_info.h"
-@@ -282,9 +283,13 @@
-   scoped_refptr<const Extension> extension;
-   std::u16string error;
-   if (info.extension_manifest) {
--    extension = Extension::Create(info.extension_path, info.extension_location,
--                                  *info.extension_manifest,
--                                  GetCreationFlags(&info), &error);
-+    // Firefox add-ons (dubna): see LoadAllExtensions().
-+    extension = Extension::Create(
-+        info.extension_path, info.extension_location, *info.extension_manifest,
-+        GetCreationFlags(&info),
-+        KeptExtensionId(info.extension_path, *info.extension_manifest,
-+                        info.extension_id),
-+        &error);
-   } else {
-     error = base::UTF8ToUTF16(
-         std::string_view(manifest_errors::kManifestUnreadable));
-@@ -383,6 +388,16 @@
-       scoped_refptr<const Extension> extension(
-           file_util::LoadExtension(info.extension_path, info.extension_location,
-                                    GetCreationFlags(&info), &error));
-+      // Firefox add-ons (dubna): an add-on installed before its ID came from
-+      // its Gecko ID keeps the ID of its folder.
-+      if (extension && extension->id() != info.extension_id &&
-+          !KeptExtensionId(info.extension_path,
-+                           *extension->manifest()->value(), info.extension_id)
-+               .empty()) {
-+        extension = file_util::LoadExtension(
-+            info.extension_path, info.extension_id, info.extension_location,
-+            GetCreationFlags(&info), &error);
-+      }
+@@ -368,6 +369,10 @@
+       continue;
+     }
  
-       if (!extension.get() || extension->id() != info.extension_id) {
-         invalid_extensions_.insert(info.extension_path);
++    // Firefox add-ons (dubna): an add-on installed before its ID came from
++    // its Gecko ID keeps the ID of its folder.
++    KeepFolderId(info.extension_path, info.extension_id);
++
+     if (ShouldReloadExtensionManifest(info)) {
+       TRACE_EVENT("browser,startup", "Reload Extension Manifest");
+ 
+--- a/extensions/browser/unpacked_installer.cc
++++ b/extensions/browser/unpacked_installer.cc
+@@ -48,6 +48,7 @@
+ #include "extensions/common/extension.h"
+ #include "extensions/common/extension_l10n_util.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_gecko_id.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/shared_module_info.h"
+@@ -277,6 +278,11 @@
+   bool allow_file_access =
+       Manifest::ShouldAlwaysAllowFileAccess(mojom::ManifestLocation::kUnpacked);
+   ExtensionPrefs* prefs = ExtensionPrefs::Get(browser_context_);
++  // Firefox add-ons (dubna): an add-on installed from this folder before its
++  // ID came from its Gecko ID keeps the folder's ID when it loads again.
++  if (prefs->GetInstalledExtensionInfo(id).has_value()) {
++    KeepFolderId(extension_path_, id);
++  }
+   if (allow_file_access_.has_value()) {
+     allow_file_access = *allow_file_access_;
+   } else if (prefs->HasAllowFileAccessSetting(id)) {
