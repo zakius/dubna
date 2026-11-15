@@ -52,6 +52,9 @@ main{padding:28px 24px 80px}
 .notes ul{margin:6px 0;padding-left:20px}
 .notes li{margin:3px 0}
 .notes code{font:12px var(--mono);color:var(--faint)}
+.notes a{text-decoration-color:var(--line)}
+.rel .gh{font:12.5px var(--mono);color:var(--faint);text-decoration:none}
+.rel .gh:hover{color:var(--text)}
 [hidden]{display:none!important}
 .skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
 .skip:focus{top:10px}
@@ -67,7 +70,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 <nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="install.html">Install</a><a href="everything.html">Everything</a></div></nav>
 <header><div class="wrap">
   <h1>Release <em>notes</em></h1>
-  <p class="lede">What changed in each release of both browsers, newest first: the latest __SHOWN__ of each. Every line is one change, with its commit. A browser updates to its newest release through its repository; <a href="install.html">Install</a> says how.</p>
+  <p class="lede">What changed in each release of both browsers, newest first: the latest __SHOWN__ of each. Every line is one change, linked to its commit; each release's packages are on GitHub. A browser updates to its newest release through its repository; <a href="install.html">Install</a> says how.</p>
   <div class="feeds">RSS: <a href="releases-oganesson.xml">oganesson</a><a href="releases-tennessine.xml">tennessine</a><a href="releases.xml">both</a></div>
 </div></header>
 

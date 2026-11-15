@@ -19,20 +19,22 @@ NOTES = '''Changes since v1:
 - Tabs: <b> & friends (05a545c)
 - Sync: no hash here
 
-Firefox add-ons corpus score: L2 861 → 882.
+WebExtensions climb (zakius/dubna#85): L2 861 → 882.
 '''
 RELEASE = {'b': 'og', 'tag': 'v2', 'title': 'oganesson 2 (1.2)', 'date': '2026-11-15T14:23:31Z',
-           'notes': NOTES}
+           'notes': NOTES, 'url': 'https://github.com/zakius/oganesson/releases/tag/v2'}
 
 
 class SiteTest(unittest.TestCase):
 
     def test_notes(self):
-        self.assertEqual(notes_html(NOTES),
+        self.assertEqual(notes_html(NOTES, 'oganesson'),
                          '<p>Changes since v1:</p>'
-                         '<ul><li>Tabs: &lt;b&gt; &amp; friends <code>05a545c</code></li>'
+                         '<ul><li>Tabs: &lt;b&gt; &amp; friends <a href="https://github.com/zakius/'
+                         'oganesson/commit/05a545c"><code>05a545c</code></a></li>'
                          '<li>Sync: no hash here</li></ul>'
-                         '<p>Firefox add-ons corpus score: L2 861 → 882.</p>')
+                         '<p>WebExtensions climb (<a href="https://github.com/zakius/dubna/issues/85">'
+                         'zakius/dubna#85</a>): L2 861 → 882.</p>')
 
     def test_feed(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -43,7 +45,7 @@ class SiteTest(unittest.TestCase):
         self.assertEqual(item.find('link').text, link)
         self.assertEqual(item.find('guid').text, link)
         self.assertEqual(item.find('pubDate').text, 'Sun, 15 Nov 2026 14:23:31 GMT')
-        self.assertEqual(item.find('description').text, notes_html(NOTES))
+        self.assertEqual(item.find('description').text, notes_html(NOTES, 'oganesson'))
         self.assertIn('id="oganesson-v2"', release_list([RELEASE]))
 
 

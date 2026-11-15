@@ -32,7 +32,7 @@ Both browsers are named after elements. oganesson takes its name from element 11
 | `l10n/` | Polish translations of the strings in `src/`. |
 | `tools/` | `upstream_status.py` (the update policy check), `translate.py` (puts translations into a tree, for both browsers), `update_app_services.py` (moves the Rust library to a new application-services release), `ours.py` (lists the objects our C++ files compile to, so a product's build can compile them first), `release_notes.py` (a GitHub release's notes, from the commits since the previous release), `amo_corpus.py` (the WebExtensions climb's fixed list of AMO add-ons and its `.xpi` cache), `usage_pace.py` (projects the Claude plan's weekly usage to its reset, from T3 Code's logs, to say whether the evening task can start another run). |
 | `webextensions/` | The plan, the rules and the status of the Firefox WebExtensions climb, with its corpus list and scores. |
-| `site/` | dubna's site (https://dubna.zakius.xyz): `site.py` builds, publishes and checks it; `server/` holds the server's compose and nginx files. The site's release notes (`releases.html`, with an RSS feed per browser and one for both) are built from the browsers' GitHub releases, through `gh`, as those repos are private. |
+| `site/` | dubna's site (https://dubna.zakius.xyz): `site.py` builds, publishes and checks it; `server/` holds the server's compose and nginx files. The site's release notes (`releases.html`, with an RSS feed per browser and one for both) are built from the browsers' GitHub releases, through `gh`. |
 
 Both browsers include dubna as a submodule. oganesson copies `dubna/src/` in before its own `src/`, and its `patches/series` lists `../dubna/patches/…`. In tennessine the submodule sits next to Vanadium and Titanium.
 

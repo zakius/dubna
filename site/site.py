@@ -4,7 +4,7 @@ needs an update.
 
   site/site.py build      everything.html from everything.html.in and items.json,
                           and releases.html with its RSS feeds from the browsers'
-                          GitHub releases (through gh, as the repos are private),
+                          GitHub releases (through gh),
                           into site/www with the other pages and site/img; the
                           pages' {{name}}s get the current versions, dates and
                           minimum systems (facts())
@@ -361,7 +361,8 @@ def releases():
             sys.exit(f'site.py: no releases of {name} on GitHub')
         for r in found:
             out.append({'b': key, 'tag': r['tag_name'], 'title': r['name'] or r['tag_name'],
-                        'date': r['published_at'], 'notes': r['body'] or ''})
+                        'date': r['published_at'], 'notes': r['body'] or '',
+                        'url': r['html_url']})
     return sorted(out, key=lambda r: r['date'], reverse=True)
 
 
@@ -369,21 +370,27 @@ def anchor(release):
     return f"{BROWSER[release['b']]}-{release['tag']}"
 
 
-def notes_html(text):
-    """A release's notes as HTML. release_notes.py writes them as paragraphs and
-    "- subject (hash)" lists. The hashes link nowhere, as the repos are private."""
+def notes_html(text, repo):
+    """A release's notes as HTML, with links to GitHub. release_notes.py writes them as
+    paragraphs and "- subject (hash)" lists, the hash a commit of REPO; issues appear as
+    zakius/<repo>#N."""
+    def links(line):
+        line = re.sub(r'\bzakius/(\w+)#(\d+)\b',
+                      r'<a href="https://github.com/zakius/\1/issues/\2">\g<0></a>', line)
+        return re.sub(r' \(([0-9a-f]{7,40})\)$',
+                      rf' <a href="https://github.com/zakius/{repo}/commit/\1"><code>\1</code></a>',
+                      line)
     out, items = [], []
     for line in text.splitlines() + ['']:
         line = line.strip()
         if line.startswith('- '):
-            items.append(re.sub(r' \(([0-9a-f]{7,40})\)$', r' <code>\1</code>',
-                                html.escape(line[2:])))
+            items.append(links(html.escape(line[2:])))
             continue
         if items:
             out.append('<ul>' + ''.join(f'<li>{i}</li>' for i in items) + '</ul>')
             items = []
         if line:
-            out.append(f'<p>{html.escape(line)}</p>')
+            out.append(f'<p>{links(html.escape(line))}</p>')
     return ''.join(out)
 
 
@@ -401,8 +408,9 @@ def release_list(rels):
         out += (f'\n<article class="rel" id="{e(anchor(r))}" data-b="{r["b"]}"><div class="head">'
                 f'<span class="b {r["b"]}">{BROWSER[r["b"]]}</span>'
                 f'<h2><a href="#{e(anchor(r))}">{e(r["title"])}</a></h2>'
-                f'<time datetime="{e(r["date"])}">{stamp}</time></div>'
-                f'<div class="notes">{notes_html(r["notes"])}</div></article>')
+                f'<time datetime="{e(r["date"])}">{stamp}</time>'
+                f'<a class="gh" href="{e(r["url"])}">on GitHub</a></div>'
+                f'<div class="notes">{notes_html(r["notes"], BROWSER[r["b"]])}</div></article>')
     return out
 
 
@@ -418,7 +426,7 @@ def feed(path, title, rels):
         items += (f'<item><title>{e(r["title"])}</title><link>{e(link)}</link>'
                   f'<guid>{e(link)}</guid><pubDate>{date(r)}</pubDate>'
                   f'<category>{BROWSER[r["b"]]}</category>'
-                  f'<description>{e(notes_html(r["notes"]))}</description></item>\n')
+                  f'<description>{e(notes_html(r["notes"], BROWSER[r["b"]]))}</description></item>\n')
     path.write_text(
         '<?xml version="1.0" encoding="utf-8"?>\n'
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>\n'
