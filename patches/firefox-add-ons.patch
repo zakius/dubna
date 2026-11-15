@@ -1719,16 +1719,16 @@
  }
  
  bool EventEmitter::HasListeners() const {
-@@ -155,13 +157,41 @@
+@@ -155,13 +157,42 @@
      return;
    }
  
 -  if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
 +  // Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated or
 +  // proxy.onRequest (firefox_update_filter.h), an object, null or undefined.
-+  std::string_view event_name = listeners_->GetEventName();
++  std::string_view firefox_event = listeners_->GetEventName();
 +  bool takes_firefox_filter =
-+      !supports_filters_ && FirefoxUpdateFilters::Takes(event_name);
++      !supports_filters_ && FirefoxUpdateFilters::Takes(firefox_event);
 +  std::optional<FirefoxUpdateFilters::Filter> firefox_filter;
 +  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
 +    v8::Local<v8::Value> value;
@@ -1736,7 +1736,7 @@
 +    if (!value->IsNullOrUndefined()) {
 +      std::string error;
 +      firefox_filter = FirefoxUpdateFilters::Read(
-+          arguments->GetHolderCreationContext(), value, event_name, &error);
++          arguments->GetHolderCreationContext(), value, firefox_event, &error);
 +      // With no message, a getter of the filter threw, and its exception is
 +      // pending. A getter may also have torn the context down.
 +      if (!firefox_filter || !valid_) {
@@ -1748,7 +1748,8 @@
 +    }
 +    // proxy.onRequest's extraInfoSpec asks for the request's headers, which
 +    // the proxy resolution doesn't know.
-+    if (event_name == "proxy.onRequest" && !arguments->PeekNext().IsEmpty()) {
++    if (firefox_event == "proxy.onRequest" &&
++        !arguments->PeekNext().IsEmpty()) {
 +      arguments->Skip();
 +    }
 +  } else if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
@@ -1763,7 +1764,7 @@
      arguments->ThrowTypeError("Invalid invocation");
      return;
    }
-@@ -187,9 +217,15 @@
+@@ -187,9 +218,15 @@
    }
  
    std::string error;
@@ -1782,7 +1783,7 @@
    }
  }
  
-@@ -206,6 +242,7 @@
+@@ -206,6 +243,7 @@
    }
  
    listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
@@ -1790,7 +1791,7 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -265,7 +302,15 @@
+@@ -265,7 +303,15 @@
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
