@@ -1692,7 +1692,7 @@
  }
  
  bool EventEmitter::HasListeners() const {
-@@ -155,13 +157,29 @@
+@@ -155,13 +157,33 @@
      return;
    }
  
@@ -1702,14 +1702,18 @@
 +  bool takes_firefox_filter =
 +      !supports_filters_ &&
 +      FirefoxUpdateFilters::Takes(listeners_->GetEventName());
-+  v8::Local<v8::Object> firefox_filter;
++  std::optional<FirefoxUpdateFilters::Filter> firefox_filter;
 +  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
 +    v8::Local<v8::Value> value;
 +    arguments->GetNext(&value);
++    std::string error = "Invalid invocation";
 +    if (value->IsObject()) {
-+      firefox_filter = value.As<v8::Object>();
-+    } else if (!value->IsNullOrUndefined()) {
-+      arguments->ThrowTypeError("Invalid invocation");
++      firefox_filter = FirefoxUpdateFilters::Read(
++          arguments->GetHolderCreationContext(), value.As<v8::Object>(),
++          &error);
++    }
++    if (!firefox_filter && !value->IsNullOrUndefined()) {
++      arguments->ThrowTypeError(error);
 +      return;
 +    }
 +  } else if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
@@ -1724,7 +1728,7 @@
      arguments->ThrowTypeError("Invalid invocation");
      return;
    }
-@@ -187,9 +205,15 @@
+@@ -187,9 +209,15 @@
    }
  
    std::string error;
@@ -1737,13 +1741,13 @@
 +    }
 +    return;
 +  }
-+  if (!firefox_filter.IsEmpty()) {
++  if (firefox_filter) {
 +    firefox_update_filters_.Add(arguments->isolate(), listener,
-+                                firefox_filter);
++                                std::move(*firefox_filter));
    }
  }
  
-@@ -206,6 +230,7 @@
+@@ -206,6 +234,7 @@
    }
  
    listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
@@ -1751,7 +1755,7 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -266,6 +291,9 @@
+@@ -266,6 +295,9 @@
  
    v8::TryCatch try_catch(isolate);
    for (const auto& listener : listeners) {
