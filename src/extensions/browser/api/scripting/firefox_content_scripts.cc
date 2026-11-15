@@ -34,6 +34,8 @@
 #include "extensions/common/mojom/run_location.mojom-shared.h"
 #include "extensions/common/user_script.h"
 #include "extensions/common/utils/content_script_utils.h"
+#include "url/gurl.h"
+#include "url/origin.h"
 
 namespace extensions {
 
@@ -129,12 +131,15 @@ class DocumentScripts : public content::DocumentUserData<DocumentScripts> {
 
 DOCUMENT_USER_DATA_KEY_IMPL(DocumentScripts);
 
-// Adds the files and the code of a `js` or `css` list to `contents`. Firefox
-// takes a file's path from the add-on's root. Returns false if the list isn't
-// one of Firefox's.
+// Adds the files and the code of a `js` or `css` list to `contents`. As in
+// Firefox, a file's path is relative to `page`, the page that registers the
+// scripts. Returns false if the list isn't one of Firefox's, and sets `error`
+// for a file that Firefox refuses.
 bool AddSources(const Extension& extension,
+                const GURL& page,
                 const base::Value* sources,
-                UserScript::ContentList& contents) {
+                UserScript::ContentList& contents,
+                std::string* error) {
   if (!sources) {
     return true;
   }
@@ -148,10 +153,22 @@ bool AddSources(const Extension& extension,
     const std::string* file = source.GetDict().FindString("file");
     const std::string* code = source.GetDict().FindString("code");
     if (file) {
-      ExtensionResource resource = extension.GetResource(*file);
+      GURL url = page.Resolve(*file);
+      if (!url.is_valid() ||
+          !url::Origin::Create(url).IsSameOriginWith(extension.origin())) {
+        // Firefox's message.
+        *error = base::StrCat({"Access denied for URL ", *file});
+        return true;
+      }
+      GURL::Replacements no_query;
+      no_query.ClearQuery();
+      no_query.ClearRef();
+      url = url.ReplaceComponents(no_query);
+      // The path without its leading "/".
+      ExtensionResource resource = extension.GetResource(
+          base::UnescapeBinaryURLComponent(std::string(url.path()).substr(1)));
       contents.push_back(UserScript::Content::CreateFile(
-          resource.extension_root(), resource.relative_path(),
-          extension.GetResourceURL(base::EscapePath(*file))));
+          resource.extension_root(), resource.relative_path(), url));
     } else if (code && !code->empty()) {
       // As the userScripts API does with code.
       std::unique_ptr<UserScript::Content> content =
@@ -259,10 +276,17 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
   script_parsing::ParseGlobs(base::OptionalToPtr(include_globs),
                              base::OptionalToPtr(exclude_globs), script.get());
 
-  EXTENSION_FUNCTION_VALIDATE(
-      AddSources(extension, options.Find("js"), script->js_scripts()));
-  EXTENSION_FUNCTION_VALIDATE(
-      AddSources(extension, options.Find("css"), script->css_scripts()));
+  // A call without a page (none in Manifest V2) takes files from the root.
+  const GURL& page = source_url().is_valid() ? source_url() : extension.url();
+  std::string sources_error;
+  EXTENSION_FUNCTION_VALIDATE(AddSources(extension, page, options.Find("js"),
+                                         script->js_scripts(), &sources_error));
+  EXTENSION_FUNCTION_VALIDATE(AddSources(extension, page, options.Find("css"),
+                                         script->css_scripts(),
+                                         &sources_error));
+  if (!sources_error.empty()) {
+    return RespondNow(Error(std::move(sources_error)));
+  }
 
   script->set_match_all_frames(options.FindBool("allFrames").value_or(false));
   // As in Firefox, matchOriginAsFallback overrides matchAboutBlank.

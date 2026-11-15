@@ -30,7 +30,7 @@
       {
         "id": "ExtensionFileOrCode",
         "type": "object",
-        "description": "A file of the add-on, from its root, or code.",
+        "description": "A file of the add-on, relative to the page that registers it, or code.",
         "properties": {
           "file": {"type": "string", "optional": true},
           "code": {"type": "string", "optional": true}
