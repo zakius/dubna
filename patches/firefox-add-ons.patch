@@ -24,6 +24,8 @@
 # So is the scripting permission, as in Firefox.
 # Firefox's theme API, read-only: getCurrent() and onUpdated give the browser
 # theme's colours in Firefox's key names (theme_api.cc), to any add-on.
+# browserAction has action's setBadgeTextColor, getBadgeTextColor and
+# getUserSettings, as in Firefox (firefox_browser_action.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -680,6 +682,16 @@
  }
  
  ExtensionAction* ExtensionActionManager::GetExtensionAction(
+--- a/chrome/browser/extensions/api/extension_action/BUILD.gn
++++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
+@@ -10,6 +10,7 @@
+   sources = [
+     "extension_action_api.cc",
+     "extension_action_api.h",
++    "firefox_browser_action.h",
+   ]
+ 
+   public_deps = [
 --- a/chrome/browser/extensions/api/extension_action/extension_action_api.cc
 +++ b/chrome/browser/extensions/api/extension_action/extension_action_api.cc
 @@ -9,6 +9,7 @@
@@ -702,6 +714,104 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
+@@ -496,7 +502,8 @@
+   // This API is only available to extensions with the "action" key in the
+   // manifest, so they should always have an action.
+   CHECK(action, base::NotFatalUntil::M161);
+-  CHECK_EQ(ActionInfo::Type::kAction, action->action_type(),
++  // Firefox add-ons (dubna): browserAction.getUserSettings runs this too.
++  CHECK_NE(ActionInfo::Type::kPage, action->action_type(),
+            base::NotFatalUntil::M161);
+ 
+   const bool is_pinned =
+--- a/chrome/common/extensions/api/browser_action.json
++++ b/chrome/common/extensions/api/browser_action.json
+@@ -7,7 +7,7 @@
+     "namespace": "browserAction",
+     "description": "Use browser actions to put icons in the main Google Chrome toolbar, to the right of the address bar. In addition to its <a href='browserAction#icon'>icon</a>, a browser action can have a <a href='browserAction#tooltip'>tooltip</a>, a <a href='browserAction#badge'>badge</a>, and a <a href='browserAction#popup'>popup</a>.",
+     "compiler_options": {
+-      "implemented_in": "chrome/browser/extensions/api/extension_action/extension_action_api.h"
++      "implemented_in": "chrome/browser/extensions/api/extension_action/firefox_browser_action.h"
+     },
+     "types": [
+       {
+@@ -244,6 +244,76 @@
+             }
+           ]
+         }
++      },
++      // Firefox add-ons (dubna): Firefox's badge text colour and user settings
++      // (firefox_browser_action.h), as in action.json.
++      {
++        "name": "setBadgeTextColor",
++        "type": "function",
++        "description": "Sets the text color for the badge.",
++        "parameters": [
++          {
++            "name": "details",
++            "type": "object",
++            "properties": {
++              "color": {
++                "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge, or a string with a CSS value.",
++                "choices": [
++                  {"type": "string"},
++                  {"$ref": "extensionTypes.ColorArray"}
++                ]
++              },
++              "tabId": {
++                "type": "integer",
++                "optional": true,
++                "minimum": 0,
++                "description": "Limits the change to when a particular tab is selected. Automatically resets when the tab is closed."
++              }
++            }
++          }
++        ],
++        "returns_async": {"name": "callback", "parameters": [], "optional": true}
++      },
++      {
++        "name": "getBadgeTextColor",
++        "type": "function",
++        "description": "Gets the text color of the badge.",
++        "parameters": [
++          {
++            "name": "details",
++            "$ref": "TabDetails"
++          }
++        ],
++        "returns_async": {
++          "name": "callback",
++          "parameters": [
++            {
++              "name": "result",
++              "$ref": "extensionTypes.ColorArray"
++            }
++          ]
++        }
++      },
++      {
++        "name": "getUserSettings",
++        "type": "function",
++        "description": "Returns the user-specified settings relating to the browser action.",
++        "parameters": [],
++        "returns_async": {
++          "name": "callback",
++          "parameters": [
++            {
++              "name": "userSettings",
++              "type": "object",
++              "properties": {
++                "isOnToolbar": {
++                  "type": "boolean",
++                  "description": "Whether the browser action is pinned to the toolbar."
++                }
++              }
++            }
++          ]
++        }
+       },
+       {
+         "name": "enable",
 --- a/chrome/browser/extensions/extension_action_dispatcher.cc
 +++ b/chrome/browser/extensions/extension_action_dispatcher.cc
 @@ -147,6 +147,11 @@
