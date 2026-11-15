@@ -32,6 +32,8 @@
 # theme's colours in Firefox's key names (theme_api.cc), to any add-on.
 # browserAction has action's setBadgeTextColor, getBadgeTextColor and
 # getUserSettings, as in Firefox (firefox_browser_action.h).
+# browserAction's and action's setters and getters take Firefox's windowId: a
+# value for the tabs of one window (firefox_action_window.h).
 # contentScripts.register() is Firefox's (firefox_content_scripts.cc): dynamic
 # content scripts, with code as well as files, that the scripting API doesn't
 # list or remove. Chromium's contentScripts schema, which only types the
@@ -736,10 +738,12 @@
  
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
-@@ -300,6 +300,7 @@
+@@ -300,6 +300,9 @@
      "extension_action_icon_factory.h",
      "extension_action_manager.cc",
      "extension_action_manager.h",
++    "firefox_action_window.cc",
++    "firefox_action_window.h",
 +    "firefox_page_action.cc",
      "extension_allowlist.cc",
      "extension_allowlist.h",
@@ -777,10 +781,12 @@
  ExtensionAction* ExtensionActionManager::GetExtensionAction(
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
-@@ -10,6 +10,7 @@
+@@ -10,6 +10,9 @@
    sources = [
      "extension_action_api.cc",
      "extension_action_api.h",
++    "firefox_action_window.cc",
++    "firefox_action_window.h",
 +    "firefox_browser_action.h",
    ]
  
@@ -795,7 +801,15 @@
  #include <utility>
  
  #include "base/check.h"
-@@ -184,6 +185,11 @@
+@@ -18,6 +19,7 @@
+ #include "base/metrics/histogram_functions.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/strings/stringprintf.h"
++#include "chrome/browser/extensions/api/extension_action/firefox_action_window.h"
+ #include "chrome/browser/extensions/browser_window_util.h"
+ #include "chrome/browser/extensions/extension_action_dispatcher.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
+@@ -184,6 +186,11 @@
    ExtensionActionManager* manager =
        ExtensionActionManager::Get(browser_context());
    extension_action_ = manager->GetExtensionAction(*extension());
@@ -807,7 +821,21 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
-@@ -496,7 +502,8 @@
+@@ -194,6 +201,13 @@
+   // Populates the tab_id_ and details_ members.
+   EXTENSION_FUNCTION_VALIDATE(ExtractDataFromArguments());
+ 
++  // Firefox add-ons (dubna): a window's value (firefox_action_window.h).
++  std::string window_error;
++  if (TakeFirefoxWindowId(*this, details_, tab_id_, window_error)) {
++    return window_error.empty() ? RunExtensionAction()
++                                : RespondNow(Error(window_error));
++  }
++
+   // Find the WebContents that contains this tab id if one is required.
+   if (tab_id_ != ExtensionAction::kDefaultTabId) {
+     content::WebContents* contents_out_param = nullptr;
+@@ -496,7 +510,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -819,7 +847,7 @@
    const bool is_pinned =
 --- a/chrome/common/extensions/api/browser_action.json
 +++ b/chrome/common/extensions/api/browser_action.json
-@@ -7,7 +7,7 @@
+@@ -7,13 +7,14 @@
      "namespace": "browserAction",
      "description": "Use browser actions to put icons in the main Google Chrome toolbar, to the right of the address bar. In addition to its <a href='browserAction#icon'>icon</a>, a browser action can have a <a href='browserAction#tooltip'>tooltip</a>, a <a href='browserAction#badge'>badge</a>, and a <a href='browserAction#popup'>popup</a>.",
      "compiler_options": {
@@ -828,7 +856,54 @@
      },
      "types": [
        {
-@@ -244,6 +244,76 @@
+         "id": "TabDetails",
+         "type": "object",
+         "properties": {
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): the window to query state for."},
+           "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
+         }
+       }
+@@ -32,6 +33,7 @@
+                 "type": "string",
+                 "description": "The string the browser action should display when moused over."
+               },
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+               "tabId": {
+                 "type": "integer",
+                 "optional": true,
+@@ -95,6 +97,7 @@
+                 "optional": true,
+                 "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to an icon to be set. If the icon is specified as a dictionary, the image used is chosen depending on the screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then an image with size <code>scale</code> * n is selected, where <i>n</i> is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
+               },
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+               "tabId": {
+                 "type": "integer",
+                 "optional": true,
+@@ -118,6 +121,7 @@
+             "name": "details",
+             "type": "object",
+             "properties": {
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+               "tabId": {
+                 "type": "integer",
+                 "optional": true,
+@@ -167,6 +171,7 @@
+                 "optional": true,
+                 "description": "Any number of characters can be passed, but only about four can fit into the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
+               },
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+               "tabId": {
+                 "type": "integer",
+                 "optional": true,
+@@ -215,6 +220,7 @@
+                   }
+                 ]
+               },
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+               "tabId": {
+                 "type": "integer",
+                 "optional": true,
+@@ -244,6 +250,77 @@
              }
            ]
          }
@@ -851,6 +926,7 @@
 +                  {"$ref": "extensionTypes.ColorArray"}
 +                ]
 +              },
++              "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
 +              "tabId": {
 +                "type": "integer",
 +                "optional": true,
@@ -1383,3 +1459,82 @@
        {"declarativeContent",
         IDR_RENDERER_RESOURCES_EXTENSIONS_DECLARATIVE_CONTENT_CUSTOM_BINDINGS_JS},
        {"desktopCapture",
+--- a/extensions/browser/extension_action.h
++++ b/extensions/browser/extension_action.h
+@@ -11,6 +11,7 @@
+ #include <vector>
+ 
+ #include "base/containers/map_util.h"
++#include "extensions/browser/firefox_action_window.h"
+ #include "extensions/common/api/extension_action/action_info.h"
+ #include "extensions/common/constants.h"
+ #include "extensions/common/extension_id.h"
+@@ -253,6 +254,10 @@
+   T GetValue(const std::map<int, T>& map, TabID tab_id) const {
+     if (const T* tab_value = base::FindOrNull(map, tab_id)) {
+       return *tab_value;
++    } else if (const T* window_value =
++                   base::FindOrNull(map, FirefoxWindowOfTab(tab_id))) {
++      // Firefox add-ons (dubna): the value of the tab's window.
++      return *window_value;
+     } else if (const T* default_value = base::FindOrNull(map, kDefaultTabId)) {
+       return *default_value;
+     } else {
+--- a/chrome/common/extensions/api/action.json
++++ b/chrome/common/extensions/api/action.json
+@@ -14,6 +14,7 @@
+         "id": "TabDetails",
+         "type": "object",
+         "properties": {
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): the window to query state for."},
+           "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
+         }
+       },
+@@ -63,6 +64,7 @@
+             "type": "string",
+             "description": "The string the action should display when moused over."
+           },
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+           "tabId": {
+             "type": "integer",
+             "optional": true,
+@@ -119,6 +121,7 @@
+             "optional": true,
+             "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * n will be selected, where n is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
+           },
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+           "tabId": {
+             "type": "integer",
+             "optional": true,
+@@ -140,6 +143,7 @@
+         "name": "details",
+         "type": "object",
+         "properties": {
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+           "tabId": {
+             "type": "integer",
+             "optional": true,
+@@ -189,6 +193,7 @@
+             "optional": true,
+             "description": "Any number of characters can be passed, but only about four can fit in the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
+           },
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+           "tabId": {
+             "type": "integer",
+             "optional": true,
+@@ -234,6 +239,7 @@
+               }
+             ]
+           },
++          "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+           "tabId": {
+             "type": "integer",
+             "optional": true,
+@@ -282,6 +288,7 @@
+                 }
+               ]
+             },
++            "windowId": {"type": "integer", "optional": true, "minimum": 0, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
+             "tabId": {
+               "type": "integer",
+               "optional": true,
