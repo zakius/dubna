@@ -16,6 +16,7 @@ source_set("theme") {
     "//base",
     "//chrome/browser/themes",
     "//extensions/browser",
+    "//ui/native_theme",
   ]
 
   deps = [

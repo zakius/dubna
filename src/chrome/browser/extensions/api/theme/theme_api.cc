@@ -136,6 +136,7 @@ base::DictValue CurrentTheme(Profile& profile) {
 ThemeAPI::ThemeAPI(content::BrowserContext* context)
     : profile_(Profile::FromBrowserContext(context)) {
   observation_.Observe(ThemeServiceFactory::GetForProfile(profile_));
+  native_theme_observation_.Observe(ui::NativeTheme::GetInstanceForNativeUi());
 }
 
 ThemeAPI::~ThemeAPI() = default;
@@ -147,20 +148,36 @@ BrowserContextKeyedAPIFactory<ThemeAPI>* ThemeAPI::GetFactoryInstance() {
 }
 
 void ThemeAPI::OnThemeChanged() {
-  // The windows take the new colours from their own observers of the theme,
-  // which may run after this one.
+  ScheduleOnUpdated();
+}
+
+void ThemeAPI::OnNativeThemeUpdated(ui::NativeTheme* observed_theme) {
+  ScheduleOnUpdated();
+}
+
+void ThemeAPI::ScheduleOnUpdated() {
+  if (on_updated_scheduled_) {
+    return;
+  }
+  on_updated_scheduled_ = true;
   base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
       FROM_HERE, base::BindOnce(&ThemeAPI::DispatchOnUpdated,
                                 weak_factory_.GetWeakPtr()));
 }
 
 void ThemeAPI::DispatchOnUpdated() {
+  on_updated_scheduled_ = false;
   EventRouter* router = EventRouter::Get(profile_);
   if (!router || !router->HasEventListener(kOnUpdated)) {
     return;
   }
+  base::DictValue theme = CurrentTheme(*profile_);
+  if (theme == last_theme_) {
+    return;
+  }
+  last_theme_ = theme.Clone();
   base::ListValue args;
-  args.Append(base::DictValue().Set("theme", CurrentTheme(*profile_)));
+  args.Append(base::DictValue().Set("theme", std::move(theme)));
   // A stub histogram value: one of our own could clash with the upstreams'
   // additions to that enum, and UNKNOWN fails a DCHECK.
   router->BroadcastEvent(std::make_unique<Event>(
