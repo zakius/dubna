@@ -3,8 +3,8 @@
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
   "L0": 1000,
-  "L1": 994,
-  "L2": 853
+  "L1": 997,
+  "L2": 858
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -296,8 +296,8 @@
    "error": null
   },
   "firefox-extension@deepl.com": {
-   "level": "L0",
-   "error": "The extension requires the 'declarativeNetRequest' or the 'declarativeNetRequestWithHostAccess' permission for the 'declarative_net_request' manifest key."
+   "level": "L2",
+   "error": null
   },
   "extension@one-tab.com": {
    "level": "L2",
@@ -632,8 +632,8 @@
    "error": null
   },
   "{1935b298-ac62-11ec-b909-0242ac120002}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'updateEnabledRulesets') (background.js:3)"
+   "level": "L2",
+   "error": null
   },
   "{8AA36F4F-6DC7-4c06-77AF-5035170634FE}": {
    "level": "L2",
@@ -677,7 +677,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (3a1a979c-680f-4bda-ac9e-8d20ce55c340:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (db2b6c1b-460b-4833-a6e9-084ad71d8441:37)"
   },
   "2.0@disconnect.me": {
    "level": "L2",
@@ -908,8 +908,8 @@
    "error": null
   },
   "fftmtoolbarProd@trendmicro.com": {
-   "level": "L0",
-   "error": "The extension requires the 'declarativeNetRequest' or the 'declarativeNetRequestWithHostAccess' permission for the 'declarative_net_request' manifest key."
+   "level": "L2",
+   "error": null
   },
   "{7809d936-7f77-4373-93cd-8cfac159d738}": {
    "level": "L2",
@@ -1088,8 +1088,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L2",
@@ -2433,7 +2433,7 @@
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access a chrome:// URL (swift-selection-search.html:0)"
+   "error": "Uncaught (in promise) Error: Cannot access a chrome-extension:// URL of different extension (swift-selection-search.html:0)"
   },
   "secureline-vpn@avast.com": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImY2NjhjNjA1ZjFmZGEwMzU4NGMwYWVjZTQ2MjVkNzAxNDI0YzZlNWEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjQ2NWRjYTQzMDFkYzBlMzY2M2RiZWI1ZTdmY2E1NTk4OGYzMDhkODAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2732,8 +2732,8 @@
    "error": null
   },
   "{a871656a-91f6-402c-912b-6291197b9c49}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught TypeError: Cannot destructure property 'merchant' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined. (background/background.js:9)"
   },
   "{84c8edb0-65ca-43a5-bc53-0e80f41486e1}": {
    "level": "L2",
@@ -2812,8 +2812,8 @@
    "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: exportFunction is not defined (conent_script.js:8)"
+   "level": "L2",
+   "error": null
   },
   "{4b7825da-0dd1-44f9-9717-bee5b2408af6}": {
    "level": "L2",
@@ -3052,16 +3052,16 @@
    "error": null
   },
   "{190d04a6-e387-4f5b-9751-e0d222cf8275}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: not done (bg.js:2)"
+   "level": "L2",
+   "error": null
   },
   "Daily_Top_Coupons___Custom_Web_Search_NZbCZLjwKY@dailytopcoupons.com": {
    "level": "L2",
    "error": null
   },
   "tabrotator@davidfichtmueller.de": {
-   "level": "L0",
-   "error": "Invalid value for homepage url: '[__MSG_extensionHomepage__]'."
+   "level": "L2",
+   "error": null
   },
   "{35dd5f9a-ca89-4643-b107-f07d09cc94b5}": {
    "level": "L1",
@@ -3660,8 +3660,8 @@
    "error": null
   },
   "administrator@pricy.ro": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: require is not defined (js/popover.min.js:6)"
+   "level": "L2",
+   "error": null
   },
   "{0a3ee209-ab68-4b84-a9ef-eb0ee686dd8d}": {
    "level": "L2",
