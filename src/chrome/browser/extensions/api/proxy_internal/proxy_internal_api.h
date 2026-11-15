@@ -26,9 +26,9 @@ namespace extensions {
 // Firefox add-ons (dubna's webextensions/README.md): Firefox's
 // proxy.onRequest. While an add-on listens, the profile's requests take their
 // proxy from here (firefox_proxy_config.h): proxy.onRequest goes to each
-// listening add-on in turn that may see the request's URL, and the first that
-// answers decides. An answer Firefox refuses goes to that add-on's
-// proxy.onError, and the next add-on is asked.
+// listening add-on in turn that may see the request's URL, and, as in Firefox,
+// each answer replaces the one before: the last decides. An answer Firefox
+// refuses goes to that add-on's proxy.onError, and changes nothing.
 class FirefoxProxyRequests : public BrowserContextKeyedAPI,
                              public EventRouter::Observer {
  public:
@@ -58,8 +58,8 @@ class FirefoxProxyRequests : public BrowserContextKeyedAPI,
   void Ask(content::BrowserContext* context, const GURL& url, Answer answer);
 
   // The answer of `extension_id`'s listeners to request `request_id`:
-  // Firefox's ProxyInfo or a list of them, or nothing; or the message of the
-  // error their promise rejected with.
+  // Firefox's ProxyInfo or a list of them, or nothing; and the message of the
+  // error a listener's promise rejected with, if one did.
   void OnAnswer(const ExtensionId& extension_id,
                 int request_id,
                 const base::Value* result,

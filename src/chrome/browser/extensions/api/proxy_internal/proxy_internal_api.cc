@@ -155,9 +155,10 @@ std::optional<net::ProxyList> ReadProxies(const base::Value& value,
 struct FirefoxProxyRequests::Request {
   GURL url;
   bool incognito = false;
-  // The add-ons still to ask, and the one asked now.
+  // The add-ons still to ask, the one asked now, and the last answer.
   std::vector<ExtensionId> left;
   ExtensionId asked;
+  std::optional<net::ProxyList> proxies;
   Answer answer;
   base::OneShotTimer timeout;
 };
@@ -250,7 +251,7 @@ void FirefoxProxyRequests::Ask(content::BrowserContext* context,
 void FirefoxProxyRequests::AskNext(int request_id) {
   Request& request = *requests_[request_id];
   if (request.left.empty()) {
-    Finish(request_id, std::nullopt);
+    Finish(request_id, std::move(request.proxies));
     return;
   }
   request.asked = request.left.front();
@@ -294,28 +295,21 @@ void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
   if (it == requests_.end() || it->second->asked != extension_id) {
     return;
   }
-  it->second->asked.clear();
+  Request& request = *it->second;
+  request.asked.clear();
   if (error) {
     DispatchError(extension_id, *error);
-    AskNext(request_id);
-    return;
   }
-  if (!result || result->is_none()) {
-    AskNext(request_id);
-    return;
+  if (result && !result->is_none()) {
+    std::string message;
+    std::optional<net::ProxyList> proxies = ReadProxies(*result, &message);
+    if (!proxies) {
+      DispatchError(extension_id, message);
+    } else if (!proxies->IsEmpty()) {
+      request.proxies = std::move(proxies);
+    }
   }
-  std::string message;
-  std::optional<net::ProxyList> proxies = ReadProxies(*result, &message);
-  if (!proxies) {
-    DispatchError(extension_id, message);
-    AskNext(request_id);
-    return;
-  }
-  if (proxies->IsEmpty()) {
-    AskNext(request_id);
-    return;
-  }
-  Finish(request_id, std::move(proxies));
+  AskNext(request_id);
 }
 
 void FirefoxProxyRequests::Finish(int request_id,
