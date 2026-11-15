@@ -1538,3 +1538,30 @@
              "tabId": {
                "type": "integer",
                "optional": true,
+--- a/extensions/renderer/set_icon_natives.cc
++++ b/extensions/renderer/set_icon_natives.cc
+@@ -245,6 +245,24 @@
+     }
+     dict_builder.Set("tabId", tab_id);
+   }
++
++  // Firefox add-ons (dubna): a windowId too, for the browser to check
++  // (chrome/browser/extensions/api/extension_action/firefox_action_window.h).
++  v8::Local<v8::String> window_id_key =
++      v8::String::NewFromUtf8(isolate, "windowId",
++                              v8::NewStringType::kInternalized)
++          .ToLocalChecked();
++  bool has_window_id = false;
++  if (!details->HasOwnProperty(v8_context, window_id_key).To(&has_window_id)) {
++    return;  // HasOwnProperty() threw - bail.
++  }
++  if (has_window_id) {
++    v8::Local<v8::Value> window_id;
++    if (!details->Get(v8_context, window_id_key).ToLocal(&window_id)) {
++      return;  // Get() threw - bail.
++    }
++    dict_builder.Set("windowId", window_id);
++  }
+   v8::Local<v8::Object> dict = dict_builder.Build();
+   set_null_prototype(dict);
+ 
