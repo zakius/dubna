@@ -11,6 +11,8 @@
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
 # a placeholder the message doesn't define becomes empty, and homepage_url
 # is localized too.
+# declarative_net_request without its permission loads without its rulesets,
+# as in Firefox.
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
@@ -366,6 +368,30 @@
    // Returns the key for the "default_title" entry in the given
    // `action_key`'s manifest entry.
    auto get_title_key = [](const char* action_key) {
+--- a/extensions/common/api/declarative_net_request/dnr_manifest_handler.cc
++++ b/extensions/common/api/declarative_net_request/dnr_manifest_handler.cc
+@@ -40,11 +40,17 @@
+       PermissionsParser::HasAPIPermission(
+           extension,
+           mojom::APIPermissionID::kDeclarativeNetRequestWithHostAccess);
++  // Firefox add-ons (dubna): as in Firefox, an add-on without the permission
++  // loads, and its rulesets don't.
+   if (!has_permission) {
+-    *error = ErrorUtils::FormatErrorMessageUTF16(
+-        errors::kDeclarativeNetRequestPermissionNeeded,
+-        dnr_api::ManifestKeys::kDeclarativeNetRequest);
+-    return false;
++    extension->AddInstallWarning(InstallWarning(
++        ErrorUtils::FormatErrorMessage(
++            errors::kDeclarativeNetRequestPermissionNeeded,
++            dnr_api::ManifestKeys::kDeclarativeNetRequest),
++        dnr_api::ManifestKeys::kDeclarativeNetRequest));
++    extension->SetManifestData(std::make_unique<DNRManifestData>(
++        std::vector<DNRManifestData::RulesetInfo>()));
++    return true;
+   }
+ 
+   dnr_api::ManifestKeys manifest_keys;
 --- a/ui/base/BUILD.gn
 +++ b/ui/base/BUILD.gn
 @@ -131,6 +131,8 @@
