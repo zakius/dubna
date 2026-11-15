@@ -4,7 +4,7 @@
  "levels": {
   "L0": 1000,
   "L1": 994,
-  "L2": 846
+  "L2": 847
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -20,8 +20,8 @@
    "error": null
   },
   "jid1-MnnxcxisBPnSXQ@jetpack": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/background.js:181)"
+   "level": "L2",
+   "error": null
   },
   "{b9db16a4-6edc-47ec-a1f4-b86292ed211d}": {
    "level": "L2",
@@ -56,8 +56,8 @@
    "error": null
   },
   "firefox@ghostery.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'getRegisteredContentScripts') (background/serp.js:60)"
+   "level": "L2",
+   "error": null
   },
   "{762f9885-5a13-4abd-9c77-433dcd38b8fd}": {
    "level": "L2",
@@ -401,7 +401,7 @@
   },
   "{732216ec-0dab-43bb-ac85-4b5e1977599d}": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'insertCSS') (background.bundle.js:2)"
+   "error": "Uncaught ReferenceError: XPCNativeWrapper is not defined (autofill.bundle.js:2)"
   },
   "{35d6291e-1d4b-f9b4-c52f-77e6410d1326}": {
    "level": "L2",
@@ -541,7 +541,7 @@
   },
   "@hoxx-vpn": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'registerContentScripts') (js/service-worker.js:1)"
+   "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "jid0-bnmfwWw2w2w4e4edvcdDbnMhdVg@jetpack": {
    "level": "L2",
@@ -2697,7 +2697,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjM4MTliNzAyZTZmMDE5M2UzMmE4NWUwOGI3NjZhMTAzZGNjMWFkNmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImVjOTEyMmMyYTNhNzUxYTc3MGM2MGM1NWFlYjRjYjI5NzMyN2NlOGMiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L2",
@@ -2812,8 +2812,8 @@
    "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
-   "level": "L2",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught ReferenceError: exportFunction is not defined (conent_script.js:8)"
   },
   "{4b7825da-0dd1-44f9-9717-bee5b2408af6}": {
    "level": "L2",
