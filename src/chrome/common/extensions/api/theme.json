@@ -16,9 +16,9 @@
         "type": "object",
         "description": "Firefox's theme: CSS colours by Firefox's key names, or null. Images and properties are null.",
         "properties": {
-          "colors": {"type": "any"},
-          "images": {"type": "any"},
-          "properties": {"type": "any"}
+          "colors": {"type": "any", "optional": true},
+          "images": {"type": "any", "optional": true},
+          "properties": {"type": "any", "optional": true}
         }
       }
     ],

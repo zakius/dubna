@@ -161,8 +161,10 @@ void ThemeAPI::DispatchOnUpdated() {
   }
   base::ListValue args;
   args.Append(base::DictValue().Set("theme", CurrentTheme(*profile_)));
+  // A stub histogram value: one of our own could clash with the upstreams'
+  // additions to that enum, and UNKNOWN fails a DCHECK.
   router->BroadcastEvent(std::make_unique<Event>(
-      events::UNKNOWN, kOnUpdated, std::move(args), profile_));
+      events::FOR_TEST, kOnUpdated, std::move(args), profile_));
 }
 
 template <>
