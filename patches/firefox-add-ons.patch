@@ -289,13 +289,15 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,13 @@
+@@ -402,6 +402,15 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
 +    "firefox_add_on.cc",
 +    "firefox_add_on.h",
 +    "firefox_cookie_store.h",
++    "firefox_gecko_id.cc",
++    "firefox_gecko_id.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
 +    "firefox_version.cc",
@@ -305,15 +307,30 @@
      "hashed_extension_id.h",
 --- a/extensions/common/extension.cc
 +++ b/extensions/common/extension.cc
-@@ -34,6 +34,7 @@
+@@ -34,6 +34,8 @@
  #include "extensions/common/error_utils.h"
  #include "extensions/common/extension_id.h"
  #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_gecko_id.h"
 +#include "extensions/common/firefox_version.h"
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handler.h"
-@@ -693,6 +694,13 @@
+@@ -167,6 +169,13 @@
+     return false;
+   }
+ 
++  // Firefox add-ons (dubna): the ID from the Gecko ID, which an add-on keeps
++  // wherever it is installed from.
++  *extension_id = ExtensionIdFromManifest(manifest);
++  if (!extension_id->empty()) {
++    return true;
++  }
++
+   // If there is a path, we generate the ID from it. This is useful for
+   // development mode, because it keeps the ID stable across restarts and
+   // reloading the extension.
+@@ -693,6 +702,13 @@
      return false;
    }
    version_ = base::Version(*version_str);
@@ -1950,3 +1967,24 @@
    GetProxyResolverFactory()->CreateResolver(pac_script, std::move(receiver),
                                              std::move(client));
  }
+--- a/extensions/renderer/api/messaging/messaging_util.cc
++++ b/extensions/renderer/api/messaging/messaging_util.cc
+@@ -18,6 +18,7 @@
+ #include "extensions/common/api/messaging/messaging_endpoint.h"
+ #include "extensions/common/extension.h"
+ #include "extensions/common/extension_features.h"
++#include "extensions/common/firefox_gecko_id.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+ #include "extensions/common/manifest_handlers/message_serialization_info.h"
+@@ -401,6 +402,10 @@
+   } else {
+     DCHECK(v8_target_id->IsString());
+     target_id = gin::V8ToString(script_context->isolate(), v8_target_id);
++    // Firefox add-ons (dubna): an add-on is reached by its Gecko ID too.
++    if (ExtensionId id = ExtensionIdFromGeckoId(target_id); !id.empty()) {
++      target_id = std::move(id);
++    }
+     // NOTE(devlin): JS bindings only validate that the extension id is present,
+     // rather than validating its content. This seems better. Let's see how this
+     // goes.
