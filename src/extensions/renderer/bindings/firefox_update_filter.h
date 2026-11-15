@@ -18,10 +18,12 @@ namespace extensions {
 
 // Firefox add-ons (dubna's webextensions/README.md): the filter Firefox's
 // tabs.onUpdated.addListener() takes after the listener, its extraParameters:
-// `urls`, `properties`, `tabId`, `windowId` and `cookieStoreId`. The listener
-// runs only for an update that matches each one given. Chromium's event
-// filters are another thing, which tabs.onUpdated doesn't support, so these
-// are kept here, next to the event's listeners, and checked as it dispatches.
+// `urls`, `properties`, `tabId`, `windowId` and `cookieStoreId`; and the
+// RequestFilter of proxy.onRequest: `urls`, `types`, `tabId`, `windowId` and
+// `incognito`. The listener runs only for an update or a request that matches
+// each one given. Chromium's event filters are another thing, which these
+// events don't support, so these are kept here, next to the event's
+// listeners, and checked as it dispatches.
 class FirefoxUpdateFilters {
  public:
   // A filter as addListener() read it. A property that is missing or null is
@@ -37,6 +39,9 @@ class FirefoxUpdateFilters {
     std::optional<int> tab_id;
     std::optional<int> window_id;
     std::optional<std::string> cookie_store_id;
+    // proxy.onRequest's.
+    std::optional<std::vector<std::string>> types;
+    std::optional<bool> incognito;
   };
 
   FirefoxUpdateFilters();
@@ -47,11 +52,13 @@ class FirefoxUpdateFilters {
   // Whether the event takes Firefox's filter.
   static bool Takes(std::string_view event_name);
 
-  // Reads the filter once, as Firefox's schema of it does. nullopt for one
-  // Firefox refuses, with Firefox's message in `error`; or, with no message,
-  // when a getter of the filter threw, whose exception is then pending.
+  // Reads `event_name`'s filter once, as Firefox's schema of it does.
+  // nullopt for one Firefox refuses, with Firefox's message in `error`; or,
+  // with no message, when a getter of the filter threw, whose exception is
+  // then pending.
   static std::optional<Filter> Read(v8::Local<v8::Context> context,
                                     v8::Local<v8::Value> value,
+                                    std::string_view event_name,
                                     std::string* error);
 
   void Add(v8::Isolate* isolate,
@@ -61,8 +68,8 @@ class FirefoxUpdateFilters {
   void Clear();
 
   // For each of `listeners`, whether it runs for an update with these
-  // arguments: the tab's id, the changes and the tab. A listener without a
-  // filter always runs. Decided for all before any runs, so that a listener
+  // arguments: the tab's id, the changes and the tab; or for a request with
+  // proxy.onRequest's details. A listener without a filter always runs. Decided for all before any runs, so that a listener
   // another one removes keeps its filter for this update.
   std::vector<bool> Matching(const v8::LocalVector<v8::Function>& listeners,
                              v8::Local<v8::Context> context,

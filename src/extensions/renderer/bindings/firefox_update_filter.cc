@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <utility>
 
+#include "base/containers/span.h"
 #include "base/memory/raw_ptr.h"
 #include "base/strings/strcat.h"
 #include "base/strings/string_number_conversions.h"
@@ -29,9 +30,13 @@ constexpr std::string_view kPropertyNames[] = {
     "groupId",      "hidden",      "isArticle",       "mutedInfo", "pinned",
     "sharingState", "splitViewId", "status",          "title",     "url"};
 
-// Firefox's UpdateFilter keys.
+constexpr char kProxyOnRequest[] = "proxy.onRequest";
+
+// Firefox's UpdateFilter keys, and its RequestFilter's.
 constexpr std::string_view kFilterKeys[] = {"urls", "properties", "tabId",
                                             "windowId", "cookieStoreId"};
+constexpr std::string_view kRequestFilterKeys[] = {"urls", "types", "tabId",
+                                                   "windowId", "incognito"};
 
 // Reads a filter object as Firefox's schema does, with Firefox's messages.
 // A getter of the object can throw: then the exception is pending, and the
@@ -40,8 +45,12 @@ class FilterReader {
  public:
   FilterReader(v8::Local<v8::Context> context,
                v8::Local<v8::Object> object,
+               std::string_view event_name,
                std::string* error)
-      : context_(context), object_(object), error_(error) {}
+      : context_(context),
+        object_(object),
+        event_name_(event_name),
+        error_(error) {}
 
   bool failed() const { return failed_; }
 
@@ -54,8 +63,12 @@ class FilterReader {
       return;
     }
     gin::ConvertFromV8(v8::Isolate::GetCurrent(), names, &keys);
+    base::span<const std::string_view> known = kFilterKeys;
+    if (event_name_ == kProxyOnRequest) {
+      known = kRequestFilterKeys;
+    }
     for (const std::string& key : keys) {
-      if (std::ranges::find(kFilterKeys, key) == std::end(kFilterKeys)) {
+      if (std::ranges::find(known, key) == known.end()) {
         Fail(base::StrCat({"Unexpected property \"", key, "\""}));
         return;
       }
@@ -125,6 +138,18 @@ class FilterReader {
     return value.As<v8::Int32>()->Value();
   }
 
+  std::optional<bool> Boolean(std::string_view key) {
+    v8::Local<v8::Value> value = Get(key);
+    if (value.IsEmpty()) {
+      return std::nullopt;
+    }
+    if (!value->IsBoolean()) {
+      Fail(base::StrCat({"Error processing ", key, ": Expected boolean"}));
+      return std::nullopt;
+    }
+    return value.As<v8::Boolean>()->Value();
+  }
+
   std::optional<std::string> String(std::string_view key) {
     v8::Local<v8::Value> value = Get(key);
     std::string text;
@@ -142,7 +167,7 @@ class FilterReader {
   void Fail(std::string_view detail) {
     if (!failed_) {
       *error_ = base::StrCat({"Type error for parameter filter (", detail,
-                              ") for tabs.onUpdated."});
+                              ") for ", event_name_, "."});
       failed_ = true;
     }
   }
@@ -150,6 +175,7 @@ class FilterReader {
  private:
   v8::Local<v8::Context> context_;
   v8::Local<v8::Object> object_;
+  std::string_view event_name_;
   raw_ptr<std::string> error_;
   bool failed_ = false;
 };
@@ -163,6 +189,9 @@ struct Update {
   std::optional<std::string> cookie_store_id;
   GURL url;
   std::vector<std::string> changed;
+  // proxy.onRequest's.
+  std::optional<std::string> type;
+  std::optional<bool> incognito;
 };
 
 // `object`'s own property `key`, or an empty handle.
@@ -201,9 +230,27 @@ std::optional<std::string> OwnString(v8::Local<v8::Context> context,
   return text;
 }
 
+// proxy.onRequest's details, read as an update is.
+Update ReadRequest(v8::Local<v8::Context> context,
+                   v8::Local<v8::Object> details) {
+  Update request;
+  request.tab_id = OwnInteger(context, details, "tabId");
+  request.window_id = OwnInteger(context, details, "windowId");
+  request.url = GURL(OwnString(context, details, "url").value_or(std::string()));
+  request.type = OwnString(context, details, "type");
+  v8::Local<v8::Value> incognito = Own(context, details, "incognito");
+  if (!incognito.IsEmpty() && incognito->IsBoolean()) {
+    request.incognito = incognito.As<v8::Boolean>()->Value();
+  }
+  return request;
+}
+
 // nullopt for arguments of another shape, for which every listener runs.
 std::optional<Update> ReadUpdate(v8::Local<v8::Context> context,
                                  const v8::LocalVector<v8::Value>& args) {
+  if (args.size() == 1 && args[0]->IsObject()) {
+    return ReadRequest(context, args[0].As<v8::Object>());
+  }
   if (args.size() < 3 || !args[1]->IsObject() || !args[2]->IsObject()) {
     return std::nullopt;
   }
@@ -228,7 +275,13 @@ bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
   if ((filter.tab_id && update.tab_id != filter.tab_id) ||
       (filter.window_id && update.window_id != filter.window_id) ||
       (filter.cookie_store_id &&
-       update.cookie_store_id != filter.cookie_store_id)) {
+       update.cookie_store_id != filter.cookie_store_id) ||
+      (filter.incognito && update.incognito != filter.incognito)) {
+    return false;
+  }
+  if (filter.types && (!update.type || std::ranges::find(*filter.types,
+                                                         *update.type) ==
+                                           filter.types->end())) {
     return false;
   }
   // As in Firefox, a listener for some properties runs when one of them
@@ -263,19 +316,20 @@ FirefoxUpdateFilters::~FirefoxUpdateFilters() = default;
 
 // static
 bool FirefoxUpdateFilters::Takes(std::string_view event_name) {
-  return event_name == "tabs.onUpdated";
+  return event_name == "tabs.onUpdated" || event_name == kProxyOnRequest;
 }
 
 // static
 std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
     v8::Local<v8::Context> context,
     v8::Local<v8::Value> value,
+    std::string_view event_name,
     std::string* error) {
   if (!value->IsObject() || value->IsArray() || value->IsFunction()) {
-    *error = "Incorrect argument types for tabs.onUpdated.";
+    *error = base::StrCat({"Incorrect argument types for ", event_name, "."});
     return std::nullopt;
   }
-  FilterReader reader(context, value.As<v8::Object>(), error);
+  FilterReader reader(context, value.As<v8::Object>(), event_name, error);
   reader.CheckKeys();
   Filter filter;
   if (std::optional<std::vector<std::string>> patterns =
@@ -291,20 +345,32 @@ std::optional<FirefoxUpdateFilters::Filter> FirefoxUpdateFilters::Read(
       }
     }
   }
-  filter.properties = reader.Strings("properties");
-  if (filter.properties) {
-    for (size_t i = 0; i < filter.properties->size(); ++i) {
-      const std::string& name = (*filter.properties)[i];
-      if (std::ranges::find(kPropertyNames, name) == std::end(kPropertyNames)) {
-        reader.Fail(base::StrCat(
-            {"Error processing properties.", base::NumberToString(i),
-             ": Invalid enumeration value \"", name, "\""}));
+  if (event_name == kProxyOnRequest) {
+    // proxy.onRequest's RequestFilter needs its URLs.
+    if (!filter.urls) {
+      reader.Fail("Property \"urls\" is required");
+    }
+    filter.types = reader.Strings("types");
+    filter.incognito = reader.Boolean("incognito");
+  } else {
+    filter.properties = reader.Strings("properties");
+    if (filter.properties) {
+      for (size_t i = 0; i < filter.properties->size(); ++i) {
+        const std::string& name = (*filter.properties)[i];
+        if (std::ranges::find(kPropertyNames, name) ==
+            std::end(kPropertyNames)) {
+          reader.Fail(base::StrCat(
+              {"Error processing properties.", base::NumberToString(i),
+               ": Invalid enumeration value \"", name, "\""}));
+        }
       }
     }
   }
   filter.tab_id = reader.Integer("tabId");
   filter.window_id = reader.Integer("windowId");
-  filter.cookie_store_id = reader.String("cookieStoreId");
+  if (event_name != kProxyOnRequest) {
+    filter.cookie_store_id = reader.String("cookieStoreId");
+  }
   if (reader.failed()) {
     return std::nullopt;
   }
@@ -333,6 +399,9 @@ std::vector<bool> FirefoxUpdateFilters::Matching(
     v8::Local<v8::Context> context,
     const v8::LocalVector<v8::Value>& args) const {
   std::vector<bool> runs(listeners.size(), true);
+  if (entries_.empty()) {
+    return runs;
+  }
   std::optional<Update> update = ReadUpdate(context, args);
   if (!update) {
     return runs;

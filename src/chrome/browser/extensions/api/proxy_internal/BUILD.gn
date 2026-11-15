@@ -1,0 +1,31 @@
+# Copyright 2026 The oganesson Authors
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
+
+import("//extensions/buildflags/buildflags.gni")
+
+assert(enable_extensions_core)
+
+# Firefox add-ons (dubna's webextensions/README.md): Firefox's
+# proxy.onRequest and proxy.onError.
+source_set("proxy_internal") {
+  sources = [
+    "firefox_proxy_config.cc",
+    "firefox_proxy_config.h",
+    "proxy_internal_api.cc",
+    "proxy_internal_api.h",
+  ]
+
+  public_deps = [
+    "//base",
+    "//extensions/browser",
+    "//mojo/public/cpp/bindings",
+    "//net",
+    "//services/proxy_resolver/public/mojom",
+    "//url",
+  ]
+
+  deps = [
+    "//content/public/browser",
+    "//extensions/common",
+  ]
+}

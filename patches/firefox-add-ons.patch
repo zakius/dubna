@@ -38,6 +38,10 @@
 # content scripts, with code as well as files, that the scripting API doesn't
 # list or remove. Chromium's contentScripts schema, which only types the
 # content_scripts manifest key, is left out of the schemas the bindings read.
+# proxy.onRequest and proxy.onError are Firefox's (proxy_internal_api.h): while an
+# add-on listens, ProxyConfigMonitor's settings are a PAC script that
+# ChromeMojoProxyResolverFactory answers by asking the add-on
+# (firefox_proxy_config.h); proxy_custom_bindings.js reports its answer.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -137,7 +141,7 @@
    "chromeosInfoPrivate": [{
      "dependencies": ["permission:chromeosInfoPrivate"],
      "contexts": ["privileged_extension"]
-@@ -271,6 +283,21 @@
+@@ -271,6 +283,27 @@
      "dependencies": ["manifest:commands"],
      "contexts": ["privileged_extension"]
    },
@@ -156,10 +160,16 @@
 +    "max_manifest_version": 2,
 +    "contexts": ["privileged_extension"]
 +  },
++  // Firefox add-ons (dubna): what proxy.onRequest's listeners answer.
++  "proxyInternal": {
++    "internal": true,
++    "dependencies": ["permission:proxy"],
++    "contexts": ["privileged_extension"]
++  },
    "contentSettings": {
      "dependencies": ["permission:contentSettings"],
      "contexts": [
-@@ -280,9 +307,16 @@
+@@ -280,9 +313,16 @@
    "contentSettings.clipboard": {
      "feature_flag": "ApiContentSettingsClipboard"
    },
@@ -177,7 +187,7 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -710,6 +744,12 @@
+@@ -710,6 +750,12 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
@@ -1277,7 +1287,7 @@
      "dependencies": ["permission:system.cpu"],
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
-@@ -63,7 +63,17 @@
+@@ -63,7 +63,20 @@
    "browsing_data.json",
    "commands.json",
    "extension.json",
@@ -1292,12 +1302,15 @@
 +
 +  # Firefox add-ons (dubna): Firefox's contextualIdentities API.
 +  "contextual_identities.json",
++
++  # Firefox add-ons (dubna): what Firefox's proxy.onRequest answers.
++  "proxy_internal.json",
  ]
  
  # Some APIs rely on types and headers from other APIs.
 --- a/chrome/browser/extensions/api/BUILD.gn
 +++ b/chrome/browser/extensions/api/BUILD.gn
-@@ -65,6 +65,12 @@
+@@ -65,6 +65,15 @@
      public_deps += [ "//chrome/browser/extensions/api/mdns" ]
    }
  
@@ -1307,10 +1320,13 @@
 +  # Firefox add-ons (dubna): Firefox's contextualIdentities API.
 +  public_deps += [ "//chrome/browser/extensions/api/contextual_identities" ]
 +
++  # Firefox add-ons (dubna): Firefox's proxy.onRequest.
++  public_deps += [ "//chrome/browser/extensions/api/proxy_internal" ]
++
    if (enable_extensions) {
      # APIs supported on Win/Mac/Linux but NOT desktop Android go here.
      public_deps += [
-@@ -196,6 +202,13 @@
+@@ -196,6 +205,13 @@
      "web_view/chrome_web_view_internal_api.h",
    ]
  
@@ -1326,16 +1342,17 @@
      # to avoid cyclic dependency chain related to private_membership
 --- a/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
 +++ b/chrome/browser/extensions/api/api_browser_context_keyed_service_factories.cc
-@@ -22,6 +22,8 @@
+@@ -22,6 +22,9 @@
  #include "chrome/browser/extensions/api/tab_capture/tab_capture_registry.h"
  #include "chrome/browser/extensions/api/tab_groups/tab_groups_event_router_factory.h"
  #include "chrome/browser/extensions/api/tabs/tabs_windows_api.h"
 +#include "chrome/browser/extensions/api/theme/theme_api.h"
 +#include "chrome/browser/extensions/api/contextual_identities/contextual_identities_api.h"
++#include "chrome/browser/extensions/api/proxy_internal/proxy_internal_api.h"
  #include "chrome/browser/extensions/api/web_navigation/web_navigation_api.h"
  #include "chrome/browser/extensions/commands/command_service.h"
  #include "chrome/common/buildflags.h"
-@@ -106,6 +108,10 @@
+@@ -106,6 +109,12 @@
    extensions::TabCaptureRegistry::GetFactoryInstance();
    extensions::TabGroupsEventRouterFactory::GetInstance();
    extensions::TabsWindowsAPI::GetFactoryInstance();
@@ -1343,6 +1360,8 @@
 +  extensions::ThemeAPI::GetFactoryInstance();
 +  // Firefox add-ons (dubna): Firefox's contextualIdentities API.
 +  extensions::ContextualIdentitiesAPI::GetFactoryInstance();
++  // Firefox add-ons (dubna): Firefox's proxy.onRequest.
++  extensions::FirefoxProxyRequests::GetFactoryInstance();
    extensions::WebNavigationAPI::GetFactoryInstance();
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -1466,37 +1485,45 @@
                                               ContentScriptType::kCss, error)) {
 --- a/chrome/renderer/resources/extensions/BUILD.gn
 +++ b/chrome/renderer/resources/extensions/BUILD.gn
-@@ -15,6 +15,9 @@
+@@ -15,6 +15,12 @@
    input_files = [
      "action_custom_bindings.js",
      "browser_action_custom_bindings.js",
 +
 +    # Firefox add-ons (dubna): Firefox's contentScripts API.
 +    "content_scripts_custom_bindings.js",
++
++    # Firefox add-ons (dubna): Firefox's proxy.onRequest.
++    "proxy_custom_bindings.js",
      "declarative_content_custom_bindings.js",
      "desktop_capture_custom_bindings.js",
      "developer_private_custom_bindings.js",
 --- a/chrome/renderer/resources/BUILD.gn
 +++ b/chrome/renderer/resources/BUILD.gn
-@@ -76,6 +76,9 @@
+@@ -76,6 +76,12 @@
      "controlled_frame/html_controlled_frame_element.js",
      "extensions/action_custom_bindings.js",
      "extensions/browser_action_custom_bindings.js",
 +
 +    # Firefox add-ons (dubna): Firefox's contentScripts API.
 +    "extensions/content_scripts_custom_bindings.js",
++
++    # Firefox add-ons (dubna): Firefox's proxy.onRequest.
++    "extensions/proxy_custom_bindings.js",
      "extensions/declarative_content_custom_bindings.js",
      "extensions/desktop_capture_custom_bindings.js",
      "extensions/developer_private_custom_bindings.js",
 --- a/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
 +++ b/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
-@@ -140,6 +140,9 @@
+@@ -140,6 +140,11 @@
        {"action", IDR_RENDERER_RESOURCES_EXTENSIONS_ACTION_CUSTOM_BINDINGS_JS},
        {"browserAction",
         IDR_RENDERER_RESOURCES_EXTENSIONS_BROWSER_ACTION_CUSTOM_BINDINGS_JS},
 +      // Firefox add-ons (dubna): Firefox's contentScripts API.
 +      {"contentScripts",
 +       IDR_RENDERER_RESOURCES_EXTENSIONS_CONTENT_SCRIPTS_CUSTOM_BINDINGS_JS},
++      // Firefox add-ons (dubna): Firefox's proxy.onRequest.
++      {"proxy", IDR_RENDERER_RESOURCES_EXTENSIONS_PROXY_CUSTOM_BINDINGS_JS},
        {"declarativeContent",
         IDR_RENDERER_RESOURCES_EXTENSIONS_DECLARATIVE_CONTENT_CUSTOM_BINDINGS_JS},
        {"desktopCapture",
@@ -1692,16 +1719,16 @@
  }
  
  bool EventEmitter::HasListeners() const {
-@@ -155,13 +157,36 @@
+@@ -155,13 +157,41 @@
      return;
    }
  
 -  if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
-+  // Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated
-+  // (firefox_update_filter.h), an object, null or undefined.
++  // Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated or
++  // proxy.onRequest (firefox_update_filter.h), an object, null or undefined.
++  std::string_view event_name = listeners_->GetEventName();
 +  bool takes_firefox_filter =
-+      !supports_filters_ &&
-+      FirefoxUpdateFilters::Takes(listeners_->GetEventName());
++      !supports_filters_ && FirefoxUpdateFilters::Takes(event_name);
 +  std::optional<FirefoxUpdateFilters::Filter> firefox_filter;
 +  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
 +    v8::Local<v8::Value> value;
@@ -1709,7 +1736,7 @@
 +    if (!value->IsNullOrUndefined()) {
 +      std::string error;
 +      firefox_filter = FirefoxUpdateFilters::Read(
-+          arguments->GetHolderCreationContext(), value, &error);
++          arguments->GetHolderCreationContext(), value, event_name, &error);
 +      // With no message, a getter of the filter threw, and its exception is
 +      // pending. A getter may also have torn the context down.
 +      if (!firefox_filter || !valid_) {
@@ -1718,6 +1745,11 @@
 +        }
 +        return;
 +      }
++    }
++    // proxy.onRequest's extraInfoSpec asks for the request's headers, which
++    // the proxy resolution doesn't know.
++    if (event_name == "proxy.onRequest" && !arguments->PeekNext().IsEmpty()) {
++      arguments->Skip();
 +    }
 +  } else if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
      arguments->ThrowTypeError("This event does not support filters");
@@ -1731,7 +1763,7 @@
      arguments->ThrowTypeError("Invalid invocation");
      return;
    }
-@@ -187,9 +212,15 @@
+@@ -187,9 +217,15 @@
    }
  
    std::string error;
@@ -1750,7 +1782,7 @@
    }
  }
  
-@@ -206,6 +237,7 @@
+@@ -206,6 +242,7 @@
    }
  
    listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
@@ -1758,7 +1790,7 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -265,7 +297,15 @@
+@@ -265,7 +302,15 @@
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
@@ -1807,3 +1839,113 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
+--- a/extensions/common/api/proxy.json
++++ b/extensions/common/api/proxy.json
+@@ -99,6 +99,37 @@
+             }
+           }
+         ]
++      },
++      // Firefox add-ons (dubna): Firefox's proxy.onRequest. A listener
++      // answers with the request's proxy, a list of them or a promise of
++      // either (proxy_custom_bindings.js, proxy_internal_api.h).
++      {
++        "name": "onRequest",
++        "type": "function",
++        "nodoc": true,
++        "description": "Fired when a request's proxy is decided.",
++        "parameters": [
++          {
++            "type": "object",
++            "name": "details",
++            "additionalProperties": {"type": "any"}
++          }
++        ]
++      },
++      // Firefox add-ons (dubna): Firefox's proxy.onError: an answer of
++      // proxy.onRequest Firefox refuses, as an Error.
++      {
++        "name": "onError",
++        "type": "function",
++        "nodoc": true,
++        "description": "Fired when an answer of onRequest is refused.",
++        "parameters": [
++          {
++            "type": "object",
++            "name": "error",
++            "additionalProperties": {"type": "any"}
++          }
++        ]
+       }
+     ]
+   }
+--- a/chrome/browser/net/BUILD.gn
++++ b/chrome/browser/net/BUILD.gn
+@@ -300,6 +300,9 @@
+ 
+   if (enable_extensions_core) {
+     deps += [ "//extensions/browser/api/proxy:proxy_api" ]
++
++    # Firefox add-ons (dubna): Firefox's proxy.onRequest.
++    deps += [ "//chrome/browser/extensions/api/proxy_internal" ]
+   }
+ 
+   if (enable_offline_pages) {
+--- a/chrome/browser/net/proxy_config_monitor.cc
++++ b/chrome/browser/net/proxy_config_monitor.cc
+@@ -31,6 +31,8 @@
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ #include "extensions/browser/api/proxy/proxy_api.h"
++// Firefox add-ons (dubna): Firefox's proxy.onRequest.
++#include "chrome/browser/extensions/api/proxy_internal/firefox_proxy_config.h"
+ #endif // BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ 
+ using content::BrowserThread;
+@@ -69,6 +71,12 @@
+ 
+   proxy_config_service_ = ProxyServiceFactory::CreateProxyConfigService(
+       pref_proxy_config_tracker_.get(), profile);
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  // Firefox add-ons (dubna): while an add-on listens to proxy.onRequest, the
++  // proxy of each request is asked of it.
++  proxy_config_service_ = extensions::firefox_proxy::WrapConfigService(
++      profile, std::move(proxy_config_service_));
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ 
+   proxy_config_service_->AddObserver(this);
+ }
+--- a/chrome/browser/net/chrome_mojo_proxy_resolver_factory.cc
++++ b/chrome/browser/net/chrome_mojo_proxy_resolver_factory.cc
+@@ -12,10 +12,16 @@
+ #include "base/task/single_thread_task_runner.h"
+ #include "build/build_config.h"
+ #include "content/public/browser/child_process_host.h"
++#include "extensions/buildflags/buildflags.h"
+ #include "mojo/public/cpp/bindings/remote.h"
+ #include "mojo/public/cpp/bindings/self_owned_receiver.h"
+ #include "services/proxy_resolver/public/mojom/proxy_resolver.mojom.h"
+ 
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++// Firefox add-ons (dubna): Firefox's proxy.onRequest.
++#include "chrome/browser/extensions/api/proxy_internal/firefox_proxy_config.h"
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++
+ #if BUILDFLAG(IS_ANDROID)
+ #include "services/proxy_resolver/proxy_resolver_factory_impl.h"  // nogncheck crbug.com/40147906
+ #else
+@@ -81,6 +87,14 @@
+     mojo::PendingRemote<
+         proxy_resolver::mojom::ProxyResolverFactoryRequestClient> client) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  // Firefox add-ons (dubna): the script that asks proxy.onRequest.
++  if (extensions::firefox_proxy::IsScript(pac_script)) {
++    extensions::firefox_proxy::CreateResolver(pac_script, std::move(receiver),
++                                              std::move(client));
++    return;
++  }
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+   GetProxyResolverFactory()->CreateResolver(pac_script, std::move(receiver),
+                                             std::move(client));
+ }
