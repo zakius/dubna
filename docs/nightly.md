@@ -116,7 +116,7 @@ This applies everywhere: updates, tracker tasks, climb steps and release workflo
 
 1. Measure it with --repeat 20 (oganesson: ./oganesson.py test --release --repeat 20 <suite.test>, under the builds lock).
 2. Run the same against the installed previous release (oganesson: --binary /opt/oganesson/oganesson) to tell a regression from an old flake.
-3. Find the cause: instrument the test, and read the kept profile and the browser.log that the harness names.
+3. Find the cause: instrument the test, and read the kept profile and the browser.log that the harness names (a ported Firefox test's run through `tools/e2e/firefox_tests.py` keeps them with `OGANESSON_E2E_KEEP=1`).
 4. When the product is at fault (a race that also hits users, such as lost writes at shutdown), fix the product. When only the test is at fault, fix the test (wait for the final state instead of asserting a snapshot). It is fixed when 20 runs in a row pass.
 
 Meanwhile, rerunning the failed release job (gh run rerun <id> --failed) to get the release out is fine, but never instead of the fix. Make one commit per flake fix. Commits that touch only tools/e2e need no release: push them with the next release, or on their own without a tag. List each flake, its cause and its fix in the report.
