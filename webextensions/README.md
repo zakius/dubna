@@ -47,11 +47,11 @@ The corpus runner (oganesson's `tools/e2e/corpus.py`, whose docstring says how i
 - `todo`: not ported yet.
 - `n/a`: it tests a Gecko internal, not WebExtensions behaviour. Each `n/a` has a one-line reason. Without this list, 100% can't be reached.
 
-Port tests together with the API they test, not all at once.
+Port tests together with the API they test, not all at once. The APIs that shipped before the tests existed get theirs first (the batch order).
 
 ### Choosing the next step
 
-The static scan (`tools/amo_corpus.py scan`) reads every add-on in the corpus. It lists the manifest keys and the `browser.*` calls that Chromium doesn't have, and the number of add-ons each one blocks. The next step is the one that unblocks the most add-ons for its size. This is the hill-climb rule: the order isn't fixed in advance. Check it again after each step.
+The static scan (`tools/amo_corpus.py scan`) reads every add-on in the corpus. It lists the manifest keys and the `browser.*` calls that Chromium doesn't have, and the number of add-ons each one blocks. Among steps of the same class in the batch order ("The batch" below), the next step is the one that unblocks the most add-ons for its size. This is the hill-climb rule: within a class, the order isn't fixed in advance. Check it again after each step.
 
 ## Add-ons that need an account
 
@@ -93,7 +93,7 @@ A larger goal, for example "Sidebery works", is a group of steps. Name the goal 
 
 The tool steps find most of the work, so they file many new steps. That is expected. The static scan, the test inventory and each corpus run file steps for what they find:
 
-- one step for each missing API or manifest key, even when only one add-on uses it; the ranking sets the order, not the filing;
+- one step for each missing API or manifest key, even when only one add-on uses it; the batch order and the ranking set the order, not the filing;
 - tests that wait for an API go into that API's step; a step only for porting tests is filed when the API already works;
 - a new cause of a failure in a corpus run (an error that is not yet in a step) gets its own step.
 
@@ -108,7 +108,7 @@ The evening task (dubna `README.md`, "Update policy") does a batch of climb step
 
 The 06:00 is the first one after the run starts: a run started early in the day, by hand or on schedule, works on until then. Builds run at any hour; during the day the system gives them fewer CPUs.
 
-The batch is two or three `size: nit` or `size: minor` steps, or one `size: medium` step alone. With less time left, it takes fewer. It picks the open `climb` steps whose `Depends on` steps are closed, in this order: regressions ("Keeping what works"); porting Firefox's own tests (`firefox-tests.json`, zakius/dubna#25, zakius/oganesson#65) until the shipped APIs have theirs; the install path, so that users can get Firefox add-ons at all (zakius/dubna#111 AMO's "Add to Firefox" button, zakius/tennessine#47 a `.xpi` download on Android, then the other caveats of the site's `.xpi` row); add-ons working fully (the L4 tests of the add-ons listed under "How we measure", zakius/oganesson#71 first); then the best gain for their size by the corpus score. A step that starts only more add-ons (L2) never goes before one that lets users install or fully use them. It doesn't take a `blocked` step. Each step is its own commit and its own row in the status table, but the batch shares one build, one corpus run of the affected add-ons and one release per browser. A step that breaks the build or the tests without a small fix is dropped from the batch, and the rest ship.
+The batch is two or three `size: nit` or `size: minor` steps, or one `size: medium` step alone. With less time left, it takes fewer. It picks the open `climb` steps whose `Depends on` steps are closed, in this order: regressions ("Keeping what works"); porting Firefox's own tests (`firefox-tests.json`, zakius/dubna#25, zakius/oganesson#65) until the shipped APIs have theirs; the install path, so that users can get Firefox add-ons at all (zakius/dubna#111 AMO's "Add to Firefox" button, zakius/tennessine#47 a `.xpi` download on Android, then the other caveats of the site's `.xpi` row); add-ons working fully (the L4 tests of the add-ons listed under "How we measure", zakius/oganesson#71 first); then the best gain for their size by the corpus score. A step that another step in a higher class depends on ranks with that step. A step that starts only more add-ons (L2) never goes before one that lets users install or fully use them. It doesn't take a `blocked` step. Each step is its own commit and its own row in the status table, but the batch shares one build, one corpus run of the affected add-ons and one release per browser. A step that breaks the build or the tests without a small fix is dropped from the batch, and the rest ship.
 
 If a step isn't released by about 06:00, the agent releases the steps of the batch that are done, stops the rest, pushes each to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
 
