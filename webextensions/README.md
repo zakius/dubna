@@ -92,7 +92,7 @@ A step body says:
 
 To find a step's tests, look up its API and its file names in the list, for example `jq -r '.tests[] | select(.api == "theme") | "\(.state) \(.path)"' webextensions/firefox-tests.json`, and read the files: a name can mislead.
 
-A step must fit into one evening run. It may continue into a second run, but never into a third. A step that is too large for this is split before work starts. Tool work counts as a step: an improvement to the harness that a later step needs soon is enough for one evening. Build only the tools that the next few steps use.
+A step must fit into one evening run, its Firefox tests included. It may continue into a second run, but never into a third. A step that is too large for this is split before work starts, each part with the tests of what it builds. A test file that several steps share is ported by the first of them; the others run it. Tool work counts as a step: an improvement to the harness that a later step needs soon is enough for one evening. Build only the tools that the next few steps use.
 
 A larger goal, for example "Sidebery works", is a group of steps. Name the goal in each of its steps.
 
@@ -126,7 +126,7 @@ When the last full corpus run is more than 7 days old, or ran on an older oganes
 Each Chromium update can break a step that already shipped: a patch hunk moves, an API changes shape, MV2 loses more code. Shipped steps stay checked:
 
 - Each step's end-to-end test stays in oganesson's `tools/e2e/`, so every update's test run covers it.
-- The ported Firefox tests run with each full corpus run and each climb batch (`firefox_tests.py`), and their score is committed with the corpus score. A test that passed and fails now is a regression, as a level drop is. `--only` runs some of them and exits 1 when a test that passed fails.
+- Its ported Firefox tests stay in `tools/e2e/firefox/`, which that test run doesn't load. They run on every oganesson update, a zero-day one too (`firefox_tests.py`, a few minutes), and with each climb batch, and their score is committed with the corpus score. A test that passed and fails now is a regression, as a level drop is: the run prints it as `DOWN` and exits 1.
 - Each oganesson update that is not a zero-day runs the full corpus after its build. tennessine shares the patch, so its patch check catches a moved hunk. A zero-day update ships without it, and the next climb run does the full corpus run first.
 - An add-on that drops a level on an update doesn't hold the update back. If the fix is small and clear, the update stage fixes it. Otherwise it files a `climb` step for the regression ("Firefox add-ons: <what> broke on Chromium <N>"), with the add-ons it drops and the step that added the code, and records the lower score with the reason. The next climb batch takes regressions before new steps.
 
@@ -135,7 +135,7 @@ Each Chromium update can break a step that already shipped: a patch hunk moves, 
 A step is done when:
 
 1. It builds, and the patch check applies every patch with zero fuzz on each browser that gets the step.
-2. Its Firefox tests (the body's "Firefox's tests") are ported, as "Test score" says, and the tests and checks of what the step builds pass, measured with `firefox_tests.py --only` before and after the step. A part that still fails stays in the port, with its gap in a step. What no Firefox test covers, such as this browser's own UI, gets an end-to-end test of its own.
+2. Its Firefox tests (the body's "Firefox's tests") are ported, as "Test score" says, and the tests and checks of what the step builds pass. Port them first and run them on the build without the step, then on the build with it: `firefox_tests.py --only <ports> --dubna <the dubna worktree>`, since the list that sets them `ported` is in that worktree until it lands. Each port's line says `pass` or `FAIL` with its first failure; the exit code says only whether a test that passed before fails now. A check that still fails stays in the port, with its gap in a step. What no Firefox test covers, such as this browser's own UI, gets an end-to-end test of its own. The issue's "Done when" adds to this, never replaces it.
 3. The corpus run of the add-ons it affects passes at the same level or higher. The score never goes down: a drop blocks the release, unless the step explains why and files a step to fix it. A Pouch regression always blocks the release.
 4. The status table below is updated.
 5. It is released: the browsers move their dubna submodule, merge to main and tag a release (README "Releases"), or (tool work) the tool or the score page is merged and, for the site, tagged. The release notes give the score change, for example "L2: 612 → 640".
