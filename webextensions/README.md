@@ -87,7 +87,10 @@ A step body says:
 - its archive source, if it has one;
 - what tennessine gets;
 - `Depends on #N` for each step that must ship first;
+- **Firefox's tests:** the files of `firefox-tests.json` that test what it builds, `todo` or `ported`, or "none" when no Firefox test does (UI of this browser, the tools, the corpus);
 - how to check that it is done.
+
+To find a step's tests, look up its API and its file names in the list, for example `jq -r '.tests[] | select(.api == "theme") | "\(.state) \(.path)"' webextensions/firefox-tests.json`, and read the files: a name can mislead.
 
 A step must fit into one evening run. It may continue into a second run, but never into a third. A step that is too large for this is split before work starts. Tool work counts as a step: an improvement to the harness that a later step needs soon is enough for one evening. Build only the tools that the next few steps use.
 
@@ -98,7 +101,7 @@ A larger goal, for example "Sidebery works", is a group of steps. Name the goal 
 The tool steps find most of the work, so they file many new steps. That is expected. The static scan, the test inventory and each corpus run file steps for what they find:
 
 - one step for each missing API or manifest key, even when only one add-on uses it; the batch order and the ranking set the order, not the filing;
-- tests that wait for an API go into that API's step; a step only for porting tests is filed when the API already works;
+- tests that wait for an API go into that API's step, under "Firefox's tests"; a step only for porting tests is filed when the API already works;
 - a new cause of a failure in a corpus run (an error that is not yet in a step) gets its own step.
 
 Before filing, search open and closed `climb` issues. If one already covers the item, add to it instead. Group very small items of one namespace into one step. Give each new step a size label and its `Depends on` lines.
@@ -112,7 +115,7 @@ The evening task (dubna `README.md`, "Update policy") does a batch of climb step
 
 The 06:00 is the first one after the run starts: a run started early in the day, by hand or on schedule, works on until then. Builds run at any hour; during the day the system gives them fewer CPUs.
 
-The batch is two or three `size: nit` or `size: minor` steps, or one `size: medium` step alone. With less time left, it takes fewer. It picks the open `climb` steps whose `Depends on` steps are closed, in this order: regressions ("Keeping what works"); porting Firefox's own tests (`firefox-tests.json`, zakius/dubna#25, zakius/oganesson#65) until the shipped APIs have theirs; the install path, so that users can get Firefox add-ons at all (zakius/dubna#111 AMO's "Add to Firefox" button, zakius/tennessine#47 a `.xpi` download on Android, then the other caveats of the site's `.xpi` row); add-ons working fully (the L4 tests of the add-ons listed under "How we measure", zakius/oganesson#71 first); then the best gain for their size by the corpus score. A step that another step in a higher class depends on ranks with that step. A step that starts only more add-ons (L2) never goes before one that lets users install or fully use them. It doesn't take a `blocked` step. Each step is its own commit and its own row in the status table, but the batch shares one build, one corpus run of the affected add-ons and one release per browser. A step that breaks the build or the tests without a small fix is dropped from the batch, and the rest ship.
+The batch is two or three `size: nit` or `size: minor` steps, or one `size: medium` step alone. With less time left, it takes fewer. It picks the open `climb` steps whose `Depends on` steps are closed, in this order: regressions ("Keeping what works"); porting Firefox's own tests (`firefox-tests.json`, zakius/dubna#25, zakius/oganesson#65) until the shipped APIs have theirs; the install path, so that users can get Firefox add-ons at all (zakius/dubna#111 AMO's "Add to Firefox" button, zakius/tennessine#47 a `.xpi` download on Android, then the other caveats of the site's `.xpi` row); add-ons working fully (the L4 tests of the add-ons listed under "How we measure", zakius/oganesson#71 first); then the best gain for their size by the corpus score. A step that another step in a higher class depends on ranks with that step. A step that starts only more add-ons (L2) never goes before one that lets users install or fully use them. It doesn't take a `blocked` step. Each step is its own commit and its own row in the status table, but the batch shares one build, one corpus run of the affected add-ons, one run of all the ported Firefox tests (with the new score committed) and one release per browser. A step that breaks the build or the tests without a small fix is dropped from the batch, and the rest ship.
 
 If a step isn't released by about 06:00, the agent releases the steps of the batch that are done, stops the rest, pushes each to a branch `climb-<repo>-<issue>`, and writes in the issue what is done and what is left. The next run continues it. If the second run can't finish it either, the agent releases the part that works (if it is useful alone), files the rest as new steps, and closes the issue.
 
@@ -123,7 +126,7 @@ When the last full corpus run is more than 7 days old, or ran on an older oganes
 Each Chromium update can break a step that already shipped: a patch hunk moves, an API changes shape, MV2 loses more code. Shipped steps stay checked:
 
 - Each step's end-to-end test stays in oganesson's `tools/e2e/`, so every update's test run covers it.
-- The ported Firefox tests run with each full corpus run (`firefox_tests.py`), and their score is committed with the corpus score. `--only` runs some of them and exits 1 when a test that passed fails.
+- The ported Firefox tests run with each full corpus run and each climb batch (`firefox_tests.py`), and their score is committed with the corpus score. A test that passed and fails now is a regression, as a level drop is. `--only` runs some of them and exits 1 when a test that passed fails.
 - Each oganesson update that is not a zero-day runs the full corpus after its build. tennessine shares the patch, so its patch check catches a moved hunk. A zero-day update ships without it, and the next climb run does the full corpus run first.
 - An add-on that drops a level on an update doesn't hold the update back. If the fix is small and clear, the update stage fixes it. Otherwise it files a `climb` step for the regression ("Firefox add-ons: <what> broke on Chromium <N>"), with the add-ons it drops and the step that added the code, and records the lower score with the reason. The next climb batch takes regressions before new steps.
 
@@ -132,7 +135,7 @@ Each Chromium update can break a step that already shipped: a patch hunk moves, 
 A step is done when:
 
 1. It builds, and the patch check applies every patch with zero fuzz on each browser that gets the step.
-2. It has an end-to-end test, or a ported Firefox test, for the new behaviour.
+2. Its Firefox tests (the body's "Firefox's tests") are ported, as "Test score" says, and the tests and checks of what the step builds pass, measured with `firefox_tests.py --only` before and after the step. A part that still fails stays in the port, with its gap in a step. What no Firefox test covers, such as this browser's own UI, gets an end-to-end test of its own.
 3. The corpus run of the add-ons it affects passes at the same level or higher. The score never goes down: a drop blocks the release, unless the step explains why and files a step to fix it. A Pouch regression always blocks the release.
 4. The status table below is updated.
 5. It is released: the browsers move their dubna submodule, merge to main and tag a release (README "Releases"), or (tool work) the tool or the score page is merged and, for the site, tagged. The release notes give the score change, for example "L2: 612 → 640".
