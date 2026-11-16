@@ -2,9 +2,45 @@
  "date": "2026-11-16",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 3,
- "ported": 13,
+ "ported": 19,
  "total": 843,
  "tests": {
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
+   "port": "firefox/browser_ext_contextMenus_checkboxes.py",
+   "passed": false,
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_checkboxes.ContextMenusCheckboxesTest.test_01): AssertionError: unexpectedly None : the add-on's submenu",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_commands.js": {
+   "port": "firefox/browser_ext_contextMenus_commands.py",
+   "passed": false,
+   "error": "FAIL: test_actions_context_menu (firefox.browser_ext_contextMenus_commands.ContextMenusCommandsTest.test_actions_context_menu): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.Crea",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_onclick.js": {
+   "port": "firefox/browser_ext_contextMenus_onclick.py",
+   "passed": false,
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_onclick.ContextMenusOnclickTest.test_01): AssertionError: 0 != 1 : Expected one context menu item",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_radioGroups.js": {
+   "port": "firefox/browser_ext_contextMenus_radioGroups.py",
+   "passed": false,
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_radioGroups.ContextMenusRadioGroupsTest.test_01): AssertionError: unexpectedly None : the add-on's submenu",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_srcUrl_redirect.js": {
+   "port": "firefox/browser_ext_contextMenus_srcUrl_redirect.py",
+   "passed": false,
+   "error": "FAIL: test_srcUrl_of_redirected_image (firefox.browser_ext_contextMenus_srcUrl_redirect.ContextMenusSrcUrlRedirectTest.test_srcUrl_of_redirected_image): AssertionError: 0 != 1 : Only one menu item should have been matched",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_uninstall.js": {
+   "port": "firefox/browser_ext_contextMenus_uninstall.py",
+   "passed": false,
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_uninstall.ContextMenusUninstallTest.test_01): AssertionError: 0 != 1 : the top level extension menu item exists",
+   "passing": []
+  },
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
    "port": "firefox/browser_ext_menus_errors.py",
    "passed": false,
