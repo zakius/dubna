@@ -20,7 +20,8 @@ tests and its state.
 
 A run keeps a file that is `ported` (with its `port`) or set by hand. Every
 other file follows NOT_APPLICABLE again, so a changed rule changes its files. A file that is no
-longer in Firefox's tree is left out, and the run names it.
+longer in Firefox's tree is left out, and the run names it. It also names each file that is new
+since the list it read ("new in Firefox's tree"), which the climb ports before its batch.
 
 The API is the namespace that the file name's first words name (ALIASES for
 Firefox's own short names), or else the namespace the file calls most
@@ -216,6 +217,11 @@ def main():
              for path in paths]
     for path in sorted(set(old) - set(paths)):
         print(f"gone from Firefox's tree: {path} ({old[path]['state']})", file=sys.stderr)
+    if old:
+        for item in tests:
+            if item['path'] not in old:
+                print(f"new in Firefox's tree: {item['path']} ({item['state']}, "
+                      f"API {item['api'] or 'unknown'})")
     write(tests, {'repository': REPOSITORY, 'commit': commit, 'date': date})
     states = Counter(item['state'] for item in tests)
     print(f"{TESTS}: {len(tests)} test files, "
