@@ -4,8 +4,8 @@
  "levels": {
   "L0": 839,
   "L1": 836,
-  "L2": 747,
-  "L3": 656
+  "L2": 751,
+  "L3": 660
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -122,7 +122,7 @@
   },
   "{aff8af88-06a9-4eee-b383-3af08c47b8c8}": {
    "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Failed to fetch dynamically imported module: chrome-extension://bkefklgaabkfgpjbiiaiplmpfgbjopcc/notifications/FontLoader.js (notifications/pageView.js:1)"
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (bg/index.js:10)"
   },
   "@testpilot-containers": {
    "level": "L2",
@@ -249,8 +249,8 @@
    "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
   },
   "CookieAutoDelete@kennydo.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of cookies.getAll(object details, optional function callback): Error at parameter 'details': Unexpected property: 'firstPartyDomain'. (bundles/common-background-popup-setting.bundle.js:2)"
+   "level": "L3",
+   "error": null
   },
   "{e4a8a97b-f2ed-450b-b12d-ee082ba24781}": {
    "level": "L3",
@@ -493,8 +493,8 @@
    "error": null
   },
   "adnauseam@rednoise.org": {
-   "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'uhv9vgxusrr5jb9702') (7f438ad3-1fb2-4a60-b1c3-a1d52ab51b4c:27)"
+   "level": "L1",
+   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (8ac7f409-c69c-4323-b2ef-67a57d51ee4a:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (87a8547e-2f45-4fed-b3d5-ecbd3893fec1:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -689,8 +689,8 @@
    "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of cookies.getAll(object details, optional function callback): Error at parameter 'details': Unexpected property: 'firstPartyDomain'. (menu.js:293)"
+   "level": "L3",
+   "error": null
   },
   "{dab9a10d-f9c5-4e8d-9351-67531e85b508}": {
    "level": "L1",
@@ -765,8 +765,8 @@
    "error": "unknown permission 'tabHide'"
   },
   "{a0d7ccb3-214d-498b-b4aa-0e8fda9a7bf7}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: e.message is not a function (scripts/background/app/aliases.js:1)"
+   "level": "L3",
+   "error": null
   },
   "extension@redux.devtools": {
    "level": "L2",
@@ -901,7 +901,7 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
@@ -981,8 +981,8 @@
    "error": null
   },
   "{98e5888b-e5f3-4321-a647-28bc617deda2}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) undefined (vendors/vendors.js:2)"
+   "level": "L3",
+   "error": null
   },
   "{0982b844-4f35-48b7-9811-6832d916f21c}": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImYxY2U5ZDA1OWQxNmE4MTdiYjk5YWJkMGY0YzU3N2MzZWUwNDRmMjIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjU3ZTkwMDA1M2QwYWYzMTk2NGZkZGE3OWQyMjUzYjA1NDNhNDEzYWYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2337,8 +2337,8 @@
    "error": null
   },
   "{862036c2-ee21-4b0e-a80e-d3f26a841385}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) ReferenceError: IsFeatureKilled is not defined (js/background.js:1)"
+   "level": "L3",
+   "error": null
   },
   "gsconnect@andyholmes.github.io": {
    "level": "L3",
@@ -2689,7 +2689,7 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
   },
   "cookie-manager@robwu.nl": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) RangeError: Maximum call stack size exceeded (cookie-manager-firefox.js:30)"
   },
   "{016eeff3-2d58-4042-b81e-135bb986c200}": {
@@ -3257,8 +3257,8 @@
    "error": null
   },
   "extension@estate2023.com": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (_generated_background_page.html:0)"
   },
   "{c5b32a48-5514-4a46-81f2-075ebf3cbc29}": {
    "level": "L2",
