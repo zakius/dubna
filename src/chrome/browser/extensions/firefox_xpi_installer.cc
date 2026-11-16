@@ -96,9 +96,12 @@ void OnUnzipped(scoped_refptr<CrxInstaller> installer,
 }  // namespace
 
 bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item) {
-  // As for a .crx: not a file the user chose to save ("Save link as").
+  // As for a .crx: not a file the user chose to save ("Save link as"). And
+  // only after a user gesture, as Firefox asks for, so a page can't open the
+  // prompt by itself.
   if (item.GetTargetDisposition() ==
           download::DownloadItem::TARGET_DISPOSITION_PROMPT ||
+      !item.HasUserGesture() ||
       !item.GetTargetFilePath().MatchesExtension(FILE_PATH_LITERAL(".xpi"))) {
     return false;
   }
