@@ -50,8 +50,9 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(api('x/test_ext_incognito.js', text + 'browser.runtime.id', KNOWN), 'tabs')
         self.assertEqual(api('x/test_ext_incognito.js', 'browser.test.log("x")', KNOWN), '')
         # A namespace's calls add up, with those of its events.
-        text = ('browser.runtime.onMessage.addListener(); browser.runtime.sendMessage();'
-                'browser.runtime.connect(); browser.tabs.query(); browser.tabs.get();')
+        text = ('browser.tabs.query(); browser.tabs.get(); browser.tabs.update();'
+                'browser.runtime.onMessage.addListener(); browser.runtime.onConnect.addListener();'
+                'browser.runtime.sendMessage(); browser.runtime.connect();')
         self.assertEqual(api('x/test_ext_incognito.js', text, KNOWN), 'runtime')
 
 
@@ -77,15 +78,17 @@ class StateTest(unittest.TestCase):
         self.assertEqual(entry('x/test_ext_storage_session.js', '', KNOWN, ported),
                          dict(ported, api='storage'))
         by_hand = {'path': 'x/test_ext_tabs_lazy.js', 'api': 'tabs', 'state': 'n/a',
-                   'reason': 'set by hand'}
+                   'reason': 'set by hand', 'by_hand': True}
         self.assertEqual(entry('x/test_ext_tabs_lazy.js', '', KNOWN, by_hand), by_hand)
         # A todo entry is classified again.
         todo = {'path': 'x/test_ext_telemetry.js', 'api': '', 'state': 'todo'}
         self.assertEqual(entry('x/test_ext_telemetry.js', '', KNOWN, todo)['state'], 'n/a')
-        # So is an n/a that a rule made, which no rule matches any more.
+        # So is an n/a that a rule made, which no rule matches any more,
+        # whatever its reason says.
         by_rule = {'path': 'x/test_ext_tabs_lazy.js', 'api': 'tabs', 'state': 'n/a',
-                   'reason': "Gecko's process and background modes, set by prefs"}
-        self.assertEqual(entry('x/test_ext_tabs_lazy.js', '', KNOWN, by_rule)['state'], 'todo')
+                   'reason': "Gecko's process model, a reason no rule gives now"}
+        self.assertEqual(entry('x/test_ext_tabs_lazy.js', '', KNOWN, by_rule),
+                         {'path': 'x/test_ext_tabs_lazy.js', 'api': 'tabs', 'state': 'todo'})
 
 
 if __name__ == '__main__':

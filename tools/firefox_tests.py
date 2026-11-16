@@ -15,11 +15,11 @@ tests and its state.
 - `ported`: it runs in oganesson's tools/e2e (the port's file is `port`).
 - `todo`: not ported yet.
 - `n/a`: it tests a Gecko internal, not WebExtensions behaviour; `reason`
-  says which. NOT_APPLICABLE sets these.
+  says which. NOT_APPLICABLE sets these, or a hand-written entry with
+  `"by_hand": true`.
 
-A run keeps the state (and `port`, `reason`) of a file already `ported`, or
-`n/a` with a reason of its own (set by hand). A file that NOT_APPLICABLE
-marked follows it again, so a changed rule changes its files. A file that is no
+A run keeps a file that is `ported` (with its `port`) or set by hand. Every
+other file follows NOT_APPLICABLE again, so a changed rule changes its files. A file that is no
 longer in Firefox's tree is left out, and the run names it.
 
 The API is the namespace that the file name's first words name (ALIASES for
@@ -177,13 +177,12 @@ def not_applicable(path):
 
 def entry(path, text, known, old):
     """The inventory entry of the test file at `path`, keeping the state of
-    its `old` entry when it is ported, or n/a with a reason of its own (set
-    by hand). An n/a with a NOT_APPLICABLE reason follows the rules again."""
+    its `old` entry when it is ported, or n/a set by hand (`by_hand`). Any
+    other entry follows NOT_APPLICABLE again."""
     item = {'path': path, 'api': api(path, text, known)}
-    by_rule = {reason for _, reason in NOT_APPLICABLE}
-    if old and (old['state'] == 'ported'
-                or (old['state'] == 'n/a' and old.get('reason') not in by_rule)):
-        item.update({key: old[key] for key in ('state', 'port', 'reason') if key in old})
+    if old and (old['state'] == 'ported' or old.get('by_hand')):
+        item.update({key: old[key] for key in ('state', 'port', 'reason', 'by_hand')
+                     if key in old})
         return item
     reason = not_applicable(path)
     item.update({'state': 'n/a', 'reason': reason} if reason else {'state': 'todo'})
