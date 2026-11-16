@@ -302,6 +302,27 @@ def fill(text, values):
     return re.sub(r'\{\{(\w+)\}\}', lambda m: html.escape(values[m.group(1)]), text)
 
 
+def climb_steps():
+    """firefox-add-ons.html's "Not yet" rows: the open climb issues for Firefox add-on
+    APIs and behaviour, read through gh, so the page lists every known gap."""
+    e = html.escape
+    found = json.loads(subprocess.run(
+        ['gh', 'search', 'issues', '--owner', 'zakius', '--label', 'climb', '--state', 'open',
+         '--limit', '500', '--json', 'repository,number,title,url'],
+        check=True, capture_output=True, text=True).stdout)
+    rows = ''
+    for issue in sorted(found, key=lambda i: i['title'].lower()):
+        if not issue['title'].startswith('Firefox add-ons: '):
+            continue
+        what = issue['title'].removeprefix('Firefox add-ons: ')
+        ref = f"{issue['repository']['name']}#{issue['number']}"
+        rows += (f'  <tr><th scope="row">{e(what)}</th><td class="us"><i class="d n"><span class="sr">no</span></i>'
+                 f'<span class="c"><a href="{e(issue["url"])}">{e(ref)}</a></span></td></tr>\n')
+    if not rows:
+        sys.exit('site.py: no open climb issues for Firefox add-ons on GitHub')
+    return rows
+
+
 def build():
     www = SITE / 'www'
     www.mkdir(exist_ok=True)
@@ -313,6 +334,8 @@ def build():
     values = facts()
     for page in PAGES:
         text = fill((SITE / page).read_text(), values)
+        if page == 'firefox-add-ons.html':
+            text = text.replace('__CLIMB__', climb_steps())
         if page == 'index.html':
             text = re.sub(r'id="count">\d+ →', f'id="count">{len(items)} →', text)
         (www / page).write_text(text)

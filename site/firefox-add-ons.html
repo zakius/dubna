@@ -50,6 +50,7 @@ code{font:12.5px var(--mono);color:#cfd3e4}
 .d.p{background:conic-gradient(var(--part) 0 50%,transparent 0);border:2px solid var(--part)}
 .d.n{border:2px solid var(--no)}
 .c{display:block;font-size:12.5px;color:var(--faint);margin-top:3px;line-height:1.35}
+.c a{color:var(--dim)}
 .legend{display:flex;gap:22px;flex-wrap:wrap;margin:16px 0 0;color:var(--dim);font-size:13.5px}
 .notes{margin-top:18px;color:var(--faint);font-size:13px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -97,6 +98,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
   <tr><th scope="row">Background pages in Manifest V3<small>background.scripts or background.page, also as modules</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td></tr>
   <tr><th scope="row">Event pages with webRequest<small>Manifest V2, "persistent": false</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td></tr>
 
+  <tr><th scope="row"><code>sidebar_action</code> as a side panel<small>the add-on's toolbar menu has "Open side panel"</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">oganesson; the sidebarAction API not yet; no side panel on Android</span></td></tr>
   <tr><th class="grp" colspan="2" scope="colgroup">APIs</th></tr>
   <tr><th scope="row"><code>runtime.getBrowserInfo</code></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td></tr>
   <tr><th scope="row"><code>menus</code><small>with item icons and the password, bookmark and tools_menu contexts</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">items show the add-on's icon; those three contexts show no item yet</span></td></tr>
@@ -114,18 +116,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
   <tr><th scope="row"><code>browserSettings</code>, <code>privacy.network.peerConnectionEnabled</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; on tennessine the home page is the policy's or the new tab page, not the one you set</span></td></tr>
   <tr><th scope="row"><code>theme</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; tennessine reads no theme, as Firefox for Android has none</span></td></tr>
 
-  <tr><th class="grp" colspan="2" scope="colgroup">Not yet, by how many add-ons use them</th></tr>
-  <tr><th scope="row"><code>commands.update</code> and <code>reset</code><small>21 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  <tr><th scope="row"><code>webRequest.filterResponseData</code><small>19 add-ons, uBlock Origin's HTML filters among them</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  <tr><th scope="row"><code>sidebarAction</code><small>18 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  <tr><th scope="row"><code>tabs.captureTab</code><small>13 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  <tr><th scope="row"><code>tabs.hide</code> and <code>show</code><small>7 add-ons, such as Tree Style Tab and Sidebery</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  <tr><th scope="row"><code>sessions</code> tab and window values<small>7 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td></tr>
-  </tbody>
+  <tr><th class="grp" colspan="2" scope="colgroup">Not yet: the open climb steps</th></tr>
+__CLIMB__  </tbody>
 </table>
 </div>
 <div class="legend" aria-hidden="true"><span><i class="d y"></i>yes</span><span><i class="d p"></i>partly</span><span><i class="d n"></i>no</span></div>
-<p class="notes">Firefox has every row. tennessine has the same patches as oganesson, but installs only the add-ons that addons.mozilla.org lists for Firefox for Android. The counts in "Not yet" are add-ons in the list above. Each change is in the <a href="releases.html">release notes</a>; the technical status, with the next steps, is in dubna's <a href="https://github.com/zakius/dubna/blob/main/webextensions/README.md">WebExtensions README</a>.</p>
+<p class="notes">Firefox has every row. tennessine has the same patches as oganesson, but installs only the add-ons that addons.mozilla.org lists for Firefox for Android. "Not yet" lists the open climb steps, each linked to its issue; every Firefox API that add-ons in the list use and Chromium lacks is in the climb's <a href="https://github.com/zakius/dubna/blob/main/webextensions/ranking.md">ranking</a>. Each change is in the <a href="releases.html">release notes</a>; the technical status, with the next steps, is in dubna's <a href="https://github.com/zakius/dubna/blob/main/webextensions/README.md">WebExtensions README</a>.</p>
 </main>
 
 <footer><div class="wrap">
