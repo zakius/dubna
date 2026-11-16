@@ -277,6 +277,7 @@ def facts():
                              capture_output=True, text=True).stdout
     nsi = (og / 'windows/helium-windows/installer/helium.nsi').read_text()
     score = json.loads((DUBNA / 'webextensions/score/oganesson.json').read_text())
+    tests = json.loads((DUBNA / 'webextensions/score/oganesson-firefox-tests.json').read_text())
     return {
         'og_version': og_version, 'og_date': og_date, 'og_milestone': milestone(og_version),
         'win_version': win_version, 'win_date': win_date, 'win_milestone': milestone(win_version),
@@ -294,6 +295,12 @@ def facts():
         'addons_l2': str(score['levels']['L2']), 'addons_l3': str(score['levels']['L3']),
         'addons_date': day(score['date'].replace('-', '')),
         'addons_browser': score['browser'].split(' (')[0],
+        # Its test score: Firefox's WebExtensions test files that pass, of those
+        # ported, of all but those that test Gecko itself.
+        'tests_passing': str(tests['passing']), 'tests_ported': str(tests['ported']),
+        'tests_total': str(tests['total']),
+        'tests_date': day(tests['date'].replace('-', '')),
+        'tests_browser': tests['browser'].split(' (')[0],
     }
 
 

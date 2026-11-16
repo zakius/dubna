@@ -88,6 +88,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
     <div class="stat"><b>{{addons_l3}}</b><span>open their popup and run their content scripts</span></div>
   </div>
   <p class="small">Measured on {{addons_browser}}, {{addons_date}}. The list is the 1000 add-ons with the most users, minus those that need an account; the checks are automatic, so an add-on that starts may still miss a feature.</p>
+  <div class="stats">
+    <div class="stat"><b>{{tests_total}}</b><span>of Firefox's own WebExtensions test files test what add-ons see</span></div>
+    <div class="stat"><b>{{tests_ported}}</b><span>run here</span></div>
+    <div class="stat"><b>{{tests_passing}}</b><span>pass</span></div>
+  </div>
+  <p class="small">Measured on {{tests_browser}}, {{tests_date}}. A test file passes when every check in it passes. The rest of Firefox's test files check Firefox's own internals.</p>
 </div></header>
 
 <main id="main" class="wrap">
