@@ -6,7 +6,10 @@
 #include "base/strings/strcat.h"
 #include "base/version_info/version_info.h"
 #include "build/build_config.h"
+#include "content/public/browser/navigation_controller.h"
+#include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/navigation_handle.h"
+#include "content/public/browser/reload_type.h"
 #include "content/public/browser/web_contents.h"
 #include "third_party/blink/public/common/user_agent/user_agent_metadata.h"
 #include "url/gurl.h"
@@ -28,6 +31,15 @@ constexpr char kFirefoxPlatform[] =
 #else
     "X11; Linux x86_64";
 #endif
+
+bool IsAmo(const GURL& url) {
+  return url.host() == kAmoHost;
+}
+
+// Ours, also one that an older version set and a restored session kept.
+bool IsFirefoxUserAgent(const std::string& user_agent) {
+  return user_agent.find(" Firefox/") != std::string::npos;
+}
 
 }  // namespace
 
@@ -56,17 +68,38 @@ void FirefoxAmoUserAgent::DidStartNavigation(
       navigation->IsPageActivation()) {
     return;
   }
-  const std::string firefox = FirefoxUserAgent();
-  if (navigation->GetURL().host() == kAmoHost) {
+  if (IsAmo(navigation->GetURL())) {
     // No metadata: Firefox sends no user agent client hints.
     blink::UserAgentOverride ua_override;
-    ua_override.ua_string_override = firefox;
+    ua_override.ua_string_override = FirefoxUserAgent();
     web_contents()->SetUserAgentOverride(ua_override, false);
     navigation->SetIsOverridingUserAgent(true);
-  } else if (web_contents()->GetUserAgentOverride().ua_string_override ==
-             firefox) {
+  } else if (IsFirefoxUserAgent(
+                 web_contents()->GetUserAgentOverride().ua_string_override)) {
     // A navigation inherits the override from the page it leaves.
     navigation->SetIsOverridingUserAgent(false);
+  }
+}
+
+void FirefoxAmoUserAgent::DidFinishNavigation(
+    content::NavigationHandle* navigation) {
+  if (!navigation->IsInPrimaryMainFrame() || !navigation->HasCommitted() ||
+      navigation->IsSameDocument() || navigation->IsErrorPage() ||
+      navigation->IsPost()) {
+    return;
+  }
+  // The user agent is chosen when a navigation starts, so a redirect onto
+  // AMO or away from it, or an activated prerender, can commit a page with
+  // the other one. Such a page loads again, with the right one.
+  content::NavigationEntry* entry =
+      web_contents()->GetController().GetLastCommittedEntry();
+  const bool firefox =
+      entry->GetIsOverridingUserAgent() &&
+      IsFirefoxUserAgent(
+          web_contents()->GetUserAgentOverride().ua_string_override);
+  if (firefox != IsAmo(navigation->GetURL())) {
+    web_contents()->GetController().Reload(content::ReloadType::NORMAL,
+                                           false);
   }
 }
 

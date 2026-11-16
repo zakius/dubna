@@ -21,8 +21,9 @@ std::string FirefoxUserAgent();
 // page and in navigator.userAgent. Without navigator.mozAddonManager the
 // button is a link to the add-on's .xpi, whose download opens the install
 // prompt (firefox_xpi_installer.h). So a tab's pages on AMO get
-// FirefoxUserAgent(), and its pages on other hosts keep Chromium's. A
-// redirect is followed with the user agent its navigation started with.
+// FirefoxUserAgent(), with their subframes and subresources, as in Firefox,
+// and its pages on other hosts keep Chromium's. A page that a redirect or a
+// prerender commits with the other one loads again.
 class FirefoxAmoUserAgent
     : public content::WebContentsObserver,
       public content::WebContentsUserData<FirefoxAmoUserAgent> {
@@ -33,6 +34,7 @@ class FirefoxAmoUserAgent
 
   // content::WebContentsObserver:
   void DidStartNavigation(content::NavigationHandle* navigation) override;
+  void DidFinishNavigation(content::NavigationHandle* navigation) override;
 
  private:
   friend class content::WebContentsUserData<FirefoxAmoUserAgent>;
