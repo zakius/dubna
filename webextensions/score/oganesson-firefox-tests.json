@@ -1,8 +1,8 @@
 {
  "date": "2026-11-16",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
- "passing": 3,
- "ported": 19,
+ "passing": 4,
+ "ported": 26,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
@@ -101,6 +101,54 @@
    "port": "firefox/test_ext_contextual_identities_move.py",
    "passed": false,
    "error": "FAIL: test_01_contextualIdentity_move (firefox.test_ext_contextual_identities_move.ContextualIdentitiesMoveTest.test_01_contextualIdentity_move): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.contextualIdenti",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_errors.js": {
+   "port": "firefox/test_ext_cookies_errors.py",
+   "passed": false,
+   "error": "FAIL: test_01_setup_cookies (firefox.test_ext_cookies_errors.CookiesErrorsTest.test_01_setup_cookies): AssertionError: timed out after 30s waiting for the message 'setup_done'; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"firefox-private\".\", source: chrome-extension:",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_expirationDate.js": {
+   "port": "firefox/test_ext_cookies_expirationDate.py",
+   "passed": false,
+   "error": "FAIL: test_01_expirationDate_and_maxageCap (firefox.test_ext_cookies_expirationDate.CookiesExpirationDateTest.test_01_expirationDate_and_maxageCap): AssertionError: timed out after 30s waiting for the message 'done'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of u",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
+   "port": "firefox/test_ext_cookies_firstParty.py",
+   "passed": false,
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://hbilobcoplehkffmnogmpphgpobjhdnp/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "passing": [
+    "test_01_setup",
+    "test_04_cookies_background",
+    "test_05_cookies_contentScript"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_onChanged.js": {
+   "port": "firefox/test_ext_cookies_onChanged.py",
+   "passed": false,
+   "error": "FAIL: test_01_onChanged_event_page (firefox.test_ext_cookies_onChanged.CookiesOnChangedTest.test_01_onChanged_event_page): AssertionError: browser.test: cookies.onChanged for private cookie creation - Expected: {'removed': False, 'cookie': {'name': 'cookname', 'value': 'cookvalue', 'domain': 'exampl",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_samesite.js": {
+   "port": "firefox/test_ext_cookies_samesite.py",
+   "passed": false,
+   "error": "FAIL: test_01_samesite_cookies (firefox.test_ext_cookies_samesite.CookiesSameSiteTest.test_01_samesite_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of null (reading \\'sameSite\\')\", s",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_sort.js": {
+   "port": "firefox/test_ext_cookies_sort.py",
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_same_cookie_name_with_multiple_paths"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_cookies_validation.js": {
+   "port": "firefox/test_ext_cookies_validation.py",
+   "passed": false,
+   "error": "FAIL: test_01_do_test_invalid_cookies (firefox.test_ext_cookies_validation.CookiesValidationTest.test_01_do_test_invalid_cookies): AssertionError: browser.test: Unset name and value - correct exception - Expected: Failed to parse or set cookie named \"\"., Actual: Cookie with an empty name and an empt",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_proxy_documentId.js": {
