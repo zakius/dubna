@@ -16,14 +16,11 @@
 #include "base/values.h"
 #include "chrome/browser/download/download_crx_util.h"
 #include "chrome/browser/profiles/profile.h"
-#include "chrome/common/pref_names.h"
 #include "components/download/public/common/download_item.h"
-#include "components/prefs/pref_service.h"
 #include "extensions/browser/crx_installer.h"
 #include "extensions/browser/extension_file_task_runner.h"
 #include "extensions/browser/extension_registrar.h"
 #include "extensions/browser/load_error_reporter.h"
-#include "extensions/browser/unpacked_installer.h"
 #include "extensions/browser/zipfile_installer.h"
 #include "extensions/common/constants.h"
 #include "extensions/common/firefox_gecko_id.h"
@@ -33,8 +30,9 @@ namespace extensions {
 namespace {
 
 constexpr char16_t kNoGeckoIdError[] =
-    u"This add-on has no Gecko ID (browser_specific_settings.gecko.id). "
-    u"Turn on developer mode to load it.";
+    u"This add-on has no Gecko ID (browser_specific_settings.gecko.id), so "
+    u"it can't be installed from a download. Unzip it and load it unpacked "
+    u"in developer mode.";
 
 // The Gecko ID in the unzipped add-on's manifest, if Firefox would take it,
 // or "".
@@ -69,10 +67,8 @@ void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
                                   base::Base64Encode(gecko_id), unzip_dir);
     return;
   }
-  if (profile->GetPrefs()->GetBoolean(prefs::kExtensionsUIDeveloperMode)) {
-    UnpackedInstaller::Create(profile.get())->Load(unzip_dir);
-    return;
-  }
+  // Not loaded unpacked, even in developer mode: that would install it
+  // without a prompt.
   GetExtensionFileTaskRunner()->PostTask(
       FROM_HERE, base::GetDeletePathRecursivelyCallback(unzip_dir));
   LoadErrorReporter::GetInstance()->ReportLoadError(
@@ -111,8 +107,8 @@ bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item) {
   // From any site, as in Firefox, after the install prompt.
   installer->set_off_store_install_allow_reason(
       CrxInstaller::OffStoreInstallAllowedBecausePref);
-  // Unzipped next to the unpacked add-ons, where one without a Gecko ID
-  // loads from. A packed install copies it into the install directory.
+  // Unzipped next to the unpacked add-ons, as a dropped .zip is. A packed
+  // install moves it into the install directory.
   ZipFileInstaller::Create(
       GetExtensionFileTaskRunner(),
       base::BindOnce(&OnUnzipped, installer, profile->GetWeakPtr()))

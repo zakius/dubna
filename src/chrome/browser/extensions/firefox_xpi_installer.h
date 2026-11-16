@@ -16,8 +16,8 @@ namespace extensions {
 // downloaded Firefox add-on, a .xpi, installs it and returns true. An add-on
 // with a Gecko ID installs packed after the install prompt, with the ID from
 // its Gecko ID, as a .crx from another site does when the user allows it. One
-// without a Gecko ID loads unpacked, only in developer mode. The AMO
-// signature (META-INF/) is ignored.
+// without a Gecko ID gets a load error: loading it unpacked would skip the
+// prompt. The AMO signature (META-INF/) is ignored.
 bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item);
 
 }  // namespace extensions
