@@ -315,9 +315,13 @@ def climb_steps():
         if not issue['title'].startswith('Firefox add-ons: '):
             continue
         what = issue['title'].removeprefix('Firefox add-ons: ')
-        ref = f"{issue['repository']['name']}#{issue['number']}"
-        rows += (f'  <tr><th scope="row">{e(what)}</th><td class="us"><i class="d n"><span class="sr">no</span></i>'
-                 f'<span class="c"><a href="{e(issue["url"])}">{e(ref)}</a></span></td></tr>\n')
+        repo = issue['repository']['name']
+        no = (f'<i class="d n"><span class="sr">no</span></i><span class="c">'
+              f'<a href="{e(issue["url"])}">{e(repo)}#{issue["number"]}</a></span>')
+        # An issue in a browser's own repo is that browser's step; dubna's are both's.
+        og = no if repo != 'tennessine' else '<span class="c">–</span>'
+        ts = no if repo != 'oganesson' else '<span class="c">–</span>'
+        rows += f'  <tr><th scope="row">{e(what)}</th><td class="og">{og}</td><td class="ts">{ts}</td></tr>\n'
     if not rows:
         sys.exit('site.py: no open climb issues for Firefox add-ons on GitHub')
     return rows

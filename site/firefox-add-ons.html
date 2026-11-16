@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Firefox add-ons in oganesson & tennessine</title>
-<meta name="description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine have, and how many of the most-used Firefox add-ons run.">
+<meta name="description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine each have, and how many of the most-used Firefox add-ons run.">
 <meta property="og:title" content="Firefox add-ons in oganesson & tennessine">
-<meta property="og:description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine have, and how many of the most-used Firefox add-ons run.">
+<meta property="og:description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine each have, and how many of the most-used Firefox add-ons run.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0b10">
 <link rel="canonical" href="https://dubna.zakius.xyz/firefox-add-ons.html">
@@ -38,11 +38,11 @@ main{padding:12px 24px 80px}
 table{border-collapse:collapse;width:100%}
 th,td{padding:12px 14px;text-align:left;border-top:1px solid var(--line);font-size:14.5px;vertical-align:top}
 thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600}
-thead th.us{color:var(--text)}
-th[scope=row]{font-weight:600;width:50%}
+thead th.og,thead th.ts{color:var(--text)}
+th[scope=row]{font-weight:600;width:40%}
 th[scope=row] small{display:block;font-weight:400;color:var(--faint);font-size:12.5px;margin-top:2px}
-td{width:50%}
-td.us{background:rgba(255,255,255,.025)}
+td{width:30%}
+td.og{background:rgba(255,255,255,.025)}
 tbody th.grp{background:var(--bg2);font:600 12px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.08em;width:auto}
 code{font:12.5px var(--mono);color:#cfd3e4}
 .d{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
@@ -59,12 +59,16 @@ code{font:12.5px var(--mono);color:#cfd3e4}
 a:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
 @media (max-width:700px){
   .stats{grid-template-columns:1fr 1fr}
-  /* One row per feature: its name, then its state below. */
+  /* One row per feature: its name across, then each browser's state side by side. */
   table,tbody{display:block}
   thead{display:none}
-  tr{display:block;border-top:1px solid var(--line)}
+  tr{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
   th,td{display:block;width:auto;padding:10px 12px;font-size:13.5px;border-top:0;overflow-wrap:anywhere}
-  th[scope=row]{padding-bottom:0;width:auto}
+  th[scope=row],th.grp{grid-column:1/-1;width:auto}
+  th[scope=row]{padding-bottom:0}
+  td:before{display:block;font-size:11.5px;color:var(--faint);margin-bottom:3px}
+  td.og:before{content:"oganesson"}
+  td.ts:before{content:"tennessine"}
   th.grp{padding-bottom:10px}
 }
 footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
@@ -89,39 +93,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 <main id="main" class="wrap">
 <div class="tbl">
 <table>
-  <thead><tr><th scope="col">Firefox API or behaviour</th><th scope="col" class="us">oganesson &amp; tennessine</th></tr></thead>
+  <thead><tr><th scope="col">Firefox API or behaviour</th><th scope="col" class="og">oganesson</th><th scope="col" class="ts">tennessine</th></tr></thead>
   <tbody>
-  <tr><th class="grp" colspan="2" scope="colgroup">Installing and loading</th></tr>
-  <tr><th scope="row">Install a downloaded .xpi<small>a click on a .xpi link opens the install prompt</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">on oganesson, with a Gecko ID; the AMO signature isn't checked; a .xpi a page opens without a click stays a file; AMO's "Add to Firefox" button not yet; on tennessine a download may not reach the prompt yet</span></td></tr>
-  <tr><th scope="row">The extension ID from the Gecko ID<small>an add-on keeps its ID and storage wherever it loads from</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td></tr>
-  <tr><th scope="row">Firefox's manifests load<small>locale files, shortcuts Firefox accepts, versions such as "3.4resigned1", homepage_url from the locale files, declarative_net_request rules without the permission</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">rules without the permission start off, as in Firefox</span></td></tr>
-  <tr><th scope="row">Background pages in Manifest V3<small>background.scripts or background.page, also as modules</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td></tr>
-  <tr><th scope="row">Event pages with webRequest<small>Manifest V2, "persistent": false</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td></tr>
+  <tr><th class="grp" colspan="3" scope="colgroup">Installing and loading</th></tr>
+  <tr><th scope="row">Install a downloaded .xpi<small>a click on a .xpi link opens the install prompt</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">with a Gecko ID; the AMO signature isn't checked; a .xpi a page opens without a click stays a file; AMO's "Add to Firefox" button not yet</span></td><td class="ts"><i class="d n"><span class="sr">no</span></i><span class="c">not checked yet: an Android download may not reach the install prompt</span></td></tr>
+  <tr><th scope="row">The extension ID from the Gecko ID<small>an add-on keeps its ID and storage wherever it loads from</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
+  <tr><th scope="row">Firefox's manifests load<small>locale files, shortcuts Firefox accepts, versions such as "3.4resigned1", homepage_url from the locale files, declarative_net_request rules without the permission</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">rules without the permission start off, as in Firefox</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">rules without the permission start off, as in Firefox</span></td></tr>
+  <tr><th scope="row">Background pages in Manifest V3<small>background.scripts or background.page, also as modules</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
+  <tr><th scope="row">Event pages with webRequest<small>Manifest V2, "persistent": false</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td></tr>
 
-  <tr><th scope="row"><code>sidebar_action</code> as a side panel<small>the add-on's toolbar menu has "Open side panel"</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">oganesson; the sidebarAction API not yet; no side panel on Android</span></td></tr>
-  <tr><th class="grp" colspan="2" scope="colgroup">APIs</th></tr>
-  <tr><th scope="row"><code>runtime.getBrowserInfo</code></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td></tr>
-  <tr><th scope="row"><code>menus</code><small>with item icons and the password, bookmark and tools_menu contexts</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">items show the add-on's icon; those three contexts show no item yet</span></td></tr>
-  <tr><th scope="row"><code>pageAction</code> next to the toolbar action</th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar yet</span></td></tr>
-  <tr><th scope="row"><code>browserAction</code> extras<small>badge text colour, user settings, a windowId in the setters and getters</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">a null colour, Firefox's reset, is refused</span></td></tr>
-  <tr><th scope="row"><code>storage.session</code> and <code>scripting</code> in Manifest V2</th><td class="us"><i class="d y"><span class="sr">yes</span></i></td></tr>
-  <tr><th scope="row"><code>contentScripts.register</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no container's cookieStoreId; no wrappedJSObject, cloneInto or exportFunction</span></td></tr>
-  <tr><th scope="row"><code>contextualIdentities</code> and tabs' <code>cookieStoreId</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td></tr>
-  <tr><th scope="row"><code>cookies</code> with <code>firstPartyDomain</code></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td></tr>
-  <tr><th scope="row"><code>proxy.onRequest</code> and <code>proxy.onError</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it; while one listens, a request no add-on answers goes direct if you set a PAC script or auto-detection</span></td></tr>
-  <tr><th scope="row">Filters on <code>tabs.onUpdated</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">the current-window filter matches no tab yet</span></td></tr>
-  <tr><th scope="row">A loading tab's URL is about:blank</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
-  <tr><th scope="row">Messages to another add-on's Gecko ID</th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td></tr>
-  <tr><th scope="row">Firefox's bookmark folder IDs<small>such as "toolbar_____"</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">the bookmarks menu is Other bookmarks</span></td></tr>
-  <tr><th scope="row"><code>browserSettings</code>, <code>privacy.network.peerConnectionEnabled</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; on tennessine the home page is the policy's or the new tab page, not the one you set</span></td></tr>
-  <tr><th scope="row"><code>theme</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; tennessine reads no theme, as Firefox for Android has none</span></td></tr>
+  <tr><th scope="row"><code>sidebar_action</code> as a side panel<small>the add-on's toolbar menu has "Open side panel"</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the sidebarAction API not yet</span></td><td class="ts"><span class="c">–</span><span class="c">no side panel, as in Firefox for Android</span></td></tr>
+  <tr><th class="grp" colspan="3" scope="colgroup">APIs</th></tr>
+  <tr><th scope="row"><code>runtime.getBrowserInfo</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td></tr>
+  <tr><th scope="row"><code>menus</code><small>with item icons and the password, bookmark and tools_menu contexts</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">items show the add-on's icon; those three contexts show no item yet</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>pageAction</code> next to the toolbar action</th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar yet</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar yet</span></td></tr>
+  <tr><th scope="row"><code>browserAction</code> extras<small>badge text colour, user settings, a windowId in the setters and getters</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">a null colour, Firefox's reset, is refused</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">a null colour, Firefox's reset, is refused</span></td></tr>
+  <tr><th scope="row"><code>storage.session</code> and <code>scripting</code> in Manifest V2</th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
+  <tr><th scope="row"><code>contentScripts.register</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no container's cookieStoreId; no wrappedJSObject, cloneInto or exportFunction</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no container's cookieStoreId; no wrappedJSObject, cloneInto or exportFunction</span></td></tr>
+  <tr><th scope="row"><code>contextualIdentities</code> and tabs' <code>cookieStoreId</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td></tr>
+  <tr><th scope="row"><code>cookies</code> with <code>firstPartyDomain</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td></tr>
+  <tr><th scope="row"><code>proxy.onRequest</code> and <code>proxy.onError</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it; while one listens, a request no add-on answers goes direct if you set a PAC script or auto-detection</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it; while one listens, a request no add-on answers goes direct if you set a PAC script or auto-detection</span></td></tr>
+  <tr><th scope="row">Filters on <code>tabs.onUpdated</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the current-window filter matches no tab yet</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the current-window filter matches no tab yet</span></td></tr>
+  <tr><th scope="row">A loading tab's URL is about:blank</th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
+  <tr><th scope="row">Messages to another add-on's Gecko ID</th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td></tr>
+  <tr><th scope="row">Firefox's bookmark folder IDs<small>such as "toolbar_____"</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the bookmarks menu is Other bookmarks</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>browserSettings</code>, <code>privacy.network.peerConnectionEnabled</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the home page is the policy's or the new tab page, not the one you set</span></td></tr>
+  <tr><th scope="row"><code>theme</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td class="ts"><span class="c">–</span><span class="c">no theme to read, as in Firefox for Android</span></td></tr>
 
-  <tr><th class="grp" colspan="2" scope="colgroup">Not yet: the open climb steps</th></tr>
+  <tr><th class="grp" colspan="3" scope="colgroup">Not yet: the open climb steps</th></tr>
 __CLIMB__  </tbody>
 </table>
 </div>
 <div class="legend" aria-hidden="true"><span><i class="d y"></i>yes</span><span><i class="d p"></i>partly</span><span><i class="d n"></i>no</span></div>
-<p class="notes">Firefox has every row. tennessine has the same patches as oganesson, and follows Firefox for Android: what Firefox for Android lacks gets no work of its own there. "Not yet" lists the open climb steps, each linked to its issue; every Firefox API that add-ons in the list use and Chromium lacks is in the climb's <a href="https://github.com/zakius/dubna/blob/main/webextensions/ranking.md">ranking</a>. Each change is in the <a href="releases.html">release notes</a>; the technical status, with the next steps, is in dubna's <a href="https://github.com/zakius/dubna/blob/main/webextensions/README.md">WebExtensions README</a>.</p>
+<p class="notes">Firefox has every row. tennessine has the same patches as oganesson and follows Firefox for Android: what Firefox for Android lacks gets no work of its own there (–). Most rows are tested on oganesson only. "Not yet" lists the open climb steps, each linked to its issue; every Firefox API that add-ons in the list use and Chromium lacks is in the climb's <a href="https://github.com/zakius/dubna/blob/main/webextensions/ranking.md">ranking</a>. Each change is in the <a href="releases.html">release notes</a>; the technical status, with the next steps, is in dubna's <a href="https://github.com/zakius/dubna/blob/main/webextensions/README.md">WebExtensions README</a>.</p>
 </main>
 
 <footer><div class="wrap">
