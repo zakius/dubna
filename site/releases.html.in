@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="oganesson and tennessine releases" href="releases.xml">
 <link rel="alternate" type="application/rss+xml" title="oganesson releases" href="releases-oganesson.xml">
 <link rel="alternate" type="application/rss+xml" title="tennessine releases" href="releases-tennessine.xml">
-<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon.png" type="image/png">
 <style>
 :root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
   --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
