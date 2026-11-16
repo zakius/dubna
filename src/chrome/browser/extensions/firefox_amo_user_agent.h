@@ -22,8 +22,9 @@ std::string FirefoxUserAgent();
 // button is a link to the add-on's .xpi, whose download opens the install
 // prompt (firefox_xpi_installer.h). So a tab's pages on AMO get
 // FirefoxUserAgent(), with their subframes and subresources, as in Firefox,
-// and its pages on other hosts keep Chromium's. A page that a redirect or a
-// prerender commits with the other one loads again.
+// and its pages on other hosts keep Chromium's. AMO's page that a redirect
+// or a prerender commits with Chromium's loads again; a redirect from AMO to
+// another host keeps Firefox's.
 class FirefoxAmoUserAgent
     : public content::WebContentsObserver,
       public content::WebContentsUserData<FirefoxAmoUserAgent> {

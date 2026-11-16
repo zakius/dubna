@@ -85,21 +85,21 @@ void FirefoxAmoUserAgent::DidFinishNavigation(
     content::NavigationHandle* navigation) {
   if (!navigation->IsInPrimaryMainFrame() || !navigation->HasCommitted() ||
       navigation->IsSameDocument() || navigation->IsErrorPage() ||
-      navigation->IsPost()) {
+      navigation->IsPost() || !IsAmo(navigation->GetURL())) {
     return;
   }
   // The user agent is chosen when a navigation starts, so a redirect onto
-  // AMO or away from it, or an activated prerender, can commit a page with
-  // the other one. Such a page loads again, with the right one.
-  content::NavigationEntry* entry =
-      web_contents()->GetController().GetLastCommittedEntry();
+  // AMO, or an activated prerender, can commit AMO's page with Chromium's.
+  // That page loads again, with Firefox's, unless another navigation has
+  // started. A redirect away from AMO keeps Firefox's user agent: loading
+  // its page again would repeat a request that may be single-use.
+  content::NavigationController& controller = web_contents()->GetController();
   const bool firefox =
-      entry->GetIsOverridingUserAgent() &&
+      controller.GetLastCommittedEntry()->GetIsOverridingUserAgent() &&
       IsFirefoxUserAgent(
           web_contents()->GetUserAgentOverride().ua_string_override);
-  if (firefox != IsAmo(navigation->GetURL())) {
-    web_contents()->GetController().Reload(content::ReloadType::NORMAL,
-                                           false);
+  if (!firefox && !controller.GetPendingEntry()) {
+    controller.Reload(content::ReloadType::NORMAL, false);
   }
 }
 
