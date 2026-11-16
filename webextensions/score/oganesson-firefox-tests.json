@@ -2,7 +2,7 @@
  "date": "2026-11-16",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 4,
- "ported": 31,
+ "ported": 35,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
@@ -49,6 +49,19 @@
     "test_03_remove_error"
    ]
   },
+  "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated.js": {
+   "port": "firefox/browser_ext_tabs_onUpdated.py",
+   "passed": false,
+   "error": "FAIL: test_01_onUpdated_sequence (firefox.browser_ext_tabs_onUpdated.TabsOnUpdatedTest.test_01_onUpdated_sequence): AssertionError: browser.test: got unexpected number of updateInfo data - Expected: [{\"status\":\"loading\"},{\"status\":\"loading\",\"url\":\"http://mochi.test:8888/browser/browser/components/ex",
+   "passing": [
+    "test_02_pinned",
+    "test_03_unpinned",
+    "test_04_url",
+    "test_05_title",
+    "test_06_without_tabs_permission",
+    "test_07_onUpdated_after_onRemoved"
+   ]
+  },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated_filter.js": {
    "port": "firefox/browser_ext_tabs_onUpdated_filter.py",
    "passed": false,
@@ -74,10 +87,18 @@
    "error": "ERROR: test_01_on_updated (firefox.browser_ext_themes_static_onUpdated.ThemesStaticOnUpdatedTest.test_01_on_updated): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': 'Invalid value for theme colors - colors must be integers'}",
    "passing": []
   },
+  "toolkit/components/extensions/test/mochitest/test_ext_browserSettings_overrideDocumentColors.html": {
+   "port": "firefox/test_ext_browserSettings_overrideDocumentColors.py",
+   "passed": false,
+   "error": "FAIL: test_01_overrideDocumentColors_always (firefox.test_ext_browserSettings_overrideDocumentColors.OverrideDocumentColorsTest.test_01_overrideDocumentColors_always): AssertionError: browser.test: Bg color from user - Expected: rgb(45, 50, 54), Actual: rgb(12, 34, 56) | Fg color from user - Expecte",
+   "passing": [
+    "test_04_with_css_cascade_layers_and_important"
+   ]
+  },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://lkonhplambalboejcenmecehmcog",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://fkelfflciknbjfpdmhalkcahckhn",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -110,6 +131,14 @@
    "error": "FAIL: test_01_good_cookie_permissions (firefox.test_ext_cookies_permissions_good.CookiesPermissionsGoodTest.test_01_good_cookie_permissions): AssertionError: browser.test: expected number of cookies - Expected: 2, Actual: 3 | got no eviction event | expected two cookies for host - Expected: [('bar',",
    "passing": []
   },
+  "toolkit/components/extensions/test/xpcshell/test_ext_browserSettings.js": {
+   "port": "firefox/test_ext_browserSettings.py",
+   "passed": false,
+   "error": "FAIL: test_01_browser_settings (firefox.test_ext_browserSettings.BrowserSettingsTest.test_01_browser_settings): AssertionError: timed out after 30s waiting for the message 'onChange'; the add-ons logged: []",
+   "passing": [
+    "test_03_bad_value_android"
+   ]
+  },
   "toolkit/components/extensions/test/xpcshell/test_ext_browserSettings_homepage.js": {
    "port": "firefox/test_ext_browserSettings_homepage.py",
    "passed": true,
@@ -125,6 +154,15 @@
    "passing": [
     "test_02_contentscripts_unregister_on_context_unload",
     "test_05_contentscripts_register_matchOriginAsFallback"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_contentscript_dynamic_registration.js": {
+   "port": "firefox/test_ext_contentscript_dynamic_registration.py",
+   "passed": false,
+   "error": "FAIL: test_03_userScripts_register (firefox.test_ext_contentscript_dynamic_registration.ContentScriptDynamicRegistrationTest.test_03_userScripts_register): AssertionError: timed out after 30s waiting for the message 'background-done'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot re",
+   "passing": [
+    "test_01_scripting_registerContentScripts",
+    "test_02_contentScripts_register"
    ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities_move.js": {
@@ -148,7 +186,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://badeeegnoffkfggohmpbbjbidlgkngke/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://dbghfopkfimdgjfjfeolbcckalebfmck/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
