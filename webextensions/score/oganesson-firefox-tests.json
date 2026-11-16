@@ -2,7 +2,7 @@
  "date": "2026-11-16",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 3,
- "ported": 10,
+ "ported": 13,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
@@ -21,6 +21,15 @@
     "test_01_filter_url",
     "test_02_filter_url_activeTab",
     "test_03_filter_tabId"
+   ]
+  },
+  "browser/components/extensions/test/xpcshell/test_ext_bookmarks.js": {
+   "port": "firefox/test_ext_bookmarks.py",
+   "passed": false,
+   "error": "FAIL: test_01_bookmarks (firefox.test_ext_bookmarks.BookmarksTest.test_01_bookmarks): AssertionError: browser.test: Promise rejected, expecting rejection to match '/Invalid value for property 'guid': \"not-a-bookmark-guid\"/', got 'Error: Bookmark id is invalid.': Expected error thrown when trying to ",
+   "passing": [
+    "test_03_tree_with_empty_folder",
+    "test_04_bookmarks_event_page"
    ]
   },
   "toolkit/components/extensions/test/browser/browser_ext_themes_static_onUpdated.js": {
@@ -79,6 +88,22 @@
    "passing": [
     "test_01_scripting_enabled_in_mv2"
    ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_storage_session.js": {
+   "port": "firefox/test_ext_storage_session.py",
+   "passed": false,
+   "error": "FAIL: test_01_storage_session (firefox.test_ext_storage_session.StorageSessionTest.test_01_storage_session): AssertionError: browser.test: object getter worked for test-prop1 in session - Expected: value1, Actual: undefined | object getter with a single key should return an object with a single prop",
+   "passing": [
+    "test_02_storage_session_onChanged_event_page",
+    "test_03_storage_session_persistance",
+    "test_04_storage_session_empty_events"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_storage_session_on_crash.js": {
+   "port": "firefox/test_ext_storage_session_on_crash.py",
+   "passed": false,
+   "error": "FAIL: test_01_storage_session_after_crash_persistent (firefox.test_ext_storage_session_on_crash.StorageSessionOnCrashTest.test_01_storage_session_after_crash_persistent): AssertionError: None != 1 : Before storage counter is correct.",
+   "passing": []
   }
  }
 }
