@@ -2,7 +2,7 @@
  "date": "2026-11-16",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 4,
- "ported": 26,
+ "ported": 31,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
@@ -74,10 +74,40 @@
    "error": "ERROR: test_01_on_updated (firefox.browser_ext_themes_static_onUpdated.ThemesStaticOnUpdatedTest.test_01_on_updated): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': 'Invalid value for theme colors - colors must be integers'}",
    "passing": []
   },
+  "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
+   "port": "firefox/test_ext_cookies.py",
+   "passed": false,
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://iknnfocjlnfkccdbgmefmpcdncpb",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
+   "port": "firefox/test_ext_cookies_expiry.py",
+   "passed": false,
+   "error": "FAIL: test_01_cookies_expiry (firefox.test_ext_cookies_expiry.CookiesExpiryTest.test_01_cookies_expiry): AssertionError: browser.test: expired cookie removed - Expected: true:expired, Actual: true:overwrite",
+   "passing": []
+  },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_first_party.html": {
    "port": "firefox/test_ext_cookies_first_party.py",
    "passed": false,
    "error": "FAIL: test_01_first_party_domain (firefox.test_ext_cookies_first_party.CookiesFirstPartyTest.test_01_first_party_domain): AssertionError: timed out after 30s waiting for the message 'test_fpi_disabled'; the add-ons logged: ['\"Uncaught (in promise) Error: firstPartyDomain must be \"\": first-party isol",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_cookies_incognito.html": {
+   "port": "firefox/test_ext_cookies_incognito.py",
+   "passed": false,
+   "error": "FAIL: test_01_cookies_incognito_not_allowed (firefox.test_ext_cookies_incognito.CookiesIncognitoTest.test_01_cookies_incognito_not_allowed): AssertionError: browser.test: Promise rejected, expecting rejection to match '/Extension disallowed access/', got 'Error: Invalid cookie store id: \"firefox-pri",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_cookies_permissions_bad.html": {
+   "port": "firefox/test_ext_cookies_permissions_bad.py",
+   "passed": false,
+   "error": "FAIL: test_01_bad_cookie_permissions (firefox.test_ext_cookies_permissions_bad.CookiesPermissionsBadTest.test_01_bad_cookie_permissions): AssertionError: browser.test: Error: Error: No host permissions for cookies at url: \"http://example.net/\". :: Error: No host permissions for cookies at url: \"http",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_cookies_permissions_good.html": {
+   "port": "firefox/test_ext_cookies_permissions_good.py",
+   "passed": false,
+   "error": "FAIL: test_01_good_cookie_permissions (firefox.test_ext_cookies_permissions_good.CookiesPermissionsGoodTest.test_01_good_cookie_permissions): AssertionError: browser.test: expected number of cookies - Expected: 2, Actual: 3 | got no eviction event | expected two cookies for host - Expected: [('bar',",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_browserSettings_homepage.js": {
@@ -118,7 +148,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://hbilobcoplehkffmnogmpphgpobjhdnp/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://aeobgiemlmddolamplnbnhdponjjbndj/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
