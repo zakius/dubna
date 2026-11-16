@@ -3,90 +3,82 @@
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 3,
  "ported": 10,
- "total": 833,
+ "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
    "port": "firefox/browser_ext_menus_errors.py",
    "passed": false,
    "error": "FAIL: test_01_create_error (firefox.browser_ext_menus_errors.MenusErrorsTest.test_01_create_error): AssertionError: browser.test: Expected no error - Expected: null, Actual: undefined | Expected error - Expected: ID already exists: some_id, Actual: Cannot create item with duplicate id some_id",
-   "failed": [
-    "test_01_create_error",
-    "test_02_update_error",
-    "test_04_invalid_documentUrlPatterns"
+   "passing": [
+    "test_03_remove_error"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated_filter.js": {
    "port": "firefox/browser_ext_tabs_onUpdated_filter.py",
    "passed": false,
    "error": "FAIL: test_04_filter_windowId (firefox.browser_ext_tabs_onUpdated_filter.TabsOnUpdatedFilterTest.test_04_filter_windowId): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: []",
-   "failed": [
-    "test_04_filter_windowId",
-    "test_05_filter_cookieStoreId",
-    "test_06_filter_isArticle",
-    "test_07_filter_property"
+   "passing": [
+    "test_01_filter_url",
+    "test_02_filter_url_activeTab",
+    "test_03_filter_tabId"
    ]
   },
   "toolkit/components/extensions/test/browser/browser_ext_themes_static_onUpdated.js": {
    "port": "firefox/browser_ext_themes_static_onUpdated.py",
    "passed": false,
    "error": "ERROR: test_01_on_updated (firefox.browser_ext_themes_static_onUpdated.ThemesStaticOnUpdatedTest.test_01_on_updated): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': 'Invalid value for theme colors - colors must be integers'}",
-   "failed": [
-    "test_01_on_updated",
-    "test_02_on_updated_eventpage"
-   ]
+   "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_first_party.html": {
    "port": "firefox/test_ext_cookies_first_party.py",
    "passed": false,
    "error": "FAIL: test_01_first_party_domain (firefox.test_ext_cookies_first_party.CookiesFirstPartyTest.test_01_first_party_domain): AssertionError: timed out after 30s waiting for the message 'test_fpi_disabled'; the add-ons logged: ['\"Uncaught (in promise) Error: firstPartyDomain must be \"\": first-party isol",
-   "failed": [
-    "test_01_first_party_domain"
-   ]
+   "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_browserSettings_homepage.js": {
    "port": "firefox/test_ext_browserSettings_homepage.py",
    "passed": true,
    "error": null,
-   "failed": []
+   "passing": [
+    "test_01_homepage_get_without_set"
+   ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_contentScripts_register.js": {
    "port": "firefox/test_ext_contentScripts_register.py",
    "passed": false,
    "error": "FAIL: test_01_contentscripts_register_css (firefox.test_ext_contentScripts_register.ContentScriptsRegisterTest.test_01_contentscripts_register_css): AssertionError: browser.test: Function threw, expecting error to match '/Unexpected property \"unknownParam\"/', got 'TypeError: Error in invocation of c",
-   "failed": [
-    "test_01_contentscripts_register_css",
-    "test_03_contentscripts_register_js",
-    "test_04_contentscripts_register_all_options",
-    "test_06_contentscripts_register_cookieStoreId"
+   "passing": [
+    "test_02_contentscripts_unregister_on_context_unload",
+    "test_05_contentscripts_register_matchOriginAsFallback"
    ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities_move.js": {
    "port": "firefox/test_ext_contextual_identities_move.py",
    "passed": false,
    "error": "FAIL: test_01_contextualIdentity_move (firefox.test_ext_contextual_identities_move.ContextualIdentitiesMoveTest.test_01_contextualIdentity_move): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.contextualIdenti",
-   "failed": [
-    "test_01_contextualIdentity_move"
-   ]
+   "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_proxy_documentId.js": {
    "port": "firefox/test_ext_proxy_documentId.py",
    "passed": false,
    "error": "FAIL: test_01_proxy_documentId (firefox.test_ext_proxy_documentId.ProxyDocumentIdTest.test_01_proxy_documentId): AssertionError: timed out after 30s waiting for the message 'done'; the add-ons logged: ['\"Uncaught TypeError: browser.runtime.getDocumentId is not a function\", source: chrome-extension:/",
-   "failed": [
-    "test_01_proxy_documentId"
-   ]
+   "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_runtime_getBrowserInfo.js": {
    "port": "firefox/test_ext_runtime_getBrowserInfo.py",
    "passed": true,
    "error": null,
-   "failed": []
+   "passing": [
+    "test_01_getBrowserInfo"
+   ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_scripting_mv2.js": {
    "port": "firefox/test_ext_scripting_mv2.py",
    "passed": true,
    "error": null,
-   "failed": []
+   "passing": [
+    "test_01_scripting_enabled_in_mv2"
+   ]
   }
  }
 }

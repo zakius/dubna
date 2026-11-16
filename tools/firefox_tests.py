@@ -17,13 +17,14 @@ tests and its state.
 - `n/a`: it tests a Gecko internal, not WebExtensions behaviour; `reason`
   says which. NOT_APPLICABLE sets these.
 
-A run keeps the state (and `port`, `reason`) of each file already listed,
-unless it is `todo`, so a port or a hand-set `n/a` stays. A file that is no
+A run keeps the state (and `port`, `reason`) of a file already `ported`, or
+`n/a` with a reason of its own (set by hand). A file that NOT_APPLICABLE
+marked follows it again, so a changed rule changes its files. A file that is no
 longer in Firefox's tree is left out, and the run names it.
 
-The API is the namespace that the file name starts with (ALIASES for Firefox's
-own short names), or else the namespace the file calls most (`browser.<ns>.`),
-or else "".
+The API is the namespace that the file name's first words name (ALIASES for
+Firefox's own short names), or else the namespace the file calls most
+(`browser.<ns>.` and `browser.<ns>.<sub>.`), or else "".
 """
 import argparse
 import json
@@ -68,9 +69,7 @@ NOT_APPLICABLE = [
     (r'/webidl-api/|_webidl_', "Gecko's WebIDL bindings of the extension APIs"),
     (r'-remote-false/|remote_mode|_verify_sw_mode|backgroundServiceWorker_enabled_pref'
      r'|serviceworker_pref_disabled', "Gecko's process and background modes, set by prefs"),
-    (r'process_crash|process_alive|processType|process_switch|processswitch'
-     r'|process_isolation|_on_crash|contentscript_in_parent|_fission_',
-     "Gecko's process model"),
+    (r'process_crash|process_alive', "Gecko's extension process and its crash observer"),
     (r'telemetry|_glean', "Firefox's telemetry, which only Mozilla's own code reads"),
     (r'experiment', "experiment_apis, privileged Gecko code that only Mozilla-signed add-ons run"),
     (r'geckoProfiler', "geckoProfiler, a privileged API for Mozilla's profiler"),
@@ -87,12 +86,12 @@ NOT_APPLICABLE = [
     (r'test_WebExtensionContentScript|test_WebExtensionPolicy', "Gecko's WebExtensionPolicy classes"),
     (r'test_csp_validator', "Gecko's CSP validator, called directly; manifests test it as add-ons see it"),
     (r'test_extensionUtils|_ext_contexts\.js|MessageManagerProxy|extensionPreferencesManager'
-     r'|extensionSettingsStore|_debugging_utils|_load_all_api_modules|_ext_ipcBlob',
+     r'|extensionSettingsStore|_debugging_utils|_load_all_api_modules',
      "Gecko's extension modules, called directly"),
     (r'_ext_schemas(_async|_allowed_contexts|_revoke|_roots)?\.js',
      "Gecko's Schemas module, with made-up schemas"),
     (r'contexts_gc|ports_gc|shutdown_cleanup', "Gecko's garbage collection of its own objects"),
-    (r'test_extension_permissions_migrat|permissions_migrate', "Gecko's permission store migration"),
+    (r'test_extension_permissions_migrat', "Gecko's permission store migration"),
     (r'test_locale_converter|test_locale_data', "Gecko's locale classes, called directly"),
     (r'QuarantinedDomains', "Mozilla's quarantined domains, set by Mozilla's remote settings"),
     (r'OriginControls\.js|originControls_internals', "Firefox's OriginControls module, called directly"),
@@ -151,16 +150,20 @@ def api(path, text, known):
     """The API that the test file at `path`, with the source `text`, tests."""
     name = re.sub(r'^(test_chrome_ext_|test_ext_|browser_ext_|test_|browser_)', '',
                   Path(path).stem)
-    squashed = squash(name)
     by_name = {squash(ns): ns for ns in known}
     by_name.update({squash(alias): ns for alias, ns in ALIASES.items()})
-    matches = [key for key in by_name if squashed.startswith(key)]
-    if matches:
-        return by_name[max(matches, key=len)]
-    calls = Counter(m for m in re.findall(r'\bbrowser\.(\w+(?:\.\w+)?)\.', text)
-                    if m in known or m.split('.')[0] in known)
-    calls = Counter({(m if m in known else m.split('.')[0]): n for m, n in calls.items()})
-    calls.pop('test', None)
+    # The longest run of the name's first words that names an API:
+    # contentscript_slow_frame is content_scripts, not contentScripts.
+    words = name.split('_')
+    prefixes = [squash('_'.join(words[:n])) for n in range(len(words), 0, -1)]
+    found = next((by_name[prefix] for prefix in prefixes if prefix in by_name), None)
+    if found:
+        return found
+    calls = Counter()
+    for match in re.findall(r'\bbrowser\.(\w+(?:\.\w+)?)\.', text):
+        namespace = match if match in known else match.split('.')[0]
+        if namespace in known and namespace != 'test':
+            calls[namespace] += 1
     return calls.most_common(1)[0][0] if calls else ''
 
 
@@ -174,9 +177,12 @@ def not_applicable(path):
 
 def entry(path, text, known, old):
     """The inventory entry of the test file at `path`, keeping the state of
-    its `old` entry unless that was todo."""
+    its `old` entry when it is ported, or n/a with a reason of its own (set
+    by hand). An n/a with a NOT_APPLICABLE reason follows the rules again."""
     item = {'path': path, 'api': api(path, text, known)}
-    if old and old['state'] != 'todo':
+    by_rule = {reason for _, reason in NOT_APPLICABLE}
+    if old and (old['state'] == 'ported'
+                or (old['state'] == 'n/a' and old.get('reason') not in by_rule)):
         item.update({key: old[key] for key in ('state', 'port', 'reason') if key in old})
         return item
     reason = not_applicable(path)

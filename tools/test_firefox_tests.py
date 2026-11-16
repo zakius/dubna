@@ -39,11 +39,20 @@ class ApiTest(unittest.TestCase):
                              KNOWN | {'devtools'}), 'devtools.inspectedWindow')
         self.assertEqual(api('x/test_ext_dnr_api.js', '', KNOWN), 'declarativeNetRequest')
         self.assertEqual(api('x/test_ext_contentscript_css.js', '', KNOWN), 'content_scripts')
+        # Whole words: contentscript_slow is a manifest content script.
+        self.assertEqual(api('x/test_ext_contentscript_slow_frame.js', '', KNOWN | {'contentScripts'}),
+                         'content_scripts')
+        self.assertEqual(api('x/test_ext_contentScripts_register.js', '', KNOWN | {'contentScripts'}),
+                         'contentScripts')
 
     def test_from_the_calls(self):
         text = 'browser.test.assertEq(1, 1); browser.tabs.query({}); browser.tabs.get(1);'
         self.assertEqual(api('x/test_ext_incognito.js', text + 'browser.runtime.id', KNOWN), 'tabs')
         self.assertEqual(api('x/test_ext_incognito.js', 'browser.test.log("x")', KNOWN), '')
+        # A namespace's calls add up, with those of its events.
+        text = ('browser.runtime.onMessage.addListener(); browser.runtime.sendMessage();'
+                'browser.runtime.connect(); browser.tabs.query(); browser.tabs.get();')
+        self.assertEqual(api('x/test_ext_incognito.js', text, KNOWN), 'runtime')
 
 
 class StateTest(unittest.TestCase):
@@ -73,6 +82,10 @@ class StateTest(unittest.TestCase):
         # A todo entry is classified again.
         todo = {'path': 'x/test_ext_telemetry.js', 'api': '', 'state': 'todo'}
         self.assertEqual(entry('x/test_ext_telemetry.js', '', KNOWN, todo)['state'], 'n/a')
+        # So is an n/a that a rule made, which no rule matches any more.
+        by_rule = {'path': 'x/test_ext_tabs_lazy.js', 'api': 'tabs', 'state': 'n/a',
+                   'reason': "Gecko's process and background modes, set by prefs"}
+        self.assertEqual(entry('x/test_ext_tabs_lazy.js', '', KNOWN, by_rule)['state'], 'todo')
 
 
 if __name__ == '__main__':
