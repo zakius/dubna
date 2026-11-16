@@ -290,7 +290,7 @@ def facts():
         'windows_min': re.search(r'AtLeastWin(\d+)', nsi).group(1),
         'android_min': ANDROID[apk['minSdkVersion']],
         # firefox-add-ons.html's corpus score: the add-ons that reach each level or higher.
-        'addons': str(score['levels']['L0']), 'addons_l1': str(score['levels']['L1']),
+        'addons': str(len(score['addons'])), 'addons_l1': str(score['levels']['L1']),
         'addons_l2': str(score['levels']['L2']), 'addons_l3': str(score['levels']['L3']),
         'addons_date': day(score['date'].replace('-', '')),
         'addons_browser': score['browser'].split(' (')[0],
