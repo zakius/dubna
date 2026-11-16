@@ -5,6 +5,12 @@ line each, from their subjects. Our commit subjects already say what changed
 for the user, so no one writes the notes. Commits that only touch SKIP paths
 (docs, CI, test and dev tooling) are left out.
 
+Notes that touch WebExtensions end with the score of Firefox's own WebExtensions
+tests (webextensions/README.md, "Test score"): how many pass, of all the test
+files that aren't n/a. They touch WebExtensions when a change's subject names
+WebExtensions or Firefox add-ons, or when dubna's webextensions/ changed since
+the previous release (a move of the dubna submodule).
+
 The previous release is the newest tag starting with "v" that HEAD contains.
 Without one, the notes say this is the first release on GitHub, with the last
 LIMIT changes.
@@ -13,8 +19,15 @@ Usage: release_notes.py REPO [--skip PATH...] [--limit N]
 A PATH ending in / is a folder; "*.md" means any Markdown file.
 """
 import argparse
+import json
+import re
 import subprocess
 import sys
+from pathlib import Path
+
+# The score of the dubna tree that holds this file: the browser's submodule.
+TEST_SCORE = Path(__file__).resolve().parent.parent / 'webextensions/score/oganesson-firefox-tests.json'
+WEBEXTENSIONS = re.compile(r'WebExtensions|Firefox add-on', re.IGNORECASE)
 
 
 def git(repo, *args):
@@ -33,7 +46,30 @@ def skipped(path, skip):
     return False
 
 
-def notes(repo, skip, limit):
+def dubna_webextensions_changed(repo, since):
+    """Whether webextensions/ in the repo's dubna submodule changed from the
+    commit `since` to HEAD. False when there is no submodule, or its checkout
+    lacks a commit."""
+    try:
+        old = git(repo, 'rev-parse', f'{since}:dubna').strip()
+        new = git(repo, 'rev-parse', 'HEAD:dubna').strip()
+        changed = git(str(Path(repo, 'dubna')), 'diff', '--name-only', old, new, '--',
+                      'webextensions/')
+    except subprocess.CalledProcessError:
+        return False
+    return changed.strip() != ''
+
+
+def test_score(path):
+    """The Firefox test score's line, or None without a score."""
+    if not path.is_file():
+        return None
+    score = json.loads(path.read_text())
+    return (f"Firefox's WebExtensions tests: {score['passing']} of {score['total']} pass "
+            f"({score['ported']} ported so far), on {score['browser']}, {score['date']}.")
+
+
+def notes(repo, skip, limit, score=TEST_SCORE):
     tags = [t for t in git(repo, 'tag', '--merged', 'HEAD', '--sort=-creatordate', 'v*').split()]
     span = f'{tags[0]}..HEAD' if tags else 'HEAD'
     lines = []
@@ -46,10 +82,19 @@ def notes(repo, skip, limit):
         sha, subject = head.split(' ', 1)
         lines.append(f'- {subject} ({sha})')
     if not tags:
-        return '\n'.join(['First release on GitHub. The latest changes:', '', *lines[:limit]])
-    if not lines:
+        lines = lines[:limit]
+        text = ['First release on GitHub. The latest changes:', '', *lines]
+    elif not lines:
         return f'A rebuild of {tags[0]}, without changes to the browser.'
-    return '\n'.join([f'Changes since {tags[0]}:', '', *lines])
+    else:
+        text = [f'Changes since {tags[0]}:', '', *lines]
+    webextensions = any(WEBEXTENSIONS.search(line) for line in lines)
+    if tags and not webextensions:
+        webextensions = dubna_webextensions_changed(repo, tags[0])
+    score_line = test_score(score)
+    if webextensions and score_line:
+        text += ['', score_line]
+    return '\n'.join(text)
 
 
 def main():
