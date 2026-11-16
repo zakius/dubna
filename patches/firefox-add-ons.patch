@@ -1692,10 +1692,14 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -330,6 +334,14 @@
+@@ -330,6 +334,18 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
++
++    # Firefox add-ons (dubna): Firefox's user agent on addons.mozilla.org.
++    "firefox_amo_user_agent.cc",
++    "firefox_amo_user_agent.h",
 +
 +    # Firefox add-ons (dubna): Firefox's cookieStoreId.
 +    "firefox_cookie_store.cc",
@@ -2255,3 +2259,30 @@
    std::string store_id = parsed_args_->details.store_id.value_or(std::string());
    network::mojom::CookieManager* cookie_manager = ParseStoreCookieManager(
        browser_context(), include_incognito_information(), &store_id, &error);
+--- a/chrome/browser/ui/tabs/tab_features.cc
++++ b/chrome/browser/ui/tabs/tab_features.cc
+@@ -348,6 +348,7 @@
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ #include "chrome/browser/extensions/api/web_navigation/web_navigation_tab_observer.h"
++#include "chrome/browser/extensions/firefox_amo_user_agent.h"
+ #include "chrome/browser/extensions/navigation_extension_enabler.h"
+ #include "chrome/browser/extensions/tab_helper.h"
+ #include "extensions/browser/view_type_utils.h"
+@@ -1127,6 +1128,8 @@
+   }
+   extensions::WebNavigationTabObserver::CreateForWebContents(tab.GetContents());
+   extensions::TabHelper::CreateForWebContents(tab.GetContents());
++  // Firefox add-ons (dubna): Firefox's user agent on addons.mozilla.org.
++  extensions::FirefoxAmoUserAgent::CreateForWebContents(tab.GetContents());
+   navigation_extension_enabler_ =
+       std::make_unique<extensions::NavigationExtensionEnabler>(
+           tab.GetContents());
+@@ -1796,6 +1799,7 @@
+   }
+   extensions::WebNavigationTabObserver::CreateForWebContents(new_contents);
+   extensions::TabHelper::CreateForWebContents(new_contents);
++  extensions::FirefoxAmoUserAgent::CreateForWebContents(new_contents);
+   navigation_extension_enabler_ =
+       std::make_unique<extensions::NavigationExtensionEnabler>(new_contents);
+ #endif
