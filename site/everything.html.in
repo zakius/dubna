@@ -59,6 +59,7 @@ aside a span{font:12px var(--mono);color:var(--faint)}
 .t{font-weight:600;font-size:15px}
 .w{grid-column:1/-1;color:var(--dim);font-size:14px}
 .n{grid-column:1/-1;font-size:13px;color:var(--plan);}
+.more{grid-column:1/-1;font-size:14px}
 .n:before{content:"→ ";color:var(--faint)}
 .meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .b{font:11.5px var(--mono);padding:2px 8px;border-radius:6px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}

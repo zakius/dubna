@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firefox add-ons in oganesson & tennessine</title>
+<meta name="description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine have, compared with Chrome, and how many of the most-used Firefox add-ons run.">
+<meta property="og:title" content="Firefox add-ons in oganesson & tennessine">
+<meta property="og:description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine have, compared with Chrome, and how many of the most-used Firefox add-ons run.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0b10">
+<link rel="canonical" href="https://dubna.zakius.xyz/firefox-add-ons.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23151824%22/%3E%3Ctext x=%2232%22 y=%2244%22 font-family=%22sans-serif%22 font-size=%2232%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23ff9a5a%22%3EOg%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
+  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
+  --yes:#5be3a1;--part:#f4c95d;--no:#c4566a;
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;height:56px;max-width:1240px}
+nav a{text-decoration:none;color:var(--dim);font-size:14px} nav a:hover{color:var(--text)}
+nav b{font-family:var(--mono);white-space:nowrap}
+header{padding:48px 0 28px}
+h1{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.025em;margin:0 0 10px;line-height:1.05}
+h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--dim);margin:0;font-size:17px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat b{display:block;font:700 28px/1.1 var(--mono)}
+.stat span{color:var(--dim);font-size:13px}
+.small{color:var(--faint);font-size:13px;margin-top:10px}
+main{padding:12px 24px 80px}
+.tbl{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+table{border-collapse:collapse;width:100%}
+th,td{padding:12px 14px;text-align:left;border-top:1px solid var(--line);font-size:14.5px;vertical-align:top}
+thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600}
+thead th.us{color:var(--text)}
+th[scope=row]{font-weight:600;width:44%}
+th[scope=row] small{display:block;font-weight:400;color:var(--faint);font-size:12.5px;margin-top:2px}
+td{width:28%}
+td.us{background:rgba(255,255,255,.025)}
+tbody th.grp{background:var(--bg2);font:600 12px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.08em;width:auto}
+code{font:12.5px var(--mono);color:#cfd3e4}
+.d{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
+.d.y{background:var(--yes);box-shadow:0 0 12px rgba(91,227,161,.45)}
+.d.p{background:conic-gradient(var(--part) 0 50%,transparent 0);border:2px solid var(--part)}
+.d.n{border:2px solid var(--no)}
+.c{display:block;font-size:12.5px;color:var(--faint);margin-top:3px;line-height:1.35}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin:16px 0 0;color:var(--dim);font-size:13.5px}
+.notes{margin-top:18px;color:var(--faint);font-size:13px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
+.skip:focus{top:10px}
+a:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
+@media (max-width:700px){
+  .stats{grid-template-columns:1fr 1fr}
+  /* One row per feature: its name across, then the two browsers side by side. */
+  table,tbody{display:block}
+  thead{display:none}
+  tr{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+  th,td{width:auto;padding:10px 12px;font-size:13.5px;border-top:0;overflow-wrap:anywhere}
+  th[scope=row],th.grp{grid-column:1/-1;width:auto;padding-bottom:4px}
+  th.grp{padding-bottom:10px}
+  td:before{content:"Chrome";display:block;font-size:11.5px;color:var(--faint);margin-bottom:3px}
+  td.us:before{content:"oganesson & tennessine"}
+}
+footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1240px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="everything.html">Everything</a></div></nav>
+<header><div class="wrap">
+  <h1>Firefox <em>add-ons</em></h1>
+  <p class="lede">Both browsers run Chrome's extensions. They are also learning Firefox's WebExtensions APIs, one at a time, so that Firefox add-ons run as they do in Firefox. This page lists what Firefox add-ons get beyond Chrome's APIs, and what they don't get yet.</p>
+  <div class="stats">
+    <div class="stat"><b>{{addons}}</b><span>most-used add-ons on addons.mozilla.org that need no account</span></div>
+    <div class="stat"><b>{{addons_l1}}</b><span>install</span></div>
+    <div class="stat"><b>{{addons_l2}}</b><span>start with no missing API</span></div>
+    <div class="stat"><b>{{addons_l3}}</b><span>open their popup and run their content scripts</span></div>
+  </div>
+  <p class="small">Measured on {{addons_browser}}, {{addons_date}}. The list is the 1000 add-ons with the most users, minus those that need an account; the checks are automatic, so an add-on that starts may still miss a feature.</p>
+</div></header>
+
+<main id="main" class="wrap">
+<div class="tbl">
+<table>
+  <thead><tr><th scope="col">Firefox API or behaviour</th><th scope="col" class="us">oganesson &amp; tennessine</th><th scope="col">Chrome</th></tr></thead>
+  <tbody>
+  <tr><th class="grp" colspan="3" scope="colgroup">Installing and loading</th></tr>
+  <tr><th scope="row">Install a downloaded .xpi<small>a click on a .xpi link opens the install prompt</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">on oganesson, with a Gecko ID; AMO's "Add to Firefox" button not yet; on tennessine a download may not reach the prompt yet</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row">The extension ID from the Gecko ID<small>an add-on keeps its ID and storage wherever it loads from</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row">Firefox's manifests load<small>locale files, shortcuts Firefox accepts, versions such as "3.4resigned1", homepage_url from the locale files, declarative_net_request rules without the permission</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">rules without the permission start off, as in Firefox</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">refuses to load them</span></td></tr>
+  <tr><th scope="row">Background pages in Manifest V3<small>background.scripts or background.page, also as modules</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d n"><span class="sr">no</span></i><span class="c">service workers only</span></td></tr>
+  <tr><th scope="row">Event pages with webRequest<small>Manifest V2, "persistent": false</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">refuses to load them</span></td></tr>
+
+  <tr><th class="grp" colspan="3" scope="colgroup">APIs</th></tr>
+  <tr><th scope="row"><code>runtime.getBrowserInfo</code></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>menus</code><small>with item icons and the password, bookmark and tools_menu contexts</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">items show the add-on's icon; those three contexts show no item yet</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">as contextMenus</span></td></tr>
+  <tr><th scope="row"><code>pageAction</code> next to the toolbar action</th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar yet</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">one action only</span></td></tr>
+  <tr><th scope="row"><code>browserAction</code> extras<small>badge text colour, user settings, a windowId in the setters and getters</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Manifest V3's action, without windowId</span></td></tr>
+  <tr><th scope="row"><code>storage.session</code> and <code>scripting</code> in Manifest V2</th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Manifest V3 only</span></td></tr>
+  <tr><th scope="row"><code>contentScripts.register</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no container's cookieStoreId; no wrappedJSObject, cloneInto or exportFunction</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>contextualIdentities</code> and tabs' <code>cookieStoreId</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">no containers</span></td></tr>
+  <tr><th scope="row"><code>cookies</code> with <code>firstPartyDomain</code></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>proxy.onRequest</code> and <code>proxy.onError</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">proxy settings and PAC scripts only</span></td></tr>
+  <tr><th scope="row">Filters on <code>tabs.onUpdated</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">the current-window filter matches no tab yet</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row">A loading tab's URL is about:blank</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">an empty URL</span></td></tr>
+  <tr><th scope="row">Messages to another add-on's Gecko ID</th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row">Firefox's bookmark folder IDs<small>such as "toolbar_____"</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">the bookmarks menu is Other bookmarks</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>browserSettings</code>, <code>privacy.network.peerConnectionEnabled</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>theme</code></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; tennessine reads no theme, as Firefox for Android has none</span></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+
+  <tr><th class="grp" colspan="3" scope="colgroup">Not yet, by how many add-ons use them</th></tr>
+  <tr><th scope="row"><code>commands.update</code> and <code>reset</code><small>21 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>webRequest.filterResponseData</code><small>19 add-ons, uBlock Origin's HTML filters among them</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>sidebarAction</code><small>18 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">sidePanel, a different API</span></td></tr>
+  <tr><th scope="row"><code>tabs.captureTab</code><small>13 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i><span class="c">the visible tab only</span></td></tr>
+  <tr><th scope="row"><code>tabs.hide</code> and <code>show</code><small>7 add-ons, such as Tree Style Tab and Sidebery</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  <tr><th scope="row"><code>sessions</code> tab and window values<small>7 add-ons</small></th><td class="us"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
+  </tbody>
+</table>
+</div>
+<div class="legend" aria-hidden="true"><span><i class="d y"></i>yes</span><span><i class="d p"></i>partly</span><span><i class="d n"></i>no</span></div>
+<p class="notes">Firefox has every row. tennessine has the same patches as oganesson, but installs only the add-ons that addons.mozilla.org lists for Firefox for Android. The counts in "Not yet" are add-ons in the list above. Each change is in the <a href="releases.html">release notes</a>; the technical status, with the next steps, is in dubna's <a href="https://github.com/zakius/dubna/blob/main/webextensions/README.md">WebExtensions README</a>.</p>
+</main>
+
+<footer><div class="wrap">
+  <span>oganesson · tennessine · dubna. Built on Helium, ungoogled-chromium, Vanadium, Titanium, Brave's importer and Chromium. Thank you all.</span>
+  <span>Licenses: oganesson GPL-3.0-only · tennessine GPL-2.0-only · dubna GPL-2.0-only OR GPL-3.0-only.</span>
+</div></footer>
+</body>
+</html>

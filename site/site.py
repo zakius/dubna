@@ -52,12 +52,15 @@ REPOS = {
 }
 # What users see, per repo: a commit touching these may need a site update.
 WATCHED = {
-    'dubna': ['patches', 'src', 'rust', 'README.md'],
+    'dubna': ['patches', 'src', 'rust', 'README.md', 'webextensions/score'],
     'oganesson': ['patches', 'src', 'late', 'linux/late', 'windows/late', 'README.md',
                   'goals.md', 'docs', 'helium', 'linux/helium-linux', 'windows/helium-windows'],
     'tennessine': ['patches', 'src', 'README.md', 'docs'],
 }
-PAGES = ('index.html', 'install.html')
+PAGES = ('index.html', 'install.html', 'firefox-add-ons.html')
+# The longest description an everything.html item may have: past this, the page reads as a
+# wall of text on a phone. Details go on a page of their own, linked with the item's "u".
+WHAT_MAX = 600
 
 
 def env(name):
@@ -225,9 +228,12 @@ def everything(items):
                      f'<div class="t">{e(t)}</div><div class="meta">{badges}</div>'
                      + (f'<div class="w">{e(d["w"])}</div>' if d['w'] else '')
                      + (f'<div class="n">{e(d["n"])}</div>' if d['n'] else '')
+                     + (f'<div class="more"><a href="{e(d["u"])}">More →</a></div>' if d.get('u') else '')
                      + ('' if d['p'].startswith('project:') or '/' not in d['p'] else f'<div class="path">{e(d["p"])}</div>')
                      + '</div>')
         main += '</div></section>\n'
+    long = [d['p'] for d in items if len(d['w']) > WHAT_MAX]
+    assert not long, f'items.json descriptions over {WHAT_MAX} characters: {long}'
     missing = {d['a'] for d in items} - {a for a, _ in AREAS}
     assert not missing, f'items.json areas not in AREAS: {missing}'
     return {'__STATS__': stats, '__CHIPS__': chips, '__TOC__': toc, '__MAIN__': main}
@@ -270,6 +276,7 @@ def facts():
     depends = subprocess.run(['dpkg-deb', '-f', str(deb), 'Depends'], check=True,
                              capture_output=True, text=True).stdout
     nsi = (og / 'windows/helium-windows/installer/helium.nsi').read_text()
+    score = json.loads((DUBNA / 'webextensions/score/oganesson.json').read_text())
     return {
         'og_version': og_version, 'og_date': og_date, 'og_milestone': milestone(og_version),
         'win_version': win_version, 'win_date': win_date, 'win_milestone': milestone(win_version),
@@ -282,6 +289,11 @@ def facts():
                          else 'Debian 12, Ubuntu 22.04 or newer',
         'windows_min': re.search(r'AtLeastWin(\d+)', nsi).group(1),
         'android_min': ANDROID[apk['minSdkVersion']],
+        # firefox-add-ons.html's corpus score: the add-ons that reach each level or higher.
+        'addons': str(score['levels']['L0']), 'addons_l1': str(score['levels']['L1']),
+        'addons_l2': str(score['levels']['L2']), 'addons_l3': str(score['levels']['L3']),
+        'addons_date': day(score['date'].replace('-', '')),
+        'addons_browser': score['browser'].split(' (')[0],
     }
 
 
