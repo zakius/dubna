@@ -308,7 +308,7 @@ def climb_steps():
     e = html.escape
     found = json.loads(subprocess.run(
         ['gh', 'search', 'issues', '--owner', 'zakius', '--label', 'climb', '--state', 'open',
-         '--limit', '500', '--json', 'repository,number,title,url'],
+         '--limit', '500', '--json', 'repository,number,title,url,body'],
         check=True, capture_output=True, text=True).stdout)
     rows = ''
     for issue in sorted(found, key=lambda i: i['title'].lower()):
@@ -318,9 +318,14 @@ def climb_steps():
         repo = issue['repository']['name']
         no = (f'<i class="d n"><span class="sr">no</span></i><span class="c">'
               f'<a href="{e(issue["url"])}">{e(repo)}#{issue["number"]}</a></span>')
-        # An issue in a browser's own repo is that browser's step; dubna's are both's.
-        og = no if repo != 'tennessine' else '<span class="c">–</span>'
-        ts = no if repo != 'oganesson' else '<span class="c">–</span>'
+        # Each climb issue's "**tennessine:**" line says what tennessine gets: "Nothing for
+        # now" or "Never" when it doesn't apply there, "This step is tennessine only" for
+        # a step oganesson doesn't need.
+        says = re.search(r'\*\*tennessine:\*\*\s*(.*)', issue['body'] or '')
+        says = says.group(1).lower() if says else ''
+        dash = '<span class="c">–</span>'
+        og = dash if 'tennessine only' in says else no
+        ts = dash if says.startswith(('nothing', 'never')) else no
         rows += f'  <tr><th scope="row">{e(what)}</th><td class="og">{og}</td><td class="ts">{ts}</td></tr>\n'
     if not rows:
         sys.exit('site.py: no open climb issues for Firefox add-ons on GitHub')
