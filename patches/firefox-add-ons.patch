@@ -1733,6 +1733,15 @@
    ExtensionsBrowserClient* client = ExtensionsBrowserClient::Get();
    bool allow_original = !browser_context->IsOffTheRecord();
    bool allow_incognito =
+@@ -144,6 +154,8 @@
+     cookie.expiration_date = expiration_date;
+   }
+   cookie.store_id = store_id;
++  // Firefox add-ons (dubna): as in Firefox with first-party isolation off.
++  cookie.first_party_domain = std::string();
+ 
+   if (canonical_cookie.PartitionKey()) {
+     base::expected<net::CookiePartitionKey::SerializedCookiePartitionKey,
 --- a/extensions/renderer/bindings/event_emitter.cc
 +++ b/extensions/renderer/bindings/event_emitter.cc
 @@ -44,6 +44,7 @@
@@ -2157,3 +2166,92 @@
    if (extensions::util::IsExtensionDownload(*item) &&
        !extensions::WebstoreInstaller::GetAssociatedApproval(*item) &&
        !profile_->IsOffTheRecord()) {
+--- a/extensions/common/api/cookies.json
++++ b/extensions/common/api/cookies.json
+@@ -37,6 +37,7 @@
+           "sameSite": {"$ref": "SameSiteStatus", "description": "The cookie's same-site status (i.e. whether the cookie is sent with cross-site requests)."},
+           "session": {"type": "boolean", "description": "True if the cookie is a session cookie, as opposed to a persistent cookie with an expiration date."},
+           "expirationDate": {"type": "number", "optional": true, "description": "The expiration date of the cookie as the number of seconds since the UNIX epoch. Not provided for session cookies."},
++          "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain, always \"\"."},
+           "storeId": {"type": "string", "description": "The ID of the cookie store containing this cookie, as provided in getAllCookieStores()."},
+           "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
+         }
+@@ -63,6 +64,7 @@
+         "properties": {
+           "url": {"type": "string", "description": "The URL with which the cookie to access is associated. This argument may be a full URL, in which case any data following the URL path (e.g. the query string) is simply ignored. If host permissions for this URL are not specified in the manifest file, the API call will fail."},
+           "name": {"type": "string", "description": "The name of the cookie to access."},
++          "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
+           "storeId": {"type": "string", "optional": true, "description": "The ID of the cookie store in which to look for the cookie. By default, the current execution context's cookie store will be used."},
+           "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
+         }
+@@ -114,6 +116,7 @@
+               "path": {"type": "string", "optional": true, "description": "Restricts the retrieved cookies to those whose path exactly matches this string."},
+               "secure": {"type": "boolean", "optional": true, "description": "Filters the cookies by their Secure property."},
+               "session": {"type": "boolean", "optional": true, "description": "Filters out session vs. persistent cookies."},
++              "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
+               "storeId": {"type": "string", "optional": true, "description": "The cookie store to retrieve cookies from. If omitted, the current execution context's cookie store will be used."},
+               "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
+             }
+@@ -147,6 +150,7 @@
+               "httpOnly": {"type": "boolean", "optional": true, "description": "Whether the cookie should be marked as HttpOnly. Defaults to false."},
+               "sameSite": {"$ref": "SameSiteStatus", "optional": true, "description": "The cookie's same-site status. Defaults to \"unspecified\", i.e., if omitted, the cookie is set without specifying a SameSite attribute."},
+               "expirationDate": {"type": "number", "optional": true, "description": "The expiration date of the cookie as the number of seconds since the UNIX epoch. If omitted, the cookie becomes a session cookie."},
++              "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", and a cookie can't be set with another value."},
+               "storeId": {"type": "string", "optional": true, "description": "The ID of the cookie store in which to set the cookie. By default, the cookie is set in the current execution context's cookie store."},
+               "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
+             }
+--- a/extensions/browser/api/cookies/cookies_api.cc
++++ b/extensions/browser/api/cookies/cookies_api.cc
+@@ -308,6 +308,12 @@
+     return RespondNow(Error(std::move(error)));
+   }
+ 
++  // Firefox add-ons (dubna): no cookie has a first-party domain but "".
++  if (!parsed_args_->details.first_party_domain.value_or(std::string())
++           .empty()) {
++    return RespondNow(WithArguments(base::Value()));
++  }
++
+   std::string store_id = parsed_args_->details.store_id.value_or(std::string());
+   network::mojom::CookieManager* cookie_manager = ParseStoreCookieManager(
+       browser_context(), include_incognito_information(), &store_id, &error);
+@@ -406,6 +412,12 @@
+     return RespondNow(Error(std::move(error)));
+   }
+ 
++  // Firefox add-ons (dubna): no cookie has a first-party domain but "".
++  if (!parsed_args_->details.first_party_domain.value_or(std::string())
++           .empty()) {
++    return RespondNow(ArgumentList(api::cookies::GetAll::Results::Create({})));
++  }
++
+   std::string store_id = parsed_args_->details.store_id.value_or(std::string());
+   network::mojom::CookieManager* cookie_manager = ParseStoreCookieManager(
+       browser_context(), include_incognito_information(), &store_id, &error);
+@@ -510,6 +522,13 @@
+     return RespondNow(Error(std::move(error)));
+   }
+ 
++  // Firefox add-ons (dubna): no cookie has a first-party domain but "".
++  if (!parsed_args_->details.first_party_domain.value_or(std::string())
++           .empty()) {
++    return RespondNow(
++        Error("firstPartyDomain must be \"\": first-party isolation is off"));
++  }
++
+   std::string store_id = parsed_args_->details.store_id.value_or(std::string());
+   network::mojom::CookieManager* cookie_manager = ParseStoreCookieManager(
+       browser_context(), include_incognito_information(), &store_id, &error);
+@@ -692,6 +711,12 @@
+     return RespondNow(Error(std::move(error)));
+   }
+ 
++  // Firefox add-ons (dubna): no cookie has a first-party domain but "".
++  if (!parsed_args_->details.first_party_domain.value_or(std::string())
++           .empty()) {
++    return RespondNow(WithArguments(base::Value()));
++  }
++
+   std::string store_id = parsed_args_->details.store_id.value_or(std::string());
+   network::mojom::CookieManager* cookie_manager = ParseStoreCookieManager(
+       browser_context(), include_incognito_information(), &store_id, &error);
