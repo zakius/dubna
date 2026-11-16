@@ -1692,7 +1692,7 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -330,6 +334,10 @@
+@@ -330,6 +334,14 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -1700,6 +1700,10 @@
 +    # Firefox add-ons (dubna): Firefox's cookieStoreId.
 +    "firefox_cookie_store.cc",
 +    "firefox_cookie_store.h",
++
++    # Firefox add-ons (dubna): a downloaded .xpi installs.
++    "firefox_xpi_installer.cc",
++    "firefox_xpi_installer.h",
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
@@ -2130,3 +2134,26 @@
    if (allow_file_access_.has_value()) {
      allow_file_access = *allow_file_access_;
    } else if (prefs->HasAllowFileAccessSetting(id)) {
+--- a/chrome/browser/download/chrome_download_manager_delegate.cc
++++ b/chrome/browser/download/chrome_download_manager_delegate.cc
+@@ -144,6 +144,7 @@
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ #include "chrome/browser/extensions/api/downloads/downloads_api.h"
++#include "chrome/browser/extensions/firefox_xpi_installer.h"
+ #include "extensions/browser/crx_installer.h"
+ #include "extensions/browser/extension_util.h"
+ #include "extensions/browser/webstore_installer.h"
+@@ -1169,6 +1170,12 @@
+     DownloadItem* item,
+     content::DownloadOpenDelayedCallback callback) {
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  // Firefox add-ons (dubna): a downloaded .xpi installs.
++  if (!profile_->IsOffTheRecord() &&
++      extensions::InstallXpiDownload(profile_, *item)) {
++    return true;
++  }
++
+   if (extensions::util::IsExtensionDownload(*item) &&
+       !extensions::WebstoreInstaller::GetAssociatedApproval(*item) &&
+       !profile_->IsOffTheRecord()) {
