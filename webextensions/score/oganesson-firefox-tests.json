@@ -1,10 +1,20 @@
 {
- "date": "2026-11-16",
+ "date": "2026-11-17",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 4,
- "ported": 35,
+ "ported": 36,
  "total": 843,
  "tests": {
+  "browser/components/extensions/test/browser/browser_ext_contextMenus.js": {
+   "port": "firefox/browser_ext_contextMenus.py",
+   "passed": false,
+   "error": "FAIL: test_02 (firefox.browser_ext_contextMenus.ContextMenusTest.test_02): AssertionError: 0 != 1 : contextMenu item for password input element was found (context=password)",
+   "passing": [
+    "test_01",
+    "test_bookmark_context_requires_permission",
+    "test_remove_all_with_two_extensions"
+   ]
+  },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
    "port": "firefox/browser_ext_contextMenus_checkboxes.py",
    "passed": false,
@@ -98,7 +108,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://fkelfflciknbjfpdmhalkcahckhn",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://dmdklmfaomflmkbefbihhkdajlei",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -186,7 +196,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://dbghfopkfimdgjfjfeolbcckalebfmck/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://pcleglkcmolgcdblmamgcpjdmgdmkdgf/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
