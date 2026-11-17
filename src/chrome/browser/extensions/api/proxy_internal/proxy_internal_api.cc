@@ -4,6 +4,7 @@
 #include "chrome/browser/extensions/api/proxy_internal/proxy_internal_api.h"
 
 #include <algorithm>
+#include <optional>
 #include <utility>
 
 #include "base/no_destructor.h"
@@ -136,12 +137,14 @@ std::optional<net::ProxyChain> ReadProxy(const base::Value& value,
 // Applies a listener's answer to `current`, the proxies decided so far, as
 // Firefox's createProxyInfoFromData() does: null is a direct connection; else
 // the answer's proxies in turn, one ProxyInfo or a list of them, up to a
-// null, which ends them, or a direct one, which hands over to what was
-// decided before, as the end of the list also does. nullopt in `current` is
-// the browser's own settings. False, with Firefox's message in `error`, for
-// an answer it refuses, which changes nothing.
+// null, which ends them. A direct one hands over to what was decided before,
+// as the end of the list does; when that is a direct connection (Firefox's
+// null defaultProxyInfo), the end of the list hands over to nothing, and a
+// direct one is a direct connection, after which the list goes on. False,
+// with Firefox's message in `error`, for an answer it refuses, which changes
+// nothing.
 bool ApplyAnswer(const base::Value& answer,
-                 std::optional<net::ProxyList>& current,
+                 net::ProxyList& current,
                  std::string* error) {
   net::ProxyList proxies;
   if (answer.is_none()) {
@@ -157,6 +160,8 @@ bool ApplyAnswer(const base::Value& answer,
     single.Append(answer.Clone());
     items = &single;
   }
+  const bool decided =
+      !current.IsEmpty() && !(current.size() == 1 && current.First().is_direct());
   bool hand_over = true;
   for (const base::Value& item : *items) {
     if (item.is_none()) {
@@ -167,20 +172,13 @@ bool ApplyAnswer(const base::Value& answer,
     if (!chain) {
       return false;
     }
-    if (chain->is_direct()) {
+    if (chain->is_direct() && decided) {
       break;
     }
     proxies.AddProxyChain(std::move(*chain));
   }
-  if (hand_over) {
-    if (!current) {
-      // The browser's own settings stay, or come after none of these.
-      if (!proxies.IsEmpty()) {
-        current = std::move(proxies);
-      }
-      return true;
-    }
-    for (const net::ProxyChain& chain : current->AllChains()) {
+  if (hand_over && decided) {
+    for (const net::ProxyChain& chain : current.AllChains()) {
       proxies.AddProxyChain(chain);
     }
   }
@@ -226,10 +224,10 @@ struct FirefoxProxyRequests::Request {
   GURL url;
   bool incognito = false;
   // The add-ons still to ask, the one asked now, and the proxies decided so
-  // far, nullopt for the browser's own settings.
+  // far, at first the browser's own.
   std::vector<ExtensionId> left;
   ExtensionId asked;
-  std::optional<net::ProxyList> proxies;
+  net::ProxyList proxies;
   Answer answer;
   base::OneShotTimer timeout;
 };
@@ -258,7 +256,7 @@ FirefoxProxyRequests* FirefoxProxyRequests::Get(
 void FirefoxProxyRequests::Shutdown() {
   EventRouter::Get(context_)->UnregisterObserver(this);
   while (!requests_.empty()) {
-    Finish(requests_.begin()->first, std::nullopt);
+    Finish(requests_.begin()->first);
   }
 }
 
@@ -307,10 +305,12 @@ std::vector<ExtensionId> FirefoxProxyRequests::Listeners(
 
 void FirefoxProxyRequests::Ask(content::BrowserContext* context,
                                const GURL& url,
+                               net::ProxyList own,
                                Answer answer) {
   int request_id = next_request_id_++;
   auto request = std::make_unique<Request>();
   request->url = url;
+  request->proxies = std::move(own);
   request->incognito = context->IsOffTheRecord();
   request->left = Listeners(context, url);
   request->answer = std::move(answer);
@@ -321,7 +321,7 @@ void FirefoxProxyRequests::Ask(content::BrowserContext* context,
 void FirefoxProxyRequests::AskNext(int request_id) {
   Request& request = *requests_[request_id];
   if (request.left.empty()) {
-    Finish(request_id, std::move(request.proxies));
+    Finish(request_id);
     return;
   }
   request.asked = request.left.front();
@@ -379,10 +379,10 @@ void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
   AskNext(request_id);
 }
 
-void FirefoxProxyRequests::Finish(int request_id,
-                                  std::optional<net::ProxyList> proxies) {
+void FirefoxProxyRequests::Finish(int request_id) {
   auto it = requests_.find(request_id);
   Answer answer = std::move(it->second->answer);
+  net::ProxyList proxies = std::move(it->second->proxies);
   requests_.erase(it);
   std::move(answer).Run(std::move(proxies));
 }

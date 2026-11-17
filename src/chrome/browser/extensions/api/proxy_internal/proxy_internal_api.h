@@ -6,7 +6,6 @@
 
 #include <map>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -33,8 +32,8 @@ namespace extensions {
 class FirefoxProxyRequests : public BrowserContextKeyedAPI,
                              public EventRouter::Observer {
  public:
-  // The proxies to try in turn, or nullopt when no add-on answered.
-  using Answer = base::OnceCallback<void(std::optional<net::ProxyList>)>;
+  // The proxies to try in turn.
+  using Answer = base::OnceCallback<void(net::ProxyList)>;
 
   explicit FirefoxProxyRequests(content::BrowserContext* context);
   FirefoxProxyRequests(const FirefoxProxyRequests&) = delete;
@@ -56,7 +55,12 @@ class FirefoxProxyRequests : public BrowserContextKeyedAPI,
 
   // Asks the listening add-ons for the proxy of a request of `context` to
   // `url`. `answer` runs once, at the latest when the service shuts down.
-  void Ask(content::BrowserContext* context, const GURL& url, Answer answer);
+  // `own` is the browser's own proxies for it, which the first answer builds
+  // on, as in Firefox.
+  void Ask(content::BrowserContext* context,
+           const GURL& url,
+           net::ProxyList own,
+           Answer answer);
 
   // The answers of `extension_id`'s listeners to request `request_id`, in
   // their order, each Firefox's ProxyInfo, a list of them or null; and the
@@ -87,7 +91,7 @@ class FirefoxProxyRequests : public BrowserContextKeyedAPI,
   std::vector<ExtensionId> Listeners(content::BrowserContext* context,
                                      const GURL& url) const;
   void AskNext(int request_id);
-  void Finish(int request_id, std::optional<net::ProxyList> proxies);
+  void Finish(int request_id);
   void DispatchError(const ExtensionId& extension_id,
                      const std::string& message);
 

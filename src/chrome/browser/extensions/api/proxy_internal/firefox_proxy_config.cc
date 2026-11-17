@@ -4,7 +4,6 @@
 #include "chrome/browser/extensions/api/proxy_internal/firefox_proxy_config.h"
 
 #include <map>
-#include <optional>
 #include <utility>
 
 #include "base/base64.h"
@@ -127,33 +126,25 @@ class ConfigService : public net::ProxyConfigService,
     }
   }
 
-  // Asks the add-ons for the proxy of a request to `url`.
+  // Asks the add-ons for the proxy of a request to `url`, building on the
+  // browser's own.
   void Resolve(const GURL& url,
                base::OnceCallback<void(const net::ProxyInfo&)> callback) {
+    net::ProxyInfo own = Fallback(url);
     FirefoxProxyRequests* requests = FirefoxProxyRequests::Get(context_);
     if (!requests) {
-      std::move(callback).Run(Fallback(url));
+      std::move(callback).Run(own);
       return;
     }
-    requests->Ask(context_, url,
-                  base::BindOnce(&ConfigService::OnAnswer,
-                                 weak_factory_.GetWeakPtr(), url,
-                                 std::move(callback)));
+    requests->Ask(context_, url, own.proxy_list(),
+                  base::BindOnce(&ConfigService::OnAnswer, std::move(callback)));
   }
 
  private:
-  static void OnAnswer(base::WeakPtr<ConfigService> self,
-                       const GURL& url,
-                       base::OnceCallback<void(const net::ProxyInfo&)> callback,
-                       std::optional<net::ProxyList> proxies) {
+  static void OnAnswer(base::OnceCallback<void(const net::ProxyInfo&)> callback,
+                       net::ProxyList proxies) {
     net::ProxyInfo info;
-    if (proxies) {
-      info.UseProxyList(*proxies);
-    } else if (self) {
-      info = self->Fallback(url);
-    } else {
-      info.UseDirect();
-    }
+    info.UseProxyList(proxies);
     std::move(callback).Run(info);
   }
 
