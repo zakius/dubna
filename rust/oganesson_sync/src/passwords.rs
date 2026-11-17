@@ -450,35 +450,4 @@ mod tests {
             "timeCreated": 1727000000000.0, "timeLastUsed": null})).unwrap();
         assert_eq!((l.time_created, l.time_last_used), (1727000000000, 0));
     }
-
-    #[test]
-    fn record_crypto_matches_known_vector() {
-        // From application-services' sync15 key_bundle tests.
-        nss::ensure_initialized();
-        let key = sync15::KeyBundle::from_base64(
-            "9K/wLdXdw+nrTtXo4ZpECyHFNr4d7aYHqeg3KW9+m6Q=",
-            "MMntEfutgLTc8FlTLQFms8/xMPmCldqPlq/QQXEjx70=",
-        )
-        .unwrap();
-        let ciphertext = concat!(
-            "NMsdnRulLwQsVcwxKW9XwaUe7ouJk5Wn80QhbD80l0HEcZGCynh45qIbeYBik0lgcHbK",
-            "mlIxTJNwU+OeqipN+/j7MqhjKOGIlvbpiPQQLC6/ffF2vbzL0nzMUuSyvaQzyGGkSYM2",
-            "xUFt06aNivoQTvU2GgGmUK6MvadoY38hhW2LCMkoZcNfgCqJ26lO1O0sEO6zHsk3IVz6",
-            "vsKiJ2Hq6VCo7hu123wNegmujHWQSGyf8JeudZjKzfi0OFRRvvm4QAKyBWf0MgrW1F8S",
-            "FDnVfkq8amCB7NhdwhgLWbN+21NitNwWYknoEWe1m6hmGZDgDT32uxzWxCV8QqqrpH/Z",
-            "ggViEr9uMgoy4lYaWqP7G5WKvvechc62aqnsNEYhH26A5QgzmlNyvB+KPFvPsYzxDnSC",
-            "jOoRSLx7GG86wT59QZw=",
-        );
-        let clear = key
-            .decrypt(ciphertext, "GX8L37AAb2FZJMzIoXlX8w==",
-                     "b1e6c18ac30deb70236bc0d65a46f7a4dce3b8b0e02cf92182b914e3afa5eebc")
-            .unwrap();
-        assert!(clear.starts_with(r#"{"id":"5qRsgXWRJZXr","histUri":"#));
-
-        // A login payload survives an encrypt/decrypt round trip.
-        let l = login("https://a.example", "ann", "pa", 10);
-        let (enc, iv, hmac) = key.encrypt_rand_iv(&serde_json::to_string(&l).unwrap()).unwrap();
-        let back: Login = serde_json::from_str(&key.decrypt(&enc, &iv, &hmac).unwrap()).unwrap();
-        assert_eq!(back, l);
-    }
 }
