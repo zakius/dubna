@@ -57,7 +57,7 @@
   {"path": "browser/components/extensions/test/browser/browser_ext_contentscript_incognito.js", "api": "content_scripts", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_contentscript_nontab_connect.js", "api": "content_scripts", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_contentscript_sender_url.js", "api": "content_scripts", "state": "todo"},
-  {"path": "browser/components/extensions/test/browser/browser_ext_contextMenus.js", "api": "contextMenus", "state": "todo"},
+  {"path": "browser/components/extensions/test/browser/browser_ext_contextMenus.js", "api": "contextMenus", "state": "ported", "port": "firefox/browser_ext_contextMenus.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_contextMenus_bookmarks.js", "api": "contextMenus", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js", "api": "contextMenus", "state": "ported", "port": "firefox/browser_ext_contextMenus_checkboxes.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_contextMenus_commands.js", "api": "contextMenus", "state": "ported", "port": "firefox/browser_ext_contextMenus_commands.py"},
