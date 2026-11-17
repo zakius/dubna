@@ -739,6 +739,7 @@ mod tests {
     #[test]
     fn a_kept_container_goes_up_again() {
         // Firefox deleted Work; the user keeps it here.
+        nss::ensure_initialized();
         let uuid = "a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d";
         let local: Local = serde_json::from_value(json!({
             "containers": [{"id": "work", "name": "Work", "icon": "briefcase", "color": "orange"}]}))
