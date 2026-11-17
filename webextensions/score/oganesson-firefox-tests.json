@@ -2,7 +2,7 @@
  "date": "2026-11-17",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 4,
- "ported": 36,
+ "ported": 40,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_contextMenus.js": {
@@ -45,10 +45,22 @@
    "error": "FAIL: test_srcUrl_of_redirected_image (firefox.browser_ext_contextMenus_srcUrl_redirect.ContextMenusSrcUrlRedirectTest.test_srcUrl_of_redirected_image): AssertionError: 0 != 1 : Only one menu item should have been matched",
    "passing": []
   },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_targetUrlPatterns.js": {
+   "port": "firefox/browser_ext_contextMenus_targetUrlPatterns.py",
+   "passed": false,
+   "error": "FAIL: test_01_unsupported_schemes (firefox.browser_ext_contextMenus_targetUrlPatterns.ContextMenusTargetUrlPatternsTest.test_01_unsupported_schemes): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of",
+   "passing": []
+  },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_uninstall.js": {
    "port": "firefox/browser_ext_contextMenus_uninstall.py",
    "passed": false,
    "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_uninstall.ContextMenusUninstallTest.test_01): AssertionError: 0 != 1 : the top level extension menu item exists",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_urlPatterns.js": {
+   "port": "firefox/browser_ext_contextMenus_urlPatterns.py",
+   "passed": false,
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_urlPatterns.ContextMenusUrlPatternsTest.test_01): AssertionError: browser.test: The menu item for label targetUrlPatterns-patternDoesNotMatch-contextAll was correctly not shown - Expected: 0, Actual: 1 | The menu item for label documentUrlPatterns-patt",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
@@ -58,6 +70,18 @@
    "passing": [
     "test_03_remove_error"
    ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_viewType.js": {
+   "port": "firefox/browser_ext_menus_viewType.py",
+   "passed": false,
+   "error": "FAIL: test_01_extension_tab_view_type (firefox.browser_ext_menus_viewType.MenusViewTypeTest.test_01_extension_tab_view_type): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'ad",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_visible.js": {
+   "port": "firefox/browser_ext_menus_visible.py",
+   "passed": false,
+   "error": "FAIL: test_01_visible_false (firefox.browser_ext_menus_visible.MenusVisibleTest.test_01_visible_false): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'addListener\\')\", source:",
+   "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated.js": {
    "port": "firefox/browser_ext_tabs_onUpdated.py",
@@ -108,7 +132,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://dmdklmfaomflmkbefbihhkdajlei",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://jfijojoepfpeihnamngnlnhkfphk",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -196,7 +220,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://pcleglkcmolgcdblmamgcpjdmgdmkdgf/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://amffcchjmjalllblpiocjnegmcgifjfm/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
