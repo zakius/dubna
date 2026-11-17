@@ -2279,6 +2279,28 @@
 },
 {
 "b": "og",
+"o": "oganesson",
+"a": "Fingerprinting",
+"p": "oganesson/core/noise-site-rules",
+"w": "The Fingerprinting protection switch becomes the default for every site, so a site's own rule wins over it both ways: the protection can be on for a few sites only, or on everywhere but a few. Private windows follow the switch and the sites' rules too. The switch stays off by default, and a profile that had it on keeps it on.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Fingerprinting protection per site"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Fingerprinting",
+"p": "oganesson/settings/noise-site-details",
+"w": "Each http and https site's page in Site settings gets a Fingerprinting protection row, so you can turn the protection on or off for that site. Reset permissions clears it with the rest. Turn it off for a site where Cloudflare's Turnstile check keeps looping.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Fingerprinting protection in Site settings"
+},
+{
+"b": "og",
 "o": "Helium",
 "a": "Settings & flags",
 "p": "helium/settings/network-and-security-page",
