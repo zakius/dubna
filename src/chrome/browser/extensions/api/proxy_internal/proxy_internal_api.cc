@@ -135,23 +135,22 @@ std::optional<net::ProxyChain> ReadProxy(const base::Value& value,
 }
 
 // Applies a listener's answer to `current`, the proxies decided so far, as
-// Firefox's createProxyInfoFromData() does: null is a direct connection; else
-// the answer's proxies in turn, one ProxyInfo or a list of them, up to a
-// null, which ends them. A direct one hands over to what was decided before,
-// as the end of the list does; when that is a direct connection (Firefox's
-// null defaultProxyInfo), the end of the list hands over to nothing, and a
-// direct one is a direct connection, after which the list goes on. False,
-// with Firefox's message in `error`, for an answer it refuses, which changes
-// nothing.
+// Firefox's createProxyInfoFromData() does. nullopt is Firefox's null: a
+// direct connection, with nothing decided. A null answer is that; else the
+// answer's proxies in turn, one ProxyInfo or a list of them, up to a null,
+// which ends them. A direct one hands over to what was decided before, as the
+// end of the list does; with nothing decided, the end of the list adds
+// nothing, and a direct one is a direct connection, after which the list goes
+// on. False, with Firefox's message in `error`, for an answer it refuses,
+// which changes nothing.
 bool ApplyAnswer(const base::Value& answer,
-                 net::ProxyList& current,
+                 std::optional<net::ProxyList>& current,
                  std::string* error) {
-  net::ProxyList proxies;
   if (answer.is_none()) {
-    proxies.AddProxyChain(net::ProxyChain::Direct());
-    current = std::move(proxies);
+    current.reset();
     return true;
   }
+  net::ProxyList proxies;
   base::ListValue single;
   const base::ListValue* items;
   if (answer.is_list()) {
@@ -160,8 +159,6 @@ bool ApplyAnswer(const base::Value& answer,
     single.Append(answer.Clone());
     items = &single;
   }
-  const bool decided =
-      !current.IsEmpty() && !(current.size() == 1 && current.First().is_direct());
   bool hand_over = true;
   for (const base::Value& item : *items) {
     if (item.is_none()) {
@@ -172,20 +169,21 @@ bool ApplyAnswer(const base::Value& answer,
     if (!chain) {
       return false;
     }
-    if (chain->is_direct() && decided) {
+    if (chain->is_direct() && current) {
       break;
     }
     proxies.AddProxyChain(std::move(*chain));
   }
-  if (hand_over && decided) {
-    for (const net::ProxyChain& chain : current.AllChains()) {
+  if (hand_over && current) {
+    for (const net::ProxyChain& chain : current->AllChains()) {
       proxies.AddProxyChain(chain);
     }
   }
   if (proxies.IsEmpty()) {
-    proxies.AddProxyChain(net::ProxyChain::Direct());
+    current.reset();
+  } else {
+    current = std::move(proxies);
   }
-  current = std::move(proxies);
   return true;
 }
 
@@ -224,10 +222,11 @@ struct FirefoxProxyRequests::Request {
   GURL url;
   bool incognito = false;
   // The add-ons still to ask, the one asked now, and the proxies decided so
-  // far, at first the browser's own.
+  // far, at first the browser's own; nullopt for a direct connection, with
+  // nothing decided.
   std::vector<ExtensionId> left;
   ExtensionId asked;
-  net::ProxyList proxies;
+  std::optional<net::ProxyList> proxies;
   Answer answer;
   base::OneShotTimer timeout;
 };
@@ -310,7 +309,9 @@ void FirefoxProxyRequests::Ask(content::BrowserContext* context,
   int request_id = next_request_id_++;
   auto request = std::make_unique<Request>();
   request->url = url;
-  request->proxies = std::move(own);
+  if (own.size() != 1 || !own.First().is_direct()) {
+    request->proxies = std::move(own);
+  }
   request->incognito = context->IsOffTheRecord();
   request->left = Listeners(context, url);
   request->answer = std::move(answer);
@@ -382,7 +383,12 @@ void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
 void FirefoxProxyRequests::Finish(int request_id) {
   auto it = requests_.find(request_id);
   Answer answer = std::move(it->second->answer);
-  net::ProxyList proxies = std::move(it->second->proxies);
+  net::ProxyList proxies;
+  if (it->second->proxies) {
+    proxies = std::move(*it->second->proxies);
+  } else {
+    proxies.AddProxyChain(net::ProxyChain::Direct());
+  }
   requests_.erase(it);
   std::move(answer).Run(std::move(proxies));
 }
