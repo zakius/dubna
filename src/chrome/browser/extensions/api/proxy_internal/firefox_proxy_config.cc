@@ -127,12 +127,13 @@ class ConfigService : public net::ProxyConfigService,
   }
 
   // Asks the add-ons for the proxy of a request to `url`, building on the
-  // browser's own.
+  // browser's own. As in Firefox, a host on the browser's proxy exceptions
+  // goes direct, without them.
   void Resolve(const GURL& url,
                base::OnceCallback<void(const net::ProxyInfo&)> callback) {
     net::ProxyInfo own = Fallback(url);
     FirefoxProxyRequests* requests = FirefoxProxyRequests::Get(context_);
-    if (!requests) {
+    if (!requests || own.did_bypass_proxy()) {
       std::move(callback).Run(own);
       return;
     }
