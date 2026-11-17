@@ -14,7 +14,9 @@
 //! digits of its UUID, and a Firefox record gets a new UUID.
 //!
 //! Card numbers are only in memory in the clear: the store encrypts them with
-//! a key kept in the state, which the browser stores encrypted.
+//! a key kept in the state, which the browser stores encrypted. A card without
+//! a number stays out of the store, from either side: the store encrypts an
+//! empty number to a value it then fails to decrypt, which stops every sync.
 
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -246,6 +248,14 @@ fn delete(store: &Store, kind: Kind, guid: &str) -> Result<()> {
     Ok(())
 }
 
+/// Whether a Firefox card record, `{id, entry: {cc-number, ...}}`, lacks a
+/// number. A tombstone has no `entry`.
+fn numberless(payload: &str) -> bool {
+    let Ok(record) = serde_json::from_str::<Value>(payload) else { return false };
+    let entry = &record["entry"];
+    entry.is_object() && entry["cc-number"].as_str().unwrap_or_default().is_empty()
+}
+
 /// A new browser GUID: a random (version 4) UUID.
 fn new_uuid() -> Result<String> {
     let mut b = [0u8; 16];
@@ -300,12 +310,16 @@ impl AutofillEngine {
         let mut local = HashMap::new();
         for record in snapshot {
             let Some(id) = record["id"].as_str() else { continue };
+            let fields = normalize(kind, record);
+            if matches!(kind, Kind::CreditCards) && fields["cc-number"] == "" {
+                continue;
+            }
             let guid = match guids.get(id) {
                 Some(guid) => guid.to_string(),
                 None => id.replace('-', "").chars().take(12).collect(),
             };
             if !local.contains_key(&guid) {
-                local.insert(guid, (id.to_string(), normalize(kind, record)));
+                local.insert(guid, (id.to_string(), fields));
             }
         }
 
@@ -390,7 +404,10 @@ impl SyncEngine for AutofillEngine {
         self.engine.sync_started()
     }
 
-    fn stage_incoming(&self, inbound: Vec<IncomingBso>, telem: &mut telemetry::Engine) -> Result<()> {
+    fn stage_incoming(&self, mut inbound: Vec<IncomingBso>, telem: &mut telemetry::Engine) -> Result<()> {
+        if matches!(self.kind, Kind::CreditCards) {
+            inbound.retain(|bso| !numberless(&bso.payload));
+        }
         self.engine.stage_incoming(inbound, telem)
     }
 
@@ -490,6 +507,45 @@ mod tests {
         // The state's key reads the number back: the card is unchanged.
         let second = sync(Kind::CreditCards, profile, first["state"].as_str().unwrap(), card);
         assert_eq!(second["ops"], json!([]));
+        remove_stores(profile);
+    }
+
+    #[test]
+    fn cards_without_a_number_stay_out() {
+        nss::ensure_initialized();
+        let dir = std::env::temp_dir().join(format!("og-numberless-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let profile = dir.to_str().unwrap();
+        remove_stores(profile);
+
+        // The browser's: not in the store, and no op deletes it.
+        let local = json!([{"id": "0123abcd-4567-4890-8abc-def012345678", "cc-name": "Ann",
+            "cc-number": "", "cc-exp-month": 12.0, "cc-exp-year": 2030.0}]);
+        let first = sync(Kind::CreditCards, profile, "", local.clone());
+        assert_eq!((first["ops"].clone(), first["count"].clone()), (json!([]), json!(0)));
+
+        // Firefox's: the sync goes on with the others.
+        let args = json!({ "state": first["state"], "local": local });
+        let engine = AutofillEngine::new(Kind::CreditCards, profile, &args).unwrap();
+        let incoming = |id: &str, number: &str| {
+            let entry = json!({"cc-name": "Bo", "cc-number": number, "cc-exp-month": 1,
+                "cc-exp-year": 2031, "cc-type": "visa", "version": 3});
+            let envelope = sync15::bso::IncomingEnvelope {
+                id: Guid::new(id),
+                modified: ServerTimestamp::default(),
+                sortindex: None,
+                ttl: None,
+            };
+            IncomingBso::new(envelope, json!({"id": id, "entry": entry}).to_string())
+        };
+        let mut telem = telemetry::Engine::new("creditcards");
+        let inbound = vec![incoming("numberless00", ""), incoming("withnumber00", "4111111111111111")];
+        engine.sync_started().unwrap();
+        engine.stage_incoming(inbound, &mut telem).unwrap();
+        engine.apply(ServerTimestamp::default(), &mut telem).unwrap();
+        let second = Box::new(engine).finish().unwrap();
+        assert_eq!(second["count"], 1);
+        assert_eq!(second["ops"][0]["cc-number"], "4111111111111111");
         remove_stores(profile);
     }
 }
