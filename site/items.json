@@ -2273,7 +2273,7 @@
 "o": "Helium",
 "a": "Fingerprinting",
 "p": "helium/settings/helium-noise-settings",
-"w": "Adds a \"Fingerprinting protection\" page under Privacy. It has an on/off switch for Helium's noise feature, an explanation, and lists of per-site exceptions. The protection is on by default.",
+"w": "Adds a \"Fingerprinting protection\" page under Privacy. It has an on/off switch for Helium's noise feature, an explanation, and lists of per-site exceptions. Helium has it on by default, oganesson off.",
 "s": "on",
 "n": ""
 },
