@@ -2,7 +2,7 @@
  "date": "2026-11-17",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 4,
- "ported": 40,
+ "ported": 44,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_contextMenus.js": {
@@ -61,6 +61,36 @@
    "port": "firefox/browser_ext_contextMenus_urlPatterns.py",
    "passed": false,
    "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_urlPatterns.ContextMenusUrlPatternsTest.test_01): AssertionError: browser.test: The menu item for label targetUrlPatterns-patternDoesNotMatch-contextAll was correctly not shown - Expected: 0, Actual: 1 | The menu item for label documentUrlPatterns-patt",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus.js": {
+   "port": "firefox/browser_ext_menus.py",
+   "passed": false,
+   "error": "FAIL: test_01_permissions (firefox.browser_ext_menus.MenusTest.test_01_permissions): AssertionError: browser.test: browser.contextMenus unavailable with  'menus' permission - Expected: undefined, Actual: object | browser.menus unavailable with 'contextMenus' permission - Expected: undefined, Actual:",
+   "passing": [
+    "test_05_onclick_frameid"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_accesskey.js": {
+   "port": "firefox/browser_ext_menus_accesskey.py",
+   "passed": false,
+   "error": "FAIL: test_01_accesskeys (firefox.browser_ext_menus_accesskey.MenusAccesskeyTest.test_01_accesskeys): AssertionError: unexpectedly None : the add-on's submenu",
+   "passing": [
+    "test_07_accesskeys_menu_without_accesskeys"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_activeTab.js": {
+   "port": "firefox/browser_ext_menus_activeTab.py",
+   "passed": false,
+   "error": "FAIL: test_02_no_active_tab_for_current_tab (firefox.browser_ext_menus_activeTab.MenusActiveTabTest.test_02_no_active_tab_for_current_tab): AssertionError: browser.test: Promise rejected, expecting rejection to match '/Missing host permission for the tab/', got 'Error: Cannot access contents of the ",
+   "passing": [
+    "test_01_active_tab_for_tab_menu"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_capture_secondary_click.js": {
+   "port": "firefox/browser_ext_menus_capture_secondary_click.py",
+   "passed": false,
+   "error": "FAIL: test_01_buttons (firefox.browser_ext_menus_capture_secondary_click.MenusCaptureSecondaryClickTest.test_01_buttons): AssertionError: [] is not true : the menu has the item",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
@@ -132,7 +162,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://jfijojoepfpeihnamngnlnhkfphk",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://dbmllanephihoabfajiagmpdnpam",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -220,7 +250,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://amffcchjmjalllblpiocjnegmcgifjfm/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://moinmbjkpcjinocaomnnnmeodmklfpim/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
