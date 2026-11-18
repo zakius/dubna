@@ -9,7 +9,8 @@ namespace extensions {
 
 ExtensionFunction::ResponseAction
 PageActionIsShownFunction::RunExtensionAction() {
-  return RespondNow(WithArguments(extension_action_->GetIsVisible(tab_id_)));
+  return RespondNow(WithArguments(
+      extension_action_->GetIsVisibleIgnoringDeclarative(tab_id_)));
 }
 
 }  // namespace extensions

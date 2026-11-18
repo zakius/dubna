@@ -11,8 +11,9 @@
 
 namespace extensions {
 
-// Whether the page action shows in the tab: show() or a declarative rule
-// showed it there.
+// Whether show() showed the page action in the tab. Not a declarative rule's
+// showing, which would tell the extension about pages it has no permission
+// for, as action.isEnabled doesn't.
 class PageActionIsShownFunction : public ExtensionActionFunction {
  public:
   DECLARE_EXTENSION_FUNCTION("pageAction.isShown", UNKNOWN)
