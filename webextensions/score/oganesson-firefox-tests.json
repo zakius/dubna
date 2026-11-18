@@ -1,8 +1,8 @@
 {
  "date": "2026-11-18",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
- "passing": 5,
- "ported": 77,
+ "passing": 7,
+ "ported": 85,
  "total": 843,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
@@ -176,7 +176,7 @@
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://popfgadimjemgkbdjflaaehbhchpnhlb/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://hpeaehbnncanamhhnanegahpnapaedeh/tab.html'",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
@@ -247,6 +247,12 @@
     "test_04_bookmarks_event_page"
    ]
   },
+  "browser/components/extensions/test/xpcshell/test_ext_manifest.js": {
+   "port": "firefox/test_ext_manifest_browser.py",
+   "passed": false,
+   "error": "FAIL: test_01_manifest (firefox.test_ext_manifest_browser.ManifestBrowserTest.test_01_manifest): AssertionError: browser.test: Should have an error for {\"manifest_version\": 3, \"action\": {\"default_icon\": \"\"}}, got Extensions.loadUnpacked: {'code': -32600, 'message': \"Invalid value for 'default_icon'.",
+   "passing": []
+  },
   "browser/components/extensions/test/xpcshell/test_ext_manifest_commands.js": {
    "port": "firefox/test_ext_manifest_commands.py",
    "passed": false,
@@ -293,7 +299,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://mkkdafhmpanagnggbgkkgkikeaff",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://dljhlkmpdobliocjccpgbjpanfeo",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -331,6 +337,14 @@
    "passed": false,
    "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: timed out after 30s waiting for the message 'background-ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError:",
    "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_script_filenames.html": {
+   "port": "firefox/test_ext_script_filenames_tabs.py",
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_tabs_executeScript"
+   ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_background_script_and_service_worker.js": {
    "port": "firefox/test_ext_background_script_and_service_worker.py",
@@ -414,7 +428,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://mcgffmajobgbhlhdfkaiiebablhldchb/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://gebkiohicjelecinpgaedggjhijaaiag/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -467,6 +481,43 @@
    "error": "FAIL: test_01_get_preferred_system_languages (firefox.test_ext_i18n_system.I18nSystemTest.test_01_get_preferred_system_languages): AssertionError: timed out after 30s waiting for the message 'content-loaded'; the add-ons logged: []",
    "passing": []
   },
+  "toolkit/components/extensions/test/xpcshell/test_ext_manifest.js": {
+   "port": "firefox/test_ext_manifest.py",
+   "passed": false,
+   "error": "FAIL: test_01_manifest (firefox.test_ext_manifest.ManifestTest.test_01_manifest): AssertionError: browser.test: Should have an error for \"\" - Actual: Extensions.loadUnpacked: {'code': -32600, 'message': \"Invalid value for 'icons'.\"} | Should have an error for \"\" - Actual: Extensions.loadUnpacked: {'",
+   "passing": [
+    "test_03_mv2_scripting_permission_always_enabled",
+    "test_04_mv3_scripting_permission_always_enabled",
+    "test_10_non_gecko_bss_install",
+    "test_12_load_mv3_theme"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
+   "port": "firefox/test_ext_privacy.py",
+   "passed": false,
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://fnkjnfmmpf",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
+   "port": "firefox/test_ext_privacy_disable.py",
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_disable"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_privacy_nonPersistentCookies.js": {
+   "port": "firefox/test_ext_privacy_nonPersistentCookies.py",
+   "passed": false,
+   "error": "FAIL: test_01_nonPersistentCookies_is_deprecated (firefox.test_ext_privacy_nonPersistentCookies.NonPersistentCookiesTest.test_01_nonPersistentCookies_is_deprecated): AssertionError: timed out after 30s waiting for the message 'background-done'; the add-ons logged: ['\"Uncaught (in promise) TypeError:",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_privacy_update.js": {
+   "port": "firefox/test_ext_privacy_update.py",
+   "passed": false,
+   "error": "FAIL: test_01_privacy_update (firefox.test_ext_privacy_update.PrivacyUpdateTest.test_01_privacy_update): AssertionError: timed out after 15s waiting for the update to start",
+   "passing": []
+  },
   "toolkit/components/extensions/test/xpcshell/test_ext_proxy_bypass_localhost.js": {
    "port": "firefox/test_ext_proxy_bypass_localhost.py",
    "passed": false,
@@ -501,6 +552,16 @@
     "test_01_getBrowserInfo"
    ]
   },
+  "toolkit/components/extensions/test/xpcshell/test_ext_script_filenames.js": {
+   "port": "firefox/test_ext_script_filenames.py",
+   "passed": false,
+   "error": "FAIL: test_03_bg_script_injects_script_with_invalid_ext (firefox.test_ext_script_filenames.ScriptFilenamesTest.test_03_bg_script_injects_script_with_invalid_ext): AssertionError: browser.test: this should not be executed",
+   "passing": [
+    "test_01_content_script_filename_without_extension",
+    "test_02_content_script_filename_with_invalid_extension",
+    "test_04_background_scripts"
+   ]
+  },
   "toolkit/components/extensions/test/xpcshell/test_ext_scripting_mv2.js": {
    "port": "firefox/test_ext_scripting_mv2.py",
    "passed": true,
@@ -528,7 +589,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://kepholheaoojmlpflhhbgkcfpmdd",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://inghndocgipmngonmjfahfkpdmcm",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
