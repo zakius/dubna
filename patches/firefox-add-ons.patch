@@ -839,13 +839,15 @@
  ExtensionAction* ExtensionActionManager::GetExtensionAction(
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
-@@ -10,6 +10,9 @@
+@@ -10,6 +10,11 @@
    sources = [
      "extension_action_api.cc",
      "extension_action_api.h",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
 +    "firefox_browser_action.h",
++    "firefox_page_action_api.cc",
++    "firefox_page_action_api.h",
    ]
  
    public_deps = [
@@ -2413,3 +2415,38 @@
    // Prompt if this is a 'Save As' download.
    if (download_->GetTargetDisposition() ==
        DownloadItem::TARGET_DISPOSITION_PROMPT)
+--- a/chrome/common/extensions/api/page_action.json
++++ b/chrome/common/extensions/api/page_action.json
+@@ -7,7 +7,7 @@
+     "namespace": "pageAction",
+     "description": "Use the <code>chrome.pageAction</code> API to put icons in the main Google Chrome toolbar, to the right of the address bar. Page actions represent actions that can be taken on the current page, but that aren't applicable to all pages. Page actions appear grayed out when inactive.",
+     "compiler_options": {
+-      "implemented_in": "chrome/browser/extensions/api/extension_action/extension_action_api.h"
++      "implemented_in": "chrome/browser/extensions/api/extension_action/firefox_page_action_api.h"
+     },
+     "types": [
+       {
+@@ -44,6 +44,23 @@
+         ],
+         "returns_async": {"name": "callback", "parameters": [], "optional": true}
+       },
++      // Firefox add-ons (dubna): Firefox's pageAction.isShown
++      // (firefox_page_action_api.h).
++      {
++        "name": "isShown",
++        "type": "function",
++        "description": "Whether the page action is shown in a tab.",
++        "parameters": [
++          {
++            "name": "details",
++            "type": "object",
++            "properties": {
++              "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab to query."}
++            }
++          }
++        ],
++        "returns_async": {"name": "callback", "parameters": [{"name": "isShown", "type": "boolean"}]}
++      },
+       {
+         "name": "setTitle",
+         "type": "function",
