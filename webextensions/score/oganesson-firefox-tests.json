@@ -2,9 +2,18 @@
  "date": "2026-11-18",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "passing": 5,
- "ported": 69,
+ "ported": 77,
  "total": 843,
  "tests": {
+  "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
+   "port": "firefox/browser_ext_browserAction_context.py",
+   "passed": false,
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_browserAction_context.BrowserActionContextTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser[action].isEnabled is not a function\", sourc",
+   "passing": [
+    "test_04_badge_color_persistence",
+    "test_08_navigation_clears_data"
+   ]
+  },
   "browser/components/extensions/test/browser/browser_ext_browserAction_getUserSettings.js": {
    "port": "firefox/browser_ext_browserAction_getUserSettings.py",
    "passed": false,
@@ -23,6 +32,12 @@
    "passing": [
     "test_02_action_onUserSettingsChanged"
    ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_browserAction_simple.js": {
+   "port": "firefox/browser_ext_browserAction_simple.py",
+   "passed": false,
+   "error": "FAIL: test_01_browser_action (firefox.browser_ext_browserAction_simple.BrowserActionSimpleTest.test_01_browser_action): AssertionError: browser.test: Reading manifest: Warning processing browser_action.unrecognized_property: An unexpected property was found - Expected: the warning, Actual: []",
+   "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_commands_getAll.js": {
    "port": "firefox/browser_ext_commands_getAll.py",
@@ -161,7 +176,7 @@
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://omfomjdjnpgjfbjlfhmchccddibjmbec/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://iabjonndpfjkhabehhlblgheknghekld/tab.html'",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
@@ -180,6 +195,24 @@
    "port": "firefox/browser_ext_menus_visible.py",
    "passed": false,
    "error": "FAIL: test_01_visible_false (firefox.browser_ext_menus_visible.MenusVisibleTest.test_01_visible_false): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'addListener\\')\", source:",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_context.js": {
+   "port": "firefox/browser_ext_pageAction_context.py",
+   "passed": false,
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_context.PageActionContextTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.pageAction.isShown is not a function\", source: ch",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_simple.js": {
+   "port": "firefox/browser_ext_pageAction_simple.py",
+   "passed": false,
+   "error": "FAIL: test_01_pageAction_basic (firefox.browser_ext_pageAction_simple.PageActionSimpleTest.test_01_pageAction_basic): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_title.js": {
+   "port": "firefox/browser_ext_pageAction_title.py",
+   "passed": false,
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_title.PageActionTitleTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.pageAction.isShown is not a function\", source: chrome",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated.js": {
@@ -220,6 +253,12 @@
    "error": "FAIL: test_01_manifest_commands (firefox.test_ext_manifest_commands.ManifestCommandsTest.test_01_manifest_commands): AssertionError: browser.test: Command+Y: There should be no manifest errors. - Actual: Extensions.loadUnpacked: {'code': -32600, 'message': \"Invalid value for 'commands[1].suggested_k",
    "passing": []
   },
+  "browser/components/extensions/test/xpcshell/test_ext_pageAction_shutdown.js": {
+   "port": "firefox/test_ext_pageAction_shutdown.py",
+   "passed": false,
+   "error": "FAIL: test_01_app_shutdown (firefox.test_ext_pageAction_shutdown.PageActionShutdownTest.test_01_app_shutdown): AssertionError: False is not true : pinnedToUrlbar: the page action shows in the location bar (zakius/oganesson#68)",
+   "passing": []
+  },
   "toolkit/components/extensions/test/browser/browser_ext_themes_static_onUpdated.js": {
    "port": "firefox/browser_ext_themes_static_onUpdated.py",
    "passed": false,
@@ -254,7 +293,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://iaclmjefjhffjbcikaijaopgifga",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://njpkkcjemkgeacmcgfcgcefbghcn",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -285,6 +324,12 @@
    "port": "firefox/test_ext_cookies_permissions_good.py",
    "passed": false,
    "error": "FAIL: test_01_good_cookie_permissions (firefox.test_ext_cookies_permissions_good.CookiesPermissionsGoodTest.test_01_good_cookie_permissions): AssertionError: browser.test: expected number of cookies - Expected: 2, Actual: 3 | got no eviction event | expected two cookies for host - Expected: [('bar',",
+   "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_pageAction_onClicked.html": {
+   "port": "firefox/test_ext_pageAction_onClicked.py",
+   "passed": false,
+   "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: timed out after 30s waiting for the message 'background-ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError:",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_background_script_and_service_worker.js": {
@@ -339,6 +384,15 @@
     "test_02_contentScripts_register"
    ]
   },
+  "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities.js": {
+   "port": "firefox/test_ext_contextual_identities.py",
+   "passed": false,
+   "error": "FAIL: test_02_contextualIdentities_supported_colors_and_icons (firefox.test_ext_contextual_identities.ContextualIdentitiesTest.test_02_contextualIdentities_supported_colors_and_icons): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promi",
+   "passing": [
+    "test_01_contextualIdentities_without_permissions",
+    "test_06_contextualIdentity_extensions_enable_containers"
+   ]
+  },
   "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities_move.js": {
    "port": "firefox/test_ext_contextual_identities_move.py",
    "passed": false,
@@ -360,7 +414,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://bgodhligekkeofmbmbillbbfjjemdklo/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://ebaiodfcjiohbkmepnmagfkhpifflgkg/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -474,7 +528,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://oleagpifgknhphejjhddndahioml",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://noaldcbpbphbdeaoojpndgbllnha",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
