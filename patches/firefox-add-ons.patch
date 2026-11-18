@@ -54,6 +54,9 @@
 # targetUrlPatterns apply whatever its contexts (firefox_menu_items.h).
 # A Firefox add-on's menus item has at most one onclick, the last page's to set
 # it, and removing the item from any page drops it (firefox_menu_items_onclick.h).
+# A click on a Firefox add-on's item with a command (menus.create's command)
+# runs its toolbar action, as the shortcut does, instead of firing onClicked
+# (firefox_menu_clicks.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -1232,7 +1235,21 @@
            }
          ],
          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
-@@ -203,6 +219,14 @@
+@@ -133,6 +149,13 @@
+             "optional": true,
+             "description": "The type of menu item. Defaults to <code>normal</code>."
+           },
++          // Firefox add-ons (dubna): Firefox's command, which a click runs
++          // instead of firing onClicked (firefox_menu_clicks.h).
++          "command": {
++            "type": "string",
++            "optional": true,
++            "nodoc": true
++          },
+           "id": {
+             "type": "string",
+             "optional": true,
+@@ -203,6 +226,14 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -1247,7 +1264,20 @@
            }
          }
        }
-@@ -314,6 +338,13 @@
+@@ -257,6 +288,12 @@
+                 "$ref": "ItemType",
+                 "optional": true
+               },
++              // Firefox add-ons (dubna): as in CreateProperties.
++              "command": {
++                "type": "string",
++                "optional": true,
++                "nodoc": true
++              },
+               "title": {
+                 "type": "string",
+                 "optional": true
+@@ -314,6 +351,13 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -1945,6 +1975,17 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
+@@ -390,6 +410,10 @@
+     "low_trust_policy_install_block_manager.h",
+     "managed_toolbar_pin_mode.h",
+     "menu_icon_loader.h",
++
++    # Firefox add-ons (dubna): what a menus click does in Firefox.
++    "firefox_menu_clicks.cc",
++    "firefox_menu_clicks.h",
+     "menu_manager.cc",
+     "menu_manager.h",
+     "menu_manager_factory.cc",
 --- a/extensions/browser/api/cookies/cookies_helpers.cc
 +++ b/extensions/browser/api/cookies/cookies_helpers.cc
 @@ -22,6 +22,7 @@
@@ -2773,7 +2814,15 @@
      // Launcher item is not allowed for <webview>.
 --- a/chrome/browser/extensions/menu_manager.cc
 +++ b/chrome/browser/extensions/menu_manager.cc
-@@ -36,6 +36,7 @@
+@@ -20,6 +20,7 @@
+ #include "base/values.h"
+ #include "chrome/browser/extensions/extension_menu_icon_loader.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_menu_clicks.h"
+ #include "chrome/browser/extensions/menu_manager_factory.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/common/extensions/api/context_menus.h"
+@@ -36,6 +37,7 @@
  #include "extensions/browser/state_store.h"
  #include "extensions/buildflags/buildflags.h"
  #include "extensions/common/extension.h"
@@ -2781,7 +2830,40 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/mojom/context_type.mojom.h"
  #include "extensions/common/mojom/event_dispatcher.mojom.h"
-@@ -436,6 +437,8 @@
+@@ -74,6 +76,8 @@
+ const char kTitleKey[] = "title";
+ const char kMenuManagerTypeKey[] = "type";
+ const char kVisibleKey[] = "visible";
++// Firefox add-ons (dubna): MenuItem::firefox_command().
++const char kFirefoxCommandKey[] = "firefox_command";
+ 
+ // The time by which to delay writing updated menu items to storage.
+ constexpr int kWriteDelayInSeconds = 1;
+@@ -277,6 +281,11 @@
+   }
+   value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
+   value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
++  // Firefox add-ons (dubna): an event page's item keeps its command after a
++  // restart.
++  if (!firefox_command_.empty()) {
++    value.Set(kFirefoxCommandKey, firefox_command_);
++  }
+   return value;
+ }
+ 
+@@ -347,6 +356,11 @@
+     return nullptr;
+   }
+ 
++  // Firefox add-ons (dubna): see ToValue().
++  if (const std::string* command = value.FindString(kFirefoxCommandKey)) {
++    result->set_firefox_command(*command);
++  }
++
+   // parent_id is filled in from the value, but it might not be valid. It's left
+   // to be validated upon being added (via AddChildItem) to the menu manager.
+   std::unique_ptr<Id> parent_id = std::make_unique<Id>(
+@@ -436,6 +450,8 @@
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -2790,7 +2872,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +468,8 @@
+@@ -465,6 +481,8 @@
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -2799,7 +2881,20 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -864,9 +869,11 @@
+@@ -704,6 +722,12 @@
+   const Extension* extension =
+       registry->enabled_extensions().GetByID(item->extension_id());
+ 
++  // Firefox add-ons (dubna): an item with Firefox's command runs it instead
++  // of firing onClicked, so that an event page isn't woken.
++  if (RunFirefoxMenuCommand(extension, *item, web_contents)) {
++    return;
++  }
++
+   if (item->type() == MenuItem::RADIO)
+     RadioItemSelected(item);
+ 
+@@ -864,9 +888,11 @@
        }
      }
  
@@ -2825,7 +2920,21 @@
  
    // Simple mutator methods.
    void set_title(const std::string& new_title) { title_ = new_title; }
-@@ -270,6 +274,9 @@
+@@ -209,6 +213,13 @@
+     target_url_patterns_ = patterns.Clone();
+   }
+ 
++  // Firefox add-ons (dubna): menus.create's command, which a click runs
++  // instead of firing onClicked (firefox_menu_clicks.h). Empty when none.
++  const std::string& firefox_command() const { return firefox_command_; }
++  void set_firefox_command(const std::string& command) {
++    firefox_command_ = command;
++  }
++
+   // Returns the title with any instances of %s replaced by `selection`. The
+   // result will be no longer than `max_length`.
+   std::u16string TitleWithReplacement(const std::u16string& selection,
+@@ -270,6 +281,9 @@
    // In what contexts should the item be shown?
    ContextList contexts_;
  
@@ -2835,6 +2944,16 @@
    // If this item is a child of another item, the unique id of its parent. If
    // this is a top-level item with no parent, this will be NULL.
    std::unique_ptr<Id> parent_id_;
+@@ -284,6 +298,9 @@
+ 
+   // Any children this item may have.
+   OwnedList children_;
++
++  // Firefox add-ons (dubna): see firefox_command().
++  std::string firefox_command_;
+ };
+ 
+ // This class keeps track of menu items added by extensions.
 --- a/extensions/renderer/api/context_menus_custom_bindings.cc
 +++ b/extensions/renderer/api/context_menus_custom_bindings.cc
 @@ -10,6 +10,7 @@
@@ -2931,3 +3050,31 @@
    }
  
    requestHandlers.removeAll = function() {
+--- a/chrome/browser/extensions/api/context_menus/context_menus_api.cc
++++ b/chrome/browser/extensions/api/context_menus/context_menus_api.cc
+@@ -63,6 +63,12 @@
+                                             &error)) {
+     return RespondNow(Error(std::move(error)));
+   }
++  // Firefox add-ons (dubna): see MenuItem::firefox_command().
++  if (params->create_properties.command) {
++    MenuManager::Get(browser_context())
++        ->GetItemById(id)
++        ->set_firefox_command(*params->create_properties.command);
++  }
+   return RespondNow(NoArguments());
+ }
+ 
+@@ -87,6 +93,12 @@
+                                             item_id, &error)) {
+     return RespondNow(Error(std::move(error)));
+   }
++  // Firefox add-ons (dubna): see MenuItem::firefox_command().
++  if (params->update_properties.command) {
++    MenuManager::Get(browser_context())
++        ->GetItemById(item_id)
++        ->set_firefox_command(*params->update_properties.command);
++  }
+   return RespondNow(NoArguments());
+ }
+ 
