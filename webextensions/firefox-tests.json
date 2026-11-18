@@ -662,7 +662,7 @@
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contentscript_xrays.js", "api": "content_scripts", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contexts.js", "api": "", "state": "n/a", "reason": "Gecko's extension modules, called directly"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contexts_gc.js", "api": "", "state": "n/a", "reason": "Gecko's garbage collection of its own objects"},
-  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities.js", "api": "contextualIdentities", "state": "todo"},
+  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities.js", "api": "contextualIdentities", "state": "ported", "port": "firefox/test_ext_contextual_identities.py"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_contextual_identities_move.js", "api": "contextualIdentities", "state": "ported", "port": "firefox/test_ext_contextual_identities_move.py"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_cookieBehaviors.js", "api": "", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_cookies_errors.js", "api": "cookies", "state": "ported", "port": "firefox/test_ext_cookies_errors.py"},
