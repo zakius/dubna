@@ -4323,12 +4323,33 @@
 "b": "ts",
 "o": "tennessine",
 "a": "Look & layout",
+"p": "tennessine/screen-size-follows-page-zoom",
+"w": "window.screen reports the screen in the page's CSS pixels, as Firefox does, not in Chromium's device-independent pixels, which ignore page zoom. So below 100% zoom, a page that sizes itself from the screen, such as tibia.com's mobile tables, still fills the window.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Look & layout",
 "p": "tennessine/app-icon",
 "w": "tennessine's own app icon, not Titanium's: element 117's outer electron shell, 7 electrons and an empty place for the 8th, which oganesson's icon fills. Settings > App icon chooses indigo (the default), teal, crimson, black, white, or no background in white or black. Choosing one restarts the browser, and some launchers take the icon off the home screen until you add it back. With themed icons on, Android draws it in your wallpaper's colors.",
 "s": "on",
 "n": "",
 "own": 1,
 "t": "Choose the app icon"
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Tabs & windows",
+"p": "tennessine/new-window-side-by-side",
+"w": "Settings > Tabs > Open new windows side by side, on by default: \"Open in new window\" splits the screen with the new window beside the old one. Off, the new window opens full screen as a task of its own in Recents.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Open new windows side by side"
 },
 {
 "b": "ts",
