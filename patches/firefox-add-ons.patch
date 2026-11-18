@@ -43,6 +43,9 @@
 # ChromeMojoProxyResolverFactory answers by asking the add-on
 # (firefox_proxy_config.h); proxy_custom_bindings.js reports its answer.
 # setIcon rejects on the browser's error, as in Firefox (set_icon.js).
+# A same-document navigation to about:blank keeps its document's origin in its
+# UrlInfo, so an add-on's tabs.update() to about:blank#ref on a new tab passes
+# navigation_request.cc's and navigator.cc's site checks.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -2287,6 +2290,22 @@
    navigation_extension_enabler_ =
        std::make_unique<extensions::NavigationExtensionEnabler>(new_contents);
  #endif
+--- a/content/browser/renderer_host/navigation_request.cc
++++ b/content/browser/renderer_host/navigation_request.cc
+@@ -4778,7 +4778,12 @@
+     // navigations.
+     url_info_init.WithOrigin(
+         url::Origin::Create(common_params().base_url_for_data_url));
+-  } else if (GetURL().IsAboutBlank() && GetInitiatorOrigin().has_value()) {
++  } else if (GetURL().IsAboutBlank() && GetInitiatorOrigin().has_value() &&
++             !IsSameDocument()) {
++    // Firefox add-ons (dubna): not for a same-document navigation, whose
++    // document keeps its own origin. An add-on's tabs.update() to
++    // about:blank#ref on a new tab's about:blank, which has no site, would
++    // fail the site checks with the add-on's origin otherwise.
+     // about:blank inherits its origin from the initiator, so ensure that this
+     // is reflected in the UrlInfo.  In the common case, this isn't needed for
+     // process model decisions, since we already leave about:blank in the
 --- a/extensions/renderer/resources/set_icon.js
 +++ b/extensions/renderer/resources/set_icon.js
 @@ -164,8 +164,20 @@
