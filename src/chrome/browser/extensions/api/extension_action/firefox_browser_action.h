@@ -7,8 +7,8 @@
 #include "chrome/browser/extensions/api/extension_action/extension_action_api.h"
 
 // Firefox add-ons (dubna's webextensions/README.md): Firefox's browserAction
-// has the badge text colour and the user settings that Chromium gives only to
-// action, in Manifest V3. They run action's functions.
+// has the badge text colour, the user settings and isEnabled that Chromium
+// gives only to action, in Manifest V3. They run action's functions.
 
 namespace extensions {
 
@@ -28,6 +28,14 @@ class BrowserActionGetBadgeTextColorFunction
 
  protected:
   ~BrowserActionGetBadgeTextColorFunction() override = default;
+};
+
+class BrowserActionIsEnabledFunction : public ActionIsEnabledFunction {
+ public:
+  DECLARE_EXTENSION_FUNCTION("browserAction.isEnabled", UNKNOWN)
+
+ protected:
+  ~BrowserActionIsEnabledFunction() override = default;
 };
 
 class BrowserActionGetUserSettingsFunction

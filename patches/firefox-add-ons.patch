@@ -963,13 +963,13 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -244,6 +250,77 @@
+@@ -244,6 +250,103 @@
              }
            ]
          }
 +      },
-+      // Firefox add-ons (dubna): Firefox's badge text colour and user settings
-+      // (firefox_browser_action.h), as in action.json.
++      // Firefox add-ons (dubna): Firefox's badge text colour, user settings
++      // and isEnabled (firefox_browser_action.h), as in action.json.
 +      {
 +        "name": "setBadgeTextColor",
 +        "type": "function",
@@ -1035,6 +1035,32 @@
 +                  "description": "Whether the browser action is pinned to the toolbar."
 +                }
 +              }
++            }
++          ]
++        }
++      },
++      {
++        "name": "isEnabled",
++        "type": "function",
++        "description": "Whether the browser action is enabled for a tab, a window or globally.",
++        "parameters": [
++          {
++            "choices": [
++              {"type": "integer", "minimum": 0},
++              {"$ref": "TabDetails"}
++            ],
++            "optional": true,
++            "name": "tabId",
++            "description": "The ID of the tab, or the details."
++          }
++        ],
++        "returns_async": {
++          "name": "callback",
++          "parameters": [
++            {
++              "name": "isEnabled",
++              "type": "boolean",
++              "description": "True if the browser action is enabled."
 +            }
 +          ]
 +        }
@@ -1645,6 +1671,22 @@
              "tabId": {
                "type": "integer",
                "optional": true,
+@@ -353,10 +360,13 @@
+       "description": "Indicates whether the extension action is enabled for a tab (or globally if no <code>tabId</code> is provided). Actions enabled using only $(ref:declarativeContent) always return false.",
+       "parameters": [
+         {
+-          "type": "integer",
++          // Firefox add-ons (dubna): a tab ID or Firefox's details.
++          "choices": [
++            {"type": "integer", "minimum": 0},
++            {"$ref": "TabDetails"}
++          ],
+           "optional": true,
+           "name": "tabId",
+-          "minimum": 0,
+           "description": "The ID of the tab for which you want check enabled status."
+         }
+       ],
 --- a/extensions/renderer/set_icon_natives.cc
 +++ b/extensions/renderer/set_icon_natives.cc
 @@ -15,6 +15,8 @@
