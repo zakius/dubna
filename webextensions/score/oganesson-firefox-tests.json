@@ -1,10 +1,43 @@
 {
  "date": "2026-11-18",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
- "passing": 4,
- "ported": 60,
+ "passing": 5,
+ "ported": 69,
  "total": 843,
  "tests": {
+  "browser/components/extensions/test/browser/browser_ext_browserAction_getUserSettings.js": {
+   "port": "firefox/browser_ext_browserAction_getUserSettings.py",
+   "passed": false,
+   "error": "FAIL: test_03_browserAction_getUserSettings_default_area (firefox.browser_ext_browserAction_getUserSettings.BrowserActionGetUserSettingsTest.test_03_browserAction_getUserSettings_default_area): AssertionError: browser.test: isOnToolbar should be true when one of ['navbar', 'tabstrip', 'personaltoolb",
+   "passing": [
+    "test_01_browserAction_getUserSettings",
+    "test_02_action_getUserSettings",
+    "test_05_browserAction_getUserSettings_menupanel_default_area",
+    "test_06_action_getUserSettings_menupanel_default_area"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_browserAction_onUserSettingsChanged.js": {
+   "port": "firefox/browser_ext_browserAction_onUserSettingsChanged.py",
+   "passed": false,
+   "error": "FAIL: test_01_browserAction_onUserSettingsChanged (firefox.browser_ext_browserAction_onUserSettingsChanged.BrowserActionOnUserSettingsChangedTest.test_01_browserAction_onUserSettingsChanged): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (i",
+   "passing": [
+    "test_02_action_onUserSettingsChanged"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_commands_getAll.js": {
+   "port": "firefox/browser_ext_commands_getAll.py",
+   "passed": false,
+   "error": "ERROR: test_01_get_all (firefox.browser_ext_commands_getAll.CommandsGetAllTest.test_01_get_all): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': \"Unknown platform for 'command[2]': android. Valid values are: 'windows', 'mac' 'chromeos', 'linux' and 'default'.\"}",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_commands_onCommand.js": {
+   "port": "firefox/browser_ext_commands_onCommand.py",
+   "passed": false,
+   "error": "FAIL: test_01_user_defined_commands (firefox.browser_ext_commands_onCommand.CommandsOnCommandTest.test_01_user_defined_commands): AssertionError: browser.test: the unrecognized property is warned about - Actual: [] | Expected onCommand listener to fire with the correct name: toggle-ctrl-shift-1 - Ex",
+   "passing": [
+    "test_02_commands_event_page"
+   ]
+  },
   "browser/components/extensions/test/browser/browser_ext_contextMenus.js": {
    "port": "firefox/browser_ext_contextMenus.py",
    "passed": false,
@@ -128,7 +161,7 @@
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://ifplbofcloeapaclfdbfpnggjdcapeib/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://omfomjdjnpgjfbjlfhmchccddibjmbec/tab.html'",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
@@ -181,11 +214,34 @@
     "test_04_bookmarks_event_page"
    ]
   },
+  "browser/components/extensions/test/xpcshell/test_ext_manifest_commands.js": {
+   "port": "firefox/test_ext_manifest_commands.py",
+   "passed": false,
+   "error": "FAIL: test_01_manifest_commands (firefox.test_ext_manifest_commands.ManifestCommandsTest.test_01_manifest_commands): AssertionError: browser.test: Command+Y: There should be no manifest errors. - Actual: Extensions.loadUnpacked: {'code': -32600, 'message': \"Invalid value for 'commands[1].suggested_k",
+   "passing": []
+  },
   "toolkit/components/extensions/test/browser/browser_ext_themes_static_onUpdated.js": {
    "port": "firefox/browser_ext_themes_static_onUpdated.py",
    "passed": false,
    "error": "ERROR: test_01_on_updated (firefox.browser_ext_themes_static_onUpdated.ThemesStaticOnUpdatedTest.test_01_on_updated): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': 'Invalid value for theme colors - colors must be integers'}",
    "passing": []
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_browserAction_getUserSettings.html": {
+   "port": "firefox/test_ext_browserAction_getUserSettings.py",
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_browserAction_getUserSettings",
+    "test_02_action_getUserSettings"
+   ]
+  },
+  "toolkit/components/extensions/test/mochitest/test_ext_browserAction_onUserSettingsChanged.html": {
+   "port": "firefox/test_ext_browserAction_onUserSettingsChanged.py",
+   "passed": false,
+   "error": "FAIL: test_01_browserAction_onUserSettingsChanged (firefox.test_ext_browserAction_onUserSettingsChanged.BrowserActionOnUserSettingsChangedTest.test_01_browserAction_onUserSettingsChanged): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in p",
+   "passing": [
+    "test_02_action_onUserSettingsChanged"
+   ]
   },
   "toolkit/components/extensions/test/mochitest/test_ext_browserSettings_overrideDocumentColors.html": {
    "port": "firefox/test_ext_browserSettings_overrideDocumentColors.py",
@@ -198,7 +254,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://ehbkjbdfkonlphcgghfecojigmoe",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://iaclmjefjhffjbcikaijaopgifga",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -230,6 +286,24 @@
    "passed": false,
    "error": "FAIL: test_01_good_cookie_permissions (firefox.test_ext_cookies_permissions_good.CookiesPermissionsGoodTest.test_01_good_cookie_permissions): AssertionError: browser.test: expected number of cookies - Expected: 2, Actual: 3 | got no eviction event | expected two cookies for host - Expected: [('bar',",
    "passing": []
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_background_script_and_service_worker.js": {
+   "port": "firefox/test_ext_background_script_and_service_worker.py",
+   "passed": false,
+   "error": "ERROR: test_01_page_and_scripts (firefox.test_ext_background_script_and_service_worker.BackgroundScriptAndServiceWorkerTest.test_01_page_and_scripts): RuntimeError: Extensions.loadUnpacked: {'code': -32600, 'message': \"Only one of 'background.page', 'background.scripts', and 'background.service_work",
+   "passing": [
+    "test_05_preferred_environment_when_sw_enabled"
+   ]
+  },
+  "toolkit/components/extensions/test/xpcshell/test_ext_background_type_module.js": {
+   "port": "firefox/test_ext_background_type_module.py",
+   "passed": false,
+   "error": "FAIL: test_04_background_scripts_type_invalid (firefox.test_ext_background_type_module.BackgroundTypeModuleTest.test_04_background_scripts_type_invalid): AssertionError: RuntimeError not raised : Expected install to fail",
+   "passing": [
+    "test_01_background_scripts_type_default",
+    "test_02_background_scripts_type_classic",
+    "test_03_background_scripts_type_module"
+   ]
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_browserSettings.js": {
    "port": "firefox/test_ext_browserSettings.py",
@@ -286,7 +360,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://apchlfmihakejbgbmboebcfalkaalegl/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://bgodhligekkeofmbmbillbbfjjemdklo/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -400,7 +474,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://eciblnhgbklhofpdhghekfbbifnd",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://oleagpifgknhphejjhddndahioml",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
