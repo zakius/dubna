@@ -49,6 +49,9 @@
 # on a new tab passes navigation_request.cc's and navigator.cc's site checks.
 # privacy.network.networkPredictionEnabled set to true turns prediction on: it
 # wrote kDefault, which the upstreams make kDisabled.
+# A Firefox add-on's menus item without contexts shows in all of them, or in
+# its parent's; a run of its radio items may have none checked; and its
+# targetUrlPatterns apply whatever its contexts (firefox_menu_items.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -1190,6 +1193,18 @@
        case api::context_menus::ContextType::kNone:
          NOTREACHED();
      }
+@@ -239,6 +244,11 @@
+                            const MenuItem* item) {
+   bool match = ExtensionContextAndPatternMatch(params, item->contexts(),
+                                                item->target_url_patterns());
++  // Firefox add-ons (dubna): Firefox's targetUrlPatterns
++  // (firefox_menu_items.h).
++  if (item->firefox_add_on()) {
++    match = FirefoxMenuItemMatchesContext(params, *item);
++  }
+   if (!match) {
+     return false;
+   }
 --- a/chrome/common/extensions/api/context_menus.json
 +++ b/chrome/common/extensions/api/context_menus.json
 @@ -42,6 +42,22 @@
@@ -1898,7 +1913,18 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -330,6 +334,18 @@
+@@ -264,6 +268,10 @@
+     "context_menu_helpers.h",
+     "context_menu_matcher.cc",
+     "context_menu_matcher.h",
++
++    # Firefox add-ons (dubna): Firefox's menus items.
++    "firefox_menu_items.cc",
++    "firefox_menu_items.h",
+     "corrupted_extension_reinstaller.cc",
+     "corrupted_extension_reinstaller.h",
+     "corrupted_extension_reinstaller_factory.cc",
+@@ -330,6 +338,18 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -2700,3 +2726,99 @@
    }
    image_source->SetBadge(std::move(badge));
  
+--- a/chrome/browser/extensions/context_menu_helpers.h
++++ b/chrome/browser/extensions/context_menu_helpers.h
+@@ -10,12 +10,14 @@
+ #include "base/notreached.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/types/optional_util.h"
++#include "chrome/browser/extensions/firefox_menu_items.h"
+ #include "chrome/browser/extensions/menu_manager.h"
+ #include "chrome/common/extensions/api/context_menus.h"
+ #include "content/public/browser/browser_context.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension_id.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+ #include "extensions/common/utils/extension_utils.h"
+ 
+@@ -160,6 +162,14 @@
+     contexts = GetContexts(*create_properties.contexts);
+   else
+     contexts.Add(MenuItem::PAGE);
++  // Firefox add-ons (dubna): Firefox's default (firefox_menu_items.h).
++  if (!create_properties.contexts && extension && IsFirefoxAddOn(*extension)) {
++    contexts = FirefoxDefaultMenuContexts(
++        *menu_manager,
++        GetParentId(create_properties, browser_context->IsOffTheRecord(),
++                    item_id.extension_key)
++            .get());
++  }
+ 
+   if (contexts.Contains(MenuItem::LAUNCHER)) {
+     // Launcher item is not allowed for <webview>.
+--- a/chrome/browser/extensions/menu_manager.cc
++++ b/chrome/browser/extensions/menu_manager.cc
+@@ -36,6 +36,7 @@
+ #include "extensions/browser/state_store.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/extension.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+ #include "extensions/common/mojom/context_type.mojom.h"
+ #include "extensions/common/mojom/event_dispatcher.mojom.h"
+@@ -436,6 +437,8 @@
+ 
+   const std::string& extension_id = extension ? extension->id() : "";
+   CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
++  // Firefox add-ons (dubna): see MenuItem::firefox_add_on().
++  item->firefox_add_on_ = extension && IsFirefoxAddOn(*extension);
+ 
+   bool first_item = !context_items_.contains(key);
+   context_items_[key].push_back(std::move(item));
+@@ -465,6 +468,8 @@
+       items_by_id_.contains(child->id())) {
+     return false;
+   }
++  // Firefox add-ons (dubna): see MenuItem::firefox_add_on().
++  child->firefox_add_on_ = parent->firefox_add_on_;
+   MenuItem* child_ptr = child.get();
+   parent->AddChild(std::move(child));
+   items_by_id_[child_ptr->id()] = child_ptr;
+@@ -864,9 +869,11 @@
+       }
+     }
+ 
++    // Firefox add-ons (dubna): a run with none checked stays so, as in
++    // Firefox.
+     if (last_checked != item_list.end())
+       (*last_checked)->SetChecked(true);
+-    else
++    else if (!(*i)->firefox_add_on_)
+       (*i)->SetChecked(true);
+ 
+     i = radio_run_iter;
+--- a/chrome/browser/extensions/menu_manager.h
++++ b/chrome/browser/extensions/menu_manager.h
+@@ -195,6 +195,10 @@
+   const URLPatternSet& target_url_patterns() const {
+     return target_url_patterns_;
+   }
++  // Firefox add-ons (dubna): whether the item is a Firefox add-on's, which
++  // gets Firefox's menus behaviour (firefox_menu_items.h). MenuManager sets
++  // it as it adds the item.
++  bool firefox_add_on() const { return firefox_add_on_; }
+ 
+   // Simple mutator methods.
+   void set_title(const std::string& new_title) { title_ = new_title; }
+@@ -270,6 +274,9 @@
+   // In what contexts should the item be shown?
+   ContextList contexts_;
+ 
++  // Firefox add-ons (dubna): see firefox_add_on().
++  bool firefox_add_on_ = false;
++
+   // If this item is a child of another item, the unique id of its parent. If
+   // this is a top-level item with no parent, this will be NULL.
+   std::unique_ptr<Id> parent_id_;
