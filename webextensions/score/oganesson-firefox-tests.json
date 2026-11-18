@@ -8,7 +8,7 @@
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
    "port": "firefox/browser_ext_browserAction_context.py",
    "passed": false,
-   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_browserAction_context.BrowserActionContextTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser[action].isEnabled is not a function\", sourc",
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_browserAction_context.BrowserActionContextTest.test_01_tab_switch_context): AssertionError: browser.test: Promise rejected, expecting rejection to match '/Invalid tab ID: 3735928559/', got 'TypeError: Error in invocation of browserAction.enable(o",
    "passing": [
     "test_04_badge_color_persistence",
     "test_08_navigation_clears_data"
@@ -176,7 +176,7 @@
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://hpeaehbnncanamhhnanegahpnapaedeh/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://gmdbopimabebbcioimlnpmhpnfejjjab/tab.html'",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
@@ -200,8 +200,10 @@
   "browser/components/extensions/test/browser/browser_ext_pageAction_context.js": {
    "port": "firefox/browser_ext_pageAction_context.py",
    "passed": false,
-   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_context.PageActionContextTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.pageAction.isShown is not a function\", source: ch",
-   "passing": []
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_context.PageActionContextTest.test_01_tab_switch_context): AssertionError: browser.test: image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | Promise rej",
+   "passing": [
+    "test_03_navigation_clears_data"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_pageAction_simple.js": {
    "port": "firefox/browser_ext_pageAction_simple.py",
@@ -212,7 +214,7 @@
   "browser/components/extensions/test/browser/browser_ext_pageAction_title.js": {
    "port": "firefox/browser_ext_pageAction_title.py",
    "passed": false,
-   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_title.PageActionTitleTest.test_01_tab_switch_context): AssertionError: timed out after 30s waiting for the next test; the add-ons logged: ['\"Uncaught (in promise) TypeError: browser.pageAction.isShown is not a function\", source: chrome",
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_title.PageActionTitleTest.test_01_tab_switch_context): AssertionError: browser.test: image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | ",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated.js": {
@@ -299,7 +301,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://dljhlkmpdobliocjccpgbjpanfeo",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://efokejpcephhddgalnnhfnmidgoi",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -335,7 +337,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_pageAction_onClicked.html": {
    "port": "firefox/test_ext_pageAction_onClicked.py",
    "passed": false,
-   "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: timed out after 30s waiting for the message 'background-ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError:",
+   "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_script_filenames.html": {
@@ -428,7 +430,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://gebkiohicjelecinpgaedggjhijaaiag/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://glbkinjhphbkpimjdfeafhigbnmpfgea/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -495,7 +497,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://fnkjnfmmpf",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://dihdfiljll",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -589,7 +591,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://inghndocgipmngonmjfahfkpdmcm",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://koehhfjbmookcdpagmdidoacbbhn",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
