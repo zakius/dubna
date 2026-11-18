@@ -52,6 +52,8 @@
 # A Firefox add-on's menus item without contexts shows in all of them, or in
 # its parent's; a run of its radio items may have none checked; and its
 # targetUrlPatterns apply whatever its contexts (firefox_menu_items.h).
+# A Firefox add-on's menus item has at most one onclick, the last page's to set
+# it, and removing the item from any page drops it (firefox_menu_items_onclick.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -2106,7 +2108,18 @@
  }  // namespace extensions
 --- a/extensions/renderer/BUILD.gn
 +++ b/extensions/renderer/BUILD.gn
-@@ -29,6 +29,8 @@
+@@ -17,6 +17,10 @@
+     "activity_log_converter_strategy.h",
+     "api/context_menus_custom_bindings.cc",
+     "api/context_menus_custom_bindings.h",
++
++    # Firefox add-ons (dubna): an item's onclick runs in one page.
++    "api/firefox_menu_items_onclick.cc",
++    "api/firefox_menu_items_onclick.h",
+     "api/core_extensions_renderer_api_provider.cc",
+     "api/core_extensions_renderer_api_provider.h",
+     "api/declarative_content_hooks_delegate.cc",
+@@ -29,6 +33,8 @@
      "api/file_system_natives.h",
      "api/i18n_hooks_delegate.cc",
      "api/i18n_hooks_delegate.h",
@@ -2115,7 +2128,7 @@
      "api/messaging/gin_port.cc",
      "api/messaging/gin_port.h",
      "api/messaging/message_target.cc",
-@@ -99,6 +101,10 @@
+@@ -99,6 +105,10 @@
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -2822,3 +2835,99 @@
    // If this item is a child of another item, the unique id of its parent. If
    // this is a top-level item with no parent, this will be NULL.
    std::unique_ptr<Id> parent_id_;
+--- a/extensions/renderer/api/context_menus_custom_bindings.cc
++++ b/extensions/renderer/api/context_menus_custom_bindings.cc
+@@ -10,6 +10,7 @@
+ 
+ #include "base/functional/bind.h"
+ #include "base/functional/callback.h"
++#include "extensions/renderer/api/firefox_menu_items_onclick.h"
+ #include "v8/include/v8.h"
+ 
+ namespace {
+@@ -32,6 +33,14 @@
+ void ContextMenusCustomBindings::AddRoutes() {
+   RouteHandlerFunction("GetNextContextMenuId",
+                        base::BindRepeating(&GetNextContextMenuId));
++  // Firefox add-ons (dubna): an item's onclick runs in one page
++  // (firefox_menu_items_onclick.h).
++  RouteHandlerFunction("SetFirefoxOnclickPage",
++                       base::BindRepeating(&SetFirefoxOnclickPage));
++  RouteHandlerFunction("IsFirefoxOnclickPage",
++                       base::BindRepeating(&IsFirefoxOnclickPage));
++  RouteHandlerFunction("ClearFirefoxOnclickPages",
++                       base::BindRepeating(&ClearFirefoxOnclickPages));
+ }
+ 
+ }  // namespace extensions
+--- a/extensions/renderer/resources/context_menus_handlers.js
++++ b/extensions/renderer/resources/context_menus_handlers.js
+@@ -53,6 +53,21 @@
+     return INSTANCEID_NON_WEBVIEW;
+   }
+ 
++  // Firefox add-ons (dubna): an item's onclick runs only in the page that set
++  // it last (firefox_menu_items_onclick.h). A <webview>'s items are its
++  // embedder's alone.
++  function onclickKey(id) {
++    return typeof id + ':' + id;
++  }
++  function setOnclickPage(id, hasOnclick) {
++    if (!isWebview)
++      contextMenuNatives.SetFirefoxOnclickPage(onclickKey(id), hasOnclick);
++  }
++  function isOnclickPage(id) {
++    return isWebview ||
++        contextMenuNatives.IsFirefoxOnclickPage(onclickKey(id));
++  }
++
+   var contextMenus = { __proto__: null };
+   contextMenus.handlers = { __proto__: null };
+ 
+@@ -94,6 +109,9 @@
+ 
+       var id = info.menuItemId;
+       var onclick = contextMenus.handlersForId(instanceId, id)[id];
++      // Firefox add-ons (dubna): see isOnclickPage().
++      if (!isOnclickPage(id))
++        onclick = undefined;
+       if (onclick) {
+         $Function.apply(onclick, null, arguments);
+       }
+@@ -108,6 +126,7 @@
+       contextMenus.ensureListenerSetup();
+       contextMenus.handlersForId(instanceId, id)[id] = onclick;
+     }
++    setOnclickPage(id, !!onclick);
+   }
+ 
+   requestHandlers.create = function() {
+@@ -139,6 +158,7 @@
+ 
+   function removeCallback(instanceId, id) {
+     delete contextMenus.handlersForId(instanceId, id)[id];
++    setOnclickPage(id, false);
+   }
+ 
+   requestHandlers.remove = function() {
+@@ -167,9 +187,11 @@
+     if (onclick) {
+       contextMenus.ensureListenerSetup();
+       contextMenus.handlersForId(instanceId, id)[id] = onclick;
++      setOnclickPage(id, true);
+     } else if (onclick === null) {
+       // When onclick is explicitly set to null, remove the event listener.
+       delete contextMenus.handlersForId(instanceId, id)[id];
++      setOnclickPage(id, false);
+     }
+   }
+ 
+@@ -200,6 +222,8 @@
+ 
+   function removeAllCallback(instanceId) {
+     delete contextMenus.handlers[instanceId];
++    if (!isWebview)
++      contextMenuNatives.ClearFirefoxOnclickPages();
+   }
+ 
+   requestHandlers.removeAll = function() {
