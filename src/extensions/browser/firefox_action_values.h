@@ -38,7 +38,9 @@ class FirefoxActionValues {
   // (extensions/common/firefox_add_on.h) with none set for the tab, its window
   // or globally, Firefox's default, [217, 0, 0, 255]. Chromium has none, and
   // paints a grey badge. The default isn't a global value, so that
-  // ExtensionActionStorageManager still restores the add-on's own.
+  // ExtensionActionStorageManager still restores the add-on's own; a
+  // transparent global colour counts as none, as an add-on's transparent one
+  // does too.
   static SkColor BadgeBackgroundColor(const ExtensionAction& action,
                                       const Extension& extension,
                                       int tab_id);

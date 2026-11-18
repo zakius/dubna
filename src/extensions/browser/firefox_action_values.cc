@@ -70,9 +70,13 @@ SkColor FirefoxActionValues::BadgeBackgroundColor(
     const Extension& extension,
     int tab_id) {
   const std::map<int, SkColor>& values = action.badge_background_color_;
+  // ExtensionActionStorageManager saves an unset global colour as transparent
+  // black, and restores it after a restart, so that counts as none.
+  const SkColor* global =
+      base::FindOrNull(values, ExtensionAction::kDefaultTabId);
   if (!IsFirefoxAddOn(extension) || values.contains(tab_id) ||
       values.contains(FirefoxWindowOfTab(tab_id)) ||
-      values.contains(ExtensionAction::kDefaultTabId)) {
+      (global && SkColorGetA(*global) != SK_AlphaTRANSPARENT)) {
     return action.GetBadgeBackgroundColor(tab_id);
   }
   return SkColorSetARGB(255, 217, 0, 0);
