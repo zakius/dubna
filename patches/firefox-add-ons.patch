@@ -42,6 +42,7 @@
 # add-on listens, ProxyConfigMonitor's settings are a PAC script that
 # ChromeMojoProxyResolverFactory answers by asking the add-on
 # (firefox_proxy_config.h); proxy_custom_bindings.js reports its answer.
+# setIcon rejects on the browser's error, as in Firefox (set_icon.js).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -2286,3 +2287,27 @@
    navigation_extension_enabler_ =
        std::make_unique<extensions::NavigationExtensionEnabler>(new_contents);
  #endif
+--- a/extensions/renderer/resources/set_icon.js
++++ b/extensions/renderer/resources/set_icon.js
+@@ -164,8 +164,20 @@
+ function getSetIconHandler(methodName) {
+   return function(details, successCallback, failureCallback) {
+     var onIconRetrieved = function(iconSpec) {
++      // Firefox add-ons (dubna): the browser's error fails the call, so that
++      // its promise rejects, as in Firefox; a callback still gets it as
++      // runtime.lastError.
++      var onResponse = function() {
++        if (bindingUtil.hasLastError()) {
++          var message = bindingUtil.getLastErrorMessage();
++          bindingUtil.clearLastError();
++          failureCallback(message);
++          return;
++        }
++        successCallback();
++      };
+       bindingUtil.sendRequest(
+-          methodName, [iconSpec, successCallback],
++          methodName, [iconSpec, onResponse],
+           /*options=*/ undefined);
+     };
+     setIcon(details, onIconRetrieved, failureCallback);
