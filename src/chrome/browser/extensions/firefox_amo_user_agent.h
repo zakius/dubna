@@ -8,6 +8,7 @@
 
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
+#include "third_party/blink/public/common/user_agent/user_agent_metadata.h"
 
 namespace extensions {
 
@@ -22,9 +23,10 @@ std::string FirefoxUserAgent();
 // button is a link to the add-on's .xpi, whose download opens the install
 // prompt (firefox_xpi_installer.h). So a tab's pages on AMO get
 // FirefoxUserAgent(), with their subframes and subresources, as in Firefox,
-// and its pages on other hosts keep Chromium's. AMO's page that a redirect
-// or a prerender commits with Chromium's loads again; a redirect from AMO to
-// another host keeps Firefox's.
+// and its pages on other hosts keep Chromium's, or the override that
+// Firefox's replaced, such as Android's desktop site. AMO's page that a
+// redirect or a prerender commits with Chromium's loads again; a redirect
+// from AMO to another host keeps Firefox's.
 class FirefoxAmoUserAgent
     : public content::WebContentsObserver,
       public content::WebContentsUserData<FirefoxAmoUserAgent> {
@@ -41,6 +43,9 @@ class FirefoxAmoUserAgent
   friend class content::WebContentsUserData<FirefoxAmoUserAgent>;
 
   explicit FirefoxAmoUserAgent(content::WebContents* web_contents);
+
+  // The override that Firefox's replaced, put back off AMO.
+  blink::UserAgentOverride replaced_override_;
 
   WEB_CONTENTS_USER_DATA_KEY_DECL();
 };

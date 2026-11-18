@@ -59,6 +59,9 @@
 # (firefox_menu_clicks.h).
 # A Firefox add-on's OnClickData has Firefox's modifiers, button and linkText,
 # and a middle click runs a page menu's item, as in Firefox.
+# Android's tabs get Firefox's user agent on addons.mozilla.org too
+# (firefox_amo_user_agent.h), after the desktop site's observer, whose
+# override comes back off AMO.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -3200,3 +3203,26 @@
    std::unique_ptr<views::MenuItemView> menu_view = menu_adapter_->CreateMenu();
    menu_view_ = menu_view.get();
    menu_runner_ = std::make_unique<views::MenuRunner>(
+--- a/chrome/browser/android/tab_features.cc
++++ b/chrome/browser/android/tab_features.cc
+@@ -186,6 +186,7 @@
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+ #include "chrome/browser/extensions/api/web_navigation/web_navigation_tab_observer.h"
++#include "chrome/browser/extensions/firefox_amo_user_agent.h"
+ #include "chrome/browser/extensions/navigation_extension_enabler.h"
+ #include "chrome/browser/extensions/tab_helper.h"
+ #include "chrome/browser/ui/extensions/extension_side_panel_manager.h"
+@@ -797,6 +798,12 @@
+ 
+   RequestDesktopSiteWebContentsObserverAndroid::CreateForWebContents(
+       web_contents);
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  // Firefox add-ons (dubna): Firefox's user agent on addons.mozilla.org. It
++  // observes navigations after the desktop site's helper, whose choice it
++  // overrides there.
++  extensions::FirefoxAmoUserAgent::CreateForWebContents(web_contents);
++#endif
+ 
+   resource_coordinator::ResourceCoordinatorTabHelper::CreateForWebContents(
+       web_contents);

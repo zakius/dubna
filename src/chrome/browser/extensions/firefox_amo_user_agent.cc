@@ -3,6 +3,9 @@
 
 #include "chrome/browser/extensions/firefox_amo_user_agent.h"
 
+#include <optional>
+#include <string>
+
 #include "base/strings/strcat.h"
 #include "base/version_info/version_info.h"
 #include "build/build_config.h"
@@ -11,6 +14,7 @@
 #include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/reload_type.h"
 #include "content/public/browser/web_contents.h"
+#include "net/http/http_request_headers.h"
 #include "third_party/blink/public/common/user_agent/user_agent_metadata.h"
 #include "url/gurl.h"
 
@@ -64,20 +68,43 @@ FirefoxAmoUserAgent::~FirefoxAmoUserAgent() = default;
 
 void FirefoxAmoUserAgent::DidStartNavigation(
     content::NavigationHandle* navigation) {
-  if (!navigation->IsInPrimaryMainFrame() || navigation->IsSameDocument() ||
-      navigation->IsPageActivation()) {
+  if (!navigation->IsInPrimaryMainFrame() || navigation->IsSameDocument()) {
     return;
   }
+  const blink::UserAgentOverride& current =
+      web_contents()->GetUserAgentOverride();
   if (IsAmo(navigation->GetURL())) {
+    if (navigation->IsPageActivation()) {
+      return;
+    }
+    if (!IsFirefoxUserAgent(current.ua_string_override)) {
+      replaced_override_ = current;
+    }
     // No metadata: Firefox sends no user agent client hints.
     blink::UserAgentOverride ua_override;
     ua_override.ua_string_override = FirefoxUserAgent();
     web_contents()->SetUserAgentOverride(ua_override, false);
     navigation->SetIsOverridingUserAgent(true);
-  } else if (IsFirefoxUserAgent(
-                 web_contents()->GetUserAgentOverride().ua_string_override)) {
-    // A navigation inherits the override from the page it leaves.
-    navigation->SetIsOverridingUserAgent(false);
+  } else if (IsFirefoxUserAgent(current.ua_string_override)) {
+    if (!replaced_override_.ua_string_override.empty()) {
+      // Android's override is the desktop site's user agent, which "Desktop
+      // site" picks for a navigation with SetIsOverridingUserAgent(). It
+      // comes back, also for a page that the back-forward cache restores.
+      web_contents()->SetUserAgentOverride(replaced_override_, false);
+      // The request's header was made with Firefox's override. A request
+      // that overrides gets it again from the override put back.
+      std::optional<std::string> header =
+          navigation->IsPageActivation()
+              ? std::nullopt
+              : navigation->GetRequestHeaders().GetHeader(
+                    net::HttpRequestHeaders::kUserAgent);
+      if (header && IsFirefoxUserAgent(*header)) {
+        navigation->SetIsOverridingUserAgent(true);
+      }
+    } else if (!navigation->IsPageActivation()) {
+      // A navigation inherits the override from the page it leaves.
+      navigation->SetIsOverridingUserAgent(false);
+    }
   }
 }
 
