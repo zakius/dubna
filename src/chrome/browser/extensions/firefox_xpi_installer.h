@@ -6,6 +6,10 @@
 
 class Profile;
 
+namespace base {
+class FilePath;
+}
+
 namespace download {
 class DownloadItem;
 }
@@ -20,6 +24,14 @@ namespace extensions {
 // without a Gecko ID gets a load error: loading it unpacked would skip the
 // prompt. The AMO signature (META-INF/) is ignored.
 bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item);
+
+// Whether the download `item`, saved as `filename`, is a .xpi that
+// InstallXpiDownload() will install, so the browser doesn't ask where to save
+// it: Firefox installs a .xpi from a link without asking, and Android asks
+// where to save every download by default. A "Save link as" download is not.
+bool IsXpiInstall(Profile* profile,
+                  const download::DownloadItem& item,
+                  const base::FilePath& filename);
 
 }  // namespace extensions
 

@@ -2389,3 +2389,27 @@
            /*options=*/ undefined);
      };
      setIcon(details, onIconRetrieved, failureCallback);
+--- a/chrome/browser/download/download_target_determiner.cc
++++ b/chrome/browser/download/download_target_determiner.cc
+@@ -55,6 +55,7 @@
+ #include "url/origin.h"
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++#include "chrome/browser/extensions/firefox_xpi_installer.h"
+ #include "extensions/browser/webstore_installer.h"
+ #include "extensions/common/feature_switch.h"
+ #endif
+@@ -1224,6 +1225,13 @@
+   if (download_prefs_->IsDownloadPathManaged() && !isDefaultPathDlpBlocked)
+     return DownloadConfirmationReason::NONE;
+ 
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  // Firefox add-ons (dubna): a .xpi that installs isn't saved.
++  if (extensions::IsXpiInstall(GetProfile(), *download_, filename)) {
++    return DownloadConfirmationReason::NONE;
++  }
++#endif
++
+   // Prompt if this is a 'Save As' download.
+   if (download_->GetTargetDisposition() ==
+       DownloadItem::TARGET_DISPOSITION_PROMPT)

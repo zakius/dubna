@@ -93,16 +93,29 @@ void OnUnzipped(scoped_refptr<CrxInstaller> installer,
       base::BindOnce(&InstallUnzipped, installer, profile, xpi, unzip_dir));
 }
 
+// As for a .crx: not a file the user chose to save ("Save link as"). And only
+// after a user gesture, as Firefox asks for, so a page can't open the prompt
+// by itself.
+bool IsXpiFromGesture(const download::DownloadItem& item,
+                      const base::FilePath& filename) {
+  return item.GetTargetDisposition() !=
+             download::DownloadItem::TARGET_DISPOSITION_PROMPT &&
+         item.HasUserGesture() &&
+         filename.MatchesExtension(FILE_PATH_LITERAL(".xpi"));
+}
+
 }  // namespace
 
+bool IsXpiInstall(Profile* profile,
+                  const download::DownloadItem& item,
+                  const base::FilePath& filename) {
+  return !profile->IsOffTheRecord() && IsXpiFromGesture(item, filename);
+}
+
 bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item) {
-  // As for a .crx: not a file the user chose to save ("Save link as"). And
-  // only after a user gesture, as Firefox asks for, so a page can't open the
-  // prompt by itself.
-  if (item.GetTargetDisposition() ==
-          download::DownloadItem::TARGET_DISPOSITION_PROMPT ||
-      !item.HasUserGesture() ||
-      !item.GetTargetFilePath().MatchesExtension(FILE_PATH_LITERAL(".xpi"))) {
+  // The name the user sees: on Android the download is a content URI, whose
+  // own path has no extension.
+  if (!IsXpiFromGesture(item, item.GetFileNameToReportUser())) {
     return false;
   }
   scoped_refptr<CrxInstaller> installer =
