@@ -805,10 +805,12 @@
  
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
-@@ -300,6 +300,9 @@
+@@ -300,6 +300,11 @@
      "extension_action_icon_factory.h",
      "extension_action_manager.cc",
      "extension_action_manager.h",
++    "firefox_action_values.cc",
++    "firefox_action_values.h",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
 +    "firefox_page_action.cc",
@@ -878,7 +880,15 @@
  #include "chrome/browser/extensions/browser_window_util.h"
  #include "chrome/browser/extensions/extension_action_dispatcher.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
-@@ -184,6 +186,11 @@
+@@ -38,6 +40,7 @@
+ #include "extensions/browser/extension_event_histogram_value.h"
+ #include "extensions/browser/extension_host.h"
+ #include "extensions/browser/extension_prefs.h"
++#include "extensions/browser/firefox_action_values.h"
+ #include "extensions/browser/icon_util.h"
+ #include "extensions/common/api/extension_action/action_info.h"
+ #include "extensions/common/constants.h"
+@@ -184,6 +187,11 @@
    ExtensionActionManager* manager =
        ExtensionActionManager::Get(browser_context());
    extension_action_ = manager->GetExtensionAction(*extension());
@@ -890,7 +900,7 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
-@@ -194,6 +201,13 @@
+@@ -194,6 +202,13 @@
    // Populates the tab_id_ and details_ members.
    EXTENSION_FUNCTION_VALIDATE(ExtractDataFromArguments());
  
@@ -904,7 +914,19 @@
    // Find the WebContents that contains this tab id if one is required.
    if (tab_id_ != ExtensionAction::kDefaultTabId) {
      content::WebContents* contents_out_param = nullptr;
-@@ -496,7 +510,8 @@
+@@ -475,7 +490,10 @@
+ ExtensionFunction::ResponseAction
+ ActionGetBadgeTextColorFunction::RunExtensionAction() {
+   base::ListValue list;
+-  SkColor color = extension_action_->GetBadgeTextColor(tab_id_);
++  // Firefox add-ons (dubna): Firefox's colour when none is set.
++  SkColor color =
++      FirefoxActionValues::BadgeTextColor(*extension_action_, *extension(),
++                                          tab_id_);
+   list.Append(static_cast<int>(SkColorGetR(color)));
+   list.Append(static_cast<int>(SkColorGetG(color)));
+   list.Append(static_cast<int>(SkColorGetB(color)));
+@@ -496,7 +514,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -1754,7 +1776,15 @@
  
 --- a/extensions/browser/extension_action.cc
 +++ b/extensions/browser/extension_action.cc
-@@ -64,7 +64,12 @@
+@@ -12,6 +12,7 @@
+ #include "base/strings/string_number_conversions.h"
+ #include "extensions/browser/extension_icon_image.h"
+ #include "extensions/browser/extension_icon_placeholder.h"
++#include "extensions/browser/firefox_action_values.h"
+ #include "extensions/common/constants.h"
+ #include "extensions/common/icons/extension_icon_set.h"
+ #include "extensions/common/manifest_handlers/icons_handler.h"
+@@ -64,7 +65,12 @@
  
  template <class T>
  bool HasValue(const std::map<int, T>& map, ExtensionAction::TabID tab_id) {
@@ -1768,6 +1798,15 @@
  }
  
  }  // namespace
+@@ -97,6 +103,8 @@
+   SetIsVisible(kDefaultTabId,
+                default_state_ == ActionInfo::DefaultState::kEnabled);
+   Populate(extension, manifest_data);
++  // Firefox add-ons (dubna): Firefox's defaults (firefox_action_values.h).
++  FirefoxActionValues::SetDefaults(*this, extension);
+ }
+ 
+ ExtensionAction::~ExtensionAction() = default;
 --- a/chrome/common/extensions/api/tabs.json
 +++ b/chrome/common/extensions/api/tabs.json
 @@ -82,7 +82,9 @@
