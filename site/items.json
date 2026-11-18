@@ -4345,7 +4345,7 @@
 "o": "tennessine",
 "a": "Tabs & windows",
 "p": "tennessine/new-window-side-by-side",
-"w": "Settings > Tabs > Open new windows side by side, on by default: \"Open in new window\" splits the screen with the new window beside the old one. Off, the new window opens full screen as a task of its own in Recents.",
+"w": "Settings > Tabs > Open new windows side by side, on by default: \"Open in new window\" splits the screen with the new window beside the old one. Off, it opens full screen as a task of its own in Recents, unless the screen is already split.",
 "s": "on",
 "n": "",
 "own": 1,
