@@ -2521,7 +2521,7 @@
  const inServiceWorker = requireNative('utils').isInServiceWorker();
  
  function loadImagePathForServiceWorker(path, callback, failureCallback) {
-@@ -164,10 +165,33 @@
+@@ -164,10 +165,42 @@
  function getSetIconHandler(methodName) {
    return function(details, successCallback, failureCallback) {
      var onIconRetrieved = function(iconSpec) {
@@ -2545,13 +2545,22 @@
 +          methodName, [iconSpec, onResponse],
            /*options=*/ undefined);
      };
-+    // Firefox add-ons (dubna): without an image, or with an empty path, the
-+    // browser clears the icon's value or shows the generic icon, as Firefox's
-+    // null and empty paths do (firefox_action_null.cc).
-+    if (!('imageData' in details) && !('iconIndex' in details) &&
-+        (details.path == null || details.path === '')) {
-+      onIconRetrieved(details);
-+      return;
++    // Firefox add-ons (dubna): without an image the browser clears the
++    // icon's value, and with only empty paths it shows the generic icon, as
++    // Firefox does for a null or {} path and for "" (firefox_action_null.cc).
++    if (!('imageData' in details) && !('iconIndex' in details)) {
++      var paths = details.path == null ? [] :
++          typeof details.path == 'object' ? Object.values(details.path) :
++          [details.path];
++      if (paths.every(function(path) { return path === ''; })) {
++        if (paths.length) {
++          details.path = '';
++        } else {
++          delete details.path;
++        }
++        onIconRetrieved(details);
++        return;
++      }
 +    }
      setIcon(details, onIconRetrieved, failureCallback);
    };
