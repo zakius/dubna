@@ -57,6 +57,8 @@
 # A click on a Firefox add-on's item with a command (menus.create's command)
 # runs its toolbar action, as the shortcut does, instead of firing onClicked
 # (firefox_menu_clicks.h).
+# A Firefox add-on's OnClickData has Firefox's modifiers, button and linkText,
+# and a middle click runs a page menu's item, as in Firefox.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -1235,7 +1237,32 @@
            }
          ],
          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
-@@ -133,6 +149,13 @@
+@@ -82,6 +98,24 @@
+             "optional": true,
+             "description": "If the element is a link, the URL it points to."
+           },
++          // Firefox add-ons (dubna): Firefox's click data
++          // (firefox_menu_clicks.h).
++          "linkText": {
++            "type": "string",
++            "optional": true,
++            "nodoc": true
++          },
++          "modifiers": {
++            "type": "array",
++            "items": {"type": "string"},
++            "optional": true,
++            "nodoc": true
++          },
++          "button": {
++            "type": "integer",
++            "optional": true,
++            "nodoc": true
++          },
+           "srcUrl": {
+             "type": "string",
+             "optional": true,
+@@ -133,6 +167,13 @@
              "optional": true,
              "description": "The type of menu item. Defaults to <code>normal</code>."
            },
@@ -1249,7 +1276,7 @@
            "id": {
              "type": "string",
              "optional": true,
-@@ -203,6 +226,14 @@
+@@ -203,6 +244,14 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -1264,7 +1291,7 @@
            }
          }
        }
-@@ -257,6 +288,12 @@
+@@ -257,6 +306,12 @@
                  "$ref": "ItemType",
                  "optional": true
                },
@@ -1277,7 +1304,7 @@
                "title": {
                  "type": "string",
                  "optional": true
-@@ -314,6 +351,13 @@
+@@ -314,6 +369,13 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -2881,7 +2908,17 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -704,6 +722,12 @@
+@@ -691,7 +709,8 @@
+                                  WebContents* web_contents,
+                                  content::RenderFrameHost* render_frame_host,
+                                  const content::ContextMenuParams& params,
+-                                 const MenuItem::Id& menu_item_id) {
++                                 const MenuItem::Id& menu_item_id,
++                                 int event_flags) {
+   EventRouter* event_router = EventRouter::Get(context);
+   if (!event_router)
+     return;
+@@ -704,6 +723,12 @@
    const Extension* extension =
        registry->enabled_extensions().GetByID(item->extension_id());
  
@@ -2894,7 +2931,16 @@
    if (item->type() == MenuItem::RADIO)
      RadioItemSelected(item);
  
-@@ -864,9 +888,11 @@
+@@ -734,6 +759,8 @@
+     properties.Set("selectionText", params.selection_text);
+ 
+   properties.Set("editable", params.is_editable);
++  // Firefox add-ons (dubna): Firefox's modifiers, button and linkText.
++  AddFirefoxClickData(extension, params, event_flags, properties);
+ 
+ #if BUILDFLAG(ENABLE_GUEST_VIEW)
+   WebViewGuest* webview_guest =
+@@ -864,9 +891,11 @@
        }
      }
  
@@ -2954,6 +3000,17 @@
  };
  
  // This class keeps track of menu items added by extensions.
+@@ -372,7 +389,9 @@
+                       content::WebContents* web_contents,
+                       content::RenderFrameHost* render_frame_host,
+                       const content::ContextMenuParams& params,
+-                      const MenuItem::Id& menu_item_id);
++                      const MenuItem::Id& menu_item_id,
++                      // Firefox add-ons (dubna): the click's ui::EventFlags.
++                      int event_flags = 0);
+ 
+   // This returns a image of width/height kFaviconSize, loaded through the
+   // MenuIconLoader associated with the `extension_key`.
 --- a/extensions/renderer/api/context_menus_custom_bindings.cc
 +++ b/extensions/renderer/api/context_menus_custom_bindings.cc
 @@ -10,6 +10,7 @@
@@ -3078,3 +3135,68 @@
    return RespondNow(NoArguments());
  }
  
+--- a/chrome/browser/extensions/context_menu_matcher.cc
++++ b/chrome/browser/extensions/context_menu_matcher.cc
+@@ -259,14 +259,15 @@
+     int command_id,
+     content::WebContents* web_contents,
+     content::RenderFrameHost* render_frame_host,
+-    const content::ContextMenuParams& params) {
++    const content::ContextMenuParams& params,
++    int event_flags) {
+   MenuItem* item = GetExtensionMenuItem(command_id);
+   if (!item)
+     return;
+ 
+   MenuManager* manager = MenuManager::Get(browser_context_);
+   manager->ExecuteCommand(browser_context_, web_contents, render_frame_host,
+-                          params, item->id());
++                          params, item->id(), event_flags);
+ }
+ 
+ bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
+--- a/chrome/browser/extensions/context_menu_matcher.h
++++ b/chrome/browser/extensions/context_menu_matcher.h
+@@ -90,7 +90,9 @@
+   void ExecuteCommand(int command_id,
+                       content::WebContents* web_contents,
+                       content::RenderFrameHost* render_frame_host,
+-                      const content::ContextMenuParams& params);
++                      const content::ContextMenuParams& params,
++                      // Firefox add-ons (dubna): see MenuManager.
++                      int event_flags = 0);
+ 
+  private:
+   friend class ExtensionContextMenuBrowserTest;
+--- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
++++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
+@@ -3910,7 +3910,7 @@
+     RenderFrameHost* render_frame_host = GetRenderFrameHost();
+     if (render_frame_host) {
+       extension_items_.ExecuteCommand(id, source_web_contents_,
+-                                      render_frame_host, params_);
++                                      render_frame_host, params_, event_flags);
+     }
+     return;
+   }
+--- a/components/renderer_context_menu/views/toolkit_delegate_views.cc
++++ b/components/renderer_context_menu/views/toolkit_delegate_views.cc
+@@ -8,6 +8,7 @@
+ #include <utility>
+ 
+ #include "ui/base/mojom/menu_source_type.mojom.h"
++#include "ui/events/event_constants.h"
+ #include "ui/gfx/geometry/rect.h"
+ #include "ui/gfx/image/image.h"
+ #include "ui/views/controls/menu/menu_item_view.h"
+@@ -33,6 +34,10 @@
+ 
+ void ToolkitDelegateViews::Init(ui::SimpleMenuModel* menu_model) {
+   menu_adapter_ = std::make_unique<views::MenuModelAdapter>(menu_model);
++  // Firefox add-ons (dubna): a middle click runs an item, as a left or right
++  // click does, as in Firefox, whose menus.onClicked tells the button.
++  menu_adapter_->set_triggerable_event_flags(
++      menu_adapter_->triggerable_event_flags() | ui::EF_MIDDLE_MOUSE_BUTTON);
+   std::unique_ptr<views::MenuItemView> menu_view = menu_adapter_->CreateMenu();
+   menu_view_ = menu_view.get();
+   menu_runner_ = std::make_unique<views::MenuRunner>(

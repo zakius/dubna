@@ -4,9 +4,12 @@
 #ifndef CHROME_BROWSER_EXTENSIONS_FIREFOX_MENU_CLICKS_H_
 #define CHROME_BROWSER_EXTENSIONS_FIREFOX_MENU_CLICKS_H_
 
+#include "base/values.h"
+
 namespace content {
+struct ContextMenuParams;
 class WebContents;
-}
+}  // namespace content
 
 namespace extensions {
 
@@ -26,6 +29,15 @@ class MenuItem;
 bool RunFirefoxMenuCommand(const Extension* extension,
                            const MenuItem& item,
                            content::WebContents* web_contents);
+
+// Firefox's part of a click's OnClickData for a Firefox add-on's item, added
+// to `properties`: `modifiers`, the keys held in `event_flags` (Shift, Alt,
+// Command, Ctrl, and MacCtrl on a Mac), `button`, the mouse button (0, 1 or
+// 2), and `linkText`, the text of the link that the menu is for.
+void AddFirefoxClickData(const Extension* extension,
+                         const content::ContextMenuParams& params,
+                         int event_flags,
+                         base::DictValue& properties);
 
 }  // namespace extensions
 
