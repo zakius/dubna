@@ -86,6 +86,11 @@ void FirefoxAmoUserAgent::DidStartNavigation(
     web_contents()->SetUserAgentOverride(ua_override, false);
     navigation->SetIsOverridingUserAgent(true);
   } else if (IsFirefoxUserAgent(current.ua_string_override)) {
+    if (navigation->IsPrerenderedPageActivation()) {
+      // A new override now would cancel the prerender that activates, which
+      // has Firefox's; the next navigation puts it back.
+      return;
+    }
     if (!replaced_override_.ua_string_override.empty()) {
       // Android's override is the desktop site's user agent, which "Desktop
       // site" picks for a navigation with SetIsOverridingUserAgent(). It
