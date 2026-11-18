@@ -8,6 +8,7 @@
 
 #include "build/build_config.h"
 #include "chrome/browser/extensions/browser_window_util.h"
+#include "chrome/browser/extensions/context_menu_matcher.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/browser/ui/extensions/extensions_container.h"
 #include "chrome/browser/ui/toolbar/toolbar_action_view_model.h"
@@ -96,6 +97,11 @@ void AddFirefoxClickData(const Extension* extension,
   if (!params.unfiltered_link_url.is_empty()) {
     properties.Set("linkText", params.link_text);
   }
+}
+
+bool ContextMenuMatcher::MiddleClickRuns(int command_id) const {
+  const MenuItem* item = GetExtensionMenuItem(command_id);
+  return item && item->firefox_add_on();
 }
 
 }  // namespace extensions

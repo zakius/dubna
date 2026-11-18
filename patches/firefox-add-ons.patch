@@ -58,7 +58,8 @@
 # runs its toolbar action, as the shortcut does, instead of firing onClicked
 # (firefox_menu_clicks.h).
 # A Firefox add-on's OnClickData has Firefox's modifiers, button and linkText,
-# and a middle click runs a page menu's item, as in Firefox.
+# and a middle click runs its item in a page's menu, as in Firefox
+# (firefox_menu_model_adapter.h).
 # Android's tabs get Firefox's user agent on addons.mozilla.org too
 # (firefox_amo_user_agent.h), after the desktop site's observer, whose
 # override comes back off AMO.
@@ -3160,7 +3161,7 @@
  bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
 --- a/chrome/browser/extensions/context_menu_matcher.h
 +++ b/chrome/browser/extensions/context_menu_matcher.h
-@@ -90,7 +90,9 @@
+@@ -90,7 +90,13 @@
    void ExecuteCommand(int command_id,
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
@@ -3168,6 +3169,10 @@
 +                      const content::ContextMenuParams& params,
 +                      // Firefox add-ons (dubna): see MenuManager.
 +                      int event_flags = 0);
++
++  // Firefox add-ons (dubna): whether a middle click runs the item of
++  // `command_id`, a Firefox add-on's (firefox_menu_clicks.cc).
++  bool MiddleClickRuns(int command_id) const;
  
   private:
    friend class ExtensionContextMenuBrowserTest;
@@ -3184,22 +3189,22 @@
    }
 --- a/components/renderer_context_menu/views/toolkit_delegate_views.cc
 +++ b/components/renderer_context_menu/views/toolkit_delegate_views.cc
-@@ -8,6 +8,7 @@
+@@ -7,6 +7,7 @@
+ #include <memory>
  #include <utility>
  
++#include "components/renderer_context_menu/views/firefox_menu_model_adapter.h"
  #include "ui/base/mojom/menu_source_type.mojom.h"
-+#include "ui/events/event_constants.h"
  #include "ui/gfx/geometry/rect.h"
  #include "ui/gfx/image/image.h"
- #include "ui/views/controls/menu/menu_item_view.h"
-@@ -33,6 +34,10 @@
+@@ -32,7 +33,9 @@
+ }
  
  void ToolkitDelegateViews::Init(ui::SimpleMenuModel* menu_model) {
-   menu_adapter_ = std::make_unique<views::MenuModelAdapter>(menu_model);
-+  // Firefox add-ons (dubna): a middle click runs an item, as a left or right
-+  // click does, as in Firefox, whose menus.onClicked tells the button.
-+  menu_adapter_->set_triggerable_event_flags(
-+      menu_adapter_->triggerable_event_flags() | ui::EF_MIDDLE_MOUSE_BUTTON);
+-  menu_adapter_ = std::make_unique<views::MenuModelAdapter>(menu_model);
++  // Firefox add-ons (dubna): see firefox_menu_model_adapter.h.
++  menu_adapter_ =
++      std::make_unique<FirefoxMenuModelAdapter>(menu_model, middle_click_runs_);
    std::unique_ptr<views::MenuItemView> menu_view = menu_adapter_->CreateMenu();
    menu_view_ = menu_view.get();
    menu_runner_ = std::make_unique<views::MenuRunner>(
@@ -3226,3 +3231,70 @@
  
    resource_coordinator::ResourceCoordinatorTabHelper::CreateForWebContents(
        web_contents);
+--- a/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
++++ b/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
+@@ -7,6 +7,7 @@
+ #include <utility>
+ 
+ #include "base/command_line.h"
++#include "base/functional/bind.h"
+ #include "base/logging.h"
+ #include "base/memory/ptr_util.h"
+ #include "base/memory/raw_ptr.h"
+@@ -129,6 +130,13 @@
+                             is_paste_and_match_style_enabled),
+       bidi_submenu_model_(this) {
+   set_toolkit_delegate(std::make_unique<ToolkitDelegateViews>());
++#if BUILDFLAG(ENABLE_EXTENSIONS)
++  // Firefox add-ons (dubna): a middle click runs a Firefox add-on's item.
++  static_cast<ToolkitDelegateViews*>(toolkit_delegate())
++      ->set_middle_click_runs(
++          base::BindRepeating(&extensions::ContextMenuMatcher::MiddleClickRuns,
++                              base::Unretained(&extension_items_)));
++#endif
+ }
+ 
+ RenderViewContextMenuViews::~RenderViewContextMenuViews() = default;
+--- a/components/renderer_context_menu/BUILD.gn
++++ b/components/renderer_context_menu/BUILD.gn
+@@ -32,6 +32,8 @@
+ 
+   if (toolkit_views) {
+     sources += [
++      "views/firefox_menu_model_adapter.cc",
++      "views/firefox_menu_model_adapter.h",
+       "views/toolkit_delegate_views.cc",
+       "views/toolkit_delegate_views.h",
+     ]
+--- a/components/renderer_context_menu/views/toolkit_delegate_views.h
++++ b/components/renderer_context_menu/views/toolkit_delegate_views.h
+@@ -6,7 +6,9 @@
+ #define COMPONENTS_RENDERER_CONTEXT_MENU_VIEWS_TOOLKIT_DELEGATE_VIEWS_H_
+ 
+ #include <memory>
++#include <utility>
+ 
++#include "base/functional/callback.h"
+ #include "base/memory/raw_ptr.h"
+ #include "components/renderer_context_menu/render_view_context_menu_base.h"
+ #include "ui/base/mojom/menu_source_type.mojom-forward.h"
+@@ -39,6 +41,11 @@
+                  const gfx::Point& point,
+                  ui::mojom::MenuSourceType type);
+   views::MenuItemView* menu_view() { return menu_view_; }
++  // Firefox add-ons (dubna): see firefox_menu_model_adapter.h. Set before
++  // Init().
++  void set_middle_click_runs(base::RepeatingCallback<bool(int)> runs) {
++    middle_click_runs_ = std::move(runs);
++  }
+ 
+  protected:
+   // ToolkitDelegate:
+@@ -50,6 +57,7 @@
+   void RebuildMenu() override;
+ 
+   std::unique_ptr<views::MenuModelAdapter> menu_adapter_;
++  base::RepeatingCallback<bool(int)> middle_click_runs_;
+   std::unique_ptr<views::MenuRunner> menu_runner_;
+ 
+   // Weak. Owned by menu_runner_;
