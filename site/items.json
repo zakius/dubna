@@ -4334,7 +4334,7 @@
 "o": "tennessine",
 "a": "Look & layout",
 "p": "tennessine/app-icon",
-"w": "tennessine's own app icon, not Titanium's: element 117's outer electron shell, 7 electrons and an empty place for the 8th, which oganesson's icon fills. Settings > App icon chooses indigo (the default), teal, crimson, black, white, or no background in white or black. Choosing one restarts the browser, and some launchers take the icon off the home screen until you add it back. With themed icons on, Android draws it in your wallpaper's colors.",
+"w": "tennessine's own app icon, not Titanium's: element 117's outer electron shell, 7 electrons and an empty place for the 8th, which oganesson's icon fills. Settings > App icon chooses indigo (the default), teal, crimson, black, white, or no background in white or black. Choosing one restarts the browser, and some launchers take the icon off the home screen until you add it back. With themed icons on, Android draws it in your wallpaper's colors. Every window shows it in Recents, new ones too.",
 "s": "on",
 "n": "",
 "own": 1,
