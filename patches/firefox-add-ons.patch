@@ -47,6 +47,8 @@
 # A same-document navigation to about:blank has its document's origin in its
 # UrlInfo, not the initiator's, so an add-on's tabs.update() to about:blank#ref
 # on a new tab passes navigation_request.cc's and navigator.cc's site checks.
+# privacy.network.networkPredictionEnabled set to true turns prediction on: it
+# wrote kDefault, which the upstreams make kDisabled.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -1279,6 +1281,19 @@
    ChromeSettingScope scope = ChromeSettingScope::kRegular;
    if (const std::string* scope_str = details.FindString(kScopeKey)) {
      EXTENSION_FUNCTION_VALIDATE(StringToScope(*scope_str, scope));
+--- a/chrome/browser/extensions/api/preference/network_prediction_transformer.cc
++++ b/chrome/browser/extensions/api/preference/network_prediction_transformer.cc
+@@ -25,8 +25,9 @@
+   if (!extension_pref.is_bool()) {
+     DCHECK(false) << "Preference not found.";
+   } else if (extension_pref.GetBool()) {
++    // On, whatever kDefault is: the upstreams make it kDisabled.
+     return base::Value(
+-        static_cast<int>(prefetch::NetworkPredictionOptions::kDefault));
++        static_cast<int>(prefetch::NetworkPredictionOptions::kStandard));
+   }
+   return base::Value(
+       static_cast<int>(prefetch::NetworkPredictionOptions::kDisabled));
 --- a/chrome/common/extensions/permissions/chrome_permission_message_rules.cc
 +++ b/chrome/common/extensions/permissions/chrome_permission_message_rules.cc
 @@ -690,6 +690,11 @@
