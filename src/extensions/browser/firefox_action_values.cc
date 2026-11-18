@@ -4,6 +4,9 @@
 #include "extensions/browser/firefox_action_values.h"
 
 #include <cmath>
+#include <map>
+
+#include "base/containers/map_util.h"
 
 #include "extensions/browser/extension_action.h"
 #include "extensions/common/firefox_add_on.h"
@@ -21,7 +24,45 @@ double Linear(U8CPU channel) {
   return std::pow((value + 0.055) / 1.055, 2.4);
 }
 
+template <class T>
+void ClearValue(std::map<int, T>& values,
+                const std::map<int, T>& defaults,
+                int key) {
+  values.erase(key);
+  if (key != ExtensionAction::kDefaultTabId) {
+    return;
+  }
+  if (const T* value = base::FindOrNull(defaults, key)) {
+    values[key] = *value;
+  }
+}
+
 }  // namespace
+
+void FirefoxActionValues::Clear(ExtensionAction& action,
+                                const ExtensionAction& defaults,
+                                Value value,
+                                int key) {
+  switch (value) {
+    case Value::kTitle:
+      ClearValue(action.title_, defaults.title_, key);
+      break;
+    case Value::kPopup:
+      ClearValue(action.popup_url_, defaults.popup_url_, key);
+      break;
+    case Value::kIcon:
+      // The manifest's icon isn't in the map: without a value, it shows.
+      ClearValue(action.icon_, defaults.icon_, key);
+      break;
+    case Value::kBadgeBackgroundColor:
+      ClearValue(action.badge_background_color_,
+                 defaults.badge_background_color_, key);
+      break;
+    case Value::kBadgeTextColor:
+      ClearValue(action.badge_text_color_, defaults.badge_text_color_, key);
+      break;
+  }
+}
 
 void FirefoxActionValues::SetDefaults(ExtensionAction& action,
                                       const Extension& extension) {

@@ -850,10 +850,11 @@
  ExtensionAction* ExtensionActionManager::GetExtensionAction(
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
-@@ -10,6 +10,11 @@
+@@ -10,6 +10,12 @@
    sources = [
      "extension_action_api.cc",
      "extension_action_api.h",
++    "firefox_action_null.cc",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
 +    "firefox_browser_action.h",
@@ -907,14 +908,24 @@
 +  // Firefox add-ons (dubna): a window's value (firefox_action_window.h).
 +  std::string window_error;
 +  if (TakeFirefoxWindowId(*this, details_, tab_id_, window_error)) {
-+    return window_error.empty() ? RunExtensionAction()
++    return window_error.empty() ? RunFirefoxAction()
 +                                : RespondNow(Error(window_error));
 +  }
 +
    // Find the WebContents that contains this tab id if one is required.
    if (tab_id_ != ExtensionAction::kDefaultTabId) {
      content::WebContents* contents_out_param = nullptr;
-@@ -475,7 +490,10 @@
+@@ -210,7 +225,8 @@
+     EXTENSION_FUNCTION_VALIDATE(extension_action_->action_type() !=
+                                 ActionInfo::Type::kPage);
+   }
+-  return RunExtensionAction();
++  // Firefox add-ons (dubna): null clears a value.
++  return RunFirefoxAction();
+ }
+ 
+ bool ExtensionActionFunction::ExtractDataFromArguments() {
+@@ -475,7 +491,10 @@
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -926,7 +937,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +514,8 @@
+@@ -496,7 +515,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -954,7 +965,11 @@
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        }
-@@ -32,6 +33,7 @@
+@@ -29,9 +30,11 @@
+             "type": "object",
+             "properties": {
+               "title": {
++                "optional": true,  // Firefox add-ons (dubna): null clears the value.
                  "type": "string",
                  "description": "The string the browser action should display when moused over."
                },
@@ -962,7 +977,7 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -95,6 +97,7 @@
+@@ -95,6 +98,7 @@
                  "optional": true,
                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to an icon to be set. If the icon is specified as a dictionary, the image used is chosen depending on the screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then an image with size <code>scale</code> * n is selected, where <i>n</i> is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
                },
@@ -970,7 +985,7 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -118,6 +121,7 @@
+@@ -118,6 +122,7 @@
              "name": "details",
              "type": "object",
              "properties": {
@@ -978,7 +993,15 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -167,6 +171,7 @@
+@@ -125,6 +130,7 @@
+                 "description": "Limits the change to when a particular tab is selected. Automatically resets when the tab is closed."
+               },
+               "popup": {
++                "optional": true,  // Firefox add-ons (dubna): null clears the value.
+                 "type": "string",
+                 "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
+               }
+@@ -167,6 +173,7 @@
                  "optional": true,
                  "description": "Any number of characters can be passed, but only about four can fit into the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
                },
@@ -986,7 +1009,15 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -215,6 +220,7 @@
+@@ -207,6 +214,7 @@
+             "type": "object",
+             "properties": {
+               "color": {
++                "optional": true,  // Firefox add-ons (dubna): null clears the value.
+                 "description": "An array of four integers in the range 0-255 that make up the RGBA color of the badge. Can also be a string with a CSS hex color value; for example, <code>#FF0000</code> or <code>#F00</code> (red). Renders colors at full opacity.",
+                 "choices": [
+                   {"type": "string"},
+@@ -215,6 +223,7 @@
                    }
                  ]
                },
@@ -994,7 +1025,7 @@
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -244,6 +250,103 @@
+@@ -244,6 +253,104 @@
              }
            ]
          }
@@ -1011,6 +1042,7 @@
 +            "type": "object",
 +            "properties": {
 +              "color": {
++                "optional": true,  // Firefox add-ons (dubna): null clears the value.
 +                "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge, or a string with a CSS value.",
 +                "choices": [
 +                  {"type": "string"},
@@ -1633,7 +1665,17 @@
  #include "extensions/common/api/extension_action/action_info.h"
  #include "extensions/common/constants.h"
  #include "extensions/common/extension_id.h"
-@@ -253,6 +254,10 @@
+@@ -223,6 +224,9 @@
+   void SetDefaultIconForTest(std::unique_ptr<ExtensionIconSet> default_icon);
+ 
+  private:
++  // Firefox add-ons (dubna): clears one value (firefox_action_values.h).
++  friend class FirefoxActionValues;
++
+   // Populates the action from the `extension` and `manifest_data`, filling in
+   // any missing values (like title or icons) as possible.
+   void Populate(const Extension& extension, const ActionInfo& manifest_data);
+@@ -253,6 +257,10 @@
    T GetValue(const std::map<int, T>& map, TabID tab_id) const {
      if (const T* tab_value = base::FindOrNull(map, tab_id)) {
        return *tab_value;
@@ -1654,7 +1696,11 @@
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        },
-@@ -63,6 +64,7 @@
+@@ -60,9 +61,11 @@
+         "type": "object",
+         "properties": {
+           "title": {
++            "optional": true,  // Firefox add-ons (dubna): null clears the value.
              "type": "string",
              "description": "The string the action should display when moused over."
            },
@@ -1662,7 +1708,7 @@
            "tabId": {
              "type": "integer",
              "optional": true,
-@@ -119,6 +121,7 @@
+@@ -119,6 +122,7 @@
              "optional": true,
              "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * n will be selected, where n is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
            },
@@ -1670,7 +1716,7 @@
            "tabId": {
              "type": "integer",
              "optional": true,
-@@ -140,6 +143,7 @@
+@@ -140,6 +144,7 @@
          "name": "details",
          "type": "object",
          "properties": {
@@ -1678,7 +1724,15 @@
            "tabId": {
              "type": "integer",
              "optional": true,
-@@ -189,6 +193,7 @@
+@@ -147,6 +152,7 @@
+             "description": "Limits the change to when a particular tab is selected. Automatically resets when the tab is closed."
+           },
+           "popup": {
++            "optional": true,  // Firefox add-ons (dubna): null clears the value.
+             "type": "string",
+             "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
+           }
+@@ -189,6 +195,7 @@
              "optional": true,
              "description": "Any number of characters can be passed, but only about four can fit in the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
            },
@@ -1686,7 +1740,15 @@
            "tabId": {
              "type": "integer",
              "optional": true,
-@@ -234,6 +239,7 @@
+@@ -226,6 +233,7 @@
+         "type": "object",
+         "properties": {
+           "color": {
++            "optional": true,  // Firefox add-ons (dubna): null clears the value.
+             "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
+             "choices": [
+               {"type": "string"},
+@@ -234,6 +242,7 @@
                }
              ]
            },
@@ -1694,7 +1756,15 @@
            "tabId": {
              "type": "integer",
              "optional": true,
-@@ -282,6 +288,7 @@
+@@ -272,6 +281,7 @@
+           "type": "object",
+           "properties": {
+             "color": {
++              "optional": true,  // Firefox add-ons (dubna): null clears the value.
+               "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>. Not setting this value will cause a color to be automatically chosen that will contrast with the badge's background color so the text will be visible. Colors with alpha values equivalent to 0 will not be set and will return an error.",
+               "choices": [
+                 {
+@@ -282,6 +292,7 @@
                  }
                ]
              },
@@ -1702,7 +1772,7 @@
              "tabId": {
                "type": "integer",
                "optional": true,
-@@ -353,10 +360,13 @@
+@@ -353,10 +364,13 @@
        "description": "Indicates whether the extension action is enabled for a tab (or globally if no <code>tabId</code> is provided). Actions enabled using only $(ref:declarativeContent) always return false.",
        "parameters": [
          {
@@ -2456,7 +2526,7 @@
  const inServiceWorker = requireNative('utils').isInServiceWorker();
  
  function loadImagePathForServiceWorker(path, callback, failureCallback) {
-@@ -164,8 +165,23 @@
+@@ -164,10 +165,33 @@
  function getSetIconHandler(methodName) {
    return function(details, successCallback, failureCallback) {
      var onIconRetrieved = function(iconSpec) {
@@ -2480,7 +2550,17 @@
 +          methodName, [iconSpec, onResponse],
            /*options=*/ undefined);
      };
++    // Firefox add-ons (dubna): without an image, or with an empty path, the
++    // browser clears the icon's value or shows the generic icon, as Firefox's
++    // null and empty paths do (firefox_action_null.cc).
++    if (!('imageData' in details) && !('iconIndex' in details) &&
++        (details.path == null || details.path === '')) {
++      onIconRetrieved(details);
++      return;
++    }
      setIcon(details, onIconRetrieved, failureCallback);
+   };
+ }
 --- a/chrome/browser/download/download_target_determiner.cc
 +++ b/chrome/browser/download/download_target_determiner.cc
 @@ -55,6 +55,7 @@
@@ -2540,3 +2620,32 @@
        {
          "name": "setTitle",
          "type": "function",
+@@ -54,7 +71,7 @@
+             "type": "object",
+             "properties": {
+               "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
+-              "title": {"type": "string", "description": "The tooltip string."}
++              "title": {"type": "string", "optional": true, "description": "The tooltip string. Firefox add-ons (dubna): null clears the value."}
+             }
+           }
+         ],
+@@ -138,6 +155,7 @@
+             "properties": {
+               "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
+               "popup": {
++                "optional": true,  // Firefox add-ons (dubna): null clears the value.
+                 "type": "string",
+                 "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
+               }
+--- a/chrome/browser/extensions/api/extension_action/extension_action_api.h
++++ b/chrome/browser/extensions/api/extension_action/extension_action_api.h
+@@ -43,6 +43,9 @@
+   ResponseAction Run() override;
+ 
+   virtual ResponseAction RunExtensionAction() = 0;
++  // Firefox add-ons (dubna): RunExtensionAction(), or a null that clears a
++  // value (firefox_action_null.cc).
++  ResponseAction RunFirefoxAction();
+ 
+   bool ExtractDataFromArguments();
+   void NotifyChange();

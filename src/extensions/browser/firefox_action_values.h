@@ -12,9 +12,28 @@ class Extension;
 class ExtensionAction;
 
 // Firefox add-ons (dubna's webextensions/README.md): an action's values as
-// Firefox gives them.
+// Firefox gives them. ExtensionAction makes this class a friend, so that it
+// can clear one value of a tab, a window or the global one.
 class FirefoxActionValues {
  public:
+  // The values that Firefox's null clears.
+  enum class Value {
+    kTitle,
+    kPopup,
+    kIcon,
+    kBadgeBackgroundColor,
+    kBadgeTextColor,
+  };
+
+  // Clears `value` at `key`, a tab's or a window's ID or kDefaultTabId, as
+  // Firefox's null does: a tab's or a window's value goes, so that the next
+  // level's shows, and the global value goes back to the one in `defaults`, an
+  // action made from the manifest.
+  static void Clear(ExtensionAction& action,
+                    const ExtensionAction& defaults,
+                    Value value,
+                    int key);
+
   // Gives a Firefox add-on (extensions/common/firefox_add_on.h) Firefox's
   // default badge background, [217, 0, 0, 255]. Chromium has none, and paints
   // a grey badge.
