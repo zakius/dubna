@@ -925,7 +925,18 @@
  }
  
  bool ExtensionActionFunction::ExtractDataFromArguments() {
-@@ -475,7 +491,10 @@
+@@ -464,7 +480,9 @@
+ ExtensionFunction::ResponseAction
+ ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
+   base::ListValue list;
+-  SkColor color = extension_action_->GetBadgeBackgroundColor(tab_id_);
++  // Firefox add-ons (dubna): Firefox's colour when none is set.
++  SkColor color = FirefoxActionValues::BadgeBackgroundColor(
++      *extension_action_, *extension(), tab_id_);
+   list.Append(static_cast<int>(SkColorGetR(color)));
+   list.Append(static_cast<int>(SkColorGetG(color)));
+   list.Append(static_cast<int>(SkColorGetB(color)));
+@@ -475,7 +493,10 @@
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -937,7 +948,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +515,8 @@
+@@ -496,7 +517,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -1665,17 +1676,18 @@
  #include "extensions/common/api/extension_action/action_info.h"
  #include "extensions/common/constants.h"
  #include "extensions/common/extension_id.h"
-@@ -223,6 +224,9 @@
+@@ -223,6 +224,10 @@
    void SetDefaultIconForTest(std::unique_ptr<ExtensionIconSet> default_icon);
  
   private:
-+  // Firefox add-ons (dubna): clears one value (firefox_action_values.h).
++  // Firefox add-ons (dubna): reads and clears one level's value
++  // (firefox_action_values.h).
 +  friend class FirefoxActionValues;
 +
    // Populates the action from the `extension` and `manifest_data`, filling in
    // any missing values (like title or icons) as possible.
    void Populate(const Extension& extension, const ActionInfo& manifest_data);
-@@ -253,6 +257,10 @@
+@@ -253,6 +258,10 @@
    T GetValue(const std::map<int, T>& map, TabID tab_id) const {
      if (const T* tab_value = base::FindOrNull(map, tab_id)) {
        return *tab_value;
@@ -1846,15 +1858,7 @@
  
 --- a/extensions/browser/extension_action.cc
 +++ b/extensions/browser/extension_action.cc
-@@ -12,6 +12,7 @@
- #include "base/strings/string_number_conversions.h"
- #include "extensions/browser/extension_icon_image.h"
- #include "extensions/browser/extension_icon_placeholder.h"
-+#include "extensions/browser/firefox_action_values.h"
- #include "extensions/common/constants.h"
- #include "extensions/common/icons/extension_icon_set.h"
- #include "extensions/common/manifest_handlers/icons_handler.h"
-@@ -64,7 +65,12 @@
+@@ -64,7 +64,12 @@
  
  template <class T>
  bool HasValue(const std::map<int, T>& map, ExtensionAction::TabID tab_id) {
@@ -1868,15 +1872,6 @@
  }
  
  }  // namespace
-@@ -97,6 +103,8 @@
-   SetIsVisible(kDefaultTabId,
-                default_state_ == ActionInfo::DefaultState::kEnabled);
-   Populate(extension, manifest_data);
-+  // Firefox add-ons (dubna): Firefox's defaults (firefox_action_values.h).
-+  FirefoxActionValues::SetDefaults(*this, extension);
- }
- 
- ExtensionAction::~ExtensionAction() = default;
 --- a/chrome/common/extensions/api/tabs.json
 +++ b/chrome/common/extensions/api/tabs.json
 @@ -82,7 +82,9 @@
@@ -2664,3 +2659,26 @@
  
    bool ExtractDataFromArguments();
    void NotifyChange();
+--- a/chrome/browser/ui/extensions/extension_action_view_model.cc
++++ b/chrome/browser/ui/extensions/extension_action_view_model.cc
+@@ -41,6 +41,7 @@
+ #include "extensions/browser/extension_action_manager.h"
+ #include "extensions/browser/extension_prefs.h"
+ #include "extensions/browser/extension_registry.h"
++#include "extensions/browser/firefox_action_values.h"
+ #include "extensions/browser/permissions/site_permissions_helper.h"
+ #include "extensions/browser/pref_names.h"
+ #include "extensions/buildflags/buildflags.h"
+@@ -803,9 +804,11 @@
+   std::unique_ptr<IconWithBadgeImageSource::Badge> badge;
+   std::string badge_text = extension_action_->GetDisplayBadgeText(tab_id);
+   if (!badge_text.empty()) {
++    // Firefox add-ons (dubna): Firefox's default background.
+     badge = std::make_unique<IconWithBadgeImageSource::Badge>(
+         badge_text, extension_action_->GetBadgeTextColor(tab_id),
+-        extension_action_->GetBadgeBackgroundColor(tab_id));
++        extensions::FirefoxActionValues::BadgeBackgroundColor(
++            *extension_action_, *extension_, tab_id));
+   }
+   image_source->SetBadge(std::move(badge));
+ 

@@ -9,6 +9,7 @@
 #include "base/containers/map_util.h"
 
 #include "extensions/browser/extension_action.h"
+#include "extensions/browser/firefox_action_window.h"
 #include "extensions/common/firefox_add_on.h"
 
 namespace extensions {
@@ -64,12 +65,17 @@ void FirefoxActionValues::Clear(ExtensionAction& action,
   }
 }
 
-void FirefoxActionValues::SetDefaults(ExtensionAction& action,
-                                      const Extension& extension) {
-  if (IsFirefoxAddOn(extension)) {
-    action.SetBadgeBackgroundColor(ExtensionAction::kDefaultTabId,
-                                   SkColorSetARGB(255, 217, 0, 0));
+SkColor FirefoxActionValues::BadgeBackgroundColor(
+    const ExtensionAction& action,
+    const Extension& extension,
+    int tab_id) {
+  const std::map<int, SkColor>& values = action.badge_background_color_;
+  if (!IsFirefoxAddOn(extension) || values.contains(tab_id) ||
+      values.contains(FirefoxWindowOfTab(tab_id)) ||
+      values.contains(ExtensionAction::kDefaultTabId)) {
+    return action.GetBadgeBackgroundColor(tab_id);
   }
+  return SkColorSetARGB(255, 217, 0, 0);
 }
 
 SkColor FirefoxActionValues::BadgeTextColor(const ExtensionAction& action,
@@ -84,7 +90,7 @@ SkColor FirefoxActionValues::BadgeTextColor(const ExtensionAction& action,
   }
   // Firefox's choice, from WCAG's contrast ratio: black has (L + 0.05) / 0.05,
   // white 1.05 / (L + 0.05).
-  SkColor background = action.GetBadgeBackgroundColor(tab_id);
+  SkColor background = BadgeBackgroundColor(action, extension, tab_id);
   double luminance = 0.2126 * Linear(SkColorGetR(background)) +
                      0.7152 * Linear(SkColorGetG(background)) +
                      0.0722 * Linear(SkColorGetB(background));
