@@ -42,7 +42,8 @@
 # add-on listens, ProxyConfigMonitor's settings are a PAC script that
 # ChromeMojoProxyResolverFactory answers by asking the add-on
 # (firefox_proxy_config.h); proxy_custom_bindings.js reports its answer.
-# setIcon rejects on the browser's error, as in Firefox (set_icon.js).
+# setIcon rejects on the browser's error for a Firefox add-on, as in Firefox
+# (set_icon.js); other extensions keep Chromium's promise, which resolves.
 # A same-document navigation to about:blank keeps its document's origin in its
 # UrlInfo, so an add-on's tabs.update() to about:blank#ref on a new tab passes
 # navigation_request.cc's and navigator.cc's site checks.
@@ -1629,7 +1630,36 @@
                "optional": true,
 --- a/extensions/renderer/set_icon_natives.cc
 +++ b/extensions/renderer/set_icon_natives.cc
-@@ -245,6 +245,24 @@
+@@ -15,6 +15,8 @@
+ #include "base/functional/bind.h"
+ #include "base/numerics/safe_conversions.h"
+ #include "base/strings/string_number_conversions.h"
++#include "extensions/common/extension.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/renderer/script_context.h"
+ #include "gin/data_object_builder.h"
+ #include "skia/public/mojom/bitmap.mojom.h"
+@@ -81,6 +83,19 @@
+   RouteHandlerFunction("SetIconCommon",
+                        base::BindRepeating(&SetIconNatives::SetIconCommon,
+                                            base::Unretained(this)));
++  // Firefox add-ons (dubna): set_icon.js rejects setIcon on the browser's
++  // error for a Firefox add-on, as Firefox does; other extensions keep
++  // Chromium's promise, which resolves.
++  RouteHandlerFunction(
++      "IsFirefoxAddOn",
++      base::BindRepeating(
++          [](ScriptContext* context,
++             const v8::FunctionCallbackInfo<v8::Value>& args) {
++            const Extension* extension = context->extension();
++            args.GetReturnValue().Set(extension &&
++                                      IsFirefoxAddOn(*extension));
++          },
++          base::Unretained(context())));
+ }
+ 
+ bool SetIconNatives::ConvertImageDataToBitmapValue(
+@@ -245,6 +260,24 @@
      }
      dict_builder.Set("tabId", tab_id);
    }
@@ -2308,22 +2338,33 @@
      // process model decisions, since we already leave about:blank in the
 --- a/extensions/renderer/resources/set_icon.js
 +++ b/extensions/renderer/resources/set_icon.js
-@@ -164,8 +164,20 @@
+@@ -5,6 +5,7 @@
+ const exceptionHandler = require('uncaught_exception_handler');
+ const imageUtil = require('imageUtil');
+ const SetIconCommon = requireNative('setIcon').SetIconCommon;
++const IsFirefoxAddOn = requireNative('setIcon').IsFirefoxAddOn;
+ const inServiceWorker = requireNative('utils').isInServiceWorker();
+ 
+ function loadImagePathForServiceWorker(path, callback, failureCallback) {
+@@ -164,8 +165,23 @@
  function getSetIconHandler(methodName) {
    return function(details, successCallback, failureCallback) {
      var onIconRetrieved = function(iconSpec) {
-+      // Firefox add-ons (dubna): the browser's error fails the call, so that
-+      // its promise rejects, as in Firefox; a callback still gets it as
-+      // runtime.lastError.
-+      var onResponse = function() {
-+        if (bindingUtil.hasLastError()) {
-+          var message = bindingUtil.getLastErrorMessage();
-+          bindingUtil.clearLastError();
-+          failureCallback(message);
-+          return;
-+        }
-+        successCallback();
-+      };
++      // Firefox add-ons (dubna): for a Firefox add-on, the browser's error
++      // fails the call, so that its promise rejects, as in Firefox; a
++      // callback still gets it as runtime.lastError.
++      var onResponse = successCallback;
++      if (IsFirefoxAddOn()) {
++        onResponse = function() {
++          if (bindingUtil.hasLastError()) {
++            var message = bindingUtil.getLastErrorMessage();
++            bindingUtil.clearLastError();
++            failureCallback(message);
++            return;
++          }
++          successCallback();
++        };
++      }
        bindingUtil.sendRequest(
 -          methodName, [iconSpec, successCallback],
 +          methodName, [iconSpec, onResponse],
