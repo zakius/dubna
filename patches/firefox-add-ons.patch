@@ -2571,7 +2571,22 @@
  #include "extensions/browser/webstore_installer.h"
  #include "extensions/common/feature_switch.h"
  #endif
-@@ -1224,6 +1225,13 @@
+@@ -332,6 +333,14 @@
+     // a local path.
+     base::FilePath generated_filename = GenerateFileName();
+     confirmation_reason_ = NeedsConfirmation(generated_filename);
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++    // Firefox add-ons (dubna): a .xpi that installs again takes a new name,
++    // as on desktop, where Android would ask to overwrite the old file.
++    if (extensions::IsXpiInstall(GetProfile(), *download_,
++                                 generated_filename)) {
++      conflict_action_ = DownloadPathReservationTracker::UNIQUIFY;
++    }
++#endif
+     base::FilePath target_directory;
+     if (confirmation_reason_ != DownloadConfirmationReason::NONE) {
+       if (download_prefs_->IsDownloadPathManaged())
+@@ -1224,6 +1233,13 @@
    if (download_prefs_->IsDownloadPathManaged() && !isDefaultPathDlpBlocked)
      return DownloadConfirmationReason::NONE;
  
