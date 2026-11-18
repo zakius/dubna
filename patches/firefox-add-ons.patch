@@ -406,13 +406,22 @@
                         var_end_delimiter.size(),
 --- a/extensions/common/extension_l10n_util.cc
 +++ b/extensions/common/extension_l10n_util.cc
-@@ -271,6 +271,10 @@
+@@ -271,6 +271,19 @@
    if (!LocalizeManifestValue(keys::kDescription, messages, manifest, error))
      return false;
  
-+  // Firefox add-ons (dubna): Firefox localizes homepage_url too.
++  // Firefox add-ons (dubna): Firefox localizes homepage_url and the actions'
++  // default_popup too.
 +  if (!LocalizeManifestValue(keys::kHomepageURL, messages, manifest, error))
 +    return false;
++  for (const char* action_key :
++       {keys::kBrowserAction, keys::kPageAction, keys::kAction}) {
++    if (!LocalizeManifestValue(
++            base::StrCat({action_key, ".", keys::kActionDefaultPopup}),
++            messages, manifest, error)) {
++      return false;
++    }
++  }
 +
    // Returns the key for the "default_title" entry in the given
    // `action_key`'s manifest entry.
