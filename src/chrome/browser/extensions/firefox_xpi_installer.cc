@@ -14,6 +14,7 @@
 #include "base/memory/weak_ptr.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
+#include "build/build_config.h"
 #include "chrome/browser/download/download_crx_util.h"
 #include "chrome/browser/profiles/profile.h"
 #include "components/download/public/common/download_item.h"
@@ -24,6 +25,11 @@
 #include "extensions/browser/zipfile_installer.h"
 #include "extensions/common/constants.h"
 #include "extensions/common/firefox_gecko_id.h"
+
+#if BUILDFLAG(IS_ANDROID)
+#include "chrome/browser/ui/extensions/extension_install_ui.h"
+#include "extensions/browser/install/crx_install_error.h"
+#endif
 
 namespace extensions {
 
@@ -49,6 +55,20 @@ std::string ReadGeckoId(const base::FilePath& unzip_dir) {
   return std::string(GeckoId(manifest->GetDict()));
 }
 
+// Reports `error` for the .xpi at `xpi`. Android shows no load error, so there
+// the install UI's message says it, as for an add-on that fails to install
+// later.
+void ReportError(Profile* profile,
+                 const base::FilePath& xpi,
+                 const std::u16string& error) {
+  LoadErrorReporter::GetInstance()->ReportLoadError(xpi, error, profile,
+                                                    /*be_noisy=*/true);
+#if BUILDFLAG(IS_ANDROID)
+  ExtensionInstallUI::Create(profile)->OnInstallFailure(CrxInstallError(
+      CrxInstallErrorType::OTHER, CrxInstallErrorDetail::NONE, error));
+#endif
+}
+
 void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
                      base::WeakPtr<Profile> profile,
                      const base::FilePath& xpi,
@@ -71,8 +91,7 @@ void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
   // without a prompt.
   GetExtensionFileTaskRunner()->PostTask(
       FROM_HERE, base::GetDeletePathRecursivelyCallback(unzip_dir));
-  LoadErrorReporter::GetInstance()->ReportLoadError(
-      xpi, kNoGeckoIdError, profile.get(), /*be_noisy=*/true);
+  ReportError(profile.get(), xpi, kNoGeckoIdError);
 }
 
 void OnUnzipped(scoped_refptr<CrxInstaller> installer,
@@ -84,8 +103,7 @@ void OnUnzipped(scoped_refptr<CrxInstaller> installer,
     return;
   }
   if (unzip_dir.empty()) {
-    LoadErrorReporter::GetInstance()->ReportLoadError(
-        xpi, base::UTF8ToUTF16(error), profile.get(), /*be_noisy=*/true);
+    ReportError(profile.get(), xpi, base::UTF8ToUTF16(error));
     return;
   }
   GetExtensionFileTaskRunner()->PostTaskAndReplyWithResult(
