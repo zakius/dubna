@@ -4041,3 +4041,52 @@
        {
          "name": "getMessage",
          "nocompile": true,
+--- a/extensions/browser/load_and_localize_file.cc
++++ b/extensions/browser/load_and_localize_file.cc
+@@ -20,6 +20,8 @@
+ #include "extensions/common/extension_id.h"
+ #include "extensions/common/extension_l10n_util.h"
+ #include "extensions/common/extension_resource.h"
++#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_ui_locale.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/message_bundle.h"
+@@ -34,6 +36,7 @@
+     const base::FilePath& extension_path,
+     const std::string& extension_default_locale,
+     extension_l10n_util::GzippedMessagesPermission gzip_permission,
++    bool firefox_add_on,
+     std::string* data) {
+   bool needs_message_substituion =
+       data->find(extensions::MessageBundle::kMessageBegin) != std::string::npos;
+@@ -47,6 +50,11 @@
+       l10n_file_util::LoadMessageBundleSubstitutionMap(
+           extension_path, extension_id, extension_default_locale,
+           gzip_permission);
++  // Firefox add-ons (dubna): a file that tabs.insertCSS() or
++  // scripting.insertCSS() inserts has Firefox's @@ui_locale too.
++  if (firefox_add_on) {
++    SetFirefoxUiLocale(*localization_messages);
++  }
+ 
+   std::string error;
+   MessageBundle::ReplaceMessagesWithExternalDictionary(*localization_messages,
+@@ -64,7 +72,7 @@
+   for (auto& resource : data) {
+     MaybeLocalizeInBackground(extension_id, extension_path,
+                               extension_default_locale, gzip_permission,
+-                              &resource);
++                              /*firefox_add_on=*/false, &resource);
+   }
+ 
+   return data;
+@@ -161,7 +169,7 @@
+   if (localize_file) {
+     get_file_and_l10n_callback = base::BindRepeating(
+         &MaybeLocalizeInBackground, extension.id(), extension.path(),
+-        extension_default_locale, gzip_permission);
++        extension_default_locale, gzip_permission, IsFirefoxAddOn(extension));
+   }
+ 
+   auto file_reader = base::MakeRefCounted<FileReader>(
