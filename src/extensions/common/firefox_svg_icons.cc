@@ -5,13 +5,16 @@
 
 #include <set>
 
+#include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
 
 namespace extensions {
 
 void EraseFirefoxSvgImagePaths(const Extension& extension,
                                std::set<base::FilePath>& image_paths) {
-  if (!IsFirefoxAddOn(extension)) {
+  // A theme's images the browser decodes itself (BrowserThemePack), so a
+  // theme's SVG files stay, and its install still fails on them.
+  if (!IsFirefoxAddOn(extension) || extension.is_theme()) {
     return;
   }
   std::erase_if(image_paths, [](const base::FilePath& path) {

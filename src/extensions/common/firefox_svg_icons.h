@@ -13,7 +13,7 @@ namespace extensions {
 class Extension;
 
 // Firefox add-ons (dubna's webextensions/README.md): when `extension` is a
-// Firefox add-on, removes its SVG files from `image_paths`, the images that a
+// Firefox add-on and not a theme, removes its SVG files from `image_paths`, the images that a
 // packed install decodes and saves again as PNG files
 // (ChromeExtensionsClient::GetBrowserImagePaths()). The decoder takes only
 // raster images, so an SVG icon, which Firefox draws, would fail the whole
