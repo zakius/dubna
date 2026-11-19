@@ -12,10 +12,6 @@ const IsFirefoxAddOn = requireNative('setIcon').IsFirefoxAddOn;
 // The width of an action icon at 1x, as ExtensionAction::ActionIconSize().
 const ACTION_ICON_SIZE = 16;
 
-// The setIcon() methods that the add-on has called for its global icon, so
-// that the icon drawn from the manifest doesn't replace it.
-const ownDefaultIcon = {__proto__: null};
-
 // Whether `path` is an SVG file that this module draws.
 function drawsSvg(path) {
   return typeof path == 'string' &&
@@ -60,14 +56,6 @@ function sizeSvgPath(details) {
   }
 }
 
-// Notes a setIcon() of `methodName` that sets the add-on's global icon.
-function noteSetIcon(methodName, details) {
-  if (details.tabId == null && details.windowId == null &&
-      (details.imageData != null || details.path != null)) {
-    ownDefaultIcon[methodName] = true;
-  }
-}
-
 // The path of `icons`, a manifest's icon or icons, that Chromium picks for
 // `size`: the smallest one as large or larger, or else the largest.
 function pickIcon(icons, size) {
@@ -90,9 +78,10 @@ function pickIcon(icons, size) {
 }
 
 // In the background page: draws each action's default icon that is an SVG,
-// at 1x and 2x, and sends it to the browser as the action's global icon,
-// unless the add-on has set one of its own by then. Each start of the
-// background page draws it again, so an update's new icon shows.
+// at 1x and 2x, and sends it to the browser as the action's default icon,
+// under any icon the add-on sets (FirefoxActionValues::SvgDefaultIcon()).
+// Each start of the background page draws it again, so an update's new icon
+// shows.
 function drawManifestIcons() {
   const setIcon = require('setIcon').setIcon;
   const manifest = chrome.runtime.getManifest();
@@ -111,27 +100,30 @@ function drawManifestIcons() {
     if (!icons) {
       continue;
     }
-    let path = pickIcon(icons, ACTION_ICON_SIZE);
-    if (!drawsSvg(path)) {
-      path = pickIcon(icons, 2 * ACTION_ICON_SIZE);
+    // Only the sizes whose icon is an SVG: the browser shows a PNG itself,
+    // and scales the drawn size for the other one.
+    const details = {__proto__: null, path: {__proto__: null}};
+    let sizes = 0;
+    for (let scale = 1; scale <= 2; scale++) {
+      const size = scale * ACTION_ICON_SIZE;
+      let path = pickIcon(icons, size);
+      if (!drawsSvg(path)) {
+        continue;
+      }
+      // Manifest paths start at the add-on's root, not at the page's folder.
+      if (path[0] != '/') {
+        path = '/' + path;
+      }
+      details.path[size] = path;
+      sizes++;
     }
-    if (!drawsSvg(path)) {
+    if (!sizes) {
       continue;
     }
-    // Manifest paths start at the add-on's root, not at the page's folder.
-    if (path[0] != '/') {
-      path = '/' + path;
-    }
     const method = actions[key] + '.setIcon';
-    const details = {__proto__: null, path: {__proto__: null}};
-    details.path[ACTION_ICON_SIZE] = path;
-    details.path[2 * ACTION_ICON_SIZE] = path;
     setIcon(details, function(iconSpec) {
-      if (ownDefaultIcon[method]) {
-        return;
-      }
-      // The browser takes it for a page action too, which has no global
-      // icon otherwise (firefox_svg_default_icon.h).
+      // The browser keeps it apart from the icon the add-on sets, for a page
+      // action too (firefox_svg_default_icon.h).
       iconSpec.firefoxSvgDefaultIcon = true;
       bindingUtil.sendRequest(
           method, [iconSpec, function() {}], /*options=*/ undefined);
@@ -142,5 +134,4 @@ function drawManifestIcons() {
 exports.$set('drawsSvg', drawsSvg);
 exports.$set('load', load);
 exports.$set('sizeSvgPath', sizeSvgPath);
-exports.$set('noteSetIcon', noteSetIcon);
 exports.$set('drawManifestIcons', drawManifestIcons);

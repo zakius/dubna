@@ -104,4 +104,13 @@ SkColor FirefoxActionValues::BadgeTextColor(const ExtensionAction& action,
   return SK_ColorWHITE;
 }
 
+gfx::Image FirefoxActionValues::SvgDefaultIcon(const ExtensionAction& action) {
+  return action.firefox_svg_default_icon_;
+}
+
+void FirefoxActionValues::SetSvgDefaultIcon(ExtensionAction& action,
+                                            const gfx::Image& icon) {
+  action.firefox_svg_default_icon_ = icon;
+}
+
 }  // namespace extensions

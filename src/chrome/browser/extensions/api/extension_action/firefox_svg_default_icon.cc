@@ -5,8 +5,13 @@
 
 #include <string_view>
 
+#include "extensions/browser/extension_action.h"
 #include "extensions/browser/extension_function.h"
+#include "extensions/browser/firefox_action_values.h"
+#include "extensions/browser/icon_util.h"
 #include "extensions/common/firefox_add_on.h"
+#include "ui/gfx/image/image.h"
+#include "ui/gfx/image/image_skia.h"
 
 namespace extensions {
 
@@ -16,6 +21,21 @@ bool IsFirefoxSvgDefaultIcon(const ExtensionFunction& function,
          details->FindBool("firefoxSvgDefaultIcon").value_or(false) &&
          !details->contains("tabId") && !details->contains("windowId") &&
          function.extension() && IsFirefoxAddOn(*function.extension());
+}
+
+bool SetFirefoxSvgDefaultIcon(ExtensionAction& action,
+                              const base::DictValue& details) {
+  const base::DictValue* image_data = details.FindDict("imageData");
+  if (!image_data) {
+    return false;
+  }
+  gfx::ImageSkia icon;
+  IconParseResult result = ParseIconFromCanvasDictionary(*image_data, &icon);
+  if (result != IconParseResult::kSuccess || icon.isNull()) {
+    return false;
+  }
+  FirefoxActionValues::SetSvgDefaultIcon(action, gfx::Image(icon));
+  return true;
 }
 
 }  // namespace extensions

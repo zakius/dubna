@@ -5,6 +5,7 @@
 #define EXTENSIONS_BROWSER_FIREFOX_ACTION_VALUES_H_
 
 #include "third_party/skia/include/core/SkColor.h"
+#include "ui/gfx/image/image.h"
 
 namespace extensions {
 
@@ -52,6 +53,16 @@ class FirefoxActionValues {
   static SkColor BadgeTextColor(const ExtensionAction& action,
                                 const Extension& extension,
                                 int tab_id);
+
+  // The default icon that a Firefox add-on's background page drew from the
+  // SVG in its manifest (chrome/renderer/resources/extensions/
+  // firefox_svg_icons.js), or an empty image. It stands in for the manifest's
+  // icon, which the browser can't decode, so an icon the add-on sets, for
+  // the action, a window or a tab, shows over it, and clearing that one shows
+  // it again. It isn't stored: each start of the background page draws it.
+  static gfx::Image SvgDefaultIcon(const ExtensionAction& action);
+  static void SetSvgDefaultIcon(ExtensionAction& action,
+                                const gfx::Image& icon);
 };
 
 }  // namespace extensions

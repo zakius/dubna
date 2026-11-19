@@ -68,8 +68,9 @@
 # failed the install (firefox_svg_icons.h), so the browser's ImageLoader
 # doesn't decode an .svg file either. Its background page draws its SVG
 # action icons and setIcon() draws an SVG path at the icon's sizes
-# (firefox_svg_icons.js, firefox_manifest_svg_icons.h), and a page action
-# takes that drawn icon as its global icon (firefox_svg_default_icon.h).
+# (firefox_svg_icons.js, firefox_manifest_svg_icons.h). The drawn icon is the
+# action's default icon, under any icon the add-on sets, for a page action
+# too (firefox_svg_default_icon.h, FirefoxActionValues::SvgDefaultIcon()).
 # On Android, an extension that fails to install, such as a .xpi with a broken
 # manifest, says why in a message on the tab, as desktop's infobar does, and
 # the install UI's tab is the one the user sees, not the first tab
@@ -931,7 +932,7 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
-@@ -194,6 +203,18 @@
+@@ -194,6 +203,21 @@
    // Populates the tab_id_ and details_ members.
    EXTENSION_FUNCTION_VALIDATE(ExtractDataFromArguments());
  
@@ -944,13 +945,16 @@
 +  // Firefox add-ons (dubna): the default icon drawn from the manifest's SVG,
 +  // for a page action too (firefox_svg_default_icon.h).
 +  if (IsFirefoxSvgDefaultIcon(*this, details_)) {
-+    return RunExtensionAction();
++    EXTENSION_FUNCTION_VALIDATE(
++        SetFirefoxSvgDefaultIcon(*extension_action_, *details_));
++    NotifyChange();
++    return RespondNow(NoArguments());
 +  }
 +
    // Find the WebContents that contains this tab id if one is required.
    if (tab_id_ != ExtensionAction::kDefaultTabId) {
      content::WebContents* contents_out_param = nullptr;
-@@ -210,7 +231,8 @@
+@@ -210,7 +234,8 @@
      EXTENSION_FUNCTION_VALIDATE(extension_action_->action_type() !=
                                  ActionInfo::Type::kPage);
    }
@@ -960,7 +964,7 @@
  }
  
  bool ExtensionActionFunction::ExtractDataFromArguments() {
-@@ -464,7 +486,9 @@
+@@ -464,7 +489,9 @@
  ExtensionFunction::ResponseAction
  ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -971,7 +975,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -475,7 +499,10 @@
+@@ -475,7 +502,10 @@
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -983,7 +987,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +523,8 @@
+@@ -496,7 +526,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -1809,6 +1813,17 @@
      } else if (const T* default_value = base::FindOrNull(map, kDefaultTabId)) {
        return *default_value;
      } else {
+@@ -316,6 +325,10 @@
+   // GetDefaultIconImage().)
+   mutable gfx::Image placeholder_icon_image_;
+ 
++  // Firefox add-ons (dubna): the default icon drawn from the manifest's SVG
++  // (firefox_action_values.h).
++  gfx::Image firefox_svg_default_icon_;
++
+   // The id for the ExtensionAction, for example: "RssPageAction". This is
+   // needed for compat with an older version of the page actions API.
+   std::string id_;
 --- a/chrome/common/extensions/api/action.json
 +++ b/chrome/common/extensions/api/action.json
 @@ -14,6 +14,7 @@
@@ -2704,13 +2719,9 @@
        }
        if (detailKeyCount == 0) {
          throw new Error('The path property must not be empty.');
-@@ -163,11 +173,55 @@
- // the extension icon.
+@@ -164,10 +174,51 @@
  function getSetIconHandler(methodName) {
    return function(details, successCallback, failureCallback) {
-+    // Firefox add-ons (dubna): the add-on's own icon wins over the one drawn
-+    // from the manifest's SVG.
-+    firefoxSvgIcons.noteSetIcon(methodName, details);
      var onIconRetrieved = function(iconSpec) {
 +      // Firefox add-ons (dubna): for a Firefox add-on, the browser's error
 +      // fails the call, so that its promise rejects, as in Firefox; a
@@ -3494,3 +3505,26 @@
    std::optional<std::vector<uint8_t>> file_contents =
        base::ReadFileToBytes(path);
    if (!file_contents) {
+--- a/extensions/browser/extension_action_icon_factory.cc
++++ b/extensions/browser/extension_action_icon_factory.cc
+@@ -5,6 +5,7 @@
+ #include "extensions/browser/extension_action_icon_factory.h"
+ 
+ #include "extensions/browser/extension_action.h"
++#include "extensions/browser/firefox_action_values.h"
+ #include "extensions/common/extension.h"
+ #include "extensions/common/image_util.h"
+ #include "extensions/common/manifest.h"
+@@ -61,6 +62,12 @@
+     return icon;
+   }
+ 
++  // Firefox add-ons (dubna): the default icon drawn from the manifest's SVG.
++  icon = FirefoxActionValues::SvgDefaultIcon(*action_);
++  if (!icon.IsEmpty()) {
++    return icon;
++  }
++
+   if (cached_default_icon_image_.IsEmpty()) {
+     icon = action_->GetDefaultIconImage();
+     // If the extension is packed, then check the icon for visibility. Icons
