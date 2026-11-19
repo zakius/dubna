@@ -100,26 +100,23 @@ function drawManifestIcons() {
     if (!icons) {
       continue;
     }
-    // Only the sizes whose icon is an SVG: the browser shows a PNG itself,
-    // and scales the drawn size for the other one.
-    const details = {__proto__: null, path: {__proto__: null}};
-    let sizes = 0;
-    for (let scale = 1; scale <= 2; scale++) {
-      const size = scale * ACTION_ICON_SIZE;
-      let path = pickIcon(icons, size);
-      if (!drawsSvg(path)) {
-        continue;
-      }
-      // Manifest paths start at the add-on's root, not at the page's folder.
-      if (path[0] != '/') {
-        path = '/' + path;
-      }
-      details.path[size] = path;
-      sizes++;
+    // The SVG that Chromium picks for 16 px, or else for 32 px, drawn at
+    // both: the drawing stands in for the manifest's whole icon, a PNG of
+    // the other size too.
+    let path = pickIcon(icons, ACTION_ICON_SIZE);
+    if (!drawsSvg(path)) {
+      path = pickIcon(icons, 2 * ACTION_ICON_SIZE);
     }
-    if (!sizes) {
+    if (!drawsSvg(path)) {
       continue;
     }
+    // Manifest paths start at the add-on's root, not at the page's folder.
+    if (path[0] != '/') {
+      path = '/' + path;
+    }
+    const details = {__proto__: null, path: {__proto__: null}};
+    details.path[ACTION_ICON_SIZE] = path;
+    details.path[2 * ACTION_ICON_SIZE] = path;
     const method = actions[key] + '.setIcon';
     setIcon(details, function(iconSpec) {
       // The browser keeps it apart from the icon the add-on sets, for a page
