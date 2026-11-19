@@ -8,7 +8,8 @@
 A pause is the file work/rounds-paused, with the reason in it. A round that
 is running finishes its batch, and then doesn't start the next one. resume
 removes the file and, when no chain is open, starts the next round as the
-router does: it appends `begin`, `round <N>` and `start climb round <N>` to
+router does (not within 2 minutes of a chain's end, when a stage may still be
+starting one itself, nor from 17:55 to 18:05, when the router starts): it appends `begin`, `round <N>` and `start climb round <N>` to
 the log and posts to the climb stage's webhook. The daily 18:00 chain runs
 either way; only the rounds after it wait for resume.
 """
@@ -22,6 +23,12 @@ WORK = Path.home() / 'dev/dubna/work'
 PAUSE = WORK / 'rounds-paused'
 LOG = WORK / 'nightly.log'
 WEBHOOKS = Path.home() / '.config/dubna/stage-webhooks.tsv'
+
+
+def last_stamp():
+    """The time of the log's last line."""
+    last = LOG.read_text().splitlines()[-1]
+    return datetime.datetime.fromisoformat(last.split(' ', 1)[0].replace('Z', '+00:00'))
 
 
 def last_chain():
@@ -42,6 +49,13 @@ def start_round():
     if chain and not any(event.startswith('end chain') for event in chain):
         print(f'a chain is open ({chain[-1]}): it starts the next round when it ends')
         return 0
+    now = datetime.datetime.now(datetime.timezone.utc)
+    if now - last_stamp() < datetime.timedelta(minutes=2):
+        sys.exit('the last chain ended under 2 minutes ago, and its stage may be starting '
+                 'the next round: run resume again in a few minutes')
+    local = datetime.datetime.now()
+    if (local.hour, local.minute) >= (17, 55) and (local.hour, local.minute) < (18, 5):
+        sys.exit('the 18:00 router starts now: run resume after 18:05')
     rounds = [int(m.group(1)) for event in chain if (m := re.fullmatch(r'round (\d+)', event))]
     number = rounds[-1] + 1 if rounds else 1
     url = next((line.split('\t')[1] for line in WEBHOOKS.read_text().splitlines()
@@ -56,11 +70,13 @@ def start_round():
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
             print(f'started climb round {number} (HTTP {response.status})')
-    except OSError as error:
+    except Exception as error:  # pylint: disable=broad-except
         # The router's rule for a failed start; a 404 means the URLs were rotated.
-        log(f'end climb died {getattr(error, "code", "")}'.rstrip())
+        # Only the error's type and code: some messages carry the secret URL.
+        code = getattr(error, 'code', '')
+        log(f'end climb died {code}'.rstrip())
         log('end chain nothing')
-        sys.exit(f'the climb webhook failed: {error}')
+        sys.exit(f'the climb webhook failed: {type(error).__name__} {code}'.rstrip())
     return 0
 
 
@@ -69,6 +85,9 @@ def main():
     if command == 'pause':
         PAUSE.write_text((' '.join(sys.argv[2:]) or 'paused by hand') + '\n')
         print(f'paused: {PAUSE.read_text().strip()}')
+        chain = last_chain()
+        if chain and not any(event.startswith('end chain') for event in chain):
+            print(f'a round is running ({chain[-1]}): it finishes its batch first')
         return 0
     if command == 'resume':
         PAUSE.unlink(missing_ok=True)

@@ -16,7 +16,7 @@ Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4
 
 The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
 
-Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`; several calls in one message run at once), never `delegate_task` or `t3_thread_launch`. Another active thread holds up the next round ("Climb rounds", item 4).
+Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`; several calls in one message run at once), never `delegate_task` or `t3_thread_launch`. Another active thread holds up the next round ("Climb rounds", item 5).
 
 ## The log
 
@@ -53,7 +53,7 @@ The next round starts only when all of these hold. The router checks them at the
 4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). Fable's limit doesn't count: Opus reviews when Fable can't. It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
 5. No other T3 thread is active (t3_thread_list, allProjects true, statuses running, starting, preparing, queued), apart from this one. If one is, wait for it (t3_thread_wait, timeoutMs 1800000, called again until it is idle) for at most 2 hours in all, then check 1 to 5 again. So a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds. Still active after 2 hours, or the wait says to end your turn: name it and stop.
 
-To start a round, append `begin`, `round <N>` (the ended chain's round number plus one, or 1 after the daily chain) and `start climb round <N>`, then post to the climb webhook as the last tool call:
+To start a round, check 1 once more (a pause can come while the other checks run), then append `begin`, `round <N>` (the ended chain's round number plus one, or 1 after the daily chain) and `start climb round <N>`, then post to the climb webhook as the last tool call:
 
 ```sh
 STAGE=climb; u=$(awk -F'\t' -v s="$STAGE" '$1==s{print $2}' /home/zakius/.config/dubna/stage-webhooks.tsv); [ -n "$u" ] && curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -X POST -H 'content-type: application/json' -d '{}' "$u"
