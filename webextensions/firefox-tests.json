@@ -1,5 +1,5 @@
 {
- "source": {"repository": "https://github.com/mozilla-firefox/firefox.git", "commit": "a48ec7d01f114254de9982022ec04c0da4d561a6", "date": "2026-11-18"},
+ "source": {"repository": "https://github.com/mozilla-firefox/firefox.git", "commit": "41b747af72d91784f78616056c2f1d6c17c01345", "date": "2026-11-18"},
  "tests": [
   {"path": "browser/components/extensions/test/browser/browser_AMBrowserExtensionsImport.js", "api": "", "state": "n/a", "reason": "Firefox's own extensions UI, not add-on behaviour"},
   {"path": "browser/components/extensions/test/browser/browser_ExtensionControlledPopup.js", "api": "", "state": "n/a", "reason": "Firefox's own extensions UI, not add-on behaviour"},
