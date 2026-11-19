@@ -3,9 +3,9 @@
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
   "L0": 839,
-  "L1": 795,
-  "L2": 722,
-  "L3": 654
+  "L1": 836,
+  "L2": 766,
+  "L3": 692
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -17,8 +17,8 @@
    "error": null
   },
   "{7e87d0f4-75b2-45d6-a677-0dce7a209882}": {
-   "level": "L0",
-   "error": "Could not decode image: 'icon48.png'"
+   "level": "L3",
+   "error": null
   },
   "jid1-MnnxcxisBPnSXQ@jetpack": {
    "level": "L3",
@@ -225,8 +225,8 @@
    "error": null
   },
   "moz-addon-prod@7tv.app": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Duplicate script ID 'seventv-youtube' (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": "Uncaught (in promise) TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (assets/seventv.Async.3.1.27.js:1)"
   },
   "@react-devtools": {
    "level": "L3",
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
+   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -305,8 +305,8 @@
    "error": null
   },
   "{5384767E-00D9-40E9-B72F-9CC39D655D6F}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "Maps_Assist___Custom_Web_Search_VeyzPDMlKh@mapsassist.com": {
    "level": "L3",
@@ -485,16 +485,16 @@
    "error": null
   },
   "jid1-TSgSxBhncsPBWQ@jetpack": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{f209234a-76f0-4735-9920-eb62507a54cd}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'i25rzdeaae5t0pnash') (267c4227-0743-415f-8c80-479cd5513624:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'ekt7uabg8lp1ilxsgd') (719cc898-8866-4ca3-bbfb-9ed2e7bf2d53:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (ada63ec7-0e48-4212-8081-73155a2eb432:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (1166be98-0d1c-4c33-b360-5a1687e78b83:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -577,8 +577,8 @@
    "error": null
   },
   "{f73df109-8fb4-453e-8373-f59e61ca4da3}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{6ea0a676-b3ef-48aa-b23d-24c8876945fb}": {
    "level": "L3",
@@ -629,8 +629,8 @@
    "error": "unknown permission 'menus.overrideContext'"
   },
   "{00000f2a-7cde-4f20-83ed-434fcb420d71}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{63d150c4-394c-4275-bc32-c464e76a891c}": {
    "level": "L3",
@@ -641,8 +641,8 @@
    "error": null
   },
   "{830f38bd-efc5-45dc-a5a6-064d9a638806}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{9a3104a2-02c2-464c-b069-82344e5ed4ec}": {
    "level": "L3",
@@ -665,8 +665,8 @@
    "error": null
   },
   "jid0-dsq67mf5kjjhiiju2dfb6kk8dfw@jetpack": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{60B7679C-BED9-11E5-998D-8526BB8E7F8B}": {
    "level": "L3",
@@ -689,8 +689,8 @@
    "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{dab9a10d-f9c5-4e8d-9351-67531e85b508}": {
    "level": "L1",
@@ -793,8 +793,8 @@
    "error": null
   },
   "{0ac04bdb-d698-452f-8048-bcef1a3f4b0d}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "CanvasBlocker@kkapsner.de": {
    "level": "L2",
@@ -873,8 +873,8 @@
    "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "{dcb8caa2-63fa-41aa-a508-a45c5990ebdd}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
    "level": "L3",
@@ -901,8 +901,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L1",
+   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L3",
@@ -921,8 +921,8 @@
    "error": null
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "addon@maproutepro.com": {
    "level": "L3",
@@ -1085,12 +1085,12 @@
    "error": "Uncaught TypeError: createScope is not a function (content/js/DisableVideoAutoPlay/disableVideoAutoPlay.js:13)"
   },
   "{6cc0a66e-ae3d-4cd8-9a03-5cd93b392903}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{66E978CD-981F-47DF-AC42-E3CF417C1467}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access contents of url \"chrome-extension://imgokidlakpmbbgofmgmaiebhfbnbimp/redirect.html\". Extension manifest must request permission to access this host. (redirect.js:84)"
+   "level": "L3",
+   "error": null
   },
   "{6c0839b6-2697-49ca-ac8c-8c65a8d9b7b9}": {
    "level": "L3",
@@ -1129,8 +1129,8 @@
    "error": null
   },
   "jid1-5Fs7iTLscUaZBgwr@jetpack": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{4c421bb7-c1de-4dc6-80c7-ce8625e34d24}": {
    "level": "L3",
@@ -1165,8 +1165,8 @@
    "error": null
   },
   "{00e68183-fc7d-4a91-b5cc-f7f8272386db}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{d3e01ff2-9a3a-4007-8f6e-7acd9a5de263}": {
    "level": "L3",
@@ -1262,7 +1262,7 @@
   },
   "{0c5b3b07-980a-413d-abd5-97a5eb4a0ff8}": {
    "level": "L2",
-   "error": "Uncaught SyntaxError: Identifier 'instances' has already been declared (common.js:1)"
+   "error": "Uncaught (in promise) Error: Failed to construct 'URL': Invalid URL (_generated_background_page.html:0)"
   },
   "ext_3tjvlkpa@extension-studio.com": {
    "level": "L3",
@@ -1309,8 +1309,8 @@
    "error": null
   },
   "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
    "level": "L3",
@@ -1349,8 +1349,8 @@
    "error": null
   },
   "{36bdf805-c6f2-4f41-94d2-9b646342c1dc}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "jid1-Y3WfE7td45aWDw@jetpack": {
    "level": "L3",
@@ -1581,8 +1581,8 @@
    "error": null
   },
   "{6706d386-2d33-4e1e-bbf1-51b9e1ce47e1}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{317B5128-0B0B-49b2-B2DB-1E7560E16C74}": {
    "level": "L3",
@@ -1625,8 +1625,8 @@
    "error": null
   },
   "{5fe0e3b1-ef04-41af-aae8-4653d2dbd0eb}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "@speed-dial-fast": {
    "level": "L3",
@@ -1721,8 +1721,8 @@
    "error": null
   },
   "{7f4fdb0c-a234-4eda-bc9e-e1b2bc1c5f10}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "ronin-wallet@axieinfinity.com": {
    "level": "L2",
@@ -1753,8 +1753,8 @@
    "error": null
   },
   "firefox@online-convert.com": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "youtube@downloader": {
    "level": "L3",
@@ -1905,8 +1905,8 @@
    "error": null
   },
   "moz-addon@7tv.app": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Duplicate script ID 'seventv-youtube' (_generated_background_page.html:0)"
+   "level": "L2",
+   "error": "Uncaught (in promise) TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (assets/seventv.Async.3.1.27.1000.js:1)"
   },
   "@ext.arsenal.app": {
    "level": "L3",
@@ -1993,8 +1993,8 @@
    "error": null
   },
   "{6a65273e-2b26-40f5-b66e-8eed317307da}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L2",
+   "error": "Uncaught (in promise) TypeError: browser.sessions.getTabValue is not a function (popup.js:237)"
   },
   "jid0-jJRRRBMgoShUhb07IvnxTBAl29w@jetpack": {
    "level": "L3",
@@ -2073,8 +2073,8 @@
    "error": null
   },
   "{a6afa2be-9b78-4dba-9dda-d89e52b13b7d}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "Video_Converter_STixJgxaVE@VideoConverter.com": {
    "level": "L3",
@@ -2161,8 +2161,8 @@
    "error": null
   },
   "{0c3ab5c8-57ac-4ad8-9dd1-ee331517884d}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{5f884915-160e-4276-a216-770a753a3abe}": {
    "level": "L3",
@@ -2189,8 +2189,8 @@
    "error": null
   },
   "{b0e3cc69-7193-42b1-a69b-f2d759f2599f}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{3a7ab27c-6a20-4d24-9fda-5e38f8992556}": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjY1NWU4MDAyMjdmNzIwMGNmOTQyYzMwZTRmOTA2ZmY1ZWJhY2QzMjUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjcyY2JhM2QyZjgxMDg3OThkNDBlODYwMzIxZWI3NGI2YTEzM2M5YmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2305,8 +2305,8 @@
    "error": "the popup did not open"
   },
   "{a871656a-91f6-402c-912b-6291197b9c49}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L2",
+   "error": "the popup did not open"
   },
   "{84c8edb0-65ca-43a5-bc53-0e80f41486e1}": {
    "level": "L2",
@@ -2373,8 +2373,8 @@
    "error": null
   },
   "{ae627955-50e3-431c-b6c5-7cd912f961cb}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "antffw@antdownloadmanager.com": {
    "level": "L3",
@@ -2509,8 +2509,8 @@
    "error": null
   },
   "gt@giphy.com": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{63eebab4-6bd0-44a0-8d79-7fefb998ebc1}": {
    "level": "L3",
@@ -2653,8 +2653,8 @@
    "error": null
   },
   "@youtubemp3free": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{1fb1ffdc-b95d-451e-be52-7303adf9a0d3}": {
    "level": "L3",
@@ -2673,8 +2673,8 @@
    "error": null
   },
   "{bd97f89b-17ba-4539-9fec-06852d07f917}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}": {
    "level": "L3",
@@ -2689,7 +2689,7 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
   },
   "cookie-manager@robwu.nl": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) RangeError: Maximum call stack size exceeded (cookie-manager-firefox.js:30)"
   },
   "{016eeff3-2d58-4042-b81e-135bb986c200}": {
@@ -2729,8 +2729,8 @@
    "error": null
   },
   "{1c3ca161-8c6d-48ed-9993-da686bcf5310}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{a81256d7-babd-4185-91f6-95580215661d}": {
    "level": "L3",
@@ -2805,8 +2805,8 @@
    "error": null
   },
   "{536b14f1-381e-49f5-a2f5-8cb33ac17402}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{3ef131fa-0e45-4242-b183-21b11300d951}": {
    "level": "L3",
@@ -2905,20 +2905,20 @@
    "error": null
   },
   "jid1-AoXeeOB4j7kFdw@jetpack": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L2",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'url') (src/assets/js/p24.js:526)"
   },
   "{85252760-c586-4180-8788-c50234c0ac08}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "andrew@vnnet": {
    "level": "L3",
    "error": null
   },
   "{db722c0c-d10e-4e23-af56-bbb6c3b62cc5}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "@youtube-download-ytd": {
    "level": "L3",
@@ -2977,8 +2977,8 @@
    "error": null
   },
   "{d7e0a6e7-9a50-490a-be5c-3b448be39b42}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "amazineurope@founderedeveloper.com": {
    "level": "L3",
@@ -3205,20 +3205,20 @@
    "error": null
   },
   "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{323353ee-cfbd-4178-9676-85566d98c8b1}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{5a898e4e-6b5c-4acf-9e29-4c791d3b5f2e}": {
    "level": "L1",
    "error": "unknown permission 'trialML'"
   },
   "{76f42345-d120-4c8e-bdd4-63cf95b780fb}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{802a552e-13d1-4683-a40a-1e5325fba4bb}": {
    "level": "L3",
@@ -3297,8 +3297,8 @@
    "error": null
   },
   "{8fc14e5e-b3fd-43b3-9eec-c61c08781782}": {
-   "level": "L0",
-   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
+   "level": "L3",
+   "error": null
   },
   "{26ef8318-6349-483c-affa-6c6db6d30517}": {
    "level": "L3",
