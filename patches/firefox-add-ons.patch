@@ -83,6 +83,9 @@
 # A Firefox add-on's tabs.onUpdated status follows the tab's top frame, as in
 # Firefox: "loading" before the URL too, and nothing for a frame's navigation
 # (firefox_tab_status.h). Other extensions keep Chromium's status updates.
+# A Firefox add-on's @@ui_locale is Firefox's, the BCP 47 tag that
+# getUILanguage() gives, with or without _locales, in getMessage() and in
+# its CSS (firefox_ui_locale.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -330,7 +333,7 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,17 @@
+@@ -402,6 +402,19 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -343,6 +346,8 @@
 +    "firefox_page_action.h",
 +    "firefox_svg_icons.cc",
 +    "firefox_svg_icons.h",
++    "firefox_ui_locale.cc",
++    "firefox_ui_locale.h",
 +    "firefox_version.cc",
 +    "firefox_version.h",
      "frame_context_data.h",
@@ -1707,7 +1712,26 @@
    bool removal_triggered = scripting::RemoveScripts(
 --- a/extensions/browser/extension_user_script_loader.cc
 +++ b/extensions/browser/extension_user_script_loader.cc
-@@ -519,6 +519,14 @@
+@@ -45,6 +45,8 @@
+ #include "extensions/common/api/content_scripts.h"
+ #include "extensions/common/api/scripts_internal.h"
+ #include "extensions/common/api/scripts_internal/script_serialization.h"
++#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_ui_locale.h"
+ #include "extensions/common/manifest_handlers/content_scripts_handler.h"
+ #include "extensions/common/manifest_handlers/default_locale_handler.h"
+ #include "extensions/common/message_bundle.h"
+@@ -304,6 +306,9 @@
+           l10n_file_util::LoadMessageBundleSubstitutionMap(
+               host_info.file_path, script->host_id().id,
+               host_info.default_locale, host_info.gzip_permission);
++      if (host_info.firefox_add_on) {
++        SetFirefoxUiLocale(*localization_messages);
++      }
+ 
+       for (const std::unique_ptr<UserScript::Content>& script_file :
+            script->css_scripts()) {
+@@ -519,6 +524,14 @@
        content->set_content(std::move(inline_code));
      }
    }
@@ -1722,6 +1746,15 @@
  
    return script_metadata;
  }
+@@ -564,6 +577,8 @@
+                       &extension)}),
+       helper_(browser_context, extension.id(), state_store),
+       content_verifier_(std::move(content_verifier)) {
++  host_info_.firefox_add_on = IsFirefoxAddOn(extension);
++
+   // TODO(crbug.com/415850597): Could we immediately call
+   // OnExtensionSystemReady() if the ExtensionSystem is ready now to be more
+   // efficient?
 --- a/extensions/common/utils/content_script_utils.cc
 +++ b/extensions/common/utils/content_script_utils.cc
 @@ -463,6 +463,11 @@
@@ -3904,3 +3937,43 @@
  
    // Dispatches the `tabs.onCreated` API event for the given `contents`.
    // `active` indicates if the tab is active in its tab strip.
+--- a/extensions/browser/extension_user_script_loader.h
++++ b/extensions/browser/extension_user_script_loader.h
+@@ -43,6 +43,9 @@
+     base::Version version;
+     std::string default_locale;
+     extension_l10n_util::GzippedMessagesPermission gzip_permission;
++    // Firefox add-ons (dubna): CSS gets Firefox's @@ui_locale
++    // (firefox_ui_locale.h).
++    bool firefox_add_on = false;
+   };
+ 
+   // Constructs a loader associated with the given `extension`. If the
+--- a/extensions/renderer/shared_l10n_map.cc
++++ b/extensions/renderer/shared_l10n_map.cc
+@@ -5,8 +5,12 @@
+ #include "extensions/renderer/shared_l10n_map.h"
+ 
+ #include "base/no_destructor.h"
++#include "extensions/common/extension.h"
++#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_ui_locale.h"
+ #include "extensions/common/message_bundle.h"
+ #include "extensions/common/mojom/renderer_host.mojom.h"
++#include "extensions/renderer/renderer_extension_registry.h"
+ 
+ namespace extensions {
+ 
+@@ -82,6 +86,12 @@
+   CHECK(!extension_id.empty());
+   ipc_target->GetMessageBundle(extension_id, &table);
+   l10n_messages = L10nMessagesMap(table.begin(), table.end());
++  // Firefox add-ons (dubna): Firefox's @@ui_locale (firefox_ui_locale.h).
++  const Extension* extension =
++      RendererExtensionRegistry::Get()->GetByID(extension_id);
++  if (extension && IsFirefoxAddOn(*extension)) {
++    SetFirefoxUiLocale(l10n_messages);
++  }
+ 
+   return &l10n_messages;
+ }
