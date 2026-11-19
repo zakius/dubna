@@ -4126,7 +4126,7 @@
 "o": "dubna",
 "a": "Extensions & uBlock",
 "p": "dubna/patches/firefox-add-ons",
-"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. Firefox's manifests load as Firefox reads them, a downloaded .xpi installs on both browsers, on oganesson also from the \"Add to Firefox\" button on addons.mozilla.org, and add-ons get Firefox's menus, contextualIdentities, proxy.onRequest, contentScripts.register, theme and more, some read-only for now. Most of the add-ons with the most users on addons.mozilla.org now start.",
+"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. Firefox's manifests load as Firefox reads them, a downloaded .xpi installs on both browsers, also from the \"Add to Firefox\" button on addons.mozilla.org, and add-ons get Firefox's menus, contextualIdentities, proxy.onRequest, contentScripts.register, theme and more, some read-only for now. Most of the add-ons with the most users on addons.mozilla.org now start.",
 "s": "on",
 "n": "",
 "own": 1,
