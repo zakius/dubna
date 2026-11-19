@@ -188,6 +188,8 @@ struct Update {
   std::optional<int> window_id;
   std::optional<std::string> cookie_store_id;
   GURL url;
+  // tabs.onUpdated's changeInfo, and the names of its properties.
+  v8::Local<v8::Object> changes;
   std::vector<std::string> changed;
   // proxy.onRequest's.
   std::optional<bool> incognito;
@@ -260,6 +262,7 @@ std::optional<Update> ReadUpdate(v8::Local<v8::Context> context,
   update.cookie_store_id = OwnString(context, tab, "cookieStoreId");
   // A tab whose URL the add-on may not see has none, and matches no URL.
   update.url = GURL(OwnString(context, tab, "url").value_or(std::string()));
+  update.changes = changes;
   v8::Local<v8::Array> names;
   if (changes->GetOwnPropertyNames(context).ToLocal(&names)) {
     gin::ConvertFromV8(v8::Isolate::GetCurrent(), names, &update.changed);
@@ -306,6 +309,31 @@ bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
     return false;
   }
   return true;
+}
+
+// The update's changes with only the properties a `properties` filter names,
+// as Firefox gives them: for a load, `status` only to a filter with `status`,
+// and `url` only to one with `url`. Chromium's changes and Firefox's filter
+// use the same names.
+v8::Local<v8::Object> OnlyProperties(
+    v8::Local<v8::Context> context,
+    const Update& update,
+    const std::vector<std::string>& properties) {
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Local<v8::Object> changes = v8::Object::New(isolate);
+  for (const std::string& name : update.changed) {
+    if (std::ranges::find(properties, name) == properties.end()) {
+      continue;
+    }
+    v8::Local<v8::Value> value = Own(context, update.changes, name);
+    if (value.IsEmpty()) {
+      continue;
+    }
+    changes->CreateDataProperty(context, gin::StringToSymbol(isolate, name),
+                                value)
+        .Check();
+  }
+  return changes;
 }
 
 }  // namespace
@@ -402,26 +430,33 @@ void FirefoxUpdateFilters::Clear() {
   entries_.clear();
 }
 
-std::vector<bool> FirefoxUpdateFilters::Matching(
-    const v8::LocalVector<v8::Function>& listeners,
-    v8::Local<v8::Context> context,
-    const v8::LocalVector<v8::Value>& args) const {
-  std::vector<bool> runs(listeners.size(), true);
+std::vector<std::optional<v8::LocalVector<v8::Value>>>
+FirefoxUpdateFilters::Arguments(const v8::LocalVector<v8::Function>& listeners,
+                                v8::Local<v8::Context> context,
+                                const v8::LocalVector<v8::Value>& args) const {
+  std::vector<std::optional<v8::LocalVector<v8::Value>>> listener_args(
+      listeners.size(), args);
   if (entries_.empty()) {
-    return runs;
+    return listener_args;
   }
   std::optional<Update> update = ReadUpdate(context, args);
   if (!update) {
-    return runs;
+    return listener_args;
   }
   for (size_t i = 0; i < listeners.size(); ++i) {
     for (const Entry& entry : entries_) {
-      if (entry.listener == listeners[i]) {
-        runs[i] = Matches(entry.filter, *update);
+      if (entry.listener != listeners[i]) {
+        continue;
+      }
+      if (!Matches(entry.filter, *update)) {
+        listener_args[i].reset();
+      } else if (entry.filter.properties) {
+        (*listener_args[i])[1] =
+            OnlyProperties(context, *update, *entry.filter.properties);
       }
     }
   }
-  return runs;
+  return listener_args;
 }
 
 }  // namespace extensions

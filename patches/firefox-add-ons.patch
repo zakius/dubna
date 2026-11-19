@@ -2199,22 +2199,31 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -265,7 +303,15 @@
+@@ -265,13 +303,23 @@
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
 +  // Firefox add-ons (dubna): which listeners Firefox's filters of
-+  // tabs.onUpdated let run, decided before any of them runs.
-+  std::vector<bool> runs =
-+      firefox_update_filters_.Matching(listeners, context, *args);
++  // tabs.onUpdated let run, and with what, decided before any of them runs.
++  std::vector<std::optional<v8::LocalVector<v8::Value>>> firefox_args =
++      firefox_update_filters_.Arguments(listeners, context, *args);
 +  size_t index = 0;
    for (const auto& listener : listeners) {
-+    if (!runs[index++]) {
++    std::optional<v8::LocalVector<v8::Value>>& listener_args =
++        firefox_args[index++];
++    if (!listener_args) {
 +      continue;
 +    }
      // NOTE(devlin): Technically, any listener here could suspend JS execution
      // (through e.g. calling alert() or print()). That should suspend this
      // message loop as well (though a nested message loop will run). This is a
+     // bit ugly, but should hopefully be safe.
+     v8::MaybeLocal<v8::Value> maybe_result =
+-        js_runner->RunJSFunctionSync(listener, context, *args);
++        js_runner->RunJSFunctionSync(listener, context, *listener_args);
+ 
+     // Any of the listeners could invalidate the context. If that happens,
+     // bail out.
 --- a/extensions/renderer/bindings/event_emitter.h
 +++ b/extensions/renderer/bindings/event_emitter.h
 @@ -9,6 +9,7 @@

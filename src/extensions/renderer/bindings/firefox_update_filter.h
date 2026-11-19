@@ -67,13 +67,18 @@ class FirefoxUpdateFilters {
   void Remove(v8::Local<v8::Function> listener);
   void Clear();
 
-  // For each of `listeners`, whether it runs for an update with these
-  // arguments: the tab's id, the changes and the tab; or for a request with
-  // proxy.onRequest's details. A listener without a filter always runs. Decided for all before any runs, so that a listener
-  // another one removes keeps its filter for this update.
-  std::vector<bool> Matching(const v8::LocalVector<v8::Function>& listeners,
-                             v8::Local<v8::Context> context,
-                             const v8::LocalVector<v8::Value>& args) const;
+  // For each of `listeners`, the arguments it runs with for an update with
+  // these arguments: the tab's id, the changes and the tab; or for a request
+  // with proxy.onRequest's details. nullopt for a listener whose filter
+  // doesn't match, which doesn't run. A listener without a filter gets
+  // `args`. One whose filter has `properties` gets, as in Firefox, changes
+  // with only the properties its filter names. Decided for all before any
+  // runs, so that a listener another one removes keeps its filter for this
+  // update.
+  std::vector<std::optional<v8::LocalVector<v8::Value>>> Arguments(
+      const v8::LocalVector<v8::Function>& listeners,
+      v8::Local<v8::Context> context,
+      const v8::LocalVector<v8::Value>& args) const;
 
  private:
   struct Entry {
