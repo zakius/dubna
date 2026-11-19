@@ -4,6 +4,9 @@
 # //chrome/browser/containers/platform (see containers_platform.h).
 # - web_contents_impl.cc: a window a container's page opens without an opener (target=_blank,
 #   noopener) stays in the container; content gives such a window a new default SiteInstance.
+# - browsing_instance.cc: a container tab's about:blank stays in the container. Content leaves
+#   its SiteInstance without a site, whose SiteInfo has the default partition, and the page the
+#   tab loads next follows it there.
 # - navigation_entry_impl.cc: a page's committed partition, which the session handler saves as
 #   the page's extended info: the public NavigationEntry doesn't tell its SiteInstance.
 # - web_contents_impl.cc, session_service_base.cc, content_platform_specific_tab_data.cc: saved
@@ -350,3 +353,19 @@
    ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
        session_tab_helper->session_id(), session_storage_namespace->id()));
  }
+--- a/content/browser/browsing_instance.cc
++++ b/content/browser/browsing_instance.cc
+@@ -79,8 +79,12 @@
+   // Some URLs should leave the SiteInstance's site unassigned, though if
+   // `instance` is for a guest, we should always set the site to ensure that it
+   // carries guest information contained within SiteInfo.
++  // A container's SiteInstance always gets its site too (dubna's
++  // containers.patch): unassigned, its SiteInfo would have the default
++  // partition, and a container tab's about:blank, with the next page the tab
++  // loads, would leave the container.
+   if (SiteInstanceImpl::ShouldAssignSiteForUrlInfo(url_info) ||
+-      isolation_context_.is_guest()) {
++      isolation_context_.is_guest() || is_fixed_storage_partition_) {
+     if (base::FeatureList::IsEnabled(features::kPrecomputeSiteInfo)) {
+       instance->SetSiteInfoAndOriginalUrl(site_info, url_info.url);
+     } else {
