@@ -32,6 +32,10 @@ constexpr std::string_view kPropertyNames[] = {
 
 constexpr char kProxyOnRequest[] = "proxy.onRequest";
 
+// windows.WINDOW_ID_CURRENT (extension_misc::kCurrentWindowId, which the
+// bindings' DEPS keep out).
+constexpr int kCurrentWindowId = -2;
+
 // Firefox's UpdateFilter keys, and its RequestFilter's.
 constexpr std::string_view kFilterKeys[] = {"urls", "properties", "tabId",
                                             "windowId", "cookieStoreId"};
@@ -191,6 +195,8 @@ struct Update {
   // tabs.onUpdated's changeInfo, and the names of its properties.
   v8::Local<v8::Object> changes;
   std::vector<std::string> changed;
+  // The window of windows.WINDOW_ID_CURRENT.
+  std::optional<int> current_window_id;
   // proxy.onRequest's.
   std::optional<bool> incognito;
 };
@@ -286,11 +292,21 @@ bool PatternMatches(const URLPattern& pattern, const GURL& url) {
 
 bool Matches(const FirefoxUpdateFilters::Filter& filter, const Update& update) {
   if ((filter.tab_id && update.tab_id != filter.tab_id) ||
-      (filter.window_id && update.window_id != filter.window_id) ||
       (filter.cookie_store_id &&
        update.cookie_store_id != filter.cookie_store_id) ||
       (filter.incognito && update.incognito != filter.incognito)) {
     return false;
+  }
+  // As in Firefox, WINDOW_ID_CURRENT names a window at each update, not when
+  // the listener was added.
+  if (filter.window_id) {
+    std::optional<int> window_id = filter.window_id;
+    if (*window_id == kCurrentWindowId) {
+      window_id = update.current_window_id;
+    }
+    if (!window_id || update.window_id != window_id) {
+      return false;
+    }
   }
   // As in Firefox, a listener for some properties runs when one of them
   // changed. Firefox's names that Chromium's changes don't have (`hidden`,
@@ -433,7 +449,8 @@ void FirefoxUpdateFilters::Clear() {
 std::vector<std::optional<v8::LocalVector<v8::Value>>>
 FirefoxUpdateFilters::Arguments(const v8::LocalVector<v8::Function>& listeners,
                                 v8::Local<v8::Context> context,
-                                const v8::LocalVector<v8::Value>& args) const {
+                                const v8::LocalVector<v8::Value>& args,
+                                std::optional<int> current_window_id) const {
   std::vector<std::optional<v8::LocalVector<v8::Value>>> listener_args(
       listeners.size(), args);
   if (entries_.empty()) {
@@ -443,6 +460,7 @@ FirefoxUpdateFilters::Arguments(const v8::LocalVector<v8::Function>& listeners,
   if (!update) {
     return listener_args;
   }
+  update->current_window_id = current_window_id;
   for (size_t i = 0; i < listeners.size(); ++i) {
     for (const Entry& entry : entries_) {
       if (entry.listener != listeners[i]) {

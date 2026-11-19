@@ -2029,7 +2029,18 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -264,6 +268,10 @@
+@@ -179,6 +183,10 @@
+     "api/tabs/tabs_constants.h",
+     "api/tabs/tabs_event_router.cc",
+     "api/tabs/tabs_event_router.h",
++
++    # Firefox add-ons (dubna): WINDOW_ID_CURRENT in tabs.onUpdated's filter.
++    "api/tabs/firefox_current_window.cc",
++    "api/tabs/firefox_current_window.h",
+     "api/tabs/tabs_util.cc",
+     "api/tabs/tabs_util.h",
+     "api/tabs/tabs_windows_api.cc",
+@@ -264,6 +272,10 @@
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -2040,7 +2051,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -330,6 +338,22 @@
+@@ -330,6 +342,22 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -2063,7 +2074,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -390,6 +414,10 @@
+@@ -390,6 +418,10 @@
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -2199,14 +2210,26 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -265,13 +303,23 @@
+@@ -245,6 +283,10 @@
+     v8::LocalVector<v8::Value>* args,
+     mojom::EventFilteringInfoPtr filter,
+     v8::Local<v8::Function> listener_error_callback_function) {
++  // Firefox add-ons (dubna): the window of WINDOW_ID_CURRENT in Firefox's
++  // filters of tabs.onUpdated, which the browser sends with each update.
++  std::optional<int> firefox_current_window =
++      filter ? filter->firefox_current_window_id : std::nullopt;
+   // Note that |listeners_| can be modified during handling.
+   v8::LocalVector<v8::Function> listeners =
+       listeners_->GetListeners(std::move(filter), context);
+@@ -265,13 +307,24 @@
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
 +  // Firefox add-ons (dubna): which listeners Firefox's filters of
 +  // tabs.onUpdated let run, and with what, decided before any of them runs.
 +  std::vector<std::optional<v8::LocalVector<v8::Value>>> firefox_args =
-+      firefox_update_filters_.Arguments(listeners, context, *args);
++      firefox_update_filters_.Arguments(listeners, context, *args,
++                                        firefox_current_window);
 +  size_t index = 0;
    for (const auto& listener : listeners) {
 +    std::optional<v8::LocalVector<v8::Value>>& listener_args =
@@ -3650,3 +3673,38 @@
    }
  
    void CreateJsonFileSanitizer(
+--- a/chrome/browser/extensions/api/tabs/tabs_event_router.cc
++++ b/chrome/browser/extensions/api/tabs/tabs_event_router.cc
+@@ -10,6 +10,7 @@
+ #include <vector>
+ 
+ #include "base/values.h"
++#include "chrome/browser/extensions/api/tabs/firefox_current_window.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_api.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
+@@ -77,6 +78,10 @@
+   event_args_out->Append(ExtensionTabUtil::GetTabId(contents));
+   event_args_out->Append(std::move(changed_properties));
+   event_args_out->Append(std::move(tab_value));
++  // Firefox add-ons (dubna): the window of WINDOW_ID_CURRENT in Firefox's
++  // filter.
++  event_filtering_info_out =
++      FirefoxCurrentWindowInfo(browser_context, extension);
+   return true;
+ }
+ 
+--- a/extensions/common/mojom/event_dispatcher.mojom
++++ b/extensions/common/mojom/event_dispatcher.mojom
+@@ -44,6 +44,11 @@
+   string? window_type;
+ 
+   bool? window_exposed_by_default;
++
++  // Firefox add-ons (dubna): for tabs.onUpdated, the window that
++  // windows.WINDOW_ID_CURRENT names in Firefox's filter of the event
++  // (chrome/browser/extensions/api/tabs/firefox_current_window.h).
++  int32? firefox_current_window_id;
+ };
+ 
+ struct DispatchEventParams {

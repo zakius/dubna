@@ -74,11 +74,16 @@ class FirefoxUpdateFilters {
   // `args`. One whose filter has `properties` gets, as in Firefox, changes
   // with only the properties its filter names. Decided for all before any
   // runs, so that a listener another one removes keeps its filter for this
-  // update.
+  // update. `current_window_id` is the window a `windowId` of
+  // windows.WINDOW_ID_CURRENT names at this update, which the browser sends
+  // with it (chrome/browser/extensions/api/tabs/firefox_current_window.h);
+  // without one, such a filter matches no update, as in Firefox without a
+  // window.
   std::vector<std::optional<v8::LocalVector<v8::Value>>> Arguments(
       const v8::LocalVector<v8::Function>& listeners,
       v8::Local<v8::Context> context,
-      const v8::LocalVector<v8::Value>& args) const;
+      const v8::LocalVector<v8::Value>& args,
+      std::optional<int> current_window_id) const;
 
  private:
   struct Entry {
