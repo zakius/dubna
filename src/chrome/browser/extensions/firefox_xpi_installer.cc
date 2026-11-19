@@ -11,11 +11,13 @@
 #include "base/files/file_util.h"
 #include "base/functional/bind.h"
 #include "base/json/json_reader.h"
+#include "base/json/json_writer.h"
 #include "base/memory/weak_ptr.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
 #include "build/build_config.h"
 #include "chrome/browser/download/download_crx_util.h"
+#include "chrome/browser/extensions/firefox_xpi_signature.h"
 #include "chrome/browser/profiles/profile.h"
 #include "components/download/public/common/download_item.h"
 #include "extensions/browser/crx_installer.h"
@@ -36,15 +38,18 @@ namespace extensions {
 namespace {
 
 constexpr char16_t kNoGeckoIdError[] =
-    u"This add-on has no Gecko ID (browser_specific_settings.gecko.id), so "
-    u"it can't be installed from a download. Unzip it and load it unpacked "
-    u"in developer mode.";
+    u"This add-on has no Gecko ID (browser_specific_settings.gecko.id) and "
+    u"no AMO signature with its ID (META-INF/mozilla.rsa), so it can't be "
+    u"installed from a download. Unzip it and load it unpacked in developer "
+    u"mode.";
 
 // The Gecko ID in the unzipped add-on's manifest, if Firefox would take it,
-// or "".
+// or else the ID in its AMO signature, as Firefox takes it, which this writes
+// into the manifest, or "".
 std::string ReadGeckoId(const base::FilePath& unzip_dir) {
+  const base::FilePath manifest_path = unzip_dir.Append(kManifestFilename);
   std::string json;
-  if (!base::ReadFileToString(unzip_dir.Append(kManifestFilename), &json)) {
+  if (!base::ReadFileToString(manifest_path, &json)) {
     return std::string();
   }
   std::optional<base::Value> manifest =
@@ -52,7 +57,27 @@ std::string ReadGeckoId(const base::FilePath& unzip_dir) {
   if (!manifest || !manifest->is_dict()) {
     return std::string();
   }
-  return std::string(GeckoId(manifest->GetDict()));
+  std::string gecko_id(GeckoId(manifest->GetDict()));
+  if (!gecko_id.empty()) {
+    return gecko_id;
+  }
+  gecko_id = GeckoIdFromSignature(unzip_dir);
+  if (gecko_id.empty()) {
+    return std::string();
+  }
+  // The signature's ID goes into the manifest, so the installed add-on has
+  // the Gecko ID Firefox gives it: other add-ons reach it by that ID, and it
+  // counts as a Firefox add-on (firefox_add_on.h), whose SVG icons, for one,
+  // aren't decoded.
+  if (!manifest->GetDict().SetByDottedPath(
+          "browser_specific_settings.gecko.id", gecko_id)) {
+    return std::string();
+  }
+  std::optional<std::string> written = base::WriteJson(*manifest);
+  if (!written || !base::WriteFile(manifest_path, *written)) {
+    return std::string();
+  }
+  return gecko_id;
 }
 
 // Reports `error` for the .xpi at `xpi`. Android shows no load error, so there

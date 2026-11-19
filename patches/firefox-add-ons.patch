@@ -75,6 +75,8 @@
 # manifest, says why in a message on the tab, as desktop's infobar does, and
 # without an active window to tell, the install UI's tab is the one the user
 # sees, not the first tab (install_failure_message_android.h).
+# A downloaded .xpi without a Gecko ID installs with the ID of its AMO
+# signature's certificate, as in Firefox (firefox_xpi_signature.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -2035,7 +2037,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -330,6 +338,18 @@
+@@ -330,6 +338,22 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -2051,10 +2053,14 @@
 +    # Firefox add-ons (dubna): a downloaded .xpi installs.
 +    "firefox_xpi_installer.cc",
 +    "firefox_xpi_installer.h",
++
++    # Firefox add-ons (dubna): the ID in a .xpi's AMO signature.
++    "firefox_xpi_signature.cc",
++    "firefox_xpi_signature.h",
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -390,6 +410,10 @@
+@@ -390,6 +414,10 @@
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
