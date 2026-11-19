@@ -26,13 +26,13 @@
 #   Chromium keeps one HostZoomMap per partition.
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1070,6 +1070,7 @@
+@@ -1072,6 +1072,7 @@ source_set("core") {
      ":browser_process",
      ":browser_process_impl",
      "//chrome/browser/app_links/platform",
 +    "//chrome/browser/containers/platform",
      ":browser_process_platform_part",
-     ":browser_public_dependencies",
+     ":buildflags",
      ":chained_back_navigation_tracker",
 --- a/chrome/browser/chrome_content_browser_client_navigation_throttles.cc
 +++ b/chrome/browser/chrome_content_browser_client_navigation_throttles.cc
@@ -44,7 +44,7 @@
  #include "chrome/browser/autocomplete/aim_eligibility_refresh_navigation_throttle.h"
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/contextual_tasks/contextual_tasks_navigation_throttle.h"
-@@ -485,6 +486,7 @@
+@@ -487,6 +488,7 @@ void CreateAndAddChromeThrottlesForNavigation(
  #endif  // BUILDFLAG(ENABLE_DEVTOOLS_FRONTEND)
  
    app_links::MaybeAddThrottle(registry);
@@ -54,7 +54,7 @@
    if (base::FeatureList::IsEnabled(features::kInstantUsesSpareRenderer)) {
 --- a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
 +++ b/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
-@@ -63,6 +63,7 @@
+@@ -64,6 +64,7 @@
  #include "chrome/browser/collaboration/messaging/messaging_backend_service_factory.h"
  #include "chrome/browser/commerce/shopping_service_factory.h"
  #include "chrome/browser/consent_auditor/consent_auditor_factory.h"
@@ -62,7 +62,7 @@
  #include "chrome/browser/content_index/content_index_provider_factory.h"
  #include "chrome/browser/content_settings/cookie_settings_factory.h"
  #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
-@@ -904,6 +905,7 @@
+@@ -907,6 +908,7 @@ void ChromeBrowserMainExtraPartsProfiles::
  #endif
    commerce::ShoppingServiceFactory::GetInstance();
    ConsentAuditorFactory::GetInstance();
@@ -70,6 +70,43 @@
    ContextHubServiceFactory::GetInstance();
    contextual_cueing::ContextualCueingServiceFactory::GetInstance();
  
+--- a/chrome/browser/sessions/session_service_base.cc
++++ b/chrome/browser/sessions/session_service_base.cc
+@@ -55,6 +55,7 @@
+ #include "components/tab_groups/tab_group_id.h"
+ #include "components/tabs/public/split_tab_data.h"
+ #include "components/tabs/public/tab_group.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/navigation_controller.h"
+ #include "content/public/browser/navigation_details.h"
+ #include "content/public/browser/navigation_entry.h"
+@@ -294,7 +295,7 @@ void SessionServiceBase::TabInserted(WebContents* contents) {
+   // just the default. This in particular will not work for tabs with only
+   // isolated apps which won't have a default partition.
+   content::SessionStorageNamespaceHandle* session_storage_namespace =
+-      contents->GetController().GetDefaultSessionStorageNamespace();
++      content::GetTabSessionStorageNamespace(*contents);
+   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
+       session_tab_helper->session_id(), session_storage_namespace->id()));
+   session_storage_namespace->SetShouldPersist(true);
+@@ -311,7 +312,7 @@ void SessionServiceBase::TabClosing(WebContents* contents) {
+       sessions::SessionTabHelper::FromWebContents(contents);
+   if (ShouldDeleteSessionStorageOnTabClosing(session_tab_helper->window_id())) {
+     content::SessionStorageNamespaceHandle* session_storage_namespace =
+-        contents->GetController().GetDefaultSessionStorageNamespace();
++        content::GetTabSessionStorageNamespace(*contents);
+     // Allow the associated sessionStorage to get deleted; the tab close is
+     // being committed and it won't be needed in session restore.
+     session_storage_namespace->SetShouldPersist(false);
+@@ -677,7 +678,7 @@ void SessionServiceBase::BuildCommandsForTab(
+ 
+   // Record the association between the sessionStorage namespace and the tab.
+   content::SessionStorageNamespaceHandle* session_storage_namespace =
+-      tab->GetController().GetDefaultSessionStorageNamespace();
++      content::GetTabSessionStorageNamespace(*tab);
+   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
+       session_tab_helper->session_id(), session_storage_namespace->id()));
+ }
 --- a/components/permissions/permission_util.cc
 +++ b/components/permissions/permission_util.cc
 @@ -25,9 +25,11 @@
@@ -84,7 +121,7 @@
  #include "content/public/browser/web_contents.h"
  #include "content/public/common/content_features.h"
  #include "services/network/public/mojom/permissions_policy/permissions_policy_feature.mojom.h"
-@@ -686,6 +688,11 @@
+@@ -686,6 +688,11 @@ bool PermissionUtil::IsPermissionBlockedInPartition(
      case PermissionDelegationMode::kDoubleKeyed:
        return false;
      case PermissionDelegationMode::kUndelegated:
@@ -96,6 +133,41 @@
        // TODO(crbug.com/40220503): This will create |requesting_origin|'s home
        // StoragePartition if it doesn't already exist. Given how
        // StoragePartitions are used today, this shouldn't actually be a
+--- a/components/sessions/content/content_platform_specific_tab_data.cc
++++ b/components/sessions/content/content_platform_specific_tab_data.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "components/sessions/content/content_platform_specific_tab_data.h"
+ 
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/navigation_controller.h"
+ #include "content/public/browser/web_contents.h"
+ 
+@@ -14,7 +15,7 @@ ContentPlatformSpecificTabData::ContentPlatformSpecificTabData(
+     :  // TODO(ajwong): This does not correctly handle storage for isolated
+        // apps.
+       session_storage_namespace_(
+-          web_contents->GetController().GetDefaultSessionStorageNamespace()) {}
++          content::GetTabSessionStorageNamespace(*web_contents)) {}
+ 
+ ContentPlatformSpecificTabData::ContentPlatformSpecificTabData() = default;
+ ContentPlatformSpecificTabData::~ContentPlatformSpecificTabData() = default;
+--- a/content/browser/browsing_instance.cc
++++ b/content/browser/browsing_instance.cc
+@@ -78,8 +78,12 @@ scoped_refptr<SiteInstanceImpl> BrowsingInstance::GetSiteInstanceForURL(
+   // Some URLs should leave the SiteInstance's site unassigned, though if
+   // `instance` is for a guest, we should always set the site to ensure that it
+   // carries guest information contained within SiteInfo.
++  // A container's SiteInstance always gets its site too (dubna's
++  // containers.patch): unassigned, its SiteInfo would have the default
++  // partition, and a container tab's about:blank, with the next page the tab
++  // loads, would leave the container.
+   if (SiteInstanceImpl::ShouldAssignSiteForUrlInfo(url_info) ||
+-      isolation_context_.is_guest()) {
++      isolation_context_.is_guest() || is_fixed_storage_partition_) {
+     if (base::FeatureList::IsEnabled(features::kPrecomputeSiteInfo)) {
+       instance->SetSiteInfoAndOriginalUrl(site_info, url_info.url);
+     } else {
 --- a/content/browser/host_zoom_map_impl.cc
 +++ b/content/browser/host_zoom_map_impl.cc
 @@ -16,9 +16,11 @@
@@ -110,7 +182,7 @@
  #include "content/public/browser/content_browser_client.h"
  #include "content/public/browser/host_zoom_map.h"
  #include "content/public/browser/render_frame_host.h"
-@@ -122,6 +124,12 @@
+@@ -122,6 +124,12 @@ HostZoomMap* HostZoomMap::GetForStoragePartition(
      StoragePartition* storage_partition) {
    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M160);
    CHECK(storage_partition);
@@ -123,72 +195,51 @@
    return storage_partition->GetHostZoomMap();
  }
  
---- a/content/browser/renderer_host/navigation_entry_impl.cc
-+++ b/content/browser/renderer_host/navigation_entry_impl.cc
-@@ -30,6 +30,7 @@
- #include "content/browser/security/cpsp/child_process_security_policy_impl.h"
- #include "content/common/content_constants_internal.h"
- #include "content/common/features.h"
-+#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/reload_type.h"
- #include "content/public/common/content_constants.h"
- #include "content/public/common/url_constants.h"
-@@ -1381,4 +1382,15 @@
-   return GetBaseURLForDataURL().is_empty() ? GURL() : GetVirtualURL();
- }
- 
-+std::optional<StoragePartitionConfig> GetCommittedStoragePartitionConfig(
-+    NavigationEntry& entry) {
-+  SiteInstanceImpl* site_instance = static_cast<NavigationEntryImpl&>(entry)
-+                                        .root_node()
-+                                        ->frame_entry->site_instance();
-+  if (!site_instance) {
-+    return std::nullopt;
-+  }
-+  return site_instance->GetSecurityPrincipal().GetStoragePartitionConfig();
-+}
-+
- }  // namespace content
---- a/content/browser/web_contents/web_contents_impl.cc
-+++ b/content/browser/web_contents/web_contents_impl.cc
-@@ -147,6 +147,7 @@
- #include "content/public/browser/browser_plugin_guest_manager.h"
+--- a/content/browser/notifications/notification_event_dispatcher_impl.cc
++++ b/content/browser/notifications/notification_event_dispatcher_impl.cc
+@@ -18,6 +18,7 @@
+ #include "content/public/browser/browser_context.h"
+ #include "content/public/browser/browser_task_traits.h"
  #include "content/public/browser/browser_thread.h"
- #include "content/public/browser/color_chooser.h"
 +#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/content_browser_client.h"
- #include "content/public/browser/context_menu_params.h"
- #include "content/public/browser/device_service.h"
-@@ -5837,6 +5838,10 @@
-       // as long as they preserve the guest's StoragePartition.
-       site_instance =
-           SiteInstance::CreateForGuest(GetBrowserContext(), partition_config);
-+    } else if (IsContainersPartition(partition_config)) {
-+      // A tab container's page: the window stays in its container.
-+      site_instance = SiteInstance::CreateForFixedStoragePartition(
-+          GetBrowserContext(), GURL(), partition_config);
-     } else {
-       site_instance = SiteInstance::Create(GetBrowserContext());
-     }
-@@ -13566,4 +13571,15 @@
-               });
- }
+ #include "content/public/browser/render_frame_host.h"
+ #include "content/public/browser/render_process_host.h"
+ #include "content/public/browser/storage_partition.h"
+@@ -364,6 +365,12 @@ void DispatchNotificationEvent(
  
-+SessionStorageNamespaceHandle* GetTabSessionStorageNamespace(
-+    WebContents& contents) {
-+  WebContentsImpl& impl = static_cast<WebContentsImpl&>(contents);
-+  const StoragePartitionConfig& config =
-+      impl.GetSiteInstance()->GetSecurityPrincipal().GetStoragePartitionConfig();
-+  if (!IsContainersPartition(config)) {
-+    return impl.GetController().GetDefaultSessionStorageNamespace();
+   StoragePartition* partition =
+       browser_context->GetStoragePartitionForUrl(origin);
++  if (auto name = ContainersPartitionOfNotification(notification_id)) {
++    partition = browser_context->GetStoragePartition(
++        StoragePartitionConfig::Create(browser_context,
++                                       kContainersPartitionDomain, *name,
++                                       browser_context->IsOffTheRecord()));
 +  }
-+  return impl.GetController().GetSessionStorageNamespace(config);
-+}
-+
- }  // namespace content
+ 
+   scoped_refptr<ServiceWorkerContextWrapper> service_worker_context =
+       static_cast<ServiceWorkerContextWrapper*>(
+--- a/content/browser/notifications/notification_id_generator.cc
++++ b/content/browser/notifications/notification_id_generator.cc
+@@ -11,6 +11,7 @@
+ #include "base/strings/string_number_conversions.h"
+ #include "base/strings/stringprintf.h"
+ #include "base/strings/utf_string_conversions.h"
++#include "content/public/browser/containers_partition.h"
+ #include "url/gurl.h"
+ 
+ namespace content {
+@@ -54,6 +55,8 @@ std::string NotificationIdGenerator::GenerateForPersistentNotification(
+ 
+   if (is_shown_by_browser)
+     stream << kNotificationShownByBrowserFlag;
++  if (!containers_partition_.empty())
++    stream << kContainersNotificationMarker << containers_partition_;
+ 
+   stream << kNotificationTagSeparator;
+   stream << origin;
 --- a/content/browser/notifications/notification_id_generator.h
 +++ b/content/browser/notifications/notification_id_generator.h
-@@ -82,6 +82,15 @@
+@@ -82,6 +82,15 @@ class CONTENT_EXPORT NotificationIdGenerator {
    std::string GenerateForNonPersistentNotification(
        const url::Origin& origin,
        const std::string& token) const;
@@ -204,69 +255,6 @@
  };
  
  }  // namespace context
---- a/content/browser/notifications/notification_id_generator.cc
-+++ b/content/browser/notifications/notification_id_generator.cc
-@@ -11,6 +11,7 @@
- #include "base/strings/string_number_conversions.h"
- #include "base/strings/stringprintf.h"
- #include "base/strings/utf_string_conversions.h"
-+#include "content/public/browser/containers_partition.h"
- #include "url/gurl.h"
- 
- namespace content {
-@@ -54,6 +55,8 @@
- 
-   if (is_shown_by_browser)
-     stream << kNotificationShownByBrowserFlag;
-+  if (!containers_partition_.empty())
-+    stream << kContainersNotificationMarker << containers_partition_;
- 
-   stream << kNotificationTagSeparator;
-   stream << origin;
---- a/content/browser/notifications/notification_event_dispatcher_impl.cc
-+++ b/content/browser/notifications/notification_event_dispatcher_impl.cc
-@@ -18,6 +18,7 @@
- #include "content/public/browser/browser_context.h"
- #include "content/public/browser/browser_task_traits.h"
- #include "content/public/browser/browser_thread.h"
-+#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/render_frame_host.h"
- #include "content/public/browser/render_process_host.h"
- #include "content/public/browser/storage_partition.h"
-@@ -364,6 +365,12 @@
- 
-   StoragePartition* partition =
-       browser_context->GetStoragePartitionForUrl(origin);
-+  if (auto name = ContainersPartitionOfNotification(notification_id)) {
-+    partition = browser_context->GetStoragePartition(
-+        StoragePartitionConfig::Create(browser_context,
-+                                       kContainersPartitionDomain, *name,
-+                                       browser_context->IsOffTheRecord()));
-+  }
- 
-   scoped_refptr<ServiceWorkerContextWrapper> service_worker_context =
-       static_cast<ServiceWorkerContextWrapper*>(
---- a/content/browser/storage_partition_impl.cc
-+++ b/content/browser/storage_partition_impl.cc
-@@ -105,6 +105,7 @@
- #include "content/public/browser/browser_task_traits.h"
- #include "content/public/browser/browser_thread.h"
- #include "content/public/browser/browsing_data_filter_builder.h"
-+#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/content_browser_client.h"
- #include "content/public/browser/cookie_access_details.h"
- #include "content/public/browser/dom_storage_context.h"
-@@ -1503,6 +1504,10 @@
- 
-   platform_notification_context_ = new PlatformNotificationContextImpl(
-       path, browser_context_, service_worker_context_);
-+  if (IsContainersPartition(config_)) {
-+    platform_notification_context_->notification_id_generator()
-+        ->set_containers_partition(config_.partition_name());
-+  }
-   platform_notification_context_->Initialize();
- 
-   devtools_background_services_context_ =
 --- a/content/browser/push_messaging/push_messaging_manager.cc
 +++ b/content/browser/push_messaging/push_messaging_manager.cc
 @@ -27,10 +27,12 @@
@@ -282,7 +270,7 @@
  #include "content/public/common/content_switches.h"
  #include "third_party/blink/public/common/permissions/permission_utils.h"
  #include "third_party/blink/public/common/storage_key/storage_key.h"
-@@ -320,6 +322,14 @@
+@@ -320,6 +322,14 @@ void PushMessagingManager::DidGetSenderIdFromStorage(
  
  void PushMessagingManager::Register(PushMessagingManager::RegisterData data) {
    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
@@ -297,75 +285,87 @@
    PushMessagingService* push_service = GetService();
    if (!push_service) {
      if (!is_incognito_) {
---- a/components/sessions/content/content_platform_specific_tab_data.cc
-+++ b/components/sessions/content/content_platform_specific_tab_data.cc
-@@ -4,6 +4,7 @@
- 
- #include "components/sessions/content/content_platform_specific_tab_data.h"
- 
+--- a/content/browser/renderer_host/navigation_entry_impl.cc
++++ b/content/browser/renderer_host/navigation_entry_impl.cc
+@@ -30,6 +30,7 @@
+ #include "content/browser/security/cpsp/child_process_security_policy_impl.h"
+ #include "content/common/content_constants_internal.h"
+ #include "content/common/features.h"
 +#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/navigation_controller.h"
- #include "content/public/browser/web_contents.h"
- 
-@@ -14,7 +15,7 @@
-     :  // TODO(ajwong): This does not correctly handle storage for isolated
-        // apps.
-       session_storage_namespace_(
--          web_contents->GetController().GetDefaultSessionStorageNamespace()) {}
-+          content::GetTabSessionStorageNamespace(*web_contents)) {}
- 
- ContentPlatformSpecificTabData::ContentPlatformSpecificTabData() = default;
- ContentPlatformSpecificTabData::~ContentPlatformSpecificTabData() = default;
---- a/chrome/browser/sessions/session_service_base.cc
-+++ b/chrome/browser/sessions/session_service_base.cc
-@@ -55,6 +55,7 @@
- #include "components/tab_groups/tab_group_id.h"
- #include "components/tabs/public/split_tab_data.h"
- #include "components/tabs/public/tab_group.h"
-+#include "content/public/browser/containers_partition.h"
- #include "content/public/browser/navigation_controller.h"
- #include "content/public/browser/navigation_details.h"
- #include "content/public/browser/navigation_entry.h"
-@@ -294,7 +295,7 @@
-   // just the default. This in particular will not work for tabs with only
-   // isolated apps which won't have a default partition.
-   content::SessionStorageNamespaceHandle* session_storage_namespace =
--      contents->GetController().GetDefaultSessionStorageNamespace();
-+      content::GetTabSessionStorageNamespace(*contents);
-   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
-       session_tab_helper->session_id(), session_storage_namespace->id()));
-   session_storage_namespace->SetShouldPersist(true);
-@@ -311,7 +312,7 @@
-       sessions::SessionTabHelper::FromWebContents(contents);
-   if (ShouldDeleteSessionStorageOnTabClosing(session_tab_helper->window_id())) {
-     content::SessionStorageNamespaceHandle* session_storage_namespace =
--        contents->GetController().GetDefaultSessionStorageNamespace();
-+        content::GetTabSessionStorageNamespace(*contents);
-     // Allow the associated sessionStorage to get deleted; the tab close is
-     // being committed and it won't be needed in session restore.
-     session_storage_namespace->SetShouldPersist(false);
-@@ -677,7 +678,7 @@
- 
-   // Record the association between the sessionStorage namespace and the tab.
-   content::SessionStorageNamespaceHandle* session_storage_namespace =
--      tab->GetController().GetDefaultSessionStorageNamespace();
-+      content::GetTabSessionStorageNamespace(*tab);
-   ScheduleCommand(sessions::CreateSessionStorageAssociatedCommand(
-       session_tab_helper->session_id(), session_storage_namespace->id()));
+ #include "content/public/browser/reload_type.h"
+ #include "content/public/common/content_constants.h"
+ #include "content/public/common/url_constants.h"
+@@ -1384,4 +1385,15 @@ GURL NavigationEntryImpl::GetHistoryURLForDataURL() {
+   return GetBaseURLForDataURL().is_empty() ? GURL() : GetVirtualURL();
  }
---- a/content/browser/browsing_instance.cc
-+++ b/content/browser/browsing_instance.cc
-@@ -79,8 +79,12 @@
-   // Some URLs should leave the SiteInstance's site unassigned, though if
-   // `instance` is for a guest, we should always set the site to ensure that it
-   // carries guest information contained within SiteInfo.
-+  // A container's SiteInstance always gets its site too (dubna's
-+  // containers.patch): unassigned, its SiteInfo would have the default
-+  // partition, and a container tab's about:blank, with the next page the tab
-+  // loads, would leave the container.
-   if (SiteInstanceImpl::ShouldAssignSiteForUrlInfo(url_info) ||
--      isolation_context_.is_guest()) {
-+      isolation_context_.is_guest() || is_fixed_storage_partition_) {
-     if (base::FeatureList::IsEnabled(features::kPrecomputeSiteInfo)) {
-       instance->SetSiteInfoAndOriginalUrl(site_info, url_info.url);
+ 
++std::optional<StoragePartitionConfig> GetCommittedStoragePartitionConfig(
++    NavigationEntry& entry) {
++  SiteInstanceImpl* site_instance = static_cast<NavigationEntryImpl&>(entry)
++                                        .root_node()
++                                        ->frame_entry->site_instance();
++  if (!site_instance) {
++    return std::nullopt;
++  }
++  return site_instance->GetSecurityPrincipal().GetStoragePartitionConfig();
++}
++
+ }  // namespace content
+--- a/content/browser/storage_partition_impl.cc
++++ b/content/browser/storage_partition_impl.cc
+@@ -106,6 +106,7 @@
+ #include "content/public/browser/browser_task_traits.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/browsing_data_filter_builder.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/content_browser_client.h"
+ #include "content/public/browser/cookie_access_details.h"
+ #include "content/public/browser/dom_storage_context.h"
+@@ -1495,6 +1496,10 @@ void StoragePartitionImpl::Initialize(
+ 
+   platform_notification_context_ = new PlatformNotificationContextImpl(
+       path, browser_context_, service_worker_context_);
++  if (IsContainersPartition(config_)) {
++    platform_notification_context_->notification_id_generator()
++        ->set_containers_partition(config_.partition_name());
++  }
+   platform_notification_context_->Initialize();
+ 
+   devtools_background_services_context_ =
+--- a/content/browser/web_contents/web_contents_impl.cc
++++ b/content/browser/web_contents/web_contents_impl.cc
+@@ -144,6 +144,7 @@
+ #include "content/public/browser/browser_plugin_guest_manager.h"
+ #include "content/public/browser/browser_thread.h"
+ #include "content/public/browser/color_chooser.h"
++#include "content/public/browser/containers_partition.h"
+ #include "content/public/browser/content_browser_client.h"
+ #include "content/public/browser/context_menu_params.h"
+ #include "content/public/browser/device_service.h"
+@@ -5819,6 +5820,10 @@ FrameTree* WebContentsImpl::CreateNewWindow(
+       // as long as they preserve the guest's StoragePartition.
+       site_instance =
+           SiteInstance::CreateForGuest(GetBrowserContext(), partition_config);
++    } else if (IsContainersPartition(partition_config)) {
++      // A tab container's page: the window stays in its container.
++      site_instance = SiteInstance::CreateForFixedStoragePartition(
++          GetBrowserContext(), GURL(), partition_config);
      } else {
+       site_instance = SiteInstance::Create(GetBrowserContext());
+     }
+@@ -13519,4 +13524,15 @@ void WebContentsImpl::EmitTracingSlice(const std::string& title) {
+               });
+ }
+ 
++SessionStorageNamespaceHandle* GetTabSessionStorageNamespace(
++    WebContents& contents) {
++  WebContentsImpl& impl = static_cast<WebContentsImpl&>(contents);
++  const StoragePartitionConfig& config =
++      impl.GetSiteInstance()->GetSecurityPrincipal().GetStoragePartitionConfig();
++  if (!IsContainersPartition(config)) {
++    return impl.GetController().GetDefaultSessionStorageNamespace();
++  }
++  return impl.GetController().GetSessionStorageNamespace(config);
++}
++
+ }  // namespace content
