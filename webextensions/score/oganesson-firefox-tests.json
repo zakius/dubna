@@ -1,7 +1,7 @@
 {
- "date": "2026-11-18",
+ "date": "2026-11-19",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
- "passing": 7,
+ "passing": 12,
  "ported": 85,
  "total": 843,
  "tests": {
@@ -65,33 +65,44 @@
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_checkboxes.js": {
    "port": "firefox/browser_ext_contextMenus_checkboxes.py",
-   "passed": false,
-   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_checkboxes.ContextMenusCheckboxesTest.test_01): AssertionError: unexpectedly None : the add-on's submenu",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_commands.js": {
    "port": "firefox/browser_ext_contextMenus_commands.py",
    "passed": false,
-   "error": "FAIL: test_actions_context_menu (firefox.browser_ext_contextMenus_commands.ContextMenusCommandsTest.test_actions_context_menu): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught TypeError: Error in invocation of contextMenus.create(contextMenus.Crea",
-   "passing": []
+   "error": "FAIL: test_actions_context_menu (firefox.browser_ext_contextMenus_commands.ContextMenusCommandsTest.test_actions_context_menu): AssertionError: timed out after 30s waiting for the message 'test-opened'; the add-ons logged: []",
+   "passing": [
+    "test_v3_action_context_menu"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_onclick.js": {
    "port": "firefox/browser_ext_contextMenus_onclick.py",
-   "passed": false,
-   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_onclick.ContextMenusOnclickTest.test_01): AssertionError: 0 != 1 : Expected one context menu item",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01",
+    "test_onclick_modifiers"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_radioGroups.js": {
    "port": "firefox/browser_ext_contextMenus_radioGroups.py",
-   "passed": false,
-   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_radioGroups.ContextMenusRadioGroupsTest.test_01): AssertionError: unexpectedly None : the add-on's submenu",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_srcUrl_redirect.js": {
    "port": "firefox/browser_ext_contextMenus_srcUrl_redirect.py",
-   "passed": false,
-   "error": "FAIL: test_srcUrl_of_redirected_image (firefox.browser_ext_contextMenus_srcUrl_redirect.ContextMenusSrcUrlRedirectTest.test_srcUrl_of_redirected_image): AssertionError: 0 != 1 : Only one menu item should have been matched",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_srcUrl_of_redirected_image"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_targetUrlPatterns.js": {
    "port": "firefox/browser_ext_contextMenus_targetUrlPatterns.py",
@@ -101,14 +112,16 @@
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_uninstall.js": {
    "port": "firefox/browser_ext_contextMenus_uninstall.py",
-   "passed": false,
-   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_uninstall.ContextMenusUninstallTest.test_01): AssertionError: 0 != 1 : the top level extension menu item exists",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_urlPatterns.js": {
    "port": "firefox/browser_ext_contextMenus_urlPatterns.py",
    "passed": false,
-   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_urlPatterns.ContextMenusUrlPatternsTest.test_01): AssertionError: browser.test: The menu item for label targetUrlPatterns-patternDoesNotMatch-contextAll was correctly not shown - Expected: 0, Actual: 1 | The menu item for label documentUrlPatterns-patt",
+   "error": "FAIL: test_01 (firefox.browser_ext_contextMenus_urlPatterns.ContextMenusUrlPatternsTest.test_01): AssertionError: browser.test: The menu item for label documentUrlPatterns-patternMatches-targetUrlPatterns-patternMatches-contextAll was correctly shown - Expected: 1, Actual: 0 | The menu item for labe",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus.js": {
@@ -116,13 +129,14 @@
    "passed": false,
    "error": "FAIL: test_01_permissions (firefox.browser_ext_menus.MenusTest.test_01_permissions): AssertionError: browser.test: browser.contextMenus unavailable with  'menus' permission - Expected: undefined, Actual: object | browser.menus unavailable with 'contextMenus' permission - Expected: undefined, Actual:",
    "passing": [
-    "test_05_onclick_frameid"
+    "test_05_onclick_frameid",
+    "test_06_multiple_contexts_init"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_accesskey.js": {
    "port": "firefox/browser_ext_menus_accesskey.py",
    "passed": false,
-   "error": "FAIL: test_01_accesskeys (firefox.browser_ext_menus_accesskey.MenusAccesskeyTest.test_01_accesskeys): AssertionError: unexpectedly None : the add-on's submenu",
+   "error": "FAIL: test_01_accesskeys (firefox.browser_ext_menus_accesskey.MenusAccesskeyTest.test_01_accesskeys): AssertionError: browser.test: Accesskey for item 3 (amp at end) - Expected: E, Actual: None | Accesskey for item 4 (escaped amp) - Expected: A, Actual: None | Accesskey for item 8 (no amp, leading p",
    "passing": [
     "test_07_accesskeys_menu_without_accesskeys"
    ]
@@ -138,8 +152,11 @@
   "browser/components/extensions/test/browser/browser_ext_menus_capture_secondary_click.js": {
    "port": "firefox/browser_ext_menus_capture_secondary_click.py",
    "passed": false,
-   "error": "FAIL: test_01_buttons (firefox.browser_ext_menus_capture_secondary_click.MenusCaptureSecondaryClickTest.test_01_buttons): AssertionError: [] is not true : the menu has the item",
-   "passing": []
+   "error": "FAIL: test_03_disabled_item (firefox.browser_ext_menus_capture_secondary_click.MenusCaptureSecondaryClickTest.test_03_disabled_item): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught TypeError: Cannot read properties of undefined (reading \\'addList",
+   "passing": [
+    "test_01_buttons",
+    "test_02_submenu"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
    "port": "firefox/browser_ext_menus_errors.py",
@@ -153,7 +170,9 @@
    "port": "firefox/browser_ext_menus_eventpage.py",
    "passed": false,
    "error": "FAIL: test_05_menu_create_id_reuse (firefox.browser_ext_menus_eventpage.MenusEventPageIdReuseTest.test_05_menu_create_id_reuse): AssertionError: browser.test: lastError message for missing id - Expected: The menu id test-click already exists in menus.create., Actual: Cannot create item with duplicat",
-   "passing": []
+   "passing": [
+    "test_04_actions_context_menu"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_incognito.js": {
    "port": "firefox/browser_ext_menus_incognito.py",
@@ -171,12 +190,14 @@
    "port": "firefox/browser_ext_menus_targetElement.py",
    "passed": false,
    "error": "FAIL: test_01_required_permission (firefox.browser_ext_menus_targetElement.MenusTargetElementTest.test_01_required_permission): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'",
-   "passing": []
+   "passing": [
+    "test_04_getTargetElement_after_removing_element"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://docmpgehgagmhdkfkmepkodabboepagj/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://gcckhkjinghankoiimfhoojcphnpldme/tab.html'",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
@@ -301,7 +322,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://ofgkcmoccadkkgakddggnnpijidd",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://faiepmeinokfgddkaomnlcfeafpk",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -430,7 +451,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://khigffbaoechnikkdnmcmoocjphphinl/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://fffbpbnkhdafppeglmdlgpieenlodeeh/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -497,7 +518,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://bcchogpnnm",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://opipoibcjj",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -591,7 +612,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://heciaeiecpjalnhbihdpglnpcbbc",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://jcnfphgoffnbfakfjkifcjjekmlh",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
