@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '6hjanwjzrpddvfgmhg') (de19db15-887e-40d4-bd7c-b835ae20d0f0:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '9emcxrn50htj7jvehf') (038e8392-9757-470a-b7f2-cda996d4b539:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (6ea077d2-0101-4b87-ad19-edb5f239c663:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (7b4e25e8-3d35-4014-9940-990a987573b2:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU0Y2I5ZmFjNDk4ZTVmZDA1YTJiNTNhYmZiMWQxMWZkYzYwODJmZmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjFlMjIwZDlmZjc4ZDZhZTY4YTQxNTU2ZDM4NmI2OTUxMWFiOTg4ODQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
