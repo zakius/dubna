@@ -65,9 +65,9 @@ def start_round():
     log('begin')
     log(f'round {number}')
     log(f'start climb round {number}')
-    request = urllib.request.Request(url, data=b'{}', method='POST',
-                                     headers={'content-type': 'application/json'})
     try:
+        request = urllib.request.Request(url, data=b'{}', method='POST',
+                                         headers={'content-type': 'application/json'})
         with urllib.request.urlopen(request, timeout=30) as response:
             print(f'started climb round {number} (HTTP {response.status})')
     except Exception as error:  # pylint: disable=broad-except
