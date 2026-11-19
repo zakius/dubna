@@ -9,7 +9,10 @@ version from its checkout (when given), the releases of helium-linux, Vanadium
 and Titanium from GitHub, and Chromium's Linux stable releases from
 chromiumdash, and the exploits Google reports in the wild from the Chrome
 Releases blog. The first line is "status: current" or "status: action"; each
-later line is one finding. GITHUB_TOKEN, when set, goes to api.github.com only.
+later line is one finding. A `next:` line names Chromium's Linux beta when it is
+on the milestone after ours, for the next-milestone check (docs/nightly.md,
+"Next milestone"); it is not a finding. GITHUB_TOKEN, when set, goes to
+api.github.com only.
 """
 import argparse, base64, datetime, html, json, os, re, sys, urllib.request
 from pathlib import Path
@@ -78,6 +81,16 @@ def chromium_stable():
     url = 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=30'
     return [(version(r['version']), datetime.date.fromtimestamp(r['time'] / 1000))
             for r in get(url)]
+
+
+def chromium_beta():
+    """The version of Chromium's newest Linux beta, or None when chromiumdash doesn't give one:
+    the next-milestone check is optional, so that doesn't fail the report."""
+    url = 'https://chromiumdash.appspot.com/fetch_releases?channel=Beta&platform=Linux&num=1'
+    try:
+        return version(get(url)[0]['version'])
+    except (OSError, ValueError, LookupError):
+        return None
 
 
 KEV = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
@@ -193,6 +206,11 @@ def main():
     print('status: action' if findings else 'status: current')
     for kind, text in findings:
         print(f'{kind}: {text}')
+    beta = chromium_beta()
+    # Only the milestone after ours: while the upstreams wait on N+1, a beta on N+2 would check
+    # our N patches two milestones ahead.
+    if beta and beta[0] == milestone + 1:
+        print(f'next: Chromium beta {show(beta)} is milestone {beta[0]}')
     print(f'info: milestone {milestone}; ' + '; '.join(
         f'{PRODUCTS[p][0]} {rs[0][2]} = Chromium {show(rs[0][0])} ({rs[0][1]})'
         for p, rs in releases.items())

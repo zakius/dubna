@@ -40,6 +40,16 @@ A shared feature registers its own prefs and strings, so it doesn't depend on ho
 
 Before both browsers move their submodule to a change here, check the change with both browsers' patch checks and with a build of each.
 
+## Patches that last
+
+Each new milestone makes us fit our patches again, in both browsers. Write each patch so that it needs as little of that as possible:
+
+- Put the code in new files in `src/`, and keep the patch to the hooks that call it: an include and a call, a line in a build file, a registration. A hook breaks less often than a larger hunk, and is quicker to fix when it breaks.
+- Anchor each hunk on lines that rarely change, such as a function's signature or the first line of a class or block. Don't insert into the middle of lists that Chromium edits every milestone, such as `sources` and `deps` in a `BUILD.gn`, include blocks, pref registrations, and histogram or enum lists. Add our entry at the list's end, or keep a list of our own in our own `BUILD.gn` and add one `deps` line that points to it.
+- Depend on the GN target that owns the header you include, not on Chromium's grouping targets. Chromium 158 no longer has `//chrome/browser:browser_public_dependencies`, which two of our targets used.
+- Before you hook into a class or function, look at it on Chromium's newest beta. If it is marked deprecated, or a TODO says that it will go, use its replacement if the beta has one.
+- While Chromium's beta is on the milestone after `milestone.txt`'s, a new or changed hunk must apply to the beta too. Check it with oganesson's `./oganesson.py check-patches --chromium-version <beta>` (`docs/nightly.md`, "Next milestone"), and find your hunk in its patch's report. If the context differs between the two versions, pick an anchor that both have. Two cases are exempt: a hunk in a file the report lists after "an upstream patch failed in these files too", whose context the upstream's rebase decides, and a hunk that no anchor fits in both versions. Write those for the current milestone. The next weekly check files them.
+
 ## Tools
 
 Each browser has one entry point: `oganesson.py` for oganesson, `tennessine.py` for tennessine. Shared jobs are Python tools in this repo, stdlib only.
