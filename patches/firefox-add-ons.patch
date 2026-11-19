@@ -80,6 +80,9 @@
 # A packed install of a Firefox add-on decodes its images with shrink_to_fit,
 # so an icon too large for the decoder's limit is halved until it fits and
 # saved at that size, as Firefox installs it; other extensions still fail.
+# A Firefox add-on's tabs.onUpdated status follows the tab's top frame, as in
+# Firefox: "loading" before the URL too, and nothing for a frame's navigation
+# (firefox_tab_status.h). Other extensions keep Chromium's status updates.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -2029,7 +2032,16 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -179,6 +183,10 @@
+@@ -174,11 +178,19 @@
+     "api/storage/syncable_settings_storage.h",
+     "api/tab_capture/tab_capture_registry.cc",
+     "api/tab_capture/tab_capture_registry.h",
++
++    # Firefox add-ons (dubna): tabs.onUpdated's status in Firefox.
++    "api/tabs/firefox_tab_status.cc",
++    "api/tabs/firefox_tab_status.h",
+     "api/tabs/tabs_api.cc",
+     "api/tabs/tabs_api.h",
      "api/tabs/tabs_constants.h",
      "api/tabs/tabs_event_router.cc",
      "api/tabs/tabs_event_router.h",
@@ -2040,7 +2052,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -264,6 +272,10 @@
+@@ -264,6 +276,10 @@
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -2051,7 +2063,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -330,6 +342,22 @@
+@@ -330,6 +346,22 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -2074,7 +2086,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -390,6 +418,10 @@
+@@ -390,6 +422,10 @@
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -3675,15 +3687,47 @@
    void CreateJsonFileSanitizer(
 --- a/chrome/browser/extensions/api/tabs/tabs_event_router.cc
 +++ b/chrome/browser/extensions/api/tabs/tabs_event_router.cc
-@@ -10,6 +10,7 @@
+@@ -9,7 +9,9 @@
+ #include <set>
  #include <vector>
  
++#include "base/task/sequenced_task_runner.h"
  #include "base/values.h"
 +#include "chrome/browser/extensions/api/tabs/firefox_current_window.h"
  #include "chrome/browser/extensions/api/tabs/tabs_api.h"
  #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
-@@ -77,6 +78,10 @@
+@@ -22,7 +24,9 @@
+ #include "components/tab_groups/tab_group_id.h"
+ #include "content/public/browser/favicon_status.h"
+ #include "content/public/browser/navigation_controller.h"
++#include "content/public/browser/navigation_details.h"
+ #include "content/public/browser/navigation_entry.h"
++#include "content/public/browser/navigation_handle.h"
+ #include "content/public/browser/web_contents.h"
+ #include "extensions/browser/event_router.h"
+ #include "third_party/blink/public/common/page/page_zoom.h"
+@@ -52,6 +56,7 @@
+ bool WillDispatchTabUpdatedEvent(
+     content::WebContents* contents,
+     const std::set<std::string>& changed_property_names,
++    FirefoxTabStatus::Audience audience,
+     content::BrowserContext* browser_context,
+     mojom::ContextType target_context,
+     const Extension* extension,
+@@ -59,6 +64,11 @@
+     std::optional<base::ListValue>& event_args_out,
+     mojom::EventFilteringInfoPtr& event_filtering_info_out,
+     bool* dispatch_separate_event_out) {
++  // Firefox add-ons: a status update may be for some extensions only
++  // (firefox_tab_status.h).
++  if (!FirefoxTabStatus::Reaches(audience, extension)) {
++    return false;
++  }
+   auto scrub_tab_behavior = ExtensionTabUtil::GetScrubTabBehavior(
+       extension, target_context, contents);
+   api::tabs::Tab tab_object = ExtensionTabUtil::CreateTabObject(
+@@ -77,6 +87,10 @@
    event_args_out->Append(ExtensionTabUtil::GetTabId(contents));
    event_args_out->Append(std::move(changed_properties));
    event_args_out->Append(std::move(tab_value));
@@ -3692,6 +3736,96 @@
 +  event_filtering_info_out =
 +      FirefoxCurrentWindowInfo(browser_context, extension);
    return true;
+ }
+ 
+@@ -130,10 +144,30 @@
+       audible_helper->RegisterRecentlyAudibleChangedCallback(
+           base::BindRepeating(&TabEntry::OnRecentlyAudibleStateChanged,
+                               weak_factory_.GetWeakPtr()));
++
++  // Firefox add-ons: a new tab's first "loading" (firefox_tab_status.h).
++  base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
++      FROM_HERE, base::BindOnce(&TabEntry::SendFirefoxLoading,
++                                weak_factory_.GetWeakPtr()));
+ }
+ 
+ TabsEventRouter::TabEntry::~TabEntry() = default;
+ 
++void TabsEventRouter::TabEntry::SendFirefoxLoading() {
++  if (web_contents() && firefox_status_.TrackedWhileLoading(*web_contents())) {
++    router_->TabUpdated(this, {tabs_constants::kStatusKey},
++                        FirefoxTabStatus::Audience::kFirefoxAddOns);
++  }
++}
++
++void TabsEventRouter::TabEntry::DidStartNavigation(
++    content::NavigationHandle* navigation_handle) {
++  if (firefox_status_.Started(*navigation_handle)) {
++    router_->TabUpdated(this, {tabs_constants::kStatusKey},
++                        FirefoxTabStatus::Audience::kFirefoxAddOns);
++  }
++}
++
+ void TabsEventRouter::TabEntry::NavigationEntryCommitted(
+     const content::LoadCommittedDetails& load_details) {
+   // Send 'status' of tab change. Expecting 'loading' is fired.
+@@ -145,14 +179,17 @@
+     changed_property_names.insert(tabs_constants::kUrlKey);
+   }
+ 
+-  router_->TabUpdated(this, std::move(changed_property_names));
++  router_->TabUpdated(this, std::move(changed_property_names),
++                      firefox_status_.Committed(load_details.is_main_frame));
+ }
+ 
+ void TabsEventRouter::TabEntry::DidStopLoading() {
+   // The tab may go in & out of loading (for instance if iframes navigate).
+   // We only want to respond to the first change from loading to !loading after
+   // the NavigationEntryCommitted() was fired.
+-  if (!complete_waiting_on_load_) {
++  std::optional<FirefoxTabStatus::Audience> audience =
++      firefox_status_.Stopped(complete_waiting_on_load_);
++  if (!audience) {
+     return;
+   }
+ 
+@@ -169,7 +206,7 @@
+     changed_property_names.insert(tabs_constants::kUrlKey);
+   }
+ 
+-  router_->TabUpdated(this, std::move(changed_property_names));
++  router_->TabUpdated(this, std::move(changed_property_names), *audience);
+ }
+ 
+ void TabsEventRouter::TabEntry::TitleWasSet(content::NavigationEntry* entry) {
+@@ -300,15 +337,17 @@
+ }
+ 
+ void TabsEventRouter::TabUpdated(TabEntry* entry,
+-                                 std::set<std::string> changed_property_names) {
++                                 std::set<std::string> changed_property_names,
++                                 FirefoxTabStatus::Audience audience) {
+   CHECK(!changed_property_names.empty());
+   DispatchTabUpdatedEvent(entry->web_contents(),
+-                          std::move(changed_property_names));
++                          std::move(changed_property_names), audience);
+ }
+ 
+ void TabsEventRouter::DispatchTabUpdatedEvent(
+     content::WebContents* contents,
+-    std::set<std::string> changed_property_names) {
++    std::set<std::string> changed_property_names,
++    FirefoxTabStatus::Audience audience) {
+   CHECK(!changed_property_names.empty(), base::NotFatalUntil::M161);
+   CHECK(contents, base::NotFatalUntil::M161);
+ 
+@@ -322,7 +361,7 @@
+   event->user_gesture = EventRouter::UserGestureState::kNotEnabled;
+   event->will_dispatch_callback =
+       base::BindRepeating(&WillDispatchTabUpdatedEvent, contents,
+-                          std::move(changed_property_names));
++                          std::move(changed_property_names), audience);
+   EventRouter::Get(profile)->BroadcastEvent(std::move(event));
  }
  
 --- a/extensions/common/mojom/event_dispatcher.mojom
@@ -3708,3 +3842,65 @@
  };
  
  struct DispatchEventParams {
+--- a/chrome/browser/extensions/api/tabs/tabs_event_router.h
++++ b/chrome/browser/extensions/api/tabs/tabs_event_router.h
+@@ -17,6 +17,7 @@
+ #include "base/scoped_multi_source_observation.h"
+ #include "base/values.h"
+ #include "build/build_config.h"
++#include "chrome/browser/extensions/api/tabs/firefox_tab_status.h"
+ #include "chrome/browser/tab_list/tab_list_interface.h"
+ #include "chrome/browser/tab_list/tab_list_interface_observer.h"
+ #include "components/favicon/core/favicon_driver.h"
+@@ -92,6 +93,8 @@
+     bool SetAudible(bool new_val);
+ 
+     // content::WebContentsObserver:
++    void DidStartNavigation(
++        content::NavigationHandle* navigation_handle) override;
+     void NavigationEntryCommitted(
+         const content::LoadCommittedDetails& load_details) override;
+     void DidStopLoading() override;
+@@ -105,6 +108,10 @@
+     }
+ 
+    private:
++    // Firefox add-ons: "loading" for a tab that was loading when it was
++    // tracked (firefox_tab_status.h).
++    void SendFirefoxLoading();
++
+     // Called when the recently-audible state for the tab changed.
+     void OnRecentlyAudibleStateChanged(bool was_recently_audible);
+ 
+@@ -122,6 +129,9 @@
+     // changes.
+     bool complete_waiting_on_load_ = false;
+ 
++    // Firefox add-ons: the status changes that follow the top frame.
++    FirefoxTabStatus firefox_status_;
++
+     GURL url_;
+ 
+     // Callback subscription to be notified as the "pinned" state changes.
+@@ -166,13 +176,17 @@
+ 
+   // Internal processing of tab updated events. Intended to be called when
+   // there's any changed property.
+-  void TabUpdated(TabEntry* entry,
+-                  std::set<std::string> changed_property_names);
++  void TabUpdated(
++      TabEntry* entry,
++      std::set<std::string> changed_property_names,
++      FirefoxTabStatus::Audience audience = FirefoxTabStatus::Audience::kAll);
+ 
+   // Packages `changed_property_names` as a tab updated event for the tab
+   // `contents` and dispatches the event to the extension.
+-  void DispatchTabUpdatedEvent(content::WebContents* contents,
+-                               std::set<std::string> changed_property_names);
++  void DispatchTabUpdatedEvent(
++      content::WebContents* contents,
++      std::set<std::string> changed_property_names,
++      FirefoxTabStatus::Audience audience = FirefoxTabStatus::Audience::kAll);
+ 
+   // Dispatches the `tabs.onCreated` API event for the given `contents`.
+   // `active` indicates if the tab is active in its tab strip.
