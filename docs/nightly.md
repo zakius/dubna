@@ -1,22 +1,22 @@
 # Nightly runs
 
-The nightly update is a chain of T3 scheduled tasks in the dubna project. The router starts at 18:00, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. So only one stage runs at a time, and never two builds at once.
+The nightly update is a chain of T3 scheduled tasks in the dubna project. The router starts the daily chain at 18:00: it checks space, the upstreams and the releases, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. After the daily chain, climb rounds follow: each is one climb stage, which starts the next round itself ("Climb rounds"). So the router, the upstream checks, the tasks stage and the site run once a day, and the climb runs on. Only one stage runs at a time, and never two builds at once.
 
 | Task | Id | Job |
 |---|---|---|
-| dubna nightly · router | `scheduled-task:d1826b95-4bfd-4bd8-b749-46bfed2cef0f` | Status, space, what comes next, the final report, another round |
+| dubna nightly · router | `scheduled-task:d1826b95-4bfd-4bd8-b749-46bfed2cef0f` | The daily chain: status, space, what comes next, the final report, the first climb round |
 | dubna nightly · release | `scheduled-task:815cf2ed-72bb-4b97-8e17-63b6293f7159` | Release each main that is past its last release, and fix missing platforms |
 | dubna nightly · update oganesson | `scheduled-task:8625b77b-636b-4947-950f-e635b35f3548` | Update the desktop browser |
 | dubna nightly · update tennessine | `scheduled-task:d9b93584-ffe2-47ba-9feb-6e9f496ae974` | Update the Android browser |
 | dubna nightly · tasks | `scheduled-task:59929e97-ca31-4513-828a-2bc54e01ce67` | A batch of open issues |
-| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps, mostly implementation: as many as one build can release |
+| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps, mostly implementation: as many as one build can release. In a round, it starts the next round |
 | dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site and its release notes up to date |
 
 Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4764-aadc-a18c4c602b29:e68f137f-f5bb-4692-a8e6-db45394ca597`), and posts there. tools/usage_pace.py counts the usage of this thread apart, so a new thread needs its id there too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
 
 The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
 
-Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`; several calls in one message run at once), never `delegate_task` or `t3_thread_launch`. Another active thread holds up the next round ("Another round", item 3).
+Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`; several calls in one message run at once), never `delegate_task` or `t3_thread_launch`. Another active thread holds up the next round ("Climb rounds", item 4).
 
 ## The log
 
@@ -34,22 +34,35 @@ The chain keeps its state in `/home/zakius/dev/dubna/work/nightly.log` (not in G
 2026-11-11T21:10:00Z end chain landed
 ```
 
-- `begin` opens a chain. Only the router writes `begin`, `round`, `finding`, `space`, `start` and `end chain` lines.
-- `round <N>` comes right after the `begin` of a chain that the router started as another round (see "Another round"). A chain begun at 18:00 or by hand has no `round` line.
-- `start <stage> [details]` comes just before the router starts the stage. The details are what the stage works on.
+- `begin` opens a chain. Only the router writes `begin`, `round`, `finding`, `space`, `start` and `end chain` lines, and the climb stage, for the round it ends and the next one.
+- `round <N>` comes right after the `begin` of a climb round (see "Climb rounds"). The daily chain, begun at 18:00 or by hand, has no `round` line.
+- `start <stage> [details]` comes just before the stage is started. The details are what the stage works on.
 - `end <stage> <result> <summary>` is the stage's last line. The result is `landed` (pushed something), `nothing`, `skipped` or `stopped` (stopped before a push, or left something broken). The router writes `end <stage> died` for a stage whose thread stopped without an end line.
 
-"Tonight" and "this chain" mean the lines after the last `begin`. "06:00" means the first 06:00 at least 4 hours after that `begin`, so a chain begun by hand in the morning works on until the next 06:00, and a round begun at 04:00 works on until 06:00 the next day. That deadline is only for a stage's own work. It never lets the router start another round: "Another round" decides that.
+"Tonight" and "this chain" mean the lines after the last `begin`. "06:00" means the first 06:00 at least 4 hours after that `begin`, so a chain begun by hand in the morning works on until the next 06:00, and a round begun at 04:00 works on until 06:00 the next day. That deadline is only for a stage's own work. It never decides whether another round starts: "Climb rounds" decides that.
 
-## Another round
+## Climb rounds
 
-When a chain ends `landed`, the router may begin another chain at once. Rounds run around the clock, with no limit on how many follow each other: the usage limits alone stop them. The router starts another round only when all of these hold:
+The daily chain is the router's: space, the upstream checks, releases, updates, tasks, climb and site. Climb rounds follow it at once and run around the clock, with no limit on how many follow each other: only the checks below stop them. A round is a chain with one stage, `climb`, which releases its own batch. It has no space, upstream or release check, no tasks and no site stage: the next daily chain catches up on all of them, the site included.
 
-1. The chain ended `end chain landed`.
-2. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
-3. No other T3 thread is active. If one is, the router waits for it to finish, for at most 2 hours, and checks again; so a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds.
+The next round starts only when all of these hold. The router checks them at the end of the daily chain, and the climb stage at the end of each round. Check in order and report the first that fails.
 
-For another round, the router appends `begin`, then `round <N>`, where N is the ended chain's round number plus one (1 if it had none).
+1. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`.
+2. No other run is queued in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1). A queued run is the 18:00 router or a stage started by hand, and it goes first: the rounds start again after its daily chain.
+3. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It checks the Fable limit too, since every push waits for a Fable review. It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
+4. No other T3 thread is active (t3_thread_list, allProjects true, statuses running, starting, preparing, queued), apart from this one. If one is, wait for it (t3_thread_wait, timeoutMs 1800000, called again until it is idle) for at most 2 hours in all, then check 2 to 4 again. So a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds. Still active after 2 hours, or the wait says to end your turn: name it and stop.
+
+To start a round, append `begin`, `round <N>` (the ended chain's round number plus one, or 1 after the daily chain) and `start climb round <N>`, then post to the climb webhook as the last tool call:
+
+```sh
+STAGE=climb; u=$(awk -F'\t' -v s="$STAGE" '$1==s{print $2}' /home/zakius/.config/dubna/stage-webhooks.tsv); [ -n "$u" ] && curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -X POST -H 'content-type: application/json' -d '{}' "$u"
+```
+
+The URLs in that file are secrets: never print, log or commit them. If the command prints nothing or curl fails, append `end climb died <HTTP code>` and `end chain nothing`, and report it (a 404 means the URLs were rotated in Settings: the maintainer must refresh the file).
+
+At the end of a round, the climb stage appends its end line, then `end chain landed` or `end chain nothing`, then checks 1 to 4. It never starts the router. When a check fails, the rounds stop until 18:00 or a start by hand.
+
+When the router finds a round still open, it closes it: `end climb died` if the last line is `start climb`, then `end chain landed` or `end chain nothing`. If the climb wrote its own end line (it started the router instead of the next round), the router checks 1 to 4 for the next round. If the climb died, the router begins the daily chain.
 
 ## Starting a stage
 
@@ -61,7 +74,7 @@ For another round, the router appends `begin`, then `round <N>`, where N is the 
 
 1. Post the report in your thread. It is for the maintainer, who reviews it later: every fix, judgement call and flaky test, and anything failed or skipped.
 2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> /home/zakius/dev/dubna/work/nightly.log`.
-3. Unless the stage was started by hand, start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
+3. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
 
 Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
 
@@ -141,7 +154,7 @@ Logs go in the main checkout's work/. Wait for the EXIT line, or on the job's PI
 
 Before calling a build or test failure real, read uptime. At a load above 8, it counts only if a rerun at low load also fails.
 
-Builds may run at any hour, and a chain carries on to the end whenever it started, even when started by hand during the day. From 08:00 to 16:00 the system gives builds fewer CPUs, so they are slower; that is no reason to pause or wait. The CPU limits come from the system (docker.slice), not the scripts: don't add any.
+Builds may run at any hour, and a chain carries on to the end whenever it started, even when started by hand during the day. While the screen is unlocked, the system gives builds fewer CPUs (die 1); while it is locked or off, all but core 0. Slower builds are no reason to pause or wait. The CPU limits come from the system (docker-cpus-by-screen.service sets docker.slice and rootless podman's cgroup), not the scripts: don't add any.
 
 ## Doing an update
 
