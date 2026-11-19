@@ -10,7 +10,8 @@
 # A background with "type": "module" loads its scripts as modules, as Firefox does.
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
 # a placeholder the message doesn't define becomes empty, and homepage_url
-# is localized too.
+# is localized too, also in a packed install, which reads the manifest once
+# before it localizes it.
 # declarative_net_request without its permission loads without its rulesets,
 # as in Firefox.
 # A tab that hasn't committed a navigation has the URL about:blank for a Firefox
@@ -3454,3 +3455,26 @@
 +  extensions::ShowInstallFailureMessage(profile()->GetOriginalProfile(),
 +                                        error.message());
  }
+--- a/extensions/common/manifest_handlers/manifest_url_handlers.cc
++++ b/extensions/common/manifest_handlers/manifest_url_handlers.cc
+@@ -14,6 +14,7 @@
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension_urls.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/shared_module_info.h"
+@@ -103,6 +104,12 @@
+     return false;
+   }
+   manifest_url->url_ = GURL(*homepage_url_str);
++  // Firefox add-ons (dubna): a packed install reads the manifest once before
++  // it localizes it (SandboxedUnpacker::ReadManifestDone), and Firefox
++  // localizes homepage_url.
++  if (IsFirefoxAddOn(*extension) && homepage_url_str->starts_with("__MSG_")) {
++    return true;
++  }
+   if (!manifest_url->url_.is_valid() ||
+       !manifest_url->url_.SchemeIsHTTPOrHTTPS()) {
+     *error = ErrorUtils::FormatErrorMessageUTF16(errors::kInvalidHomepageURL,
