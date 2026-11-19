@@ -86,11 +86,11 @@ Every push to a main (oganesson, tennessine or dubna: an update, a batch, a clim
 
 1. When the commits are final (built and tested), make one Agent call: model `fable`, subagent_type `general-purpose`, run_in_background false. Give it the worktree, the range (origin/main..HEAD), what the change is for (issues, upstream version, policy rule) and the repo's docs to read. Give it the code, not your conclusions. Ask for real defects only, most severe first, each with file:line and how it fails: wrong behaviour, a missed upstream change, a test that doesn't test what it says, a security hole.
 2. Fix each finding you agree with in its own commit, and build and test again. Say in the report why you reject the others. After fixes, one more review of the new commits only. Don't start a third: report what is left.
-3. If the review can't run (the Fable limit is reached, or the call fails twice), don't push. Keep the branch, end the stage `stopped` with "no Fable review", and give the branch and worktree. One exception: a `zeroday` update pushes and releases anyway, and its report says the review was skipped.
+3. If Fable can't review (its limit is reached, or the call fails twice), make the same call with model `opus` instead, and say so in the report. If that can't run either, don't push. Keep the branch, end the stage `stopped` with "no review", and give the branch and worktree. One exception: a `zeroday` update pushes and releases anyway, and its report says the review was skipped.
 
 The report lists each finding, its fix or why it was rejected.
 
-A push of score files alone, as a release run wrote them (`work/release-scores/`), needs no review: a tool wrote them from the released build.
+Two kinds of push need no review: score files alone, as a release run wrote them (`work/release-scores/`), since a tool wrote them from the released build; and a minor text change, wording in docs, prompts, comments or messages that changes no code, test, data or rule.
 
 ## Releasing
 
