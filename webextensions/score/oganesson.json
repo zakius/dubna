@@ -1,11 +1,11 @@
 {
- "date": "2026-11-16",
+ "date": "2026-11-19",
  "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
  "levels": {
   "L0": 839,
-  "L1": 836,
-  "L2": 751,
-  "L3": 660
+  "L1": 795,
+  "L2": 722,
+  "L3": 654
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -17,8 +17,8 @@
    "error": null
   },
   "{7e87d0f4-75b2-45d6-a677-0dce7a209882}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "Could not decode image: 'icon48.png'"
   },
   "jid1-MnnxcxisBPnSXQ@jetpack": {
    "level": "L3",
@@ -93,8 +93,8 @@
    "error": null
   },
   "{74145f27-f039-47ce-a470-a662b129930a}": {
-   "level": "L2",
-   "error": "its content scripts did not run on https://www.yandex.ru/"
+   "level": "L3",
+   "error": null
   },
   "{242af0bb-db11-4734-b7a0-61cb8a9b20fb}": {
    "level": "L3",
@@ -122,19 +122,19 @@
   },
   "{aff8af88-06a9-4eee-b383-3af08c47b8c8}": {
    "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id') (bg/index.js:10)"
+   "error": "Uncaught (in promise) TypeError: Failed to fetch dynamically imported module: chrome-extension://bkefklgaabkfgpjbiiaiplmpfgbjopcc/notifications/FontLoader.js (notifications/pageView.js:1)"
   },
   "@testpilot-containers": {
    "level": "L2",
    "error": "the popup shows nothing"
   },
   "helper@savefrom.net": {
-   "level": "L2",
-   "error": "its content scripts did not run on https://www.vimeo.com/"
+   "level": "L3",
+   "error": null
   },
   "nortonsafeweb@symantec.com": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Dictionary strings is being used without being loaded (SymBfw.js:30)"
+   "error": "Uncaught (in promise) chrome is null or chrome.declarativeNetRequest is null (content/scripts/NSSS.js:59)"
   },
   "webextension@metamask.io": {
    "level": "L2",
@@ -169,84 +169,84 @@
    "error": "unknown permission 'webRequestFilterResponse'"
   },
   "jid1-KKzOGWgsW3Ao4Q@jetpack": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{d04b0b40-3dab-4f0b-97a6-04ec3eddbfb0}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "Uncaught TypeError: Cannot read properties of null (reading 'parentElement') (js/piper.js:3)"
   },
   "video-bg-play@timdream.org": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "foxyproxy@eric.h.jung": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{20fc2e06-e3e4-4b2b-812b-ab431220cada}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{DDC359D1-844A-42a7-9AA1-88A850A938A8}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the popup shows nothing"
   },
   "{0b457cAA-602d-484a-8fe7-c1d894a011ba}": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the popup did not open"
   },
   "Tab-Session-Manager@sienori": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "myallychou@gmail.com": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "1vpn@example.com": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{94ed9bbf-a1e2-4e58-81ae-cd16dad818d8}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "moz-addon-prod@7tv.app": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Duplicate script ID 'seventv-youtube' (_generated_background_page.html:0)"
   },
   "@react-devtools": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "{7b1bf0b6-a1b9-42b0-b75d-252036438bdc}": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "authenticator@mymindstorm": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "firefox-extension@deepl.com": {
-   "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "level": "L3",
+   "error": null
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -305,8 +305,8 @@
    "error": null
   },
   "{5384767E-00D9-40E9-B72F-9CC39D655D6F}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "Maps_Assist___Custom_Web_Search_VeyzPDMlKh@mapsassist.com": {
    "level": "L3",
@@ -329,8 +329,8 @@
    "error": null
   },
   "leechblockng@proginosko.com": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of action.setTitle(object details, optional function callback): Error at parameter 'details': Missing required property 'title'. (background.js:1081)"
+   "level": "L3",
+   "error": null
   },
   "belgiumeid@eid.belgium.be": {
    "level": "L1",
@@ -357,8 +357,8 @@
    "error": null
   },
   "plasma-browser-integration@kde.org": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Attempting to use a disconnected port object (extension-utils.js:52)"
   },
   "Converter_Suite_fqRObEsLaM@convertersuite.com": {
    "level": "L3",
@@ -485,16 +485,16 @@
    "error": null
   },
   "jid1-TSgSxBhncsPBWQ@jetpack": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{f209234a-76f0-4735-9920-eb62507a54cd}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "adnauseam@rednoise.org": {
-   "level": "L1",
-   "error": "Uncaught Error: Extension context invalidated. (js/vapi-client.js:214)"
+   "level": "L2",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'i25rzdeaae5t0pnash') (267c4227-0743-415f-8c80-479cd5513624:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -537,8 +537,8 @@
    "error": null
   },
   "newtaboverride@agenedia.com": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Error in invocation of tabs.update(optional integer tabId, object updateProperties, optional function callback): Error at parameter 'updateProperties': Unexpected property: 'loadReplace'. (js/core/newtab.js:221)"
   },
   "stefanvandamme@stefanvd.net": {
    "level": "L3",
@@ -565,8 +565,8 @@
    "error": null
   },
   "user-agent-switcher@ninetailed.ninja": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (87a8547e-2f45-4fed-b3d5-ecbd3893fec1:37)"
+   "level": "L2",
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (ada63ec7-0e48-4212-8081-73155a2eb432:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -577,8 +577,8 @@
    "error": null
   },
   "{f73df109-8fb4-453e-8373-f59e61ca4da3}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{6ea0a676-b3ef-48aa-b23d-24c8876945fb}": {
    "level": "L3",
@@ -629,8 +629,8 @@
    "error": "unknown permission 'menus.overrideContext'"
   },
   "{00000f2a-7cde-4f20-83ed-434fcb420d71}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{63d150c4-394c-4275-bc32-c464e76a891c}": {
    "level": "L3",
@@ -641,8 +641,8 @@
    "error": null
   },
   "{830f38bd-efc5-45dc-a5a6-064d9a638806}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{9a3104a2-02c2-464c-b069-82344e5ed4ec}": {
    "level": "L3",
@@ -665,8 +665,8 @@
    "error": null
   },
   "jid0-dsq67mf5kjjhiiju2dfb6kk8dfw@jetpack": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{60B7679C-BED9-11E5-998D-8526BB8E7F8B}": {
    "level": "L3",
@@ -689,8 +689,8 @@
    "error": null
   },
   "{60f82f00-9ad5-4de5-b31c-b16a47c51558}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{dab9a10d-f9c5-4e8d-9351-67531e85b508}": {
    "level": "L1",
@@ -769,8 +769,8 @@
    "error": null
   },
   "extension@redux.devtools": {
-   "level": "L2",
-   "error": "the popup did not open"
+   "level": "L3",
+   "error": null
   },
   "@ublacklist": {
    "level": "L3",
@@ -793,11 +793,11 @@
    "error": null
   },
   "{0ac04bdb-d698-452f-8048-bcef1a3f4b0d}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "CanvasBlocker@kkapsner.de": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught ReferenceError: exportFunction is not defined (lib/extension.js:107)"
   },
   "1centext_ff@1c.ru": {
@@ -857,24 +857,24 @@
    "error": null
   },
   "{0dc8db0b-9e11-40dd-bcb8-209a8b7ac42f}": {
-   "level": "L2",
-   "error": "the popup did not open"
+   "level": "L3",
+   "error": null
   },
   "woop-NoopscooPsnSXQ@jetpack": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'addListener') (js/utils.js:93)"
+   "level": "L3",
+   "error": null
   },
   "firefox-webext@zenmate.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'hasOwnProperty') (background.js:1619)"
+   "level": "L3",
+   "error": null
   },
   "deArrow@ajay.app": {
    "level": "L2",
    "error": "Uncaught (in promise) CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed source of script in the following Content Security Policy directive: \"scri"
   },
   "{dcb8caa2-63fa-41aa-a508-a45c5990ebdd}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{4a313247-8330-4a81-948e-b79936516f78}": {
    "level": "L3",
@@ -901,8 +901,8 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L2",
-   "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
    "level": "L3",
@@ -921,8 +921,8 @@
    "error": null
   },
   "{a6fd85ed-e919-4a43-a5af-8da18bda539f}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "addon@maproutepro.com": {
    "level": "L3",
@@ -1081,16 +1081,16 @@
    "error": null
   },
   "{2662ff67-b302-4363-95f3-b050218bd72c}": {
-   "level": "L3",
-   "error": null
+   "level": "L2",
+   "error": "Uncaught TypeError: createScope is not a function (content/js/DisableVideoAutoPlay/disableVideoAutoPlay.js:13)"
   },
   "{6cc0a66e-ae3d-4cd8-9a03-5cd93b392903}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{66E978CD-981F-47DF-AC42-E3CF417C1467}": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Cannot access contents of url \"chrome-extension://imgokidlakpmbbgofmgmaiebhfbnbimp/redirect.html\". Extension manifest must request permission to access this host. (redirect.js:84)"
   },
   "{6c0839b6-2697-49ca-ac8c-8c65a8d9b7b9}": {
    "level": "L3",
@@ -1125,12 +1125,12 @@
    "error": null
   },
   "{9ed7d361-ccd9-4cad-9846-977da2651fb5}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'mode') (js/options.js:132)"
-  },
-  "jid1-5Fs7iTLscUaZBgwr@jetpack": {
    "level": "L3",
    "error": null
+  },
+  "jid1-5Fs7iTLscUaZBgwr@jetpack": {
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{4c421bb7-c1de-4dc6-80c7-ce8625e34d24}": {
    "level": "L3",
@@ -1153,20 +1153,20 @@
    "error": null
   },
   "suziwen1@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of null (reading 'ready') (js/background.js:49)"
+   "level": "L3",
+   "error": null
   },
   "firefoxpwa@filips.si": {
-   "level": "L2",
-   "error": "Uncaught (in promise) Error: Specified native messaging host not found. (manage.216686a6.js:1)"
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Specified native messaging host not found. (background.js:1)"
   },
   "keefox@chris.tomlinson": {
    "level": "L3",
    "error": null
   },
   "{00e68183-fc7d-4a91-b5cc-f7f8272386db}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{d3e01ff2-9a3a-4007-8f6e-7acd9a5de263}": {
    "level": "L3",
@@ -1201,8 +1201,8 @@
    "error": null
   },
   "{a8cf72f7-09b7-4cd4-9aaa-7a023bf09916}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Max retries exceeded (background.js:1)"
+   "level": "L3",
+   "error": null
   },
   "dont-accept-webp@jeffersonscher.com": {
    "level": "L3",
@@ -1309,8 +1309,8 @@
    "error": null
   },
   "{57e5e66f-a92e-4f72-ae46-68e88d0a0f5c}": {
-   "level": "L2",
-   "error": "Uncaught SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag. (scripts/function.js:231)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{a658a273-612e-489e-b4f1-5344e672f4f5}": {
    "level": "L3",
@@ -1345,12 +1345,12 @@
    "error": null
   },
   "markdown-viewer@outofindex.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: You cannot remove required permissions. (_generated_background_page.html:0)"
-  },
-  "{36bdf805-c6f2-4f41-94d2-9b646342c1dc}": {
    "level": "L3",
    "error": null
+  },
+  "{36bdf805-c6f2-4f41-94d2-9b646342c1dc}": {
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "jid1-Y3WfE7td45aWDw@jetpack": {
    "level": "L3",
@@ -1565,8 +1565,8 @@
    "error": null
   },
   "{48748554-4c01-49e8-94af-79662bf34d50}": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'clear') (background.js:7159)"
   },
   "{a831defa-a6c9-4ca9-9593-9ccaf98462d9}": {
    "level": "L3",
@@ -1581,8 +1581,8 @@
    "error": null
   },
   "{6706d386-2d33-4e1e-bbf1-51b9e1ce47e1}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{317B5128-0B0B-49b2-B2DB-1E7560E16C74}": {
    "level": "L3",
@@ -1601,8 +1601,8 @@
    "error": null
   },
   "client@anonymox.net": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'enabled') (modules/ui.js:28)"
+   "level": "L3",
+   "error": null
   },
   "YandexSearchEngineExtension@space.kdev": {
    "level": "L1",
@@ -1618,15 +1618,15 @@
   },
   "{c607c8df-14a7-4f28-894f-29e8722976af}": {
    "level": "L1",
-   "error": "Uncaught (in promise) TypeError: target.join is not a function (background.js:578)"
+   "error": "Uncaught (in promise) Timed out while waiting for Add-on to initialize (background.js:595)"
   },
   "{806cbba4-1bd3-4916-9ddc-e719e9ca0cbf}": {
    "level": "L3",
    "error": null
   },
   "{5fe0e3b1-ef04-41af-aae8-4653d2dbd0eb}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "@speed-dial-fast": {
    "level": "L3",
@@ -1721,11 +1721,11 @@
    "error": null
   },
   "{7f4fdb0c-a234-4eda-bc9e-e1b2bc1c5f10}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "ronin-wallet@axieinfinity.com": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'catch') (src/pages/contentInjected/index.js:1)"
   },
   "ai-overview-hider-for-google@jbscript.dev": {
@@ -1753,8 +1753,8 @@
    "error": null
   },
   "firefox@online-convert.com": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "youtube@downloader": {
    "level": "L3",
@@ -1865,8 +1865,8 @@
    "error": "Uncaught SyntaxError: Identifier 'top' has already been declared (contentscript.js:1)"
   },
   "{cac6293f-5570-4186-a217-c8985fd59228}": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of storage.remove([string|array] keys, optional function callback): Error at parameter 'keys': Value did not match any choice. (js/content.js:2)"
+   "level": "L3",
+   "error": null
   },
   "addon@flightdetails.net": {
    "level": "L3",
@@ -1905,8 +1905,8 @@
    "error": null
   },
   "moz-addon@7tv.app": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (assets/seventv.Async.3.1.27.1000.js:1)"
+   "level": "L1",
+   "error": "Uncaught (in promise) Error: Duplicate script ID 'seventv-youtube' (_generated_background_page.html:0)"
   },
   "@ext.arsenal.app": {
    "level": "L3",
@@ -1993,8 +1993,8 @@
    "error": null
   },
   "{6a65273e-2b26-40f5-b66e-8eed317307da}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: browser.sessions.getTabValue is not a function (bg.js:190)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "jid0-jJRRRBMgoShUhb07IvnxTBAl29w@jetpack": {
    "level": "L3",
@@ -2017,8 +2017,8 @@
    "error": null
   },
   "jid1-16aeif9OQIRKxA@jetpack": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'spaceid') (main.js:79)"
   },
   "{d37dc5d0-431d-44e5-8c91-49419370caa1}": {
    "level": "L3",
@@ -2057,7 +2057,7 @@
    "error": null
   },
   "jid1-KdTtiCj6wxVAFA@jetpack": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (swift-selection-search.html:0)"
   },
   "recipioapp@togonetworksltd.com": {
@@ -2073,8 +2073,8 @@
    "error": null
   },
   "{a6afa2be-9b78-4dba-9dda-d89e52b13b7d}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Error in invocation of webNavigation.getFrame(object details, optional function callback): Error at parameter 'details': Error at property 'tabId': Value must be at least 0. (background.js:33)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "Video_Converter_STixJgxaVE@VideoConverter.com": {
    "level": "L3",
@@ -2161,8 +2161,8 @@
    "error": null
   },
   "{0c3ab5c8-57ac-4ad8-9dd1-ee331517884d}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{5f884915-160e-4276-a216-770a753a3abe}": {
    "level": "L3",
@@ -2189,12 +2189,12 @@
    "error": null
   },
   "{b0e3cc69-7193-42b1-a69b-f2d759f2599f}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{3a7ab27c-6a20-4d24-9fda-5e38f8992556}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'reduce') (dist/background.bundle.js:115)"
+   "level": "L3",
+   "error": null
   },
   "@contain-google": {
    "level": "L3",
@@ -2202,7 +2202,7 @@
   },
   "cb-remover@search.mozilla.org": {
    "level": "L2",
-   "error": "its content scripts did not run on chrome-extension://oladmjdebphlnjjcnomfhhbfdldiimaf/pages/messages/index.html?message=no_instance&url=https%3A%2F%2Fwww.youtube.com%2F&frontend=invidious"
+   "error": "its content scripts did not run on chrome-extension://nckcdonpkbpbggacfohdkifhpnaihnem/pages/messages/index.html?message=no_instance&url=https%3A%2F%2Fwww.youtube.com%2F&frontend=invidious"
   },
   "AdBlockerLavaSoftFF@lavasoft.com": {
    "level": "L3",
@@ -2214,7 +2214,7 @@
   },
   "youtube-anti-translate-mv3@namakeingo.co.uk": {
    "level": "L2",
-   "error": "its content scripts did not run on chrome-extension://oladmjdebphlnjjcnomfhhbfdldiimaf/pages/messages/index.html?message=no_instance&url=https%3A%2F%2Fwww.youtube.com%2F&frontend=invidious"
+   "error": "its content scripts did not run on chrome-extension://nckcdonpkbpbggacfohdkifhpnaihnem/pages/messages/index.html?message=no_instance&url=https%3A%2F%2Fwww.youtube.com%2F&frontend=invidious"
   },
   "tongwen@softcup": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjU3ZTkwMDA1M2QwYWYzMTk2NGZkZGE3OWQyMjUzYjA1NDNhNDEzYWYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjY1NWU4MDAyMjdmNzIwMGNmOTQyYzMwZTRmOTA2ZmY1ZWJhY2QzMjUiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2305,8 +2305,8 @@
    "error": "the popup did not open"
   },
   "{a871656a-91f6-402c-912b-6291197b9c49}": {
-   "level": "L2",
-   "error": "the popup did not open"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{84c8edb0-65ca-43a5-bc53-0e80f41486e1}": {
    "level": "L2",
@@ -2322,7 +2322,7 @@
   },
   "{10758a55-48af-4c2f-bf6b-bbae95f3b87d}": {
    "level": "L0",
-   "error": "Invalid type for 'default_popup'."
+   "error": "Package is invalid. Details: 'Invalid type for 'default_popup'.'."
   },
   "{d320c473-63c2-47ab-87f8-693b1badb5e3}": {
    "level": "L3",
@@ -2337,8 +2337,8 @@
    "error": null
   },
   "{862036c2-ee21-4b0e-a80e-d3f26a841385}": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) ReferenceError: IsFeatureKilled is not defined (js/background.js:1)"
   },
   "gsconnect@andyholmes.github.io": {
    "level": "L3",
@@ -2373,12 +2373,12 @@
    "error": null
   },
   "{ae627955-50e3-431c-b6c5-7cd912f961cb}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "antffw@antdownloadmanager.com": {
-   "level": "L2",
-   "error": "the popup did not open"
+   "level": "L3",
+   "error": null
   },
   "{DEBA3021-9876-4702-89BA-42D095339A0A}": {
    "level": "L2",
@@ -2505,20 +2505,20 @@
    "error": null
   },
   "jobcentertycoon@gmail.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'windowId') (background-script.js:16)"
-  },
-  "gt@giphy.com": {
    "level": "L3",
    "error": null
+  },
+  "gt@giphy.com": {
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{63eebab4-6bd0-44a0-8d79-7fefb998ebc1}": {
    "level": "L3",
    "error": null
   },
   "vimium-c@gdh1995.cn": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Object.defineProperty called on non-object (content/vimium-c.js:1)"
+   "level": "L2",
+   "error": "the popup did not open"
   },
   "saladict@crimx.com": {
    "level": "L3",
@@ -2573,8 +2573,8 @@
    "error": null
   },
   "{61455355-4c50-41a3-8d2d-c27aadf6c909}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Rule with id 18746 does not have a unique ID. (_generated_background_page.html:0)"
+   "level": "L3",
+   "error": null
   },
   "better-trading@example.com": {
    "level": "L3",
@@ -2609,8 +2609,8 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'noConflict') (data/embed.js:1)"
   },
   "SpeedPitch_changer@despaa.id": {
-   "level": "L1",
-   "error": "Uncaught TypeError: cad_upd.split is not a function (background/background.js:57)"
+   "level": "L3",
+   "error": null
   },
   "webscrapbook@danny0838.addons.mozilla.org": {
    "level": "L3",
@@ -2633,8 +2633,8 @@
    "error": null
   },
   "{530f7c6c-6077-4703-8f71-cb368c663e35}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: t is not iterable (cannot read property null) (js/background-service-worker.js:11)"
+   "level": "L3",
+   "error": null
   },
   "{ed102056-8b4f-43a9-99cd-6d1b25abe87e}": {
    "level": "L3",
@@ -2653,8 +2653,8 @@
    "error": null
   },
   "@youtubemp3free": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{1fb1ffdc-b95d-451e-be52-7303adf9a0d3}": {
    "level": "L3",
@@ -2673,8 +2673,8 @@
    "error": null
   },
   "{bd97f89b-17ba-4539-9fec-06852d07f917}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{4ce83447-8255-43c2-b8f7-e02eb8c2cc39}": {
    "level": "L3",
@@ -2689,7 +2689,7 @@
    "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
   },
   "cookie-manager@robwu.nl": {
-   "level": "L2",
+   "level": "L1",
    "error": "Uncaught (in promise) RangeError: Maximum call stack size exceeded (cookie-manager-firefox.js:30)"
   },
   "{016eeff3-2d58-4042-b81e-135bb986c200}": {
@@ -2729,8 +2729,8 @@
    "error": null
   },
   "{1c3ca161-8c6d-48ed-9993-da686bcf5310}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{a81256d7-babd-4185-91f6-95580215661d}": {
    "level": "L3",
@@ -2774,7 +2774,7 @@
   },
   "{7c6d56ed-2616-48f2-bfde-d1830f1cf2ed}": {
    "level": "L0",
-   "error": "Invalid ID 'c1b48edf-f3c7-4d56-aed1-b5dce75df3c6'"
+   "error": "Package is invalid. Details: 'Invalid ID 'c1b48edf-f3c7-4d56-aed1-b5dce75df3c6''."
   },
   "balyaev@gmail.com": {
    "level": "L3",
@@ -2805,8 +2805,8 @@
    "error": null
   },
   "{536b14f1-381e-49f5-a2f5-8cb33ac17402}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{3ef131fa-0e45-4242-b183-21b11300d951}": {
    "level": "L3",
@@ -2905,20 +2905,20 @@
    "error": null
   },
   "jid1-AoXeeOB4j7kFdw@jetpack": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'url') (src/assets/js/p24.js:526)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{85252760-c586-4180-8788-c50234c0ac08}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Failed to construct 'URL': Invalid URL (scripts/background.js:1)"
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "andrew@vnnet": {
    "level": "L3",
    "error": null
   },
   "{db722c0c-d10e-4e23-af56-bbb6c3b62cc5}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "@youtube-download-ytd": {
    "level": "L3",
@@ -2977,8 +2977,8 @@
    "error": null
   },
   "{d7e0a6e7-9a50-490a-be5c-3b448be39b42}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "amazineurope@founderedeveloper.com": {
    "level": "L3",
@@ -3101,8 +3101,8 @@
    "error": null
   },
   "administrator@pricy.ro": {
-   "level": "L1",
-   "error": "Uncaught ReferenceError: require is not defined (js/popover.min.js:6)"
+   "level": "L3",
+   "error": null
   },
   "{0a3ee209-ab68-4b84-a9ef-eb0ee686dd8d}": {
    "level": "L2",
@@ -3169,8 +3169,8 @@
    "error": null
   },
   "quickdial@matmoul.com": {
-   "level": "L3",
-   "error": null
+   "level": "L1",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'title') (js/dial.js:190)"
   },
   "{b21882eb-3211-44dc-964b-e6f35b33061f}": {
    "level": "L3",
@@ -3181,7 +3181,7 @@
    "error": null
   },
   "jid1-FkPKYIvh3ElkQO@jetpack": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught ReferenceError: exportFunction is not defined (content.js:63)"
   },
   "{a8f7e9c2-4d3b-4a1e-9f8c-7b6d5e4a3c2b}": {
@@ -3205,20 +3205,20 @@
    "error": null
   },
   "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{323353ee-cfbd-4178-9676-85566d98c8b1}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{5a898e4e-6b5c-4acf-9e29-4c791d3b5f2e}": {
    "level": "L1",
    "error": "unknown permission 'trialML'"
   },
   "{76f42345-d120-4c8e-bdd4-63cf95b780fb}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{802a552e-13d1-4683-a40a-1e5325fba4bb}": {
    "level": "L3",
@@ -3226,7 +3226,7 @@
   },
   "native-dash-hls@cavar.net": {
    "level": "L0",
-   "error": "'content_security_policy.extension_pages': Insecure CSP value \"object-src\" in directive 'script-src'."
+   "error": "Package is invalid. Details: ''content_security_policy.extension_pages': Insecure CSP value \"object-src\" in directive 'script-src'.'."
   },
   "{21f1ba12-47e1-4a9b-ad4e-3a0260bbeb26}": {
    "level": "L3",
@@ -3257,8 +3257,8 @@
    "error": null
   },
   "extension@estate2023.com": {
-   "level": "L1",
-   "error": "Uncaught (in promise) Error: Cannot access contents of the page. Extension manifest must request permission to access the respective host. (_generated_background_page.html:0)"
+   "level": "L3",
+   "error": null
   },
   "{c5b32a48-5514-4a46-81f2-075ebf3cbc29}": {
    "level": "L2",
@@ -3297,8 +3297,8 @@
    "error": null
   },
   "{8fc14e5e-b3fd-43b3-9eec-c61c08781782}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on has no Gecko ID (browser_specific_settings.gecko.id), so it can't be installed from a download. Unzip it and load it unpacked in developer mode."
   },
   "{26ef8318-6349-483c-affa-6c6db6d30517}": {
    "level": "L3",
