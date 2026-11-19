@@ -63,6 +63,11 @@
 # Android's tabs get Firefox's user agent on addons.mozilla.org too
 # (firefox_amo_user_agent.h), after the desktop site's observer, whose
 # override comes back off AMO.
+# A packed install of a Firefox add-on doesn't decode its SVG icons, which
+# failed the install (firefox_svg_icons.h). Its background page draws its SVG
+# action icons and setIcon() draws an SVG path at the icon's sizes
+# (firefox_svg_icons.js, firefox_manifest_svg_icons.h), and a page action
+# takes that drawn icon as its global icon (firefox_svg_default_icon.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -310,7 +315,7 @@
      *error = errors::kInvalidBackgroundPersistentNoPage;
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,15 @@
+@@ -402,6 +402,17 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -321,6 +326,8 @@
 +    "firefox_gecko_id.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
++    "firefox_svg_icons.cc",
++    "firefox_svg_icons.h",
 +    "firefox_version.cc",
 +    "firefox_version.h",
      "frame_context_data.h",
@@ -864,7 +871,7 @@
  ExtensionAction* ExtensionActionManager::GetExtensionAction(
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
-@@ -10,6 +10,12 @@
+@@ -10,6 +10,14 @@
    sources = [
      "extension_action_api.cc",
      "extension_action_api.h",
@@ -874,6 +881,8 @@
 +    "firefox_browser_action.h",
 +    "firefox_page_action_api.cc",
 +    "firefox_page_action_api.h",
++    "firefox_svg_default_icon.cc",
++    "firefox_svg_default_icon.h",
    ]
  
    public_deps = [
@@ -887,15 +896,16 @@
  #include <utility>
  
  #include "base/check.h"
-@@ -18,6 +19,7 @@
+@@ -18,6 +19,8 @@
  #include "base/metrics/histogram_functions.h"
  #include "base/strings/string_number_conversions.h"
  #include "base/strings/stringprintf.h"
 +#include "chrome/browser/extensions/api/extension_action/firefox_action_window.h"
++#include "chrome/browser/extensions/api/extension_action/firefox_svg_default_icon.h"
  #include "chrome/browser/extensions/browser_window_util.h"
  #include "chrome/browser/extensions/extension_action_dispatcher.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
-@@ -38,6 +40,7 @@
+@@ -38,6 +41,7 @@
  #include "extensions/browser/extension_event_histogram_value.h"
  #include "extensions/browser/extension_host.h"
  #include "extensions/browser/extension_prefs.h"
@@ -903,7 +913,7 @@
  #include "extensions/browser/icon_util.h"
  #include "extensions/common/api/extension_action/action_info.h"
  #include "extensions/common/constants.h"
-@@ -184,6 +187,11 @@
+@@ -184,6 +188,11 @@
    ExtensionActionManager* manager =
        ExtensionActionManager::Get(browser_context());
    extension_action_ = manager->GetExtensionAction(*extension());
@@ -915,7 +925,7 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
-@@ -194,6 +202,13 @@
+@@ -194,6 +203,18 @@
    // Populates the tab_id_ and details_ members.
    EXTENSION_FUNCTION_VALIDATE(ExtractDataFromArguments());
  
@@ -925,11 +935,16 @@
 +    return window_error.empty() ? RunFirefoxAction()
 +                                : RespondNow(Error(window_error));
 +  }
++  // Firefox add-ons (dubna): the default icon drawn from the manifest's SVG,
++  // for a page action too (firefox_svg_default_icon.h).
++  if (IsFirefoxSvgDefaultIcon(*this, details_)) {
++    return RunExtensionAction();
++  }
 +
    // Find the WebContents that contains this tab id if one is required.
    if (tab_id_ != ExtensionAction::kDefaultTabId) {
      content::WebContents* contents_out_param = nullptr;
-@@ -210,7 +225,8 @@
+@@ -210,7 +231,8 @@
      EXTENSION_FUNCTION_VALIDATE(extension_action_->action_type() !=
                                  ActionInfo::Type::kPage);
    }
@@ -939,7 +954,7 @@
  }
  
  bool ExtensionActionFunction::ExtractDataFromArguments() {
-@@ -464,7 +480,9 @@
+@@ -464,7 +486,9 @@
  ExtensionFunction::ResponseAction
  ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -950,7 +965,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -475,7 +493,10 @@
+@@ -475,7 +499,10 @@
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -962,7 +977,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +517,8 @@
+@@ -496,7 +523,8 @@
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -1171,15 +1186,16 @@
  
 --- a/chrome/common/extensions/chrome_extensions_client.cc
 +++ b/chrome/common/extensions/chrome_extensions_client.cc
-@@ -29,6 +29,7 @@
+@@ -29,6 +29,8 @@
  #include "extensions/common/extension.h"
  #include "extensions/common/extension_api.h"
  #include "extensions/common/extension_urls.h"
 +#include "extensions/common/firefox_page_action.h"
++#include "extensions/common/firefox_svg_icons.h"
  #include "extensions/common/icons/extension_icon_set.h"
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
-@@ -228,6 +229,10 @@
+@@ -228,6 +230,12 @@
    if (action && !action->default_icon.empty()) {
      action->default_icon.GetPaths(&image_paths);
    }
@@ -1187,6 +1203,8 @@
 +  if (const ActionInfo* page_action = GetFirefoxPageActionInfo(*extension)) {
 +    page_action->default_icon.GetPaths(&image_paths);
 +  }
++  // Firefox add-ons (dubna): SVG icons aren't decoded (firefox_svg_icons.h).
++  EraseFirefoxSvgImagePaths(*extension, image_paths);
  
    return image_paths;
  }
@@ -1702,7 +1720,7 @@
                                               ContentScriptType::kCss, error)) {
 --- a/chrome/renderer/resources/extensions/BUILD.gn
 +++ b/chrome/renderer/resources/extensions/BUILD.gn
-@@ -15,6 +15,12 @@
+@@ -15,6 +15,15 @@
    input_files = [
      "action_custom_bindings.js",
      "browser_action_custom_bindings.js",
@@ -1712,12 +1730,15 @@
 +
 +    # Firefox add-ons (dubna): Firefox's proxy.onRequest.
 +    "proxy_custom_bindings.js",
++
++    # Firefox add-ons (dubna): SVG action icons.
++    "firefox_svg_icons.js",
      "declarative_content_custom_bindings.js",
      "desktop_capture_custom_bindings.js",
      "developer_private_custom_bindings.js",
 --- a/chrome/renderer/resources/BUILD.gn
 +++ b/chrome/renderer/resources/BUILD.gn
-@@ -76,6 +76,12 @@
+@@ -76,6 +76,15 @@
      "controlled_frame/html_controlled_frame_element.js",
      "extensions/action_custom_bindings.js",
      "extensions/browser_action_custom_bindings.js",
@@ -1727,12 +1748,15 @@
 +
 +    # Firefox add-ons (dubna): Firefox's proxy.onRequest.
 +    "extensions/proxy_custom_bindings.js",
++
++    # Firefox add-ons (dubna): SVG action icons.
++    "extensions/firefox_svg_icons.js",
      "extensions/declarative_content_custom_bindings.js",
      "extensions/desktop_capture_custom_bindings.js",
      "extensions/developer_private_custom_bindings.js",
 --- a/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
 +++ b/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
-@@ -140,6 +140,11 @@
+@@ -140,6 +140,14 @@
        {"action", IDR_RENDERER_RESOURCES_EXTENSIONS_ACTION_CUSTOM_BINDINGS_JS},
        {"browserAction",
         IDR_RENDERER_RESOURCES_EXTENSIONS_BROWSER_ACTION_CUSTOM_BINDINGS_JS},
@@ -1741,6 +1765,9 @@
 +       IDR_RENDERER_RESOURCES_EXTENSIONS_CONTENT_SCRIPTS_CUSTOM_BINDINGS_JS},
 +      // Firefox add-ons (dubna): Firefox's proxy.onRequest.
 +      {"proxy", IDR_RENDERER_RESOURCES_EXTENSIONS_PROXY_CUSTOM_BINDINGS_JS},
++      // Firefox add-ons (dubna): SVG action icons.
++      {"firefoxSvgIcons",
++       IDR_RENDERER_RESOURCES_EXTENSIONS_FIREFOX_SVG_ICONS_JS},
        {"declarativeContent",
         IDR_RENDERER_RESOURCES_EXTENSIONS_DECLARATIVE_CONTENT_CUSTOM_BINDINGS_JS},
        {"desktopCapture",
@@ -2191,16 +2218,20 @@
      "api/core_extensions_renderer_api_provider.cc",
      "api/core_extensions_renderer_api_provider.h",
      "api/declarative_content_hooks_delegate.cc",
-@@ -29,6 +33,8 @@
+@@ -29,6 +33,12 @@
      "api/file_system_natives.h",
      "api/i18n_hooks_delegate.cc",
      "api/i18n_hooks_delegate.h",
 +    "api/messaging/firefox_message_target.cc",
 +    "api/messaging/firefox_message_target.h",
++
++    # Firefox add-ons (dubna): the background page draws SVG action icons.
++    "firefox_manifest_svg_icons.cc",
++    "firefox_manifest_svg_icons.h",
      "api/messaging/gin_port.cc",
      "api/messaging/gin_port.h",
      "api/messaging/message_target.cc",
-@@ -99,6 +105,10 @@
+@@ -99,6 +109,10 @@
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -2624,17 +2655,56 @@
      // narrow cases which are handled explicitly above.  Please think very
 --- a/extensions/renderer/resources/set_icon.js
 +++ b/extensions/renderer/resources/set_icon.js
-@@ -5,6 +5,7 @@
+@@ -5,7 +5,10 @@
  const exceptionHandler = require('uncaught_exception_handler');
  const imageUtil = require('imageUtil');
  const SetIconCommon = requireNative('setIcon').SetIconCommon;
 +const IsFirefoxAddOn = requireNative('setIcon').IsFirefoxAddOn;
  const inServiceWorker = requireNative('utils').isInServiceWorker();
++// Firefox add-ons (dubna): SVG icons (firefox_svg_icons.js).
++const firefoxSvgIcons = require('firefoxSvgIcons');
  
  function loadImagePathForServiceWorker(path, callback, failureCallback) {
-@@ -164,10 +165,51 @@
+   let fetchPromise = fetch(path);
+@@ -69,7 +72,12 @@
+   img.src = path;
+ }
+ 
+-function loadImagePath(path, callback, failureCallback) {
++function loadImagePath(path, callback, failureCallback, size) {
++  // Firefox add-ons (dubna): an SVG is drawn at the size it is for.
++  if (!inServiceWorker && size && firefoxSvgIcons.drawsSvg(path)) {
++    firefoxSvgIcons.load(path, size, callback, failureCallback);
++    return;
++  }
+   if (inServiceWorker) {
+     loadImagePathForServiceWorker(path, callback, failureCallback);
+   } else {
+@@ -121,6 +129,8 @@
+     return;
+   }
+ 
++  // Firefox add-ons (dubna): an SVG path, at 1x and 2x.
++  firefoxSvgIcons.sizeSvgPath(details);
+   if ('path' in details) {
+     if (typeof details.path == 'object') {
+       details.imageData = {__proto__: null};
+@@ -141,7 +151,7 @@
+                 // Only report the first error.
+                 failureCallback = null;
+               }
+-            });
++            }, +iconSize);
+       }
+       if (detailKeyCount == 0) {
+         throw new Error('The path property must not be empty.');
+@@ -163,11 +173,55 @@
+ // the extension icon.
  function getSetIconHandler(methodName) {
    return function(details, successCallback, failureCallback) {
++    // Firefox add-ons (dubna): the add-on's own icon wins over the one drawn
++    // from the manifest's SVG.
++    firefoxSvgIcons.noteSetIcon(methodName, details);
      var onIconRetrieved = function(iconSpec) {
 +      // Firefox add-ons (dubna): for a Firefox add-on, the browser's error
 +      // fails the call, so that its promise rejects, as in Firefox; a
@@ -3298,3 +3368,24 @@
    std::unique_ptr<views::MenuRunner> menu_runner_;
  
    // Weak. Owned by menu_runner_;
+--- a/extensions/renderer/dispatcher.cc
++++ b/extensions/renderer/dispatcher.cc
+@@ -79,6 +79,7 @@
+ #include "extensions/renderer/extension_interaction_provider.h"
+ #include "extensions/renderer/extensions_renderer_api_provider.h"
+ #include "extensions/renderer/extensions_renderer_client.h"
++#include "extensions/renderer/firefox_manifest_svg_icons.h"
+ #include "extensions/renderer/ipc_message_sender.h"
+ #include "extensions/renderer/isolated_world_manager.h"
+ #include "extensions/renderer/module_system.h"
+@@ -443,6 +444,10 @@
+   RequireGuestViewModules(context);
+ #endif
+ 
++  // Firefox add-ons (dubna): the background page draws the manifest's SVG
++  // action icons (firefox_manifest_svg_icons.h).
++  DrawFirefoxManifestSvgIcons(*context);
++
+   const base::TimeDelta elapsed = base::TimeTicks::Now() - start_time;
+   switch (context->context_type()) {
+     case mojom::ContextType::kUnspecified:
