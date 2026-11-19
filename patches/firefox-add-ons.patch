@@ -73,8 +73,8 @@
 # too (firefox_svg_default_icon.h, FirefoxActionValues::SvgDefaultIcon()).
 # On Android, an extension that fails to install, such as a .xpi with a broken
 # manifest, says why in a message on the tab, as desktop's infobar does, and
-# the install UI's tab is the one the user sees, not the first tab
-# (install_failure_message_android.h).
+# without an active window to tell, the install UI's tab is the one the user
+# sees, not the first tab (install_failure_message_android.h).
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -3441,19 +3441,19 @@
  #include "extensions/common/extension.h"
  #include "third_party/skia/include/core/SkBitmap.h"
  #include "ui/base/models/dialog_model.h"
-@@ -83,6 +85,11 @@
- }
+@@ -97,6 +99,11 @@
+     }
+   }
  
- content::WebContents* GetWebContentsForProfile(Profile* profile) {
 +  // Firefox add-ons (dubna): the tab the user sees, not the first tab
 +  // (install_failure_message_android.h).
 +  if (content::WebContents* visible = extensions::GetVisibleTab(profile)) {
 +    return visible;
 +  }
-   BrowserWindowInterface* active_bwi =
-       GetActiveBrowserWindowInterfaceForProfile(profile);
- 
-@@ -158,6 +165,11 @@
+   for (const TabModel* tab_model : TabModelList::models()) {
+     if (tab_model->GetProfile() != profile) {
+       continue;
+@@ -158,6 +165,12 @@
  
  void ExtensionInstallUIAndroid::OnInstallFailure(
      const extensions::CrxInstallError& error) {
@@ -3464,8 +3464,9 @@
 +  if (IsUiDisabled() || skip_post_install_ui() || !profile()) {
 +    return;
 +  }
-+  extensions::ShowInstallFailureMessage(profile()->GetOriginalProfile(),
-+                                        error.message());
++  extensions::ShowInstallFailureMessage(
++      GetWebContentsForProfile(profile()->GetOriginalProfile()),
++      error.message());
  }
 --- a/extensions/common/manifest_handlers/manifest_url_handlers.cc
 +++ b/extensions/common/manifest_handlers/manifest_url_handlers.cc

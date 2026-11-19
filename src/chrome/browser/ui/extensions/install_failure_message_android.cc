@@ -43,13 +43,13 @@ content::WebContents* GetVisibleTab(Profile* profile) {
   return found;
 }
 
-void ShowInstallFailureMessage(Profile* profile, const std::u16string& error) {
-  content::WebContents* web_contents = GetVisibleTab(profile);
+void ShowInstallFailureMessage(content::WebContents* web_contents,
+                               const std::u16string& error) {
   if (!web_contents) {
     return;
   }
-  // An identifier the browser doesn't use otherwise: it only names the
-  // message in metrics.
+  // The extensions' request access message's identifier, which only names
+  // the message in metrics.
   auto message = std::make_unique<messages::MessageWrapper>(
       messages::MessageIdentifier::EXTENSIONS_REQUEST_ACCESS);
   message->SetTitle(
