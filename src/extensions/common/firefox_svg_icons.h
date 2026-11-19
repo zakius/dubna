@@ -18,7 +18,10 @@ class Extension;
 // (ChromeExtensionsClient::GetBrowserImagePaths()). The decoder takes only
 // raster images, so an SVG icon, which Firefox draws, would fail the whole
 // install. The add-on's pages draw its SVG action icons instead
-// (chrome/renderer/resources/extensions/firefox_svg_icons.js).
+// (chrome/renderer/resources/extensions/firefox_svg_icons.js). The browser
+// decodes only the images that the install saved again, so ImageLoader
+// doesn't decode an .svg file, whatever it holds: a PNG named icon.svg
+// would reach it unsanitized.
 void EraseFirefoxSvgImagePaths(const Extension& extension,
                                std::set<base::FilePath>& image_paths);
 

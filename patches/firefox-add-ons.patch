@@ -65,7 +65,8 @@
 # (firefox_amo_user_agent.h), after the desktop site's observer, whose
 # override comes back off AMO.
 # A packed install of a Firefox add-on doesn't decode its SVG icons, which
-# failed the install (firefox_svg_icons.h). Its background page draws its SVG
+# failed the install (firefox_svg_icons.h), so the browser's ImageLoader
+# doesn't decode an .svg file either. Its background page draws its SVG
 # action icons and setIcon() draws an SVG path at the icon's sizes
 # (firefox_svg_icons.js, firefox_manifest_svg_icons.h), and a page action
 # takes that drawn icon as its global icon (firefox_svg_default_icon.h).
@@ -3478,3 +3479,18 @@
    if (!manifest_url->url_.is_valid() ||
        !manifest_url->url_.SchemeIsHTTPOrHTTPS()) {
      *error = ErrorUtils::FormatErrorMessageUTF16(errors::kInvalidHomepageURL,
+--- a/extensions/browser/image_loader.cc
++++ b/extensions/browser/image_loader.cc
+@@ -84,6 +84,12 @@
+   if (path.empty()) {
+     return SkBitmap();
+   }
++  // Firefox add-ons (dubna): an SVG file isn't decoded when a packed install
++  // sanitizes its images (firefox_svg_icons.h), so it isn't decoded here
++  // either, whatever it holds.
++  if (path.MatchesExtension(FILE_PATH_LITERAL(".svg"))) {
++    return SkBitmap();
++  }
+   std::optional<std::vector<uint8_t>> file_contents =
+       base::ReadFileToBytes(path);
+   if (!file_contents) {
