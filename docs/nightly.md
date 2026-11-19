@@ -47,10 +47,11 @@ The daily chain is the router's: space, the upstream checks, updates, releases, 
 
 The next round starts only when all of these hold. The router checks them at the end of the daily chain, and the climb stage at the end of each round. Check in order and report the first that fails.
 
-1. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`.
-2. No other run is queued in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1). A queued run is the 18:00 router or a stage started by hand, and it goes first: the rounds start again after its daily chain.
-3. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). It checks the Fable limit too, since every push waits for a Fable review. It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
-4. No other T3 thread is active (t3_thread_list, allProjects true, statuses running, starting, preparing, queued), apart from this one. If one is, wait for it (t3_thread_wait, timeoutMs 1800000, called again until it is idle) for at most 2 hours in all, then check 2 to 4 again. So a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds. Still active after 2 hours, or the wait says to end your turn: name it and stop.
+1. The rounds aren't paused: /home/zakius/dev/dubna/work/rounds-paused doesn't exist. The maintainer pauses them with `tools/rounds.py pause <reason>` to edit something between rounds, and `tools/rounds.py resume` starts the next round. When paused, report the file's reason.
+2. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`.
+3. No other run is queued in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1). A queued run is the 18:00 router or a stage started by hand, and it goes first: the rounds start again after its daily chain.
+4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). Fable's limit doesn't count: Opus reviews when Fable can't. It projects only the work outside this thread, so the rounds don't count against themselves. The 18:00 chains still to come aren't projected either.
+5. No other T3 thread is active (t3_thread_list, allProjects true, statuses running, starting, preparing, queued), apart from this one. If one is, wait for it (t3_thread_wait, timeoutMs 1800000, called again until it is idle) for at most 2 hours in all, then check 1 to 5 again. So a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds. Still active after 2 hours, or the wait says to end your turn: name it and stop.
 
 To start a round, append `begin`, `round <N>` (the ended chain's round number plus one, or 1 after the daily chain) and `start climb round <N>`, then post to the climb webhook as the last tool call:
 
@@ -60,9 +61,9 @@ STAGE=climb; u=$(awk -F'\t' -v s="$STAGE" '$1==s{print $2}' /home/zakius/.config
 
 The URLs in that file are secrets: never print, log or commit them. If the command prints nothing or curl fails, append `end climb died <HTTP code>` and `end chain nothing`, and report it (a 404 means the URLs were rotated in Settings: the maintainer must refresh the file).
 
-At the end of a round, the climb stage appends its end line, then `end chain landed` or `end chain nothing`, then checks 1 to 4. It never starts the router. When a check fails, the rounds stop until 18:00 or a start by hand.
+At the end of a round, the climb stage appends its end line, then `end chain landed` or `end chain nothing`, then checks 1 to 5. It never starts the router. When a check fails, the rounds stop until 18:00 or a start by hand (`tools/rounds.py resume`).
 
-When the router finds a round still open, it closes it: `end climb died` if the last line is `start climb`, then `end chain landed` or `end chain nothing`. If the climb wrote its own end line (it started the router instead of the next round), the router checks 1 to 4 for the next round. If the climb died, the router begins the daily chain.
+When the router finds a round still open, it closes it: `end climb died` if the last line is `start climb`, then `end chain landed` or `end chain nothing`. If the climb wrote its own end line (it started the router instead of the next round), the router checks 1 to 5 for the next round. If the climb died, the router begins the daily chain.
 
 ## Starting a stage
 
