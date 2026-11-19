@@ -13,7 +13,7 @@
 "o": "Chromium fixes",
 "a": "Build & plumbing",
 "p": "upstream-fixes/wasm-interpreter-trustedcast-raw",
-"w": "Build fix from V8 so the browser compiles. V8's WebAssembly interpreter (DrumBrake) hadn't followed a change to TrustedCast and raw().",
+"w": "Build fix from V8 for its WebAssembly interpreter (DrumBrake), which hadn't followed a change to TrustedCast and raw(). oganesson doesn't build that interpreter, so nothing changes.",
 "s": "on",
 "n": ""
 },
@@ -22,7 +22,7 @@
 "o": "Chromium fixes",
 "a": "Build & plumbing",
 "p": "upstream-fixes/wasm-interpreter-sharedfunctioninfo",
-"w": "Build fix from V8 so the browser compiles. V8's WebAssembly interpreter (DrumBrake) hadn't followed the move of SharedFunctionInfo's flags.",
+"w": "Build fix from V8 for its WebAssembly interpreter (DrumBrake), which hadn't followed the move of SharedFunctionInfo's flags. oganesson doesn't build that interpreter, so nothing changes.",
 "s": "on",
 "n": ""
 },
