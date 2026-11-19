@@ -77,6 +77,9 @@
 # sees, not the first tab (install_failure_message_android.h).
 # A downloaded .xpi without a Gecko ID installs with the ID of its AMO
 # signature's certificate, as in Firefox (firefox_xpi_signature.h).
+# A packed install of a Firefox add-on decodes its images with shrink_to_fit,
+# so an icon too large for the decoder's limit is halved until it fits and
+# saved at that size, as Firefox installs it; other extensions still fail.
 --- a/extensions/browser/api/runtime/BUILD.gn
 +++ b/extensions/browser/api/runtime/BUILD.gn
 @@ -9,6 +9,8 @@
@@ -3535,3 +3538,106 @@
    if (cached_default_icon_image_.IsEmpty()) {
      icon = action_->GetDefaultIconImage();
      // If the extension is packed, then check the icon for visibility. Icons
+--- a/extensions/browser/image_sanitizer.cc
++++ b/extensions/browser/image_sanitizer.cc
+@@ -55,9 +55,10 @@
+     scoped_refptr<Client> client,
+     const base::FilePath& image_dir,
+     const std::set<base::FilePath>& image_paths,
+-    const scoped_refptr<base::SequencedTaskRunner>& io_task_runner) {
+-  std::unique_ptr<ImageSanitizer> sanitizer(
+-      new ImageSanitizer(client, image_dir, image_paths, io_task_runner));
++    const scoped_refptr<base::SequencedTaskRunner>& io_task_runner,
++    bool shrink_to_fit) {
++  std::unique_ptr<ImageSanitizer> sanitizer(new ImageSanitizer(
++      client, image_dir, image_paths, io_task_runner, shrink_to_fit));
+   sanitizer->Start();
+   return sanitizer;
+ }
+@@ -66,11 +67,13 @@
+     scoped_refptr<Client> client,
+     const base::FilePath& image_dir,
+     const std::set<base::FilePath>& image_relative_paths,
+-    const scoped_refptr<base::SequencedTaskRunner>& io_task_runner)
++    const scoped_refptr<base::SequencedTaskRunner>& io_task_runner,
++    bool shrink_to_fit)
+     : image_dir_(image_dir),
+       image_paths_(image_relative_paths),
+       client_(std::move(client)),
+-      io_task_runner_(io_task_runner) {
++      io_task_runner_(io_task_runner),
++      shrink_to_fit_(shrink_to_fit) {
+   DCHECK(client_);
+ }
+ 
+@@ -134,7 +137,7 @@
+   data_decoder::DecodeImage(
+       client_->GetDataDecoder(), contents,
+       data_decoder::mojom::ImageCodec::kDefault,
+-      /*shrink_to_fit=*/false, kMaxImageCanvas, gfx::Size(),
++      shrink_to_fit_, kMaxImageCanvas, gfx::Size(),
+       base::BindOnce(&ImageSanitizer::ImageDecoded, weak_factory_.GetWeakPtr(),
+                      image_path));
+ }
+--- a/extensions/browser/image_sanitizer.h
++++ b/extensions/browser/image_sanitizer.h
+@@ -72,11 +72,16 @@
+   // sanitization results (if the returned ImageSanitizer instance is deleted
+   // then these callback methods are not called and the sanitization stops
+   // promptly (some background tasks may still run)).
++  //
++  // Firefox add-ons (dubna): with `shrink_to_fit`, an image too large to
++  // decode is halved until it fits, and saved at that size, instead of
++  // failing the install.
+   static std::unique_ptr<ImageSanitizer> CreateAndStart(
+       scoped_refptr<Client> client,
+       const base::FilePath& image_dir,
+       const std::set<base::FilePath>& image_relative_paths,
+-      const scoped_refptr<base::SequencedTaskRunner>& task_runner);
++      const scoped_refptr<base::SequencedTaskRunner>& task_runner,
++      bool shrink_to_fit = false);
+ 
+   ImageSanitizer(const ImageSanitizer&) = delete;
+   ImageSanitizer& operator=(const ImageSanitizer&) = delete;
+@@ -88,7 +93,8 @@
+       scoped_refptr<Client> client,
+       const base::FilePath& image_dir,
+       const std::set<base::FilePath>& image_relative_paths,
+-      const scoped_refptr<base::SequencedTaskRunner>& io_task_runner);
++      const scoped_refptr<base::SequencedTaskRunner>& io_task_runner,
++      bool shrink_to_fit);
+ 
+   void Start();
+ 
+@@ -114,6 +120,7 @@
+   std::set<base::FilePath> image_paths_;
+   scoped_refptr<Client> client_;
+   scoped_refptr<base::SequencedTaskRunner> io_task_runner_;
++  const bool shrink_to_fit_;
+   base::WeakPtrFactory<ImageSanitizer> weak_factory_{this};
+ };
+ 
+--- a/extensions/browser/sandboxed_unpacker.cc
++++ b/extensions/browser/sandboxed_unpacker.cc
+@@ -58,6 +58,7 @@
+ #include "extensions/common/extensions_client.h"
+ #include "extensions/common/features/feature_channel.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/default_locale_handler.h"
+ #include "extensions/common/manifest_handlers/icons_handler.h"
+@@ -185,8 +186,12 @@
+     DCHECK(!image_sanitizer_);
+     std::set<base::FilePath> image_paths =
+         ExtensionsClient::Get()->GetBrowserImagePaths(extension);
++    // Firefox add-ons (dubna): Firefox has no size limit for an add-on's
++    // images, so a Firefox add-on's too large image is scaled down to fit
++    // Chromium's, where other extensions' fail the install.
+     image_sanitizer_ = ImageSanitizer::CreateAndStart(
+-        client, extension_root, image_paths, unpacker_io_task_runner);
++        client, extension_root, image_paths, unpacker_io_task_runner,
++        /*shrink_to_fit=*/IsFirefoxAddOn(*extension));
+   }
+ 
+   void CreateJsonFileSanitizer(
