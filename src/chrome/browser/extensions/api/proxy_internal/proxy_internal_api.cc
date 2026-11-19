@@ -20,6 +20,7 @@
 #include "extensions/browser/extension_registry_factory.h"
 #include "extensions/browser/extension_util.h"
 #include "extensions/browser/extensions_browser_client.h"
+#include "extensions/common/event_args.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_cookie_store.h"
 #include "extensions/common/permissions/permission_set.h"
@@ -353,7 +354,9 @@ void FirefoxProxyRequests::AskNext(int request_id) {
   // with the upstreams' additions to that enum, and UNKNOWN fails a DCHECK.
   EventRouter::Get(context_)->DispatchEventToExtension(
       request.asked,
-      std::make_unique<Event>(events::FOR_TEST, kOnRequest, std::move(args)));
+      std::make_unique<Event>(
+          events::FOR_TEST, kOnRequest,
+          base::MakeRefCounted<EventArgs>(std::move(args))));
 }
 
 void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
@@ -393,7 +396,9 @@ void FirefoxProxyRequests::DispatchError(const ExtensionId& extension_id,
   args.Append(base::DictValue().Set("message", message));
   EventRouter::Get(context_)->DispatchEventToExtension(
       extension_id,
-      std::make_unique<Event>(events::FOR_TEST, kOnError, std::move(args)));
+      std::make_unique<Event>(
+          events::FOR_TEST, kOnError,
+          base::MakeRefCounted<EventArgs>(std::move(args))));
 }
 
 template <>

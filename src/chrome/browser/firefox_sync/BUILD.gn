@@ -29,10 +29,10 @@ source_set("firefox_sync") {
     "sync_adapter.cc",
     "sync_adapter.h",
   ]
-  public_deps = [ "//chrome/browser:browser_public_dependencies" ]
   deps = [
     "//base",
     "//chrome/app:generated_resources",
+    "//chrome/browser:browser_process",
     "//chrome/browser/autofill",
     "//chrome/browser/bookmarks",
     "//chrome/browser/containers:core",

@@ -19,6 +19,7 @@
 #include "extensions/browser/event_router_factory.h"
 #include "extensions/browser/extension_event_histogram_value.h"
 #include "extensions/browser/extensions_browser_client.h"
+#include "extensions/common/event_args.h"
 
 #if !BUILDFLAG(IS_ANDROID)
 #include "chrome/browser/extensions/chrome_extension_function_details.h"
@@ -191,7 +192,9 @@ void ThemeAPI::DispatchOnUpdated() {
   // regular profile, so that the incognito background of a split mode add-on
   // gets it too.
   router->BroadcastEvent(
-      std::make_unique<Event>(events::FOR_TEST, kOnUpdated, std::move(args)));
+      std::make_unique<Event>(
+          events::FOR_TEST, kOnUpdated,
+          base::MakeRefCounted<EventArgs>(std::move(args))));
 }
 
 template <>

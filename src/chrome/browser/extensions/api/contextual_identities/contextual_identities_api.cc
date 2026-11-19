@@ -19,6 +19,7 @@
 #include "extensions/browser/event_router_factory.h"
 #include "extensions/browser/extension_event_histogram_value.h"
 #include "extensions/browser/extensions_browser_client.h"
+#include "extensions/common/event_args.h"
 #include "third_party/skia/include/core/SkColor.h"
 
 namespace extensions {
@@ -125,7 +126,9 @@ void ContextualIdentitiesAPI::Dispatch(const char* event_name,
   // A stub histogram value, as theme.onUpdated's: one of our own could clash
   // with the upstreams' additions to that enum, and UNKNOWN fails a DCHECK.
   router->BroadcastEvent(
-      std::make_unique<Event>(events::FOR_TEST, event_name, std::move(args)));
+      std::make_unique<Event>(
+          events::FOR_TEST, event_name,
+          base::MakeRefCounted<EventArgs>(std::move(args))));
 }
 
 template <>

@@ -303,13 +303,13 @@ bool MaybeOpenNewContentsOutsideApp(content::WebContents* source,
   if (!IsInAppWindow(source)) {
     return false;
   }
-  const bool popup = disposition == WindowOpenDisposition::NEW_POPUP;
+  const bool popup = disposition == WindowOpenDisposition::kNewPopup;
   // Popups stay, unless the scope is strict: sign-in flows open the provider
   // in one and need its opener. So do form posts, which only Chromium can
   // submit.
-  if ((disposition != WindowOpenDisposition::NEW_FOREGROUND_TAB &&
-       disposition != WindowOpenDisposition::NEW_BACKGROUND_TAB &&
-       disposition != WindowOpenDisposition::NEW_WINDOW &&
+  if ((disposition != WindowOpenDisposition::kNewForegroundTab &&
+       disposition != WindowOpenDisposition::kNewBackgroundTab &&
+       disposition != WindowOpenDisposition::kNewWindow &&
        (!popup || !HasStrictScope(source))) ||
       post || (new_contents && content::IsNewWindowForFormPost(new_contents)) ||
       !LeavesApp(source, url, /*out_of_scope=*/true)) {
@@ -321,7 +321,7 @@ bool MaybeOpenNewContentsOutsideApp(content::WebContents* source,
   // A middle click or Ctrl+click leaves the default browser behind the app
   // window, as it leaves a tab in the background.
   OpenInDefaultBrowser(
-      source, url, disposition == WindowOpenDisposition::NEW_BACKGROUND_TAB);
+      source, url, disposition == WindowOpenDisposition::kNewBackgroundTab);
   return true;
 }
 
