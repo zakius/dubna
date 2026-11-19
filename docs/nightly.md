@@ -9,7 +9,7 @@ The nightly update is a chain of T3 scheduled tasks in the dubna project. The ro
 | dubna nightly · update oganesson | `scheduled-task:8625b77b-636b-4947-950f-e635b35f3548` | Update the desktop browser |
 | dubna nightly · update tennessine | `scheduled-task:d9b93584-ffe2-47ba-9feb-6e9f496ae974` | Update the Android browser |
 | dubna nightly · tasks | `scheduled-task:59929e97-ca31-4513-828a-2bc54e01ce67` | A batch of open issues |
-| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps, mostly implementation: as many as one build can release. In a round, it starts the next round |
+| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps, mostly implementation: as many as one build can ship, pushed to main without a tag. In a round, it starts the next round |
 | dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site and its release notes up to date |
 
 Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4764-aadc-a18c4c602b29:e68f137f-f5bb-4692-a8e6-db45394ca597`), and posts there. tools/usage_pace.py counts the usage of this thread apart, so a new thread needs its id there too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
@@ -43,7 +43,7 @@ The chain keeps its state in `/home/zakius/dev/dubna/work/nightly.log` (not in G
 
 ## Climb rounds
 
-The daily chain is the router's: space, the upstream checks, releases, updates, tasks, climb and site. Climb rounds follow it at once and run around the clock, with no limit on how many follow each other: only the checks below stop them. A round is a chain with one stage, `climb`, which releases its own batch. It has no space, upstream or release check, no tasks and no site stage: the next daily chain catches up on all of them, the site included.
+The daily chain is the router's: space, the upstream checks, releases, updates, tasks, climb and site. Climb rounds follow it at once and run around the clock, with no limit on how many follow each other: only the checks below stop them. A round is a chain with one stage, `climb`, which pushes its batch to main without a release tag: the release stage of the next daily chain releases it, so the browsers release once a day. It has no space, upstream or release check, no tasks and no site stage: the next daily chain catches up on all of them, the site included.
 
 The next round starts only when all of these hold. The router checks them at the end of the daily chain, and the climb stage at the end of each round. Check in order and report the first that fails.
 
@@ -102,7 +102,7 @@ In oganesson and tennessine the tag starts release.yml, which releases main's ti
 
 The site's release notes (releases.html and its RSS feeds) come from the browsers' GitHub releases when the site is built, so a browser release shows on the site only after the next publish. When the site lacks a release but nothing in site/ changed, publish main's tip again without a commit or tag: gh workflow run site.yml -R zakius/dubna --ref main, then wait for that run as for a release. Check dubna's site last, after any browser release.
 
-Nothing ships without the tag, so never stop at the push. Every push to a browser's main that changes the shipped browser (an update, a tracker batch, a climb step, a dubna submodule move) is followed by a release-* tag in the same stage. So is every push to dubna's main that changes site/. Tool-only, docs-only and tests-only pushes (dubna tools, oganesson tools/e2e) need no tag.
+Nothing ships without the tag, so never stop at the push. Every push to a browser's main that changes the shipped browser (an update, a tracker batch, a climb step, a dubna submodule move) is followed by a release-* tag in the same stage. So is every push to dubna's main that changes site/. The climb is the exception: its pushes get no tag, and the daily chain's release and site stages release them, so the browsers and the site release at most once a day for the climb. An update still tags at once. Tool-only, docs-only and tests-only pushes (dubna tools, oganesson tools/e2e) need no tag.
 
 After the tag, find its run (gh run list -R zakius/<repo> --workflow release.yml -L 3, the run for your tag) and wait for it with a time limit (gh run watch <id> -R zakius/<repo> --exit-status). If no run starts within a few minutes, check that the tag reached origin (git ls-remote --tags origin "$tag") and start the run by hand (gh workflow run release.yml -R zakius/<repo>). If the run fails, read gh run view <id> --log-failed. If the cause is clear and small, fix it, push and tag again, else report. oganesson's run stops at "Firefox's WebExtensions tests" when a ported test that passed in the dubna submodule's score fails now (`DOWN`): that is a regression of the push. Fix it if the fix is small; otherwise file a `climb` step for it, commit the lower score to dubna with the reason, move the submodule, and tag again. When the release workflow fails after the push, report it; don't revert the push. Report the tag, the run and its result, and the release's URL.
 
