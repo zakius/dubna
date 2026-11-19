@@ -87,11 +87,12 @@ std::optional<base::Value> Value(Profile& profile, std::string_view key) {
     // On Android, the user's home page is in Java (HomepageManager), and this
     // is the policy's or the new tab page: zakius/tennessine#44.
     const GURL home = profile.GetHomePage();
-    // The new tab page is Firefox's about:newtab. Chromium's URL would be the
-    // page of an add-on that overrides the new tab page, so one that opens
-    // the home page there (New Tab Homepage) opened itself again, forever,
-    // in whichever tab was active. In Firefox the home page is a page of
-    // its own; such an add-on stops at about:newtab.
+    // The new tab page by Firefox's name for it, about:newtab, which Firefox
+    // gives when the user sets it as the home page (its default home page,
+    // about:home, has no page here). Chromium's URL would be the page of an
+    // add-on that overrides the new tab page, so one that opens the home
+    // page there (New Tab Homepage) opened itself again, forever, in
+    // whichever tab was active; such an add-on stops at about:newtab.
     if (home == GURL(chrome::kChromeUINewTabURL)) {
       return base::Value("about:newtab");
     }
