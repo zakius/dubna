@@ -1,6 +1,6 @@
 {
  "date": "2026-11-19",
- "browser": "oganesson 157.0.8103.78 (Chromium 157.0.8103.78)",
+ "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
  "levels": {
   "L0": 839,
   "L1": 836,
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'ekt7uabg8lp1ilxsgd') (719cc898-8866-4ca3-bbfb-9ed2e7bf2d53:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '6hjanwjzrpddvfgmhg') (de19db15-887e-40d4-bd7c-b835ae20d0f0:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (1166be98-0d1c-4c33-b360-5a1687e78b83:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (6ea077d2-0101-4b87-ad19-edb5f239c663:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -1262,7 +1262,7 @@
   },
   "{0c5b3b07-980a-413d-abd5-97a5eb4a0ff8}": {
    "level": "L2",
-   "error": "Uncaught (in promise) Error: Failed to construct 'URL': Invalid URL (_generated_background_page.html:0)"
+   "error": "Uncaught SyntaxError: Identifier 'instances' has already been declared (common.js:1)"
   },
   "ext_3tjvlkpa@extension-studio.com": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjcyY2JhM2QyZjgxMDg3OThkNDBlODYwMzIxZWI3NGI2YTEzM2M5YmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImU0Y2I5ZmFjNDk4ZTVmZDA1YTJiNTNhYmZiMWQxMWZkYzYwODJmZmYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
