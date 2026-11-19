@@ -10,6 +10,24 @@
 },
 {
 "b": "og",
+"o": "Chromium fixes",
+"a": "Build & plumbing",
+"p": "upstream-fixes/wasm-interpreter-trustedcast-raw",
+"w": "Build fix from V8 so the browser compiles. V8's WebAssembly interpreter (DrumBrake) hadn't followed a change to TrustedCast and raw().",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
+"o": "Chromium fixes",
+"a": "Build & plumbing",
+"p": "upstream-fixes/wasm-interpreter-sharedfunctioninfo",
+"w": "Build fix from V8 so the browser compiles. V8's WebAssembly interpreter (DrumBrake) hadn't followed the move of SharedFunctionInfo's flags.",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
 "o": "Inox",
 "a": "Build & plumbing",
 "p": "inox-patchset/fix-building-without-safebrowsing",
@@ -1844,6 +1862,33 @@
 "b": "og",
 "o": "Helium",
 "a": "Look & layout",
+"p": "helium/core/ui-density-prefs",
+"w": "Adds an interface density preference: Default keeps Helium's compact sizes, Spacious makes tabs, toolbar buttons and the address bar larger. The browser reads it once at start, so a change applies after a relaunch. The switch is in a separate settings patch.",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Address bar & search",
+"p": "helium/core/disable-reading-mode-omnibox-chip",
+"w": "Turns off the reading mode button that Chromium shows in the address bar on pages it can simplify.",
+"s": "on",
+"n": "reading mode stays in oganesson's right-click menu"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "History",
+"p": "helium/core/remove-history-sync-promo",
+"w": "Removes the promo on the History page that asks you to sync your history with a Google account.",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Look & layout",
 "p": "helium/core/custom-profile-avatar",
 "w": "Lets you use your own image file as a profile picture (saved as \"Custom Avatar Picture.png\"). The picker is in a separate Helium settings patch.",
 "s": "on",
@@ -2211,6 +2256,24 @@
 "a": "Settings & flags",
 "p": "helium/settings/fix-appearance-page",
 "w": "On Linux, shows the \"Reset to default theme\" label, which stock Chromium hides there. Shortens the label for pinning new tab groups to the bookmarks bar.",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Look & layout",
+"p": "helium/settings/ui-density-settings",
+"w": "Adds \"Interface density\" to Accessibility settings: Default, or Spacious for larger tabs, toolbar buttons and address bar. A change offers a restart, which applies it.",
+"s": "on",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Look & layout",
+"p": "helium/settings/simplify-side-panel-position",
+"w": "The side panel position on the Appearance page is one dropdown for every side panel again, instead of one per panel. Also turns off Chromium's contextual tasks side panel.",
 "s": "on",
 "n": ""
 },
@@ -4513,6 +4576,16 @@
 "a": "Platform & packaging",
 "p": "tennessine/photo-location",
 "w": "Photos you upload keep their location: when a page accepts images, the file chooser asks for Android's media location permission, without which Android strips the GPS data. Deny it and photos upload without location, as before. Android's photo picker always strips it.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
+"a": "Network & security",
+"p": "tennessine/local-network-permission-android-17",
+"w": "Sites you allow to reach your local network can reach it on stock Android before 17. Vanadium asks for Android's local network permission on every version, since GrapheneOS has it; stock Android only has it from 17, so it was never granted. The browser now asks for it only on Android 17 and later.",
 "s": "on",
 "n": "",
 "own": 1
