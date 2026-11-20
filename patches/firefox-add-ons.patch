@@ -963,7 +963,14 @@
      return false;
    }
  
-@@ -331,9 +351,19 @@
+@@ -328,12 +348,26 @@
+     MenuItem* parent = GetParent(*parent_id, menu_manager, error);
+     if (!parent || !menu_manager->ChangeParent(item->id(), &parent->id()))
+       return false;
++    // Firefox add-ons (dubna): a moved item without contexts takes its new
++    // parent's, as on create.
++    if (!update_properties.contexts && extension && IsFirefoxAddOn(*extension))
++      item->set_contexts(parent->contexts());
    }
  
    // URL Patterns.
@@ -1346,20 +1353,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -704,6 +755,12 @@
-   const Extension* extension =
-       registry->enabled_extensions().GetByID(item->extension_id());
- 
-+  // Firefox add-ons (dubna): an item with Firefox's command runs it instead
-+  // of firing onClicked, so that an event page isn't woken.
-+  if (RunFirefoxMenuCommand(extension, *item, web_contents)) {
-+    return;
-+  }
-+
-   if (item->type() == MenuItem::RADIO)
-     RadioItemSelected(item);
- 
-@@ -734,6 +791,8 @@
+@@ -734,6 +785,8 @@
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1368,6 +1362,19 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
+@@ -793,6 +846,12 @@
+       WriteToStorage(extension, item->id().extension_key);
+     }
+   }
++  // Firefox add-ons (dubna): an item with Firefox's command runs it instead
++  // of firing onClicked, so that an event page isn't woken. As in Firefox,
++  // the click has granted activeTab and changed the item's checked state.
++  if (RunFirefoxMenuCommand(extension, *item, web_contents)) {
++    return;
++  }
+   {
+     // Dispatch to menu item's .onclick handler (this is the legacy API, from
+     // before chrome.contextMenus.onClicked existed).
 @@ -868,9 +927,11 @@
        }
      }
@@ -5280,7 +5287,17 @@
    deps = [
 --- a/chrome/browser/extensions/extension_context_menu_model.cc
 +++ b/chrome/browser/extensions/extension_context_menu_model.cc
-@@ -697,9 +697,19 @@
+@@ -535,7 +535,8 @@
+   if (ContextMenuMatcher::IsExtensionsCustomCommandId(command_id)) {
+     CHECK(extension_items_, base::NotFatalUntil::M161);
+     extension_items_->ExecuteCommand(command_id, GetActiveWebContents(),
+-                                     nullptr, content::ContextMenuParams());
++                                     nullptr, content::ContextMenuParams(),
++                                     event_flags);
+     action_taken_ = ContextMenuAction::kCustomCommand;
+     return;
+   }
+@@ -697,9 +698,19 @@
  
  void ExtensionContextMenuModel::OnMenuWillShow(ui::SimpleMenuModel* menu) {
    action_taken_ = ContextMenuAction::kNoAction;
@@ -5300,7 +5317,7 @@
    // `action_taken_` can be deleted when the extensions toggle menu is closed.
    if (action_taken_) {
      ContextMenuAction action = *action_taken_;
-@@ -771,7 +781,11 @@
+@@ -771,7 +782,11 @@
    AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
    SetElementIdentifierAt(GetIndexOfCommandId(HOME_PAGE).value(),
                           kHomePageMenuItem);
@@ -5312,7 +5329,7 @@
  
    // Site permissions section.
    bool is_required_by_policy = IsExtensionRequiredByPolicy(extension, profile_);
-@@ -975,7 +989,11 @@
+@@ -975,7 +990,11 @@
    // mnemonics in the menu.
    base::ReplaceChars(extension_name, "&", "&&", &extension_name);
    AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
@@ -5344,8 +5361,26 @@
    }
  #endif
  
+@@ -801,7 +805,7 @@
+       content::ContextMenuParams params;
+       params.page_url = web_contents->GetLastCommittedURL();
+       matcher->ExecuteCommand(GetCommandIdAt(index), web_contents, nullptr,
+-                              params);
++                              params, event_flags);
+     }
+     return;
+   }
 --- a/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.cc
 +++ b/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.cc
+@@ -108,7 +108,7 @@
+         content::ContextMenuParams params;
+         params.page_url = web_contents->GetLastCommittedURL();
+         tab_menu_model_->extension_items()->ExecuteCommand(
+-            command_id, web_contents, nullptr, params);
++            command_id, web_contents, nullptr, params, event_flags);
+       }
+     }
+     return;
 @@ -121,6 +121,26 @@
    }
  }
