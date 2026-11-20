@@ -97,6 +97,13 @@ void AddFirefoxClickData(const Extension* extension,
   if (!params.unfiltered_link_url.is_empty()) {
     properties.Set("linkText", params.link_text);
   }
+  // A link whose URL isn't valid is a link, with its URL as the page wrote it
+  // (firefox_menu_items.h).
+  if (params.unfiltered_link_url.is_empty() &&
+      !params.invalid_link_url.empty()) {
+    properties.Set("linkUrl", params.invalid_link_url);
+    properties.Set("linkText", params.link_text);
+  }
 }
 
 bool ContextMenuMatcher::MiddleClickRuns(int command_id) const {

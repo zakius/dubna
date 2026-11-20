@@ -33,7 +33,8 @@ bool RunFirefoxMenuCommand(const Extension* extension,
 // Firefox's part of a click's OnClickData for a Firefox add-on's item, added
 // to `properties`: `modifiers`, the keys held in `event_flags` (Shift, Alt,
 // Command, Ctrl, and MacCtrl on a Mac), `button`, the mouse button (0, 1 or
-// 2), and `linkText`, the text of the link that the menu is for.
+// 2), and `linkText`, the text of the link that the menu is for, and
+// `linkUrl` for a link whose URL isn't valid.
 void AddFirefoxClickData(const Extension* extension,
                          const content::ContextMenuParams& params,
                          int event_flags,

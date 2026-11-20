@@ -101,6 +101,9 @@
 # (firefox_document_id.h).
 # UserScriptLoader::SendUpdate() sends a renderer process only the
 # contentScripts scripts of its cookie store (firefox_content_script_stores.h).
+# A Firefox add-on's targetUrlPatterns take any scheme and match as Firefox's
+# (firefox_menu_items.h); a link with an invalid URL is a link, whose href
+# Blink sends apart (invalid_link_url); and its item titles show in full.
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -876,7 +879,7 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/utils/extension_utils.h"
  
-@@ -160,6 +162,14 @@ bool CreateMenuItem(const PropertyWithEnumT& create_properties,
+@@ -160,6 +162,14 @@
      contexts = GetContexts(*create_properties.contexts);
    else
      contexts.Add(MenuItem::PAGE);
@@ -891,6 +894,48 @@
  
    if (contexts.Contains(MenuItem::LAUNCHER)) {
      // Launcher item is not allowed for <webview>.
+@@ -203,9 +213,19 @@
+       new MenuItem(item_id, title, checked, visible, enabled, type, contexts));
+ 
+   // URL Patterns.
++  // Firefox add-ons (dubna): Firefox's targetUrlPatterns
++  // (firefox_menu_items.h), which Chromium's would refuse or not match.
++  const std::vector<std::string>* target_url_patterns =
++      base::OptionalToPtr(create_properties.target_url_patterns);
++  if (target_url_patterns && extension && IsFirefoxAddOn(*extension)) {
++    if (!SetFirefoxTargetUrlPatterns(*target_url_patterns, *item, error)) {
++      return false;
++    }
++    target_url_patterns = nullptr;
++  }
+   if (!item->PopulateURLPatterns(
+           base::OptionalToPtr(create_properties.document_url_patterns),
+-          base::OptionalToPtr(create_properties.target_url_patterns), error)) {
++          target_url_patterns, error)) {
+     return false;
+   }
+ 
+@@ -331,9 +351,19 @@
+   }
+ 
+   // URL Patterns.
++  // Firefox add-ons (dubna): Firefox's targetUrlPatterns
++  // (firefox_menu_items.h), which Chromium's would refuse or not match.
++  const std::vector<std::string>* target_url_patterns =
++      base::OptionalToPtr(update_properties.target_url_patterns);
++  if (target_url_patterns && extension && IsFirefoxAddOn(*extension)) {
++    if (!SetFirefoxTargetUrlPatterns(*target_url_patterns, *item, error)) {
++      return false;
++    }
++    target_url_patterns = nullptr;
++  }
+   if (!item->PopulateURLPatterns(
+           base::OptionalToPtr(update_properties.document_url_patterns),
+-          base::OptionalToPtr(update_properties.target_url_patterns), error)) {
++          target_url_patterns, error)) {
+     return false;
+   }
+ 
 --- a/chrome/browser/extensions/context_menu_matcher.cc
 +++ b/chrome/browser/extensions/context_menu_matcher.cc
 @@ -259,14 +259,15 @@ void ContextMenuMatcher::ExecuteCommand(
@@ -1033,16 +1078,28 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/mojom/context_type.mojom.h"
  #include "extensions/common/mojom/event_dispatcher.mojom.h"
-@@ -74,6 +76,8 @@ const char kTargetURLPatternsKey[] = "target_url_patterns";
+@@ -74,6 +76,10 @@
  const char kTitleKey[] = "title";
  const char kMenuManagerTypeKey[] = "type";
  const char kVisibleKey[] = "visible";
 +// Firefox add-ons (dubna): MenuItem::firefox_command().
 +const char kFirefoxCommandKey[] = "firefox_command";
++// Firefox add-ons (dubna): MenuItem::firefox_target_url_patterns().
++const char kFirefoxTargetURLPatternsKey[] = "firefox_target_url_patterns";
  
  // The time by which to delay writing updated menu items to storage.
  constexpr int kWriteDelayInSeconds = 1;
-@@ -277,6 +281,11 @@ base::DictValue MenuItem::ToValue() const {
+@@ -239,7 +245,8 @@
+   // put "%s" in titles that won't get substituted.
+   base::ReplaceSubstringsAfterOffset(&result, 0, u"%s", selection);
+ 
+-  if (result.length() > max_length)
++  // Firefox add-ons (dubna): Firefox shows the title in full.
++  if (result.length() > max_length && !firefox_add_on_)
+     result = gfx::TruncateString(result, max_length, gfx::WORD_BREAK);
+   return result;
+ }
+@@ -277,6 +284,18 @@
    }
    value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
    value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
@@ -1051,10 +1108,17 @@
 +  if (!firefox_command_.empty()) {
 +    value.Set(kFirefoxCommandKey, firefox_command_);
 +  }
++  if (!firefox_target_url_patterns_.empty()) {
++    base::ListValue patterns;
++    for (const std::string& pattern : firefox_target_url_patterns_) {
++      patterns.Append(pattern);
++    }
++    value.Set(kFirefoxTargetURLPatternsKey, std::move(patterns));
++  }
    return value;
  }
  
-@@ -347,6 +356,11 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
+@@ -347,6 +366,18 @@
      return nullptr;
    }
  
@@ -1062,11 +1126,18 @@
 +  if (const std::string* command = value.FindString(kFirefoxCommandKey)) {
 +    result->set_firefox_command(*command);
 +  }
++  std::vector<std::string> firefox_target_url_patterns;
++  if (!GetStringList(value, kFirefoxTargetURLPatternsKey,
++                     &firefox_target_url_patterns)) {
++    return nullptr;
++  }
++  result->set_firefox_target_url_patterns(
++      std::move(firefox_target_url_patterns));
 +
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +450,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
+@@ -436,6 +467,8 @@
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1075,7 +1146,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +481,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
+@@ -465,6 +498,8 @@
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1084,7 +1155,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +709,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -691,7 +726,8 @@
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1094,7 +1165,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -704,6 +723,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -704,6 +740,12 @@
    const Extension* extension =
        registry->enabled_extensions().GetByID(item->extension_id());
  
@@ -1107,7 +1178,7 @@
    if (item->type() == MenuItem::RADIO)
      RadioItemSelected(item);
  
-@@ -734,6 +759,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -734,6 +776,8 @@
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1116,7 +1187,7 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -868,9 +895,11 @@ void MenuManager::SanitizeRadioListsInMenu(
+@@ -868,9 +912,11 @@
        }
      }
  
@@ -1131,7 +1202,15 @@
      i = radio_run_iter;
 --- a/chrome/browser/extensions/menu_manager.h
 +++ b/chrome/browser/extensions/menu_manager.h
-@@ -195,6 +195,10 @@ class MenuItem {
+@@ -12,6 +12,7 @@
+ #include <memory>
+ #include <set>
+ #include <string>
++#include <utility>
+ #include <vector>
+ 
+ #include "base/gtest_prod_util.h"
+@@ -195,6 +196,10 @@
    const URLPatternSet& target_url_patterns() const {
      return target_url_patterns_;
    }
@@ -1142,10 +1221,20 @@
  
    // Simple mutator methods.
    void set_title(const std::string& new_title) { title_ = new_title; }
-@@ -209,6 +213,13 @@ class MenuItem {
+@@ -209,6 +214,23 @@
      target_url_patterns_ = patterns.Clone();
    }
  
++  // Firefox add-ons (dubna): a Firefox add-on's targetUrlPatterns as it wrote
++  // them, which its item matches as Firefox does (firefox_menu_items.h). Its
++  // target_url_patterns() stay empty.
++  const std::vector<std::string>& firefox_target_url_patterns() const {
++    return firefox_target_url_patterns_;
++  }
++  void set_firefox_target_url_patterns(std::vector<std::string> patterns) {
++    firefox_target_url_patterns_ = std::move(patterns);
++  }
++
 +  // Firefox add-ons (dubna): menus.create's command, which a click runs
 +  // instead of firing onClicked (firefox_menu_clicks.h). Empty when none.
 +  const std::string& firefox_command() const { return firefox_command_; }
@@ -1156,7 +1245,7 @@
    // Returns the title with any instances of %s replaced by `selection`. The
    // result will be no longer than `max_length`.
    std::u16string TitleWithReplacement(const std::u16string& selection,
-@@ -270,6 +281,9 @@ class MenuItem {
+@@ -270,6 +292,9 @@
    // In what contexts should the item be shown?
    ContextList contexts_;
  
@@ -1166,17 +1255,20 @@
    // If this item is a child of another item, the unique id of its parent. If
    // this is a top-level item with no parent, this will be NULL.
    std::unique_ptr<Id> parent_id_;
-@@ -284,6 +298,9 @@ class MenuItem {
+@@ -284,6 +309,12 @@
  
    // Any children this item may have.
    OwnedList children_;
 +
 +  // Firefox add-ons (dubna): see firefox_command().
 +  std::string firefox_command_;
++
++  // Firefox add-ons (dubna): see firefox_target_url_patterns().
++  std::vector<std::string> firefox_target_url_patterns_;
  };
  
  // This class keeps track of menu items added by extensions.
-@@ -372,7 +389,9 @@ class MenuManager : public ProfileObserver,
+@@ -372,7 +403,9 @@
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
                        const content::ContextMenuParams& params,
@@ -4611,3 +4703,101 @@
    if (!use_custom_region) {
      region_for_process = shared_memory.Duplicate();
    }
+--- a/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
++++ b/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
+@@ -20,6 +20,7 @@
+       !data.ReadLinkUrl(&out->link_url) ||
+       !data.ReadLinkText(&out->link_text) ||
+       !data.ReadUnfilteredLinkUrl(&out->unfiltered_link_url) ||
++      !data.ReadInvalidLinkUrl(&out->invalid_link_url) ||
+       !data.ReadSrcUrl(&out->src_url) ||
+       !data.ReadSelectionText(&out->selection_text) ||
+       !data.ReadTitleText(&out->title_text) ||
+--- a/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
++++ b/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
+@@ -54,6 +54,7 @@
+   params.y = data.mouse_position.y();
+   params.link_url = data.link_url;
+   params.unfiltered_link_url = data.link_url;
++  params.invalid_link_url = data.invalid_link_url;
+   params.src_url = data.src_url;
+   params.has_image_contents = data.has_image_contents;
+   params.image_replacement_frame_token = data.image_replacement_frame_token;
+--- a/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
++++ b/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
+@@ -51,6 +51,7 @@
+   link_url = other.link_url;
+   link_text = other.link_text;
+   unfiltered_link_url = other.unfiltered_link_url;
++  invalid_link_url = other.invalid_link_url;
+   src_url = other.src_url;
+   has_image_contents = other.has_image_contents;
+   image_replacement_frame_token = other.image_replacement_frame_token;
+--- a/third_party/blink/public/common/context_menu_data/context_menu_data.h
++++ b/third_party/blink/public/common/context_menu_data/context_menu_data.h
+@@ -107,6 +107,10 @@
+   // The text of the link that is in the context.
+   std::string link_text;
+ 
++  // Firefox add-ons (dubna): the URL of the link as the page wrote it, when it
++  // isn't a valid URL (UntrustworthyContextMenuParams::invalid_link_url).
++  std::string invalid_link_url;
++
+   // The raw text of the selection in context.
+   std::string selected_text;
+ 
+--- a/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
++++ b/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
+@@ -48,6 +48,11 @@
+     return r.unfiltered_link_url;
+   }
+ 
++  static const std::string& invalid_link_url(
++      const blink::UntrustworthyContextMenuParams& r) {
++    return r.invalid_link_url;
++  }
++
+   static const GURL& src_url(const blink::UntrustworthyContextMenuParams& r) {
+     return r.src_url;
+   }
+--- a/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
++++ b/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
+@@ -57,6 +57,11 @@
+   // this field in the frontend process.
+   GURL unfiltered_link_url;
+ 
++  // Firefox add-ons (dubna): the URL of the link as the page wrote it, when it
++  // isn't a valid URL, which link_url can't carry. Firefox's menus see such a
++  // link as a link.
++  std::string invalid_link_url;
++
+   // This is the source URL for the element that the context menu was
+   // invoked on. Example of elements with source URLs are img, audio, and
+   // video.
+--- a/third_party/blink/public/mojom/context_menu/context_menu.mojom
++++ b/third_party/blink/public/mojom/context_menu/context_menu.mojom
+@@ -100,6 +100,10 @@
+   // this field in the frontend process.
+   url.mojom.Url unfiltered_link_url;
+ 
++  // Firefox add-ons (dubna): the URL of the link as the page wrote it, when it
++  // isn't a valid URL, which link_url can't carry.
++  string invalid_link_url;
++
+   // This is the source URL for the element that the context menu was
+   // invoked on. Example of elements with source URLs are img, audio, and
+   // video.
+--- a/third_party/blink/renderer/core/page/context_menu_controller.cc
++++ b/third_party/blink/renderer/core/page/context_menu_controller.cc
+@@ -866,6 +866,11 @@
+   if (auto* anchor = DynamicTo<HTMLAnchorElement>(result.URLElement())) {
+     PopulateAnchorContextMenuData(anchor, html_names::kDownloadAttr,
+                                   selected_frame, data);
++    // Firefox add-ons (dubna): see ContextMenuData::invalid_link_url.
++    if (!data.link_url.is_valid()) {
++      data.invalid_link_url =
++          anchor->FastGetAttribute(html_names::kHrefAttr).Utf8();
++    }
+   } else if (auto* svg_anchor = DynamicTo<SVGAElement>(result.URLElement())) {
+     PopulateAnchorContextMenuData(svg_anchor, svg_names::kDownloadAttr,
+                                   selected_frame, data);

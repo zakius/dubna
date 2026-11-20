@@ -4,6 +4,9 @@
 #ifndef CHROME_BROWSER_EXTENSIONS_FIREFOX_MENU_ITEMS_H_
 #define CHROME_BROWSER_EXTENSIONS_FIREFOX_MENU_ITEMS_H_
 
+#include <string>
+#include <vector>
+
 #include "chrome/browser/extensions/menu_manager.h"
 
 namespace content {
@@ -24,11 +27,24 @@ MenuItem::ContextList FirefoxDefaultMenuContexts(
     const MenuManager& menu_manager,
     const MenuItem::Id* parent_id);
 
+// Sets `item`'s targetUrlPatterns (MenuItem::firefox_target_url_patterns()),
+// matched as Firefox matches them for links (ext-menus.js, restrictSchemes
+// false): a pattern of any scheme matches a link of that scheme, such as
+// "magnet:?xt=*" or "javascript://-URL", and <all_urls> matches only the
+// schemes Firefox supports. Chromium refuses "javascript://-URL", and its
+// patterns match no magnet: or javascript: link. Returns false, with `error`,
+// for a pattern that Firefox refuses too.
+bool SetFirefoxTargetUrlPatterns(const std::vector<std::string>& patterns,
+                                 MenuItem& item,
+                                 std::string* error);
+
 // Whether `item` shows for `params`. Firefox matches targetUrlPatterns against
 // the link's or the medium's URL whatever the item's contexts, so an item
 // with patterns shows only on a link or a medium that matches. Chromium reads
 // them only in the link and media contexts, and an "all" item would show on
-// every image and link.
+// every image and link. A link whose URL isn't valid (href="http://") is a
+// link, as in Firefox, which no pattern matches; Chromium's menu has no link
+// there.
 bool FirefoxMenuItemMatchesContext(const content::ContextMenuParams& params,
                                    const MenuItem& item);
 
