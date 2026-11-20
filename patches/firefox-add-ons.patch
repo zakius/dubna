@@ -4991,8 +4991,8 @@
 +        // Firefox add-ons (dubna): a theme's META-INF/ too, which has the
 +        // AMO signature that firefox_xpi_signature.cc checks.
 +        return (ZipFileInstaller::ShouldExtractFile(is_theme, file_path) ||
-+                file_path.GetComponents().front() ==
-+                    FILE_PATH_LITERAL("META-INF")) &&
++                (is_theme && file_path.GetComponents().front() ==
++                                 FILE_PATH_LITERAL("META-INF"))) &&
                 !ZipFileInstaller::IsManifestFile(file_path);
        },
        manifest_type == Manifest::Type::kTheme);
