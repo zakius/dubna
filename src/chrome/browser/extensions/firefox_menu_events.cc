@@ -614,6 +614,10 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
   }
   state.start = start;
   state.end = end + appended;
+  // Its items show now, so onHidden goes to it too, as in Firefox.
+  if (appended) {
+    state.shown_to.insert(extension_id);
+  }
 
   if (ui::MenuModelDelegate* delegate = menu_model_->menu_model_delegate()) {
     delegate->OnMenuStructureChanged();
