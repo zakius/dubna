@@ -4299,7 +4299,7 @@
    }
 -  if (num_tabs == 1) {
 +  // Firefox add-ons (dubna): Firefox's tabs.move always resolves to an array.
-+  if (num_tabs == 1 && !IsFirefoxAddOn(*extension())) {
++  if (num_tabs == 1 && !(extension() && IsFirefoxAddOn(*extension()))) {
      CHECK_EQ(1u, tab_values.size());
      return RespondNow(WithArguments(std::move(tab_values[0])));
    }
