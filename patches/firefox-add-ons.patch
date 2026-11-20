@@ -91,6 +91,10 @@
 # tabs.create takes Firefox's discarded and title: the tab is inserted unloaded,
 # as a session restore's tab that waits to be selected, and a Firefox add-on
 # calls such a tab discarded (firefox_discarded_tab.h).
+# before it localizes it. A Firefox add-on's default_locale folder can have
+# any name ("jp"), placeholders that Chromium refused load as Firefox reads
+# them (firefox_locale_files.h), and i18n.getMessage() puts in substitutions
+# as Firefox does (firefox_i18n_substitutions.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -2878,7 +2882,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,19 @@ static_library("common") {
+@@ -402,6 +402,21 @@
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -2887,6 +2891,8 @@
 +    "firefox_cookie_store.h",
 +    "firefox_gecko_id.cc",
 +    "firefox_gecko_id.h",
++    "firefox_locale_files.cc",
++    "firefox_locale_files.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
 +    "firefox_svg_icons.cc",
@@ -3376,7 +3382,32 @@
      *error = ErrorUtils::FormatErrorMessageUTF16(errors::kInvalidHomepageURL,
 --- a/extensions/common/message_bundle.cc
 +++ b/extensions/common/message_bundle.cc
-@@ -72,9 +72,8 @@ bool MessageBundle::Init(const CatalogVector& locale_catalogs,
+@@ -17,6 +17,7 @@
+ #include "base/values.h"
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/extension_l10n_util.h"
++#include "extensions/common/firefox_locale_files.h"
+ #include "extensions/common/manifest_constants.h"
+ 
+ namespace extensions {
+@@ -44,16 +45,6 @@
+ const char MessageBundle::kBidiLeftEdgeValue[] = "left";
+ const char MessageBundle::kBidiRightEdgeValue[] = "right";
+ 
+-// Formats message in case we encounter a bad formed key in the JSON object.
+-// Returns false and sets |error| to actual error message.
+-static bool BadKeyMessage(const std::string& name, std::string* error) {
+-  *error = base::StringPrintf(
+-      "Name of a key \"%s\" is invalid. Only ASCII [a-z], "
+-      "[A-Z], [0-9] and \"_\" are allowed.",
+-      name.c_str());
+-  return false;
+-}
+-
+ // static
+ MessageBundle* MessageBundle::Create(const CatalogVector& locale_catalogs,
+                                      std::string* error) {
+@@ -72,9 +63,8 @@
    for (const auto& catalog : std::views::reverse(locale_catalogs)) {
      for (auto message_it : catalog) {
        std::string key(base::ToLowerASCII(message_it.first));
@@ -3388,7 +3419,45 @@
        std::string value;
        if (!GetMessageValue(message_it.first, message_it.second, &value,
                             error)) {
-@@ -259,16 +258,14 @@ bool MessageBundle::ReplaceVariables(const SubstitutionMap& variables,
+@@ -172,31 +162,16 @@
+ 
+   const base::DictValue* placeholders_tree =
+       name_tree.FindDict(kPlaceholdersKey);
++  // Firefox add-ons (dubna): Firefox ignores placeholders that aren't an
++  // object, and reads each placeholder as firefox_locale_files.h says. A name
++  // with other characters than a message can use is never replaced.
+   if (!placeholders_tree) {
+-    *error = base::StringPrintf("Not a valid \"%s\" element for key %s.",
+-                                kPlaceholdersKey, name_key.c_str());
+-    return false;
++    return true;
+   }
+ 
+   for (auto it : *placeholders_tree) {
+-    const std::string& content_key(it.first);
+-    if (!IsValidName(content_key)) {
+-      return BadKeyMessage(content_key, error);
+-    }
+-    const base::DictValue* placeholder = it.second.GetIfDict();
+-    if (!placeholder) {
+-      *error = base::StringPrintf("Invalid placeholder %s for key %s",
+-                                  content_key.c_str(),
+-                                  name_key.c_str());
+-      return false;
+-    }
+-    const std::string* content = placeholder->FindString(kContentKey);
+-    if (!content) {
+-      *error = base::StringPrintf("Invalid \"%s\" element for key %s.",
+-                                  kContentKey, name_key.c_str());
+-      return false;
+-    }
+-    (*placeholders)[base::ToLowerASCII(content_key)] = *content;
++    (*placeholders)[base::ToLowerASCII(it.first)] =
++        FirefoxPlaceholderContent(it.second);
+   }
+ 
+   return true;
+@@ -259,16 +234,14 @@
        continue;
      }
      auto it = variables.find(base::ToLowerASCII(var_name));
@@ -3456,7 +3525,7 @@
                                               ContentScriptType::kCss, error)) {
 --- a/extensions/renderer/BUILD.gn
 +++ b/extensions/renderer/BUILD.gn
-@@ -17,6 +17,10 @@ source_set("renderer") {
+@@ -17,6 +17,10 @@
      "activity_log_converter_strategy.h",
      "api/context_menus_custom_bindings.cc",
      "api/context_menus_custom_bindings.h",
@@ -3467,10 +3536,14 @@
      "api/core_extensions_renderer_api_provider.cc",
      "api/core_extensions_renderer_api_provider.h",
      "api/declarative_content_hooks_delegate.cc",
-@@ -29,6 +33,12 @@ source_set("renderer") {
+@@ -29,6 +33,16 @@
      "api/file_system_natives.h",
      "api/i18n_hooks_delegate.cc",
      "api/i18n_hooks_delegate.h",
++
++    # Firefox add-ons (dubna): Firefox's substitutions in i18n.getMessage().
++    "api/firefox_i18n_substitutions.cc",
++    "api/firefox_i18n_substitutions.h",
 +    "api/messaging/firefox_message_target.cc",
 +    "api/messaging/firefox_message_target.h",
 +
@@ -3480,7 +3553,7 @@
      "api/messaging/gin_port.cc",
      "api/messaging/gin_port.h",
      "api/messaging/message_target.cc",
-@@ -99,6 +109,10 @@ source_set("renderer") {
+@@ -99,6 +113,10 @@
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -4219,3 +4292,89 @@
    };
  
  #if !BUILDFLAG(IS_ANDROID)
+--- a/extensions/common/file_util.cc
++++ b/extensions/common/file_util.cc
+@@ -664,12 +664,11 @@
+     return nullptr;
+   }
+ 
+-  std::set<std::string> chrome_locales;
+-  extension_l10n_util::GetAllLocales(&chrome_locales);
+-
+   base::FilePath default_locale_path = locale_path.AppendASCII(default_locale);
+-  if (default_locale.empty() || !chrome_locales.contains(default_locale) ||
+-      !base::PathExists(default_locale_path)) {
++  // Firefox add-ons (dubna): Firefox takes a locale folder of any name, such
++  // as "jp", where Chromium takes only ICU's locales. For other extensions,
++  // DefaultLocaleHandler::Validate still refuses such a default_locale.
++  if (default_locale.empty() || !base::PathExists(default_locale_path)) {
+     *error = l10n_util::GetStringUTF8(
+         IDS_EXTENSION_LOCALES_NO_DEFAULT_LOCALE_SPECIFIED);
+     return nullptr;
+--- a/extensions/common/manifest_handlers/default_locale_handler.cc
++++ b/extensions/common/manifest_handlers/default_locale_handler.cc
+@@ -16,6 +16,7 @@
+ #include "base/values.h"
+ #include "extensions/common/constants.h"
+ #include "extensions/common/extension_l10n_util.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/strings/grit/extensions_strings.h"
+@@ -85,6 +86,11 @@
+ 
+   std::set<std::string> all_locales;
+   extension_l10n_util::GetAllLocales(&all_locales);
++  // Firefox add-ons (dubna): Firefox takes a locale folder of any name, such
++  // as "jp", so the default locale's folder counts whatever its name.
++  if (IsFirefoxAddOn(extension)) {
++    all_locales.insert(default_locale);
++  }
+   const base::FilePath default_locale_path = path.AppendASCII(default_locale);
+   bool has_default_locale_message_file = false;
+ 
+--- a/extensions/renderer/api/i18n_hooks_delegate.cc
++++ b/extensions/renderer/api/i18n_hooks_delegate.cc
+@@ -14,7 +14,9 @@
+ #include "content/public/renderer/render_thread.h"
+ #include "extensions/common/extension.h"
+ #include "extensions/common/extension_id.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/message_bundle.h"
++#include "extensions/renderer/api/firefox_i18n_substitutions.h"
+ #include "extensions/renderer/bindings/api_binding_types.h"
+ #include "extensions/renderer/bindings/js_runner.h"
+ #include "extensions/renderer/extension_frame_helper.h"
+@@ -153,7 +155,8 @@
+                                     v8::Local<v8::Value> v8_substitutions,
+                                     v8::Local<v8::Value> v8_options,
+                                     SharedL10nMap::IPCTarget* ipc_target,
+-                                    v8::Local<v8::Context> context) {
++                                    v8::Local<v8::Context> context,
++                                    bool firefox_add_on) {
+   v8::Isolate* isolate = v8::Isolate::GetCurrent();
+ 
+   std::string message = SharedL10nMap::GetInstance().GetMessage(
+@@ -163,6 +166,12 @@
+   // For now, we just suppress all errors, but that's really not the best.
+   // See https://crbug.com/40560789.
+   v8::TryCatch try_catch(isolate);
++  // Firefox add-ons (dubna): Firefox's substitutions
++  // (firefox_i18n_substitutions.h).
++  if (firefox_add_on) {
++    return gin::StringToV8(
++        isolate, FirefoxI18nSubstitutions(message, v8_substitutions, context));
++  }
+   if (v8_substitutions->IsArray()) {
+     // chrome.i18n.getMessage("message_name", ["more", "params"]);
+     v8::Local<v8::Array> placeholders = v8_substitutions.As<v8::Array>();
+@@ -299,7 +308,8 @@
+   v8::Local<v8::Value> message =
+       GetI18nMessage(gin::V8ToString(script_context->isolate(), arguments[0]),
+                      script_context->extension()->id(), arguments[1],
+-                     arguments[2], ipc_target, script_context->v8_context());
++                     arguments[2], ipc_target, script_context->v8_context(),
++                     IsFirefoxAddOn(*script_context->extension()));
+ 
+   RequestResult result(RequestResult::HANDLED);
+   result.return_value = message;
