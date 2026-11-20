@@ -32,6 +32,10 @@
 #include "extensions/common/mojom/host_id.mojom.h"
 #include "extensions/common/mojom/match_origin_as_fallback.mojom-shared.h"
 #include "extensions/common/mojom/run_location.mojom-shared.h"
+#include "extensions/common/permissions/permission_set.h"
+#include "extensions/common/permissions/permissions_data.h"
+#include "extensions/common/url_pattern.h"
+#include "extensions/common/url_pattern_set.h"
 #include "extensions/common/user_script.h"
 #include "extensions/common/utils/content_script_utils.h"
 #include "url/gurl.h"
@@ -286,6 +290,20 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
                                          &sources_error));
   if (!sources_error.empty()) {
     return RespondNow(Error(std::move(sources_error)));
+  }
+
+  // As in Firefox, an add-on registers scripts only where its host
+  // permissions let it run them.
+  const URLPatternSet& hosts =
+      extension.permissions_data()->active_permissions().explicit_hosts();
+  for (const URLPattern& pattern : script->url_patterns()) {
+    if (!hosts.ContainsPattern(pattern)) {
+      // Firefox's message.
+      return RespondNow(
+          Error(base::StrCat({"Permission denied to register a content "
+                              "script for ",
+                              pattern.GetAsString()})));
+    }
   }
 
   script->set_match_all_frames(options.FindBool("allFrames").value_or(false));
