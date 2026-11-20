@@ -6,6 +6,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "base/no_destructor.h"
@@ -19,6 +20,7 @@
 #include "extensions/browser/event_router_factory.h"
 #include "extensions/browser/extension_event_histogram_value.h"
 #include "extensions/browser/extensions_browser_client.h"
+#include "extensions/browser/firefox_content_script_stores.h"
 #include "extensions/common/event_args.h"
 #include "third_party/skia/include/core/SkColor.h"
 
@@ -38,6 +40,13 @@ constexpr char kInvalidIdentity[] = "Invalid contextual identity: ";
 containers::ContainersService* ServiceFor(content::BrowserContext* context) {
   return containers::ContainersServiceFactory::GetForProfile(
       Profile::FromBrowserContext(context)->GetOriginalProfile());
+}
+
+// For contentScripts.register()'s cookieStoreId: the containers that
+// contextualIdentities.get() finds.
+bool HasContainer(content::BrowserContext* context, std::string_view id) {
+  containers::ContainersService* service = ServiceFor(context);
+  return service && service->Get(id).has_value();
 }
 
 // Firefox's ContextualIdentity.
@@ -78,6 +87,7 @@ const containers::Container* Find(
 ContextualIdentitiesAPI::ContextualIdentitiesAPI(
     content::BrowserContext* context)
     : profile_(Profile::FromBrowserContext(context)) {
+  firefox_content_scripts::SetHasContainer(&HasContainer);
   containers::ContainersService* service = ServiceFor(context);
   if (service) {
     last_containers_ = service->GetContainers();

@@ -99,6 +99,8 @@
 # frame of a window (blink's WebFrame::FromWindow()) or frame element and asks
 # the browser for its documentId with a synchronous message
 # (firefox_document_id.h).
+# UserScriptLoader::SendUpdate() sends a renderer process only the
+# contentScripts scripts of its cookie store (firefox_content_script_stores.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -2259,7 +2261,7 @@
      // narrow cases which are handled explicitly above.  Please think very
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
-@@ -300,6 +300,13 @@
+@@ -300,6 +300,15 @@
      "extension_action_icon_factory.h",
      "extension_action_manager.cc",
      "extension_action_manager.h",
@@ -2267,6 +2269,8 @@
 +    "firefox_action_values.h",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
++    "firefox_content_script_stores.cc",
++    "firefox_content_script_stores.h",
 +    "firefox_document_id.cc",
 +    "firefox_document_id.h",
 +    "firefox_page_action.cc",
@@ -4559,3 +4563,28 @@
  bool WebFrame::IsLoading() const {
    if (Frame* frame = ToCoreFrame(*this))
      return frame->IsLoading();
+--- a/extensions/browser/user_script_loader.cc
++++ b/extensions/browser/user_script_loader.cc
+@@ -25,6 +25,7 @@
+ #include "content/public/browser/render_process_host.h"
+ #include "extensions/browser/extension_registry.h"
+ #include "extensions/browser/extensions_browser_client.h"
++#include "extensions/browser/firefox_content_script_stores.h"
+ #include "extensions/browser/renderer_startup_helper.h"
+ #include "extensions/browser/script_injection_tracker.h"
+ #include "extensions/common/mojom/run_location.mojom-shared.h"
+@@ -641,6 +642,14 @@
+   }
+ #endif
+ 
++  // Firefox add-ons (dubna): a process gets only the contentScripts.register()
++  // scripts of its cookie store (firefox_content_script_stores.h).
++  if (!use_custom_region && loaded_scripts_ &&
++      firefox_content_scripts::ScriptsForProcess(*process, *loaded_scripts_,
++                                                 region_for_process)) {
++    use_custom_region = true;
++  }
++
+   if (!use_custom_region) {
+     region_for_process = shared_memory.Duplicate();
+   }

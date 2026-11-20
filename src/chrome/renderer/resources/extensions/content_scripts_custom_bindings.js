@@ -26,6 +26,18 @@ function registeredContentScript(scriptId) {
 }
 
 apiBridge.registerCustomHook(function(bindingsAPI) {
+  // Firefox takes cssOrigin in any case ("USER"), lowercased before it checks
+  // the value. The add-on's own object stays as it is.
+  bindingsAPI.apiFunctions.setUpdateArgumentsPreValidate(
+      'register', function(options) {
+        const args = $Array.slice(arguments);
+        if (options && typeof options.cssOrigin === 'string') {
+          args[0] = $Object.assign({}, options, {
+            cssOrigin: $String.toLowerCase(options.cssOrigin),
+          });
+        }
+        return args;
+      });
   bindingsAPI.apiFunctions.setCustomCallback(
       'register', function(callback, scriptId) {
         if (!callback) {

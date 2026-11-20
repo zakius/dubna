@@ -4,7 +4,6 @@
 #include "chrome/browser/extensions/firefox_cookie_store.h"
 
 #include "base/strings/strcat.h"
-#include "base/strings/string_util.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/containers_partition.h"
 #include "content/public/browser/security_principal.h"
@@ -26,16 +25,6 @@ std::string FirefoxCookieStoreId(content::WebContents* contents) {
     return base::StrCat({kFirefoxContainerPrefix, config.partition_name()});
   }
   return kFirefoxDefaultCookieStore;
-}
-
-std::optional<std::string> ContainerOfFirefoxCookieStore(
-    std::string_view cookie_store_id) {
-  if (!base::StartsWith(cookie_store_id, kFirefoxContainerPrefix) ||
-      cookie_store_id.size() == std::size(kFirefoxContainerPrefix) - 1) {
-    return std::nullopt;
-  }
-  return std::string(
-      cookie_store_id.substr(std::size(kFirefoxContainerPrefix) - 1));
 }
 
 }  // namespace extensions

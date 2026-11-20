@@ -28,6 +28,7 @@
 #include "extensions/browser/extensions_browser_client.h"
 #include "extensions/browser/user_script_manager.h"
 #include "extensions/common/extension.h"
+#include "extensions/common/firefox_cookie_store.h"
 #include "extensions/common/mojom/execution_world.mojom-shared.h"
 #include "extensions/common/mojom/host_id.mojom.h"
 #include "extensions/common/mojom/match_origin_as_fallback.mojom-shared.h"
@@ -44,14 +45,6 @@
 namespace extensions {
 
 namespace {
-
-// Follows the dynamic content script prefix. The scripting API refuses IDs
-// that start with "_", so none of its IDs looks like this.
-constexpr char kIdPrefix[] = "_firefox_";
-
-std::string FirefoxPrefix() {
-  return base::StrCat({UserScript::kDynamicContentScriptPrefix, kIdPrefix});
-}
 
 // The extension's script loader, or null if the extension isn't enabled (its
 // loader is gone, or belongs to its next load).
@@ -142,6 +135,7 @@ DOCUMENT_USER_DATA_KEY_IMPL(DocumentScripts);
 bool AddSources(const Extension& extension,
                 const GURL& page,
                 const base::Value* sources,
+                script_parsing::ContentScriptType type,
                 UserScript::ContentList& contents,
                 std::string* error) {
   if (!sources) {
@@ -157,11 +151,19 @@ bool AddSources(const Extension& extension,
     const std::string* file = source.GetDict().FindString("file");
     const std::string* code = source.GetDict().FindString("code");
     if (file) {
+      // Firefox's file is a strictRelativeUrl: an absolute URL, even the
+      // add-on's own, or a "//" one is refused, with Firefox's message.
+      if (base::StartsWith(*file, "//") || GURL(*file).is_valid()) {
+        *error =
+            base::StrCat({"String \"", *file, "\" must be a relative URL"});
+        return true;
+      }
       GURL url = page.Resolve(*file);
       if (!url.is_valid() ||
           !url::Origin::Create(url).IsSameOriginWith(extension.origin())) {
         // Firefox's message.
-        *error = base::StrCat({"Access denied for URL ", *file});
+        *error = base::StrCat(
+            {"Access denied for URL ", url.possibly_invalid_spec()});
         return true;
       }
       GURL::Replacements no_query;
@@ -171,6 +173,15 @@ bool AddSources(const Extension& extension,
       // The path without its leading "/".
       ExtensionResource resource = extension.GetResource(
           base::UnescapeBinaryURLComponent(std::string(url.path()).substr(1)));
+      // Firefox doesn't run a script file whose name isn't a JavaScript
+      // one, and register() still resolves. Chromium's manifest content
+      // scripts skip such a file too.
+      std::string type_error;
+      if (type == script_parsing::ContentScriptType::kJs &&
+          !script_parsing::ValidateMimeTypeFromFileExtension(
+              resource.relative_path(), type, &type_error)) {
+        continue;
+      }
       contents.push_back(UserScript::Content::CreateFile(
           resource.extension_root(), resource.relative_path(), url));
     } else if (code && !code->empty()) {
@@ -214,10 +225,6 @@ mojom::RunLocation RunLocation(const std::string* run_at) {
 
 namespace firefox_content_scripts {
 
-bool IsFirefoxScriptId(const std::string& id) {
-  return base::StartsWith(id, FirefoxPrefix());
-}
-
 std::vector<std::string> ScriptingScriptIds(content::BrowserContext* context,
                                             const ExtensionId& extension_id) {
   ExtensionUserScriptLoader* loader =
@@ -241,8 +248,19 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
   const base::DictValue& options = args()[0].GetDict();
   const Extension& extension = *this->extension();
 
-  id_ = base::StrCat(
-      {FirefoxPrefix(), base::Uuid::GenerateRandomV4().AsLowercaseString()});
+  // Firefox's cookieStoreId: the scripts run only in the tabs of these cookie
+  // stores, which their ID names (firefox_content_script_stores.h). They are
+  // checked below, in Firefox's order.
+  std::vector<std::string> stores;
+  if (const base::Value* stores_value = options.Find("cookieStoreId")) {
+    std::optional<std::vector<std::string>> ids =
+        stores_value->is_string()
+            ? std::vector<std::string>{stores_value->GetString()}
+            : Strings(stores_value);
+    EXTENSION_FUNCTION_VALIDATE(ids);
+    stores = std::move(*ids);
+  }
+  id_ = firefox_content_scripts::NewScriptId(stores);
   auto script = std::make_unique<UserScript>();
   script->set_id(id_);
   script->set_host_id(
@@ -284,10 +302,12 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
   const GURL& page = source_url().is_valid() ? source_url() : extension.url();
   std::string sources_error;
   EXTENSION_FUNCTION_VALIDATE(AddSources(extension, page, options.Find("js"),
+                                         script_parsing::ContentScriptType::kJs,
                                          script->js_scripts(), &sources_error));
-  EXTENSION_FUNCTION_VALIDATE(AddSources(extension, page, options.Find("css"),
-                                         script->css_scripts(),
-                                         &sources_error));
+  EXTENSION_FUNCTION_VALIDATE(
+      AddSources(extension, page, options.Find("css"),
+                 script_parsing::ContentScriptType::kCss, script->css_scripts(),
+                 &sources_error));
   if (!sources_error.empty()) {
     return RespondNow(Error(std::move(sources_error)));
   }
@@ -303,6 +323,19 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
           Error(base::StrCat({"Permission denied to register a content "
                               "script for ",
                               pattern.GetAsString()})));
+    }
+  }
+
+  // As in Firefox, a store is the default one, private windows' or an
+  // existing container's.
+  for (const std::string& store : stores) {
+    std::optional<std::string> container = ContainerOfFirefoxCookieStore(store);
+    if (store != kFirefoxDefaultCookieStore &&
+        store != kFirefoxPrivateCookieStore &&
+        !(container && firefox_content_scripts::HasContainer(browser_context(),
+                                                             *container))) {
+      // Firefox's message.
+      return RespondNow(Error("Invalid cookieStoreId"));
     }
   }
 
@@ -326,37 +359,8 @@ ExtensionFunction::ResponseAction ContentScriptsRegisterFunction::Run() {
                                   : mojom::ExecutionWorld::kIsolated);
   // cssOrigin "user" is taken but not followed yet: the styles are the
   // page's author styles.
-  bool incognito = scripting::ScriptsShouldBeAllowedInIncognito(
-      extension.id(), browser_context());
-  // Firefox's cookieStoreId: the default store, private windows, or a
-  // container. Add-ons have no containers yet (zakius/dubna#45), so as in
-  // Firefox a container's ID is unknown. Scripts for private windows alone
-  // are refused rather than run in every window.
-  if (const base::Value* stores_value = options.Find("cookieStoreId")) {
-    std::optional<std::vector<std::string>> stores =
-        stores_value->is_string()
-            ? std::vector<std::string>{stores_value->GetString()}
-            : Strings(stores_value);
-    EXTENSION_FUNCTION_VALIDATE(stores);
-    bool default_store = false;
-    bool private_store = false;
-    for (const std::string& store : *stores) {
-      if (store == "firefox-default") {
-        default_store = true;
-      } else if (store == "firefox-private") {
-        private_store = true;
-      } else {
-        // Firefox's message.
-        return RespondNow(Error("Invalid cookieStoreId"));
-      }
-    }
-    if (!default_store) {
-      return RespondNow(
-          Error("Content scripts for private windows alone aren't supported"));
-    }
-    incognito = incognito && private_store;
-  }
-  script->set_incognito_enabled(incognito);
+  script->set_incognito_enabled(scripting::ScriptsShouldBeAllowedInIncognito(
+      extension.id(), browser_context()));
 
   // Firefox registers a script with nothing to inject too, which does
   // nothing.

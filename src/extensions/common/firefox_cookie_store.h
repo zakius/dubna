@@ -4,6 +4,13 @@
 #ifndef EXTENSIONS_COMMON_FIREFOX_COOKIE_STORE_H_
 #define EXTENSIONS_COMMON_FIREFOX_COOKIE_STORE_H_
 
+#include <iterator>
+#include <optional>
+#include <string>
+#include <string_view>
+
+#include "base/strings/string_util.h"
+
 namespace extensions {
 
 // Firefox add-ons (dubna's webextensions/README.md): Firefox's cookieStoreId,
@@ -14,6 +21,18 @@ namespace extensions {
 inline constexpr char kFirefoxDefaultCookieStore[] = "firefox-default";
 inline constexpr char kFirefoxPrivateCookieStore[] = "firefox-private";
 inline constexpr char kFirefoxContainerPrefix[] = "firefox-container-";
+
+// The container id in a container's cookieStoreId, or nullopt for another
+// cookie store.
+inline std::optional<std::string> ContainerOfFirefoxCookieStore(
+    std::string_view cookie_store_id) {
+  if (!base::StartsWith(cookie_store_id, kFirefoxContainerPrefix) ||
+      cookie_store_id.size() == std::size(kFirefoxContainerPrefix) - 1) {
+    return std::nullopt;
+  }
+  return std::string(
+      cookie_store_id.substr(std::size(kFirefoxContainerPrefix) - 1));
+}
 
 }  // namespace extensions
 

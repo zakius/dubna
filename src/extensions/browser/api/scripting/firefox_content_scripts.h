@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "extensions/browser/extension_function.h"
+#include "extensions/browser/firefox_content_script_stores.h"
 #include "extensions/browser/scripting_utils.h"
 #include "extensions/common/extension_id.h"
 
@@ -23,11 +24,9 @@ namespace extensions {
 // scripting.registerContentScripts() makes, with IDs of their own, and they
 // take code as well as files. As in Firefox, they last until the document that
 // registered them goes away, and the scripting API doesn't list or remove them.
+// Their IDs are made in firefox_content_script_stores.h, with the cookie stores
+// they run in.
 namespace firefox_content_scripts {
-
-// Whether `id`, with its dynamic content script prefix, is a contentScripts
-// script.
-bool IsFirefoxScriptId(const std::string& id);
 
 // The IDs, without their prefix, of the extension's scripting API scripts:
 // what scripting.unregisterContentScripts() without IDs removes.
