@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "base/memory/read_only_shared_memory_region.h"
+#include "extensions/common/mojom/host_id.mojom-forward.h"
 #include "extensions/common/user_script.h"
 
 namespace content {
@@ -39,6 +40,13 @@ bool IsFirefoxScriptId(std::string_view id);
 bool ScriptsForProcess(content::RenderProcessHost& process,
                        const UserScriptList& scripts,
                        base::ReadOnlySharedMemoryRegion& region);
+
+// Whether a new process gets none of `host`'s scripts while its loader loads
+// them again: true for a Firefox add-on. The loader has only the old scripts,
+// serialized, and can't take out those of other stores, so it sends the new
+// set to every process when the load ends.
+bool HoldBackWhileLoading(content::BrowserContext* context,
+                          const mojom::HostID& host);
 
 // Whether the profile of `context` has the container `id`
 // (//chrome/browser/containers): one of the user's, a temporary one, or a

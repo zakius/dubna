@@ -4591,12 +4591,17 @@
  #include "extensions/browser/renderer_startup_helper.h"
  #include "extensions/browser/script_injection_tracker.h"
  #include "extensions/common/mojom/run_location.mojom-shared.h"
-@@ -641,6 +642,14 @@
+@@ -641,6 +642,19 @@
    }
  #endif
  
 +  // Firefox add-ons (dubna): a process gets only the contentScripts.register()
 +  // scripts of its cookie store (firefox_content_script_stores.h).
++  if (!use_custom_region && !loaded_scripts_ &&
++      firefox_content_scripts::HoldBackWhileLoading(browser_context_,
++                                                    host_id())) {
++    return SendUpdateResult::kNoActionTaken;
++  }
 +  if (!use_custom_region && loaded_scripts_ &&
 +      firefox_content_scripts::ScriptsForProcess(*process, *loaded_scripts_,
 +                                                 region_for_process)) {

@@ -15,7 +15,11 @@
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/storage_partition.h"
 #include "content/public/browser/storage_partition_config.h"
+#include "extensions/browser/extension_registry.h"
 #include "extensions/browser/user_script_loader.h"
+#include "extensions/common/extension.h"
+#include "extensions/common/firefox_add_on.h"
+#include "extensions/common/mojom/host_id.mojom.h"
 #include "extensions/common/firefox_cookie_store.h"
 
 namespace extensions::firefox_content_scripts {
@@ -118,6 +122,16 @@ bool ScriptsForProcess(content::RenderProcessHost& process,
   }
   region = UserScriptLoader::Serialize(kept);
   return true;
+}
+
+bool HoldBackWhileLoading(content::BrowserContext* context,
+                          const mojom::HostID& host) {
+  if (host.type != mojom::HostID::HostType::kExtensions) {
+    return false;
+  }
+  const Extension* extension =
+      ExtensionRegistry::Get(context)->enabled_extensions().GetByID(host.id);
+  return extension && IsFirefoxAddOn(*extension);
 }
 
 bool HasContainer(content::BrowserContext* context, std::string_view id) {
