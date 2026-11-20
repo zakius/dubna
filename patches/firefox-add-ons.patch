@@ -95,6 +95,10 @@
 # any name ("jp"), placeholders that Chromium refused load as Firefox reads
 # them (firefox_locale_files.h), and i18n.getMessage() puts in substitutions
 # as Firefox does (firefox_i18n_substitutions.h).
+# runtime.getDocumentId() is Firefox's, synchronous: the renderer finds the
+# frame of a window (blink's WebFrame::FromWindow()) or frame element and asks
+# the browser for its documentId with a synchronous message
+# (firefox_document_id.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -2255,7 +2259,7 @@
      // narrow cases which are handled explicitly above.  Please think very
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
-@@ -300,6 +300,11 @@ source_set("browser_sources") {
+@@ -300,6 +300,13 @@
      "extension_action_icon_factory.h",
      "extension_action_manager.cc",
      "extension_action_manager.h",
@@ -2263,6 +2267,8 @@
 +    "firefox_action_values.h",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
++    "firefox_document_id.cc",
++    "firefox_document_id.h",
 +    "firefox_page_action.cc",
      "extension_allowlist.cc",
      "extension_allowlist.h",
@@ -2919,7 +2925,24 @@
    deps = [
 --- a/extensions/common/api/_api_features.json
 +++ b/extensions/common/api/_api_features.json
-@@ -872,8 +872,10 @@
+@@ -700,6 +700,16 @@
+     "dependencies": ["permission:nativeMessaging"],
+     "contexts": ["privileged_extension"]
+   },
++  // Firefox add-ons (dubna): Firefox has runtime.getDocumentId in content
++  // scripts and extension pages.
++  "runtime.getDocumentId": {
++    "contexts": [
++      "privileged_extension",
++      "offscreen_extension",
++      "unprivileged_extension",
++      "content_script"
++    ]
++  },
+   "runtime.getContexts": {
+     "min_manifest_version": 3,
+     "contexts": ["privileged_extension"]
+@@ -872,8 +882,10 @@
        "content_script"
      ]
    },
@@ -3141,7 +3164,7 @@
    }
 --- a/extensions/common/api/runtime.json
 +++ b/extensions/common/api/runtime.json
-@@ -645,6 +645,27 @@
+@@ -645,6 +645,37 @@
            ]
          }
        },
@@ -3165,6 +3188,16 @@
 +            }
 +          ]
 +        }
++      },
++      {
++        "name": "getDocumentId",
++        "type": "function",
++        "nocompile": true,
++        "description": "Firefox's: the documentId of a window's or a frame element's document. See firefox_document_id.h.",
++        // Optional, so that null reaches the hook, which throws Firefox's error
++        // for it.
++        "parameters": [{"name": "target", "type": "any", "optional": true}],
++        "returns": {"type": "string"}
 +      },
        {
          "name": "getPackageDirectoryEntry",
@@ -3536,8 +3569,12 @@
      "api/core_extensions_renderer_api_provider.cc",
      "api/core_extensions_renderer_api_provider.h",
      "api/declarative_content_hooks_delegate.cc",
-@@ -29,6 +33,16 @@
+@@ -27,8 +31,20 @@
+     "api/feedback_private_hooks_delegate.h",
+     "api/file_system_natives.cc",
      "api/file_system_natives.h",
++    "api/firefox_document_id.cc",
++    "api/firefox_document_id.h",
      "api/i18n_hooks_delegate.cc",
      "api/i18n_hooks_delegate.h",
 +
@@ -3553,7 +3590,7 @@
      "api/messaging/gin_port.cc",
      "api/messaging/gin_port.h",
      "api/messaging/message_target.cc",
-@@ -99,6 +113,10 @@
+@@ -99,6 +115,10 @@
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -4378,3 +4415,147 @@
  
    RequestResult result(RequestResult::HANDLED);
    result.return_value = message;
+--- a/extensions/browser/extension_frame_host.cc
++++ b/extensions/browser/extension_frame_host.cc
+@@ -19,6 +19,7 @@
+ #include "extensions/browser/extension_host.h"
+ #include "extensions/browser/extension_registry.h"
+ #include "extensions/browser/extension_web_contents_observer.h"
++#include "extensions/browser/firefox_document_id.h"
+ #include "extensions/browser/message_service_api.h"
+ #include "extensions/browser/process_manager.h"
+ #include "extensions/buildflags/buildflags.h"
+@@ -303,4 +304,10 @@
+       channel_type, channel_name, std::move(port), std::move(port_host));
+ }
+ 
++void ExtensionFrameHost::GetDocumentId(const blink::FrameToken& frame_token,
++                                       GetDocumentIdCallback callback) {
++  std::move(callback).Run(
++      FirefoxDocumentId(receivers_.CurrentTargetFrame(), frame_token));
++}
++
+ }  // namespace extensions
+--- a/extensions/browser/extension_frame_host.h
++++ b/extensions/browser/extension_frame_host.h
+@@ -96,6 +96,9 @@
+       mojo::PendingAssociatedRemote<extensions::mojom::MessagePort> port,
+       mojo::PendingAssociatedReceiver<extensions::mojom::MessagePortHost>
+           port_host) override;
++  // Firefox add-ons (dubna): see firefox_document_id.h.
++  void GetDocumentId(const blink::FrameToken& frame_token,
++                     GetDocumentIdCallback callback) override;
+ 
+  protected:
+ 
+--- a/extensions/common/mojom/frame.mojom
++++ b/extensions/common/mojom/frame.mojom
+@@ -21,6 +21,7 @@
+ import "ui/gfx/geometry/mojom/geometry.mojom";
+ import "url/mojom/url.mojom";
+ import "third_party/blink/public/mojom/devtools/console_message.mojom";
++import "third_party/blink/public/mojom/tokens/tokens.mojom";
+ 
+ // Allows an extension to execute code in a tab.
+ struct ExecuteCodeParams {
+@@ -234,4 +235,11 @@
+     string channel_name, extensions.mojom.PortId port_id,
+     pending_associated_remote<extensions.mojom.MessagePort> port,
+     pending_associated_receiver<extensions.mojom.MessagePortHost> port_host);
++
++  // Firefox add-ons (dubna): the documentId of the document in the frame that
++  // `frame_token` names in this renderer, a frame or a placeholder of one, for
++  // runtime.getDocumentId, which Firefox has synchronous. Empty when there is
++  // no such frame. See extensions/browser/firefox_document_id.h.
++  [Sync]
++  GetDocumentId(blink.mojom.FrameToken frame_token) => (string document_id);
+ };
+--- a/extensions/common/mojom/frame_mojom_unittest.cc
++++ b/extensions/common/mojom/frame_mojom_unittest.cc
+@@ -120,6 +120,10 @@
+                         mojo::PendingAssociatedRemote<mojom::MessagePort> port,
+                         mojo::PendingAssociatedReceiver<mojom::MessagePortHost>
+                             port_host) override {}
++  void GetDocumentId(const blink::FrameToken& frame_token,
++                     GetDocumentIdCallback callback) override {
++    std::move(callback).Run(std::string());
++  }
+ 
+  private:
+   mojo::Receiver<mojom::LocalFrame> local_frame_receiver_;
+--- a/extensions/renderer/api/runtime_hooks_delegate.cc
++++ b/extensions/renderer/api/runtime_hooks_delegate.cc
+@@ -28,6 +28,7 @@
+ #include "extensions/common/manifest_handlers/externally_connectable.h"
+ #include "extensions/common/manifest_handlers/web_accessible_resources_info.h"
+ #include "extensions/common/mojom/message_port.mojom-shared.h"
++#include "extensions/renderer/api/firefox_document_id.h"
+ #include "extensions/renderer/api/messaging/message_target.h"
+ #include "extensions/renderer/api/messaging/messaging_util.h"
+ #include "extensions/renderer/api/messaging/native_renderer_messaging_service.h"
+@@ -432,6 +433,12 @@
+ 
+   ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
+ 
++  // Firefox add-ons (dubna): runtime.getDocumentId (firefox_document_id.h).
++  if (method_name == "runtime.getDocumentId") {
++    return HandleFirefoxGetDocumentId(script_context, signature, *arguments,
++                                      refs);
++  }
++
+   Handler handler = nullptr;
+   for (const auto& handler_entry : kHandlers) {
+     if (handler_entry.method == method_name) {
+--- a/third_party/blink/public/web/web_frame.h
++++ b/third_party/blink/public/web/web_frame.h
+@@ -31,6 +31,8 @@
+ #ifndef THIRD_PARTY_BLINK_PUBLIC_WEB_WEB_FRAME_H_
+ #define THIRD_PARTY_BLINK_PUBLIC_WEB_WEB_FRAME_H_
+ 
++#include <optional>
++
+ #include "base/unguessable_token.h"
+ #include "third_party/blink/public/common/tokens/tokens.h"
+ #include "third_party/blink/public/mojom/frame/frame.mojom-shared.h"
+@@ -189,6 +191,12 @@
+   // the given node is not a frame, iframe or if the frame is empty.
+   static WebFrame* FromFrameOwnerElement(const WebNode&);
+ 
++  // Firefox add-ons (dubna): the frame of `value` when it is a window, local
++  // or remote, of any world: null when the window's frame is gone, and
++  // nullopt when `value` is no window.
++  static std::optional<WebFrame*> FromWindow(v8::Isolate*,
++                                             v8::Local<v8::Value> value);
++
+   // Whether the owner element of this frame is in the document tree or the
+   // shadow tree, per https://w3c.github.io/webcomponents/spec/shadow/.
+   mojom::TreeScopeType GetTreeScopeType() const { return scope_; }
+--- a/third_party/blink/renderer/core/frame/web_frame.cc
++++ b/third_party/blink/renderer/core/frame/web_frame.cc
+@@ -12,8 +12,10 @@
+ #include "third_party/blink/public/mojom/scroll/scrollbar_mode.mojom-blink.h"
+ #include "third_party/blink/public/mojom/security_context/insecure_request_policy.mojom-blink.h"
+ #include "third_party/blink/public/web/web_element.h"
++#include "third_party/blink/renderer/bindings/core/v8/v8_window.h"
+ #include "third_party/blink/renderer/bindings/core/v8/window_proxy_manager.h"
+ #include "third_party/blink/renderer/core/dom/increment_load_event_delay_count.h"
++#include "third_party/blink/renderer/core/frame/dom_window.h"
+ #include "third_party/blink/renderer/core/frame/frame_owner.h"
+ #include "third_party/blink/renderer/core/frame/frame_swap_scope.h"
+ #include "third_party/blink/renderer/core/frame/local_frame.h"
+@@ -146,6 +148,15 @@
+   return nullptr;
+ }
+ 
++std::optional<WebFrame*> WebFrame::FromWindow(v8::Isolate* isolate,
++                                              v8::Local<v8::Value> value) {
++  DOMWindow* window = V8Window::ToWrappable(isolate, value);
++  if (!window) {
++    return std::nullopt;
++  }
++  return FromCoreFrame(window->GetFrame());
++}
++
+ bool WebFrame::IsLoading() const {
+   if (Frame* frame = ToCoreFrame(*this))
+     return frame->IsLoading();
