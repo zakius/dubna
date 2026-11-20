@@ -584,7 +584,6 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
     extension_item_map_.clear();
     first = start;
   } else {
-    index = NextExtensionIndex(*menu_model_, extension_item_map_);
     for (size_t i = end; i > start; --i) {
       if (EntryExtensionId(*menu_model_, i - 1, extension_item_map_) ==
           extension_id) {
@@ -596,6 +595,10 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
     std::erase_if(extension_item_map_, [&extension_id](const auto& entry) {
       return entry.second.extension_key.extension_id == extension_id;
     });
+    // After the other add-ons' items, with the IDs the add-on's old ones
+    // had free again: taking new ones at each refresh() would run out of
+    // the menu's range of extension command IDs.
+    index = NextExtensionIndex(*menu_model_, extension_item_map_);
   }
 
   // AppendExtensionItems() appends to the model's end, from where they move.
