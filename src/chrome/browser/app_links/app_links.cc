@@ -97,6 +97,10 @@ bool LeavesApp(content::WebContents* contents,
 // ExclusionObserver::MayOpen.
 bool MayOpen(content::WebContents* contents);
 
+// Whether `handle`, a navigation of the page, came from the user's input; see
+// ExclusionObserver::FromInput.
+bool FromInput(content::NavigationHandle* handle);
+
 class OutOfScopeLinkThrottle : public content::NavigationThrottle {
  public:
   // `link`: the page's own link click, which also leaves the app for being
@@ -124,7 +128,7 @@ class OutOfScopeLinkThrottle : public content::NavigationThrottle {
     // one tab per user input, not one per try.
     if (MayOpen(contents)) {
       OpenInDefaultBrowser(contents, handle->GetURL(),
-                           /*background=*/!handle->HasUserGesture());
+                           /*background=*/!FromInput(handle));
     }
     return CANCEL_AND_IGNORE;
   }
@@ -156,6 +160,15 @@ class ExclusionObserver
   void DidGetUserInteraction(const blink::WebInputEvent& event) override {
     take_backs_since_input_ = 0;
     opened_since_input_ = false;
+    input_in_page_ = true;
+  }
+
+  // Whether `handle` came with a user activation from input in the page, as
+  // the page's own check counts it (blink's document_input.h): not with the
+  // activation of a click in another window, which Chromium carries into a
+  // new app window's script, or of the click that loaded the page.
+  bool FromInput(content::NavigationHandle* handle) const {
+    return handle->HasUserGesture() && input_in_page_;
   }
 
   // Whether a URL that leaves the app may open in the default browser: one
@@ -164,6 +177,10 @@ class ExclusionObserver
   bool MayOpen() { return !std::exchange(opened_since_input_, true); }
 
   void DidFinishNavigation(content::NavigationHandle* handle) override {
+    if (handle->IsInPrimaryMainFrame() && handle->HasCommitted() &&
+        !handle->IsSameDocument()) {
+      input_in_page_ = false;
+    }
     // Not history navigations: a Back or Forward that loops between two
     // excluded entries would never end.
     if (!handle->IsInPrimaryMainFrame() || !handle->IsSameDocument() ||
@@ -172,7 +189,7 @@ class ExclusionObserver
       return;
     }
     if (!LeavesApp(web_contents(), handle->GetURL(),
-                   /*out_of_scope=*/handle->HasUserGesture())) {
+                   /*out_of_scope=*/FromInput(handle))) {
       return;
     }
     if (take_backs_since_input_ == kMaxTakeBacksPerInput) {
@@ -181,7 +198,7 @@ class ExclusionObserver
     ++take_backs_since_input_;
     if (MayOpen()) {
       OpenInDefaultBrowser(web_contents(), handle->GetURL(),
-                           /*background=*/!handle->HasUserGesture());
+                           /*background=*/!FromInput(handle));
     }
     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE,
@@ -250,6 +267,8 @@ class ExclusionObserver
   // Navigations taken back since the user's last input to the page.
   int take_backs_since_input_ = 0;
   bool opened_since_input_ = false;
+  // The page had the user's input since it loaded.
+  bool input_in_page_ = false;
 };
 
 WEB_CONTENTS_USER_DATA_KEY_IMPL(ExclusionObserver);
@@ -287,6 +306,12 @@ class AppLinkHost : public blink::mojom::AppLinkHost {
 bool MayOpen(content::WebContents* contents) {
   ExclusionObserver* observer = ExclusionObserver::FromWebContents(contents);
   return !observer || observer->MayOpen();
+}
+
+bool FromInput(content::NavigationHandle* handle) {
+  ExclusionObserver* observer =
+      ExclusionObserver::FromWebContents(handle->GetWebContents());
+  return observer && observer->FromInput(handle);
 }
 
 }  // namespace
@@ -351,7 +376,7 @@ void MaybeAddThrottle(content::NavigationThrottleRegistry& registry) {
   // buttons that fetch the provider's URL and assign it). Exclusions, and
   // with a strict scope every URL out of it, all.
   registry.AddThrottle(std::make_unique<OutOfScopeLinkThrottle>(
-      registry, handle.WasInitiatedByLinkClick() && handle.HasUserGesture() &&
+      registry, handle.WasInitiatedByLinkClick() && FromInput(&handle) &&
                     !handle.IsPost()));
 }
 

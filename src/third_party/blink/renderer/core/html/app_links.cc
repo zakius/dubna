@@ -13,6 +13,7 @@
 #include "third_party/blink/renderer/core/dom/document.h"
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/renderer/core/frame/local_frame.h"
+#include "third_party/blink/renderer/core/html/document_input.h"
 #include "third_party/blink/renderer/core/loader/document_loader.h"
 #include "third_party/blink/renderer/core/loader/frame_load_request.h"
 #include "third_party/blink/renderer/core/loader/frame_loader.h"
@@ -41,7 +42,9 @@ bool LeavesApp(LocalFrame& frame, const KURL& url, bool link) {
       mode == mojom::blink::DisplayMode::kUndefined) {
     return false;
   }
-  const bool activation = LocalFrame::HasTransientUserActivation(&frame);
+  // From the user's input in the page, not an activation that reached it
+  // from elsewhere (document_input.h).
+  const bool activation = document_input::HasTransientUserActivation(frame);
   mojo::Remote<mojom::blink::AppLinkHost> host;
   frame.GetBrowserInterfaceBroker().GetInterface(
       host.BindNewPipeAndPassReceiver());
@@ -97,7 +100,7 @@ bool MaybeOpenOutsideApp(LocalFrame& frame, const KURL& url) {
   // is still on has it draw that entry again, as after Back. Only from a
   // click, and not for a push from that popstate's handler, so a router that
   // pushes again there doesn't loop.
-  if (LocalFrame::HasTransientUserActivation(&frame) && !g_in_popstate) {
+  if (document_input::HasTransientUserActivation(frame) && !g_in_popstate) {
     LocalDOMWindow* window = frame.DomWindow();
     window->GetTaskRunner(TaskType::kDOMManipulation)
         ->PostTask(FROM_HERE,

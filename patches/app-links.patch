@@ -1,6 +1,8 @@
 # Links out of installed web apps (src/chrome/browser/app_links/app_links.h): the page's
 # own address changes ask the browser first, the browser binds the host they ask and adds
 # the throttle, registers the scope rules' prefs, and marks new windows from form posts.
+# A frame's user activation marks its document when it comes from input
+# (src/third_party/blink/renderer/core/html/document_input.h).
 # The browser target is the product's //chrome/browser/app_links/platform
 # (see app_links_platform.h).
 --- a/chrome/browser/BUILD.gn
@@ -122,6 +124,24 @@
      "on_device_translation/translation_manager.mojom",
      "on_device_translation/translator.mojom",
      "oom_intervention/oom_intervention.mojom",
+--- a/third_party/blink/renderer/core/frame/frame.cc
++++ b/third_party/blink/renderer/core/frame/frame.cc
+@@ -52,6 +52,7 @@
+ #include "third_party/blink/renderer/core/frame/remote_frame_owner.h"
+ #include "third_party/blink/renderer/core/frame/settings.h"
+ #include "third_party/blink/renderer/core/frame/web_remote_frame_impl.h"
++#include "third_party/blink/renderer/core/html/document_input.h"
+ #include "third_party/blink/renderer/core/html/html_frame_element_base.h"
+ #include "third_party/blink/renderer/core/html/html_object_element.h"
+ #include "third_party/blink/renderer/core/input/event_handler.h"
+@@ -1046,6 +1047,7 @@ void Frame::NotifyUserActivationInFrame(
+     node->user_activation_state_.SetHasBeenActive();
+   } else {
+     node->user_activation_state_.Activate(notification_type);
++    document_input::DidReceiveUserActivation(*node, notification_type);
+   }
+   auto* local_node = DynamicTo<LocalFrame>(node);
+   if (local_node) {
 --- a/third_party/blink/renderer/core/frame/history.cc
 +++ b/third_party/blink/renderer/core/frame/history.cc
 @@ -38,6 +38,7 @@
@@ -145,12 +165,14 @@
    params->state_object = data.get();
 --- a/third_party/blink/renderer/core/html/build.gni
 +++ b/third_party/blink/renderer/core/html/build.gni
-@@ -3,6 +3,8 @@
+@@ -3,6 +3,10 @@
  # found in the LICENSE file.
  
  blink_core_sources_html = [
 +  "app_links.cc",
 +  "app_links.h",
++  "document_input.cc",
++  "document_input.h",
    "anchor_element_metrics.cc",
    "anchor_element_metrics.h",
    "anchor_element_metrics_sender.cc",
