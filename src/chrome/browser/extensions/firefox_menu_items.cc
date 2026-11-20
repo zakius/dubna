@@ -17,6 +17,7 @@
 #include "extensions/common/error_utils.h"
 #include "extensions/common/url_pattern.h"
 #include "third_party/blink/public/mojom/context_menu/context_menu.mojom-shared.h"
+#include "third_party/blink/public/mojom/forms/form_control_type.mojom-shared.h"
 #include "url/gurl.h"
 #include "url/url_util.h"
 
@@ -218,6 +219,13 @@ bool FirefoxMenuItemMatchesContext(const content::ContextMenuParams& params,
     if (!src_matches && !link_matches) {
       return false;
     }
+  }
+  // A password field, editable or not, as Firefox's onPassword. Chromium has
+  // no password context; an editable one is also in the editable context.
+  if (params.form_control_type ==
+          blink::mojom::FormControlType::kInputPassword &&
+      item.contexts().Contains(MenuItem::FIREFOX_PASSWORD)) {
+    return true;
   }
   return ContextsMatch(params, item.contexts());
 }

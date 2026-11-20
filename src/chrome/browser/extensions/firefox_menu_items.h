@@ -47,7 +47,8 @@ bool SetFirefoxTargetUrlPatterns(const std::vector<std::string>& patterns,
 // there. And text selected anywhere in the frame gives the selection context,
 // as in Firefox, also on an image or a link next to it
 // (ContextMenuParams::firefox_selection_text); Chromium's has it only on a
-// click on the selection.
+// click on the selection. A "password" item (MenuItem::FIREFOX_PASSWORD)
+// shows on a password field, editable or read-only.
 bool FirefoxMenuItemMatchesContext(const content::ContextMenuParams& params,
                                    const MenuItem& item);
 
