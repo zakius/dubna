@@ -4214,7 +4214,7 @@
 "p": "dubna/patches/prerender-cross-origin-frames",
 "w": "When the browser prerenders a page you are likely to open next, that page's cross-origin frames, such as ads, trackers and embeds, load only once you open it. Chromium 158 lets sites in an origin trial load them early, and Chromium 159 does so for every site; here only the chrome://flags entry turns it on.",
 "s": "on",
-"n": "oganesson keeps preloading off by default, so this matters once you turn it on",
+"n": "both browsers keep preloading off by default, so this matters only once it is turned on",
 "own": 1
 },
 {
