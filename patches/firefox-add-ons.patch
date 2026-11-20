@@ -1175,7 +1175,7 @@
    return value;
  }
  
-@@ -347,6 +365,18 @@
+@@ -347,6 +365,25 @@
      return nullptr;
    }
  
@@ -1188,13 +1188,20 @@
 +                     &firefox_target_url_patterns)) {
 +    return nullptr;
 +  }
++  // An item stored before the browser kept Firefox's patterns has
++  // Chromium's.
++  if (!value.Find(kFirefoxTargetURLPatternsKey) &&
++      !GetStringList(value, kTargetURLPatternsKey,
++                     &firefox_target_url_patterns)) {
++    return nullptr;
++  }
 +  result->set_firefox_target_url_patterns(
 +      std::move(firefox_target_url_patterns));
 +
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +466,8 @@
+@@ -436,6 +473,8 @@
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1203,7 +1210,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +497,8 @@
+@@ -465,6 +504,8 @@
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1212,7 +1219,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +725,8 @@
+@@ -691,7 +732,8 @@
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1222,7 +1229,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -704,6 +739,12 @@
+@@ -704,6 +746,12 @@
    const Extension* extension =
        registry->enabled_extensions().GetByID(item->extension_id());
  
@@ -1235,7 +1242,7 @@
    if (item->type() == MenuItem::RADIO)
      RadioItemSelected(item);
  
-@@ -734,6 +775,8 @@
+@@ -734,6 +782,8 @@
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1244,7 +1251,7 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -868,9 +911,11 @@
+@@ -868,9 +918,11 @@
        }
      }
  
