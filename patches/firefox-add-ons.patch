@@ -370,20 +370,21 @@
  
    int64_t id;
 -  if (!base::StringToInt64(params->id, &id)) {
-+  if (!ParseBookmarkId(*GetBookmarkModel(), params->id, &id)) {
++  if (!ParseBookmarkId(extension(), *GetBookmarkModel(), params->id, &id)) {
      return RespondNow(Error(bookmarks_errors::kInvalidIdError));
    }
  
-@@ -600,7 +606,7 @@
+@@ -600,7 +606,8 @@
                        ? model->account_other_node()->id()
                        : model->other_node()->id();
      }
 -  } else if (!base::StringToInt64(*details.parent_id, &parent_id)) {
-+  } else if (!ParseBookmarkId(*model, *details.parent_id, &parent_id)) {
++  } else if (!ParseBookmarkId(extension(), *model, *details.parent_id,
++                              &parent_id)) {
      *error = bookmarks_errors::kInvalidIdError;
      return nullptr;
    }
-@@ -645,6 +651,10 @@
+@@ -645,6 +652,10 @@
    if (details.url) {
      url_string = *details.url;
    }
@@ -394,13 +395,13 @@
  
    GURL url(url_string);
    if (!url_string.empty() && !url.is_valid()) {
-@@ -704,7 +714,8 @@
+@@ -704,7 +715,8 @@
      parent = node->parent();
    } else {
      int64_t parent_id;
 -    if (!base::StringToInt64(*params->destination.parent_id, &parent_id)) {
-+    if (!ParseBookmarkId(*model, *params->destination.parent_id,
-+                         &parent_id)) {
++    if (!ParseBookmarkId(extension(), *model,
++                         *params->destination.parent_id, &parent_id)) {
        return RespondNow(Error(bookmarks_errors::kInvalidIdError));
      }
  
@@ -415,25 +416,26 @@
  #include "chrome/browser/extensions/bookmarks/bookmarks_error_constants.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_features.h"
  #include "chrome/browser/profiles/profile.h"
-@@ -46,6 +48,12 @@
+@@ -46,6 +48,13 @@
    return RunOnReady();
  }
  
 +ExtensionFunction::ResponseValue BookmarksFunction::ArgumentList(
 +    base::ListValue results) {
 +  return ExtensionFunction::ArgumentList(
-+      FirefoxBookmarkResults(extension(), std::move(results)));
++      FirefoxBookmarkResults(extension(), *GetBookmarkModel(),
++                             std::move(results)));
 +}
 +
  BookmarkModel* BookmarksFunction::GetBookmarkModel() {
    return BookmarkModelFactory::GetForBrowserContext(GetProfile());
  }
-@@ -58,7 +66,7 @@
+@@ -58,7 +67,7 @@
      const std::string& id_string,
      std::string* error) {
    int64_t id;
 -  if (!base::StringToInt64(id_string, &id)) {
-+  if (!ParseBookmarkId(*GetBookmarkModel(), id_string, &id)) {
++  if (!ParseBookmarkId(extension(), *GetBookmarkModel(), id_string, &id)) {
      *error = bookmarks_errors::kInvalidIdError;
      return nullptr;
    }
