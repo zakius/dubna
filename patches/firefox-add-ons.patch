@@ -108,6 +108,10 @@
 # (firefox_selected_text.h), which gives a Firefox add-on's items the selection
 # context next to the selection, and its titles' %s and selectionText, as in
 # Firefox (ContextMenuMatcher::ItemTitle()).
+# A downloaded .xpi installs only with a valid AMO signature, whose
+# certificate's common name is its ID, as in Firefox; one without a Gecko ID
+# installs with that ID (firefox_xpi_signature.h). ZipFileInstaller's filter
+# is public for the check, to which a file it doesn't unzip isn't missing.
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -4952,3 +4956,20 @@
    "event_with_hit_test_results.h",
    "focus_changed_observer.cc",
    "focus_changed_observer.h",
+--- a/extensions/browser/zipfile_installer.h
++++ b/extensions/browser/zipfile_installer.h
+@@ -95,10 +95,14 @@
+   // Callback invoked when unzipping has finished.
+   DoneCallback done_callback_;
+ 
++  // Firefox add-ons (dubna): public for the AMO signature check, to which a
++  // file of the .xpi left out here isn't missing (firefox_xpi_signature.cc).
++ public:
+   // Whether a file should be extracted as part of installing an
+   // extension/theme. Protects against unused or potentially hamrful files.
+   static bool ShouldExtractFile(bool is_theme, const base::FilePath& file_path);
+ 
++ private:
+   // Returns true if `file_path` points to an extension manifest.
+   static bool IsManifestFile(const base::FilePath& file_path);
+ 

@@ -13,13 +13,16 @@
 #include "base/json/json_reader.h"
 #include "base/json/json_writer.h"
 #include "base/memory/weak_ptr.h"
+#include "base/strings/string_number_conversions.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/types/expected.h"
 #include "base/values.h"
 #include "build/build_config.h"
 #include "chrome/browser/download/download_crx_util.h"
 #include "chrome/browser/extensions/firefox_xpi_signature.h"
 #include "chrome/browser/profiles/profile.h"
 #include "components/download/public/common/download_item.h"
+#include "crypto/hash.h"
 #include "extensions/browser/crx_installer.h"
 #include "extensions/browser/extension_file_task_runner.h"
 #include "extensions/browser/extension_registrar.h"
@@ -27,6 +30,7 @@
 #include "extensions/browser/zipfile_installer.h"
 #include "extensions/common/constants.h"
 #include "extensions/common/firefox_gecko_id.h"
+#include "extensions/common/manifest.h"
 
 #if BUILDFLAG(IS_ANDROID)
 #include "chrome/browser/ui/extensions/extension_install_ui.h"
@@ -37,47 +41,74 @@ namespace extensions {
 
 namespace {
 
-constexpr char16_t kNoGeckoIdError[] =
-    u"This add-on has no Gecko ID (browser_specific_settings.gecko.id) and "
-    u"no AMO signature with its ID (META-INF/mozilla.rsa), so it can't be "
-    u"installed from a download. Unzip it and load it unpacked in developer "
-    u"mode.";
+// Firefox's reasons (addon-local-install-error-not-signed and
+// addon-local-install-error-corrupt-file).
+constexpr char16_t kNotVerifiedError[] =
+    u"This add-on could not be installed because it has not been verified.";
+constexpr char16_t kCorruptError[] =
+    u"This add-on could not be installed because it appears to be corrupt.";
 
-// The Gecko ID in the unzipped add-on's manifest, if Firefox would take it,
-// or else the ID in its AMO signature, as Firefox takes it, which this writes
-// into the manifest, or "".
-std::string ReadGeckoId(const base::FilePath& unzip_dir) {
+// The ID of the add-on unzipped in `unzip_dir` once its AMO signature checks
+// out as in Firefox (firefox_xpi_signature.h), or the error, in Firefox's
+// words. It is the Gecko ID in the manifest, which has to be the signing
+// certificate's common name, as XPIInstall's getSignedStatus() requires, or
+// else that common name, which this writes into the manifest, as Firefox
+// takes the ID from there.
+base::expected<std::string, std::u16string> CheckXpi(
+    const base::FilePath& unzip_dir) {
   const base::FilePath manifest_path = unzip_dir.Append(kManifestFilename);
   std::string json;
   if (!base::ReadFileToString(manifest_path, &json)) {
-    return std::string();
+    return base::unexpected(kCorruptError);
   }
   std::optional<base::Value> manifest =
       base::JSONReader::Read(json, base::JSON_PARSE_CHROMIUM_EXTENSIONS);
   if (!manifest || !manifest->is_dict()) {
-    return std::string();
+    return base::unexpected(kCorruptError);
   }
   std::string gecko_id(GeckoId(manifest->GetDict()));
+  std::string signer_id;
+  switch (CheckXpiSignature(unzip_dir,
+                            Manifest::GetTypeFromManifestValue(
+                                manifest->GetDict()) == Manifest::Type::kTheme,
+                            &signer_id)) {
+    case XpiSignature::kValid:
+      break;
+    case XpiSignature::kMissing:
+      // Without a Gecko ID either, Firefox finds no ID, which makes the file
+      // corrupt to it.
+      return base::unexpected(gecko_id.empty() ? kCorruptError
+                                               : kNotVerifiedError);
+    case XpiSignature::kInvalid:
+      return base::unexpected(kCorruptError);
+  }
   if (!gecko_id.empty()) {
+    // AMO signs an ID longer than 64 characters as its SHA-256.
+    const std::string signed_id =
+        gecko_id.size() > 64
+            ? base::HexEncodeLower(crypto::hash::Sha256(gecko_id))
+            : gecko_id;
+    if (signer_id != signed_id) {
+      return base::unexpected(kCorruptError);
+    }
     return gecko_id;
   }
-  gecko_id = GeckoIdFromSignature(unzip_dir);
-  if (gecko_id.empty()) {
-    return std::string();
+  if (ExtensionIdFromGeckoId(signer_id).empty()) {
+    return base::unexpected(kCorruptError);
   }
   // The signature's ID goes into the manifest, so the installed add-on has
   // the Gecko ID Firefox gives it: other add-ons reach it by that ID, and it
   // counts as a Firefox add-on (firefox_add_on.h), whose SVG icons, for one,
   // aren't decoded.
-  if (!manifest->GetDict().SetByDottedPath(
-          "browser_specific_settings.gecko.id", gecko_id)) {
-    return std::string();
+  if (!manifest->GetDict().SetByDottedPath("browser_specific_settings.gecko.id",
+                                           signer_id)) {
+    return base::unexpected(kCorruptError);
   }
   std::optional<std::string> written = base::WriteJson(*manifest);
   if (!written || !base::WriteFile(manifest_path, *written)) {
-    return std::string();
+    return base::unexpected(kCorruptError);
   }
-  return gecko_id;
+  return signer_id;
 }
 
 // Reports `error` for the .xpi at `xpi`. Android shows no load error, so there
@@ -98,25 +129,25 @@ void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
                      base::WeakPtr<Profile> profile,
                      const base::FilePath& xpi,
                      const base::FilePath& unzip_dir,
-                     const std::string& gecko_id) {
+                     base::expected<std::string, std::u16string> gecko_id) {
   if (!profile) {
     return;
   }
-  if (!gecko_id.empty()) {
+  if (gecko_id.has_value()) {
     // A packed extension takes its ID from its public key, which a .xpi
     // doesn't have. The Gecko ID's bytes stand in for it, so the ID is the
     // one ExtensionIdFromGeckoId() gives, and a "key" in the manifest, which
     // this replaces, can't claim another extension's ID. The installer
     // deletes `unzip_dir` when it is done.
-    installer->InstallUnpackedCrx(ExtensionIdFromGeckoId(gecko_id),
-                                  base::Base64Encode(gecko_id), unzip_dir);
+    installer->InstallUnpackedCrx(ExtensionIdFromGeckoId(*gecko_id),
+                                  base::Base64Encode(*gecko_id), unzip_dir);
     return;
   }
   // Not loaded unpacked, even in developer mode: that would install it
   // without a prompt.
   GetExtensionFileTaskRunner()->PostTask(
       FROM_HERE, base::GetDeletePathRecursivelyCallback(unzip_dir));
-  ReportError(profile.get(), xpi, kNoGeckoIdError);
+  ReportError(profile.get(), xpi, gecko_id.error());
 }
 
 void OnUnzipped(scoped_refptr<CrxInstaller> installer,
@@ -132,7 +163,7 @@ void OnUnzipped(scoped_refptr<CrxInstaller> installer,
     return;
   }
   GetExtensionFileTaskRunner()->PostTaskAndReplyWithResult(
-      FROM_HERE, base::BindOnce(&ReadGeckoId, unzip_dir),
+      FROM_HERE, base::BindOnce(&CheckXpi, unzip_dir),
       base::BindOnce(&InstallUnzipped, installer, profile, xpi, unzip_dir));
 }
 

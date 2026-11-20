@@ -12,16 +12,33 @@ class FilePath;
 
 namespace extensions {
 
-// Firefox add-ons (dubna's webextensions/README.md): the add-on's ID in the
-// AMO signature of the .xpi unzipped in `unzip_dir`, or "". AMO signs a .xpi
-// in META-INF/mozilla.rsa, a PKCS #7 signature whose signing certificate has
-// the add-on's ID as its common name, and Firefox takes the ID from there
-// when the manifest has no Gecko ID. The first common name that is an ID
-// Firefox takes is the add-on's: AMO's own certificate has a host name.
-// Unlike Firefox, this doesn't check the signature: a .xpi can claim any ID
-// with a Gecko ID in its manifest already, so the ID is trusted no more than
-// that one. Reads a file, so it runs where blocking is allowed.
-std::string GeckoIdFromSignature(const base::FilePath& unzip_dir);
+// What CheckXpiSignature() finds, as Firefox tells the cases apart.
+enum class XpiSignature {
+  // Signed by AMO, or by the root that the switch names.
+  kValid,
+  // Without a META-INF/*.rsa: Firefox says the add-on "has not been
+  // verified".
+  kMissing,
+  // Anything else that fails: Firefox says it "appears to be corrupt".
+  kInvalid,
+};
+
+// Firefox add-ons (dubna's webextensions/README.md): checks the AMO signature
+// of the .xpi unzipped in `unzip_dir` as Firefox checks a .xpi before it
+// installs it, with its default policy (AppSignatureVerification.cpp,
+// AppTrustDomain.cpp). META-INF/mozilla.rsa is a PKCS #7 signature of
+// META-INF/mozilla.sf, SHA-256 or SHA-1, by a certificate for code signing
+// whose chain ends at Mozilla's add-ons root; mozilla.sf gives the digest of
+// META-INF/manifest.mf, which gives the digest of every other file, and every
+// file is listed. On kValid, `signer_id` is the signing certificate's common
+// name, which is the add-on's ID. The command-line switch
+// --firefox-add-ons-signature-root=<PEM or DER file> trusts one more root, as
+// Firefox's xpinstall.signatures.dev-root pref picks another one, for tests.
+// `is_theme` says whether the add-on is a theme, of which ZipFileInstaller
+// unzips fewer files. Reads files, so it runs where blocking is allowed.
+XpiSignature CheckXpiSignature(const base::FilePath& unzip_dir,
+                               bool is_theme,
+                               std::string* signer_id);
 
 }  // namespace extensions
 

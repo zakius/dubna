@@ -18,11 +18,12 @@ namespace extensions {
 
 // Firefox add-ons (dubna's webextensions/README.md): when `item` is a
 // Firefox add-on, a .xpi, downloaded after a user gesture, installs it and
-// returns true. An add-on
-// with a Gecko ID installs packed after the install prompt, with the ID from
-// its Gecko ID, as a .crx from another site does when the user allows it. One
-// without a Gecko ID takes the ID from its AMO signature, as in Firefox
-// (firefox_xpi_signature.h). One with neither gets a load error: loading it
+// returns true. As in Firefox, it installs only with a valid AMO signature
+// (firefox_xpi_signature.h), whose certificate's common name is the add-on's
+// ID: the Gecko ID in its manifest has to be that one, and one without a
+// Gecko ID takes it. It installs packed after the install prompt, with the ID
+// from its Gecko ID, as a .crx from another site does when the user allows
+// it. One that fails gets a load error, with Firefox's reason: loading it
 // unpacked would skip the prompt.
 bool InstallXpiDownload(Profile* profile, const download::DownloadItem& item);
 
