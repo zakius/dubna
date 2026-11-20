@@ -4257,7 +4257,15 @@
  #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
  #include "chrome/browser/extensions/api/tabs/tabs_util.h"
  #include "chrome/browser/extensions/browser_extension_window_controller.h"
-@@ -894,6 +895,18 @@
+@@ -65,6 +66,7 @@
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/extension.h"
+ #include "extensions/common/extension_features.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/incognito_info.h"
+ #include "extensions/common/mojom/api_permission_id.mojom-shared.h"
+@@ -894,6 +896,18 @@
    }
  #endif
  
@@ -4276,7 +4284,7 @@
    opener_tab_id_ = create_properties.opener_tab_id;
  
    // TODO(jstritar): Add a constant, chrome.tabs.TAB_ID_ACTIVE, that
-@@ -1124,6 +1137,8 @@
+@@ -1124,6 +1138,8 @@
  
    options.active = active_;
    options.pinned = pinned_;
@@ -4285,6 +4293,16 @@
    options.index = index_;
    options.split_with_tab_id = split_with_tab_id_;
  
+@@ -1788,7 +1804,8 @@
+   if (num_tabs == 0) {
+     return RespondNow(Error("No tabs given."));
+   }
+-  if (num_tabs == 1) {
++  // Firefox add-ons (dubna): Firefox's tabs.move always resolves to an array.
++  if (num_tabs == 1 && !IsFirefoxAddOn(*extension())) {
+     CHECK_EQ(1u, tab_values.size());
+     return RespondNow(WithArguments(std::move(tab_values[0])));
+   }
 --- a/chrome/browser/extensions/api/tabs/tabs_api.h
 +++ b/chrome/browser/extensions/api/tabs/tabs_api.h
 @@ -130,6 +130,9 @@
