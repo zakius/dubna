@@ -13,7 +13,7 @@
 #include "content/public/browser/restore_type.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/common/referrer.h"
-#include "content/public/common/url_constants.h"
+#include "extensions/common/constants.h"
 #include "services/network/public/cpp/shared_url_loader_factory.h"
 #include "ui/base/page_transition_types.h"
 #include "url/gurl.h"
@@ -40,10 +40,13 @@ std::optional<std::string> FirefoxDiscardedTabError(
   if (properties.pinned.value_or(false)) {
     return "Pinned tabs cannot be created and discarded.";
   }
-  // Firefox's about: pages are chrome:// pages here, the new tab page among
-  // them.
-  if (url.SchemeIs(url::kAboutScheme) ||
-      url.SchemeIs(content::kChromeUIScheme)) {
+  // Firefox's about: pages are the browser's own pages here, chrome:// and
+  // the browser's own scheme, the new tab page among them. A discarded tab is
+  // inserted without the navigator's checks of a URL, such as the one that
+  // keeps settings pages out of private windows, so only the pages a web page
+  // or the add-on itself could open are taken.
+  if (!url.SchemeIsHTTPOrHTTPS() && !url.SchemeIsFile() &&
+      !url.SchemeIs(url::kDataScheme) && !url.SchemeIs(kExtensionScheme)) {
     return "Cannot create a discarded new tab or \"about\" urls.";
   }
   return std::nullopt;
