@@ -363,19 +363,6 @@ void AddAddOnsOfShownItems(FirefoxMenuState& state, const ItemMap& items) {
   }
 }
 
-FirefoxMenuState& StateOf(std::unique_ptr<FirefoxMenuState>& state,
-                          ContextMenuMatcher& matcher,
-                          const ui::SimpleMenuModel& model) {
-  if (!state) {
-    // A menu that didn't say where its extension items are gets them at its
-    // end.
-    state = std::make_unique<FirefoxMenuState>(matcher);
-    state->start = model.GetItemCount();
-    state->end = state->start;
-  }
-  return *state;
-}
-
 // The add-on whose item, or whose submenu of items, is the menu's entry at
 // `index`; empty for a separator or another entry.
 ExtensionId EntryExtensionId(const ui::MenuModel& model,
@@ -501,7 +488,10 @@ void ContextMenuMatcher::FirefoxItemsAppended(
     size_t start,
     const std::u16string& selection_text,
     bool is_action_menu) {
-  FirefoxMenuState& state = StateOf(firefox_menu_, *this, *menu_model_);
+  if (!firefox_menu_) {
+    firefox_menu_ = std::make_unique<FirefoxMenuState>(*this);
+  }
+  FirefoxMenuState& state = *firefox_menu_;
   state.start = start;
   state.end = menu_model_->GetItemCount();
   state.selection_text = selection_text;
@@ -512,7 +502,13 @@ void ContextMenuMatcher::FirefoxPageMenuShown(
     content::WebContents* web_contents,
     content::RenderFrameHost* frame,
     const content::ContextMenuParams& params) {
-  FirefoxMenuState& state = StateOf(firefox_menu_, *this, *menu_model_);
+  // A menu that takes no extension items (FirefoxItemsAppended() never ran:
+  // a <webview>'s, an app's) gets no events and no refresh(), as Chromium
+  // keeps extension items out of it.
+  if (!firefox_menu_) {
+    return;
+  }
+  FirefoxMenuState& state = *firefox_menu_;
   state.Open(browser_context_);
   // The tab argument, which a page in an add-on's popup or side panel
   // doesn't have.
@@ -528,7 +524,11 @@ void ContextMenuMatcher::FirefoxPageMenuShown(
 void ContextMenuMatcher::FirefoxActionMenuShown(
     const Extension& extension,
     content::WebContents* active_tab) {
-  FirefoxMenuState& state = StateOf(firefox_menu_, *this, *menu_model_);
+  // As in FirefoxPageMenuShown().
+  if (!firefox_menu_) {
+    return;
+  }
+  FirefoxMenuState& state = *firefox_menu_;
   state.action_extension_id = extension.id();
   state.Open(browser_context_);
   if (!CanAccess(extension, browser_context_)) {
@@ -542,7 +542,11 @@ void ContextMenuMatcher::FirefoxActionMenuShown(
 }
 
 void ContextMenuMatcher::FirefoxTabMenuShown(content::WebContents* tab) {
-  FirefoxMenuState& state = StateOf(firefox_menu_, *this, *menu_model_);
+  // As in FirefoxPageMenuShown().
+  if (!firefox_menu_) {
+    return;
+  }
+  FirefoxMenuState& state = *firefox_menu_;
   state.Open(browser_context_);
   for (const Extension* extension : OnShownListeners(browser_context_)) {
     SendOnShown(state, *extension, BrowserMenuInfo(*extension, "tab", tab),
