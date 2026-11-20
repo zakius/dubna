@@ -597,8 +597,10 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
     });
     // After the other add-ons' items, with the IDs the add-on's old ones
     // had free again: taking new ones at each refresh() would run out of
-    // the menu's range of extension command IDs.
-    index = NextExtensionIndex(*menu_model_, extension_item_map_);
+    // the menu's range of extension command IDs. At least 1: at 0,
+    // AppendExtensionItems() adds the separator before the first extension
+    // item, which the menu still has.
+    index = std::max(1, NextExtensionIndex(*menu_model_, extension_item_map_));
   }
 
   // AppendExtensionItems() appends to the model's end, from where they move.
