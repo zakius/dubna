@@ -3,49 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>oganesson & tennessine: Chromium with full uBlock Origin and Firefox-compatible Sync</title>
+<title>oganesson &amp; tennessine: Chromium with full uBlock Origin and Firefox-compatible Sync</title>
 <meta name="description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
-<meta property="og:title" content="oganesson & tennessine">
+<meta property="og:title" content="oganesson &amp; tennessine">
 <meta property="og:description" content="Two de-Googled Chromium browsers, oganesson for Linux and Windows and tennessine for Android, with full uBlock Origin and Firefox-compatible Sync.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0b10">
 <link rel="canonical" href="https://dubna.zakius.xyz/">
 <link rel="alternate" type="application/rss+xml" title="oganesson and tennessine releases" href="releases.xml">
 <link rel="icon" href="img/favicon.png" type="image/png">
+<link rel="stylesheet" href="style.css">
 <style>
-:root{
-  --bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
-  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
-  --yes:#5be3a1;--part:#f4c95d;--no:#c4566a;
-  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
-  --sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-@media (max-width:900px){html{scroll-padding-top:110px}}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-nav{position:sticky;top:0;z-index:5;background:rgba(10,11,16,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;gap:28px;height:56px}
-nav b{font-family:var(--mono);font-weight:600;letter-spacing:.02em}
-nav a{color:var(--dim);text-decoration:none;font-size:14px}
-nav a:hover{color:var(--text)}
-nav .sp{flex:1}
-nav b{white-space:nowrap}
-nav .links{display:flex;gap:24px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;font-size:15px;transition:.15s}
-.btn:hover{border-color:#3b4260;transform:translateY(-1px)}
-.btn.primary{background:var(--glow);color:#120d14;border:0}
-
 /* hero */
-.hero{position:relative;overflow:hidden;padding:96px 0 72px}
-.hero:before{content:"";position:absolute;inset:-40% -10% auto;height:620px;background:radial-gradient(closest-side,rgba(255,140,110,.22),transparent 70%),radial-gradient(closest-side at 70% 60%,rgba(160,130,255,.22),transparent 70%);filter:blur(10px);pointer-events:none}
-.hero .wrap{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center}
-.eyebrow{font-family:var(--mono);font-size:13px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
-h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;margin:14px 0 20px;letter-spacing:-.025em}
-h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lede{font-size:19px;color:var(--dim);max-width:560px;margin:0 0 30px}
+.hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center}
+.lede{max-width:560px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 .tiles{display:flex;gap:18px;justify-content:center}
 .tile{width:190px;aspect-ratio:1/1.12;border-radius:18px;border:1px solid var(--line);background:linear-gradient(160deg,#1a1d2b,#10121a);padding:16px 18px;display:flex;flex-direction:column;position:relative;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
@@ -58,8 +29,7 @@ h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;back
 .tile .plat{position:absolute;top:14px;right:16px;font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
 
 section{padding:72px 0;border-top:1px solid var(--line)}
-h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;margin:0 0 12px;line-height:1.15}
-.sub{color:var(--dim);max-width:720px;margin:0 0 40px;font-size:17px}
+section.band{padding:40px 0}
 
 /* pair */
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -76,20 +46,11 @@ h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;margin:0 0 12px;line-h
 .dubna b{color:var(--text);font-family:var(--mono)}
 
 /* features */
-.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.f{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
-.f:after{content:"";position:absolute;inset:auto -40px -60px auto;width:140px;height:140px;border-radius:50%;background:var(--glow);opacity:.06}
-.f .ic{width:40px;height:40px;border-radius:10px;background:#1f2333;display:grid;place-items:center;margin-bottom:14px;font-size:20px}
-.f h3{margin:0 0 6px;font-size:17px}
-.f p{margin:0;color:var(--dim);font-size:14.5px}
-.f .who{margin-top:12px;font:12px var(--mono);color:var(--faint)}
+.f .who{margin-top:auto;padding-top:12px;font:12px var(--mono);color:var(--faint)}
 .f .who i{font-style:normal;white-space:nowrap;display:inline-block;margin-bottom:4px;padding:2px 7px;border-radius:6px;margin-right:4px}
-.who .o{background:rgba(255,154,90,.13);color:var(--og)} .who .t{background:rgba(180,140,255,.14);color:var(--ts)} .who .p{background:rgba(244,201,93,.13);color:var(--part)}
+.who .o{background:rgba(255,154,90,.13);color:var(--og)} .who .t{background:rgba(180,140,255,.14);color:var(--ts)}
 
 /* compare */
-.tabs{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:22px}
-.tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:9px;font-weight:600;font-size:14px;color:var(--dim)}
-.tabs button[aria-selected=true]{background:var(--card);color:var(--text);box-shadow:0 1px 0 #2a2f42 inset}
 .tbl+.tbl{margin-top:22px}
 @media (min-width:1120px){#compare .tbl{margin-inline:calc((1072px - min(100vw - 48px,1372px))/2)}}
 .tbl{position:relative;overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
@@ -99,29 +60,13 @@ thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600;position:s
 th:first-child,td:first-child{text-align:left;width:24%;min-width:230px;position:sticky;left:0;background:var(--card)}
 thead th:first-child{z-index:2}
 tbody th{font-weight:400}
-@media (min-width:1280px){#compare .tbl{overflow:visible}#compare thead th{top:57px}}
+@media (min-width:1280px){#compare .tbl{overflow:visible}#compare thead th{top:57px}#compare thead th:first-child{border-top-left-radius:15px}#compare thead th:last-child{border-top-right-radius:15px}#compare tbody tr:last-child th:first-child{border-bottom-left-radius:15px}#compare tbody tr:last-child td:last-child{border-bottom-right-radius:15px}}
 @media (max-width:600px){.tabs .long{display:none}}
 tbody th small{display:block;color:var(--faint);font-size:12.5px;margin-top:2px}
 @media (max-width:700px){th:first-child,td:first-child{width:140px;min-width:140px;padding:11px 10px;font-size:13.5px}tbody th small{font-size:11.5px}}
 thead th.us{color:var(--text)}
 td.us{background:rgba(255,255,255,.025)}
 th.g,td.g{border-left:2px solid var(--line)}
-.d{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle}
-.d.y{background:var(--yes);box-shadow:0 0 12px rgba(91,227,161,.45)}
-.d.p{background:conic-gradient(var(--part) 0 50%,transparent 0);border:2px solid var(--part)}
-.d.n{border:2px solid var(--no)}
-.d.pl{border:2px dashed var(--yes)}
-.c{display:block;font-size:11.5px;color:var(--faint);margin-top:3px;line-height:1.3}
-.c a{color:var(--dim)}
-.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;color:var(--dim);font-size:13.5px}
-.legend span{display:inline-flex;gap:8px;align-items:center}
-.notes{margin-top:18px;color:var(--faint);font-size:13px;max-width:900px}
-[hidden]{display:none!important}
-.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
-.skip:focus{top:10px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.btn:hover{transform:none}}
 
 /* stance */
 .stance{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
@@ -137,18 +82,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,.tbl:focus-visible{ou
 .rule:before{content:"0" counter(r);font:600 12px var(--mono);color:var(--faint)}
 .rule h3{margin:8px 0 6px;font-size:16px}
 .rule p{margin:0;color:var(--dim);font-size:14px}
-
-.install{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.ib{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-.ib h3{margin:0 0 4px;font-size:17px}
-.ib p{color:var(--dim);font-size:14px;margin:0 0 12px}
-pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);color:#cfd3e4;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
-.st{display:inline-block;font:11px var(--mono);padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle}
-.st.ok{color:var(--yes);background:rgba(91,227,161,.1)} .st.soon{color:var(--part);background:rgba(244,201,93,.1)}
-
-.warn{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(90deg,rgba(255,154,90,.08),rgba(180,140,255,.06));border:1px solid #3a3346;border-radius:16px;padding:22px 26px}
-.warn .ic{font-size:26px;line-height:1}
-.warn p{margin:0;color:var(--dim)} .warn b{color:var(--text)}
+#policy .warn{margin-top:24px}
 
 .whyl{max-width:860px;border-top:1px solid var(--line)}
 .wl{border-bottom:1px solid var(--line)}
@@ -170,28 +104,26 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .current{margin:18px 0 0;color:var(--faint);font-size:14px}
 .endcta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 36px}
 .endcta h2{margin:0 0 6px}.endcta p{margin:0;color:var(--dim)}
-@media (max-width:900px){.tbl{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}th:first-child,td:first-child{box-shadow:8px 0 10px -8px rgba(0,0,0,.8)}}
+@media (max-width:1279px){.tbl.can-scroll-right{-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}th:first-child,td:first-child{box-shadow:8px 0 10px -8px rgba(0,0,0,.8)}}
 /* hero screenshots */
 .duo{position:relative;display:block;padding:0 6% 14% 0}
 .duo img{display:block;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.9);height:auto}
 .duo .desk{width:100%;border-radius:12px}
 .duo .phone{position:absolute;right:0;bottom:0;width:27%;border-radius:16px}
-.names-tiles{justify-content:flex-start;margin:0 0 36px}
+.names-tiles{justify-content:flex-start;margin:0 0 56px}
 /* screenshots */
 .look .stage{margin:0}
 .look .zoom{all:unset;cursor:zoom-in;display:block;width:100%}
 .look .zoom:focus-visible{outline:2px solid var(--ts);outline-offset:4px;border-radius:12px}
 .look .stage img{display:block;width:auto;max-width:100%;height:auto;max-height:68vh;margin:0 auto;border-radius:12px;border:1px solid var(--line)}
 .look .stage figcaption{color:var(--dim);margin:12px 0 0;font-size:15px;text-align:center}
-.thumbs{display:flex;gap:12px;margin-top:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
-.thumbs a{flex:0 0 auto;scroll-snap-align:start;border-radius:10px;border:2px solid transparent;opacity:.6;transition:opacity .15s}
+.thumbs{display:flex;gap:12px;margin-top:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;justify-content:safe center}
+.thumbs a{flex:0 0 auto;scroll-snap-align:start;border-radius:10px;border:2px solid transparent;opacity:.6;transition:opacity .15s;text-decoration:none}
 .thumbs a:hover,.thumbs a[aria-current=true]{opacity:1}
 .thumbs a[aria-current=true]{border-color:var(--ts)}
 .thumbs img{display:block;height:96px;width:auto;border-radius:8px}
-.thumbs{justify-content:safe center}
 .look.andr .thumbs img{height:140px}
 .look+.look{margin-top:48px}
-.thumbs a{text-decoration:none}
 .thumbs span{display:none}
 @media (min-width:701px){
   .look.andr{display:grid;grid-template-columns:auto minmax(0,1fr);gap:48px;align-items:center}
@@ -209,26 +141,9 @@ pre{margin:0;background:#0b0c12;border:1px solid var(--line);border-radius:10px;
 .vbtn{all:unset;cursor:pointer;position:fixed;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--text);display:grid;place-items:center;font-size:18px}
 .vbtn:focus-visible{outline:2px solid var(--ts)}
 .vprev{left:16px}.vnext{right:16px}.vclose{top:24px;right:16px;transform:none}
-@media (max-width:900px){.duo{max-width:560px}}
+@media (max-width:900px){.duo{max-width:560px}.hero .wrap,.pair,.stance{grid-template-columns:1fr}.policy{grid-template-columns:1fr 1fr}.tiles{justify-content:flex-start}}
+@media (max-width:600px){.policy{grid-template-columns:1fr}.tile{width:150px}.tile .sym{font-size:64px}.everything{flex-direction:column;align-items:flex-start}}
 .big{font:700 56px/1 var(--mono);background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
-
-footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-
-@media (max-width:900px){
-  .hero .wrap,.pair,.stance{grid-template-columns:1fr}
-  .feat,.install{grid-template-columns:1fr 1fr}
-  .policy{grid-template-columns:1fr 1fr}
-  .tiles{justify-content:flex-start}
-  nav .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:6px 16px}
-  nav .sp{display:none}
-  nav .btn{margin-left:auto;padding:6px 12px;font-size:14px}
-  nav b{font-size:min(16px,3.8vw)}
-  nav .links{order:3;width:100%;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
-  nav .links a{display:inline-block;padding:8px 0}
-  nav .links a[href="install.html"]{order:-1;color:var(--text);font-weight:600}
-}
-@media (max-width:600px){.feat,.install,.policy{grid-template-columns:1fr}.tile{width:150px}.tile .sym{font-size:64px}.everything{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -237,10 +152,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <nav><div class="wrap">
   <b>oganesson · tennessine</b>
   <span class="links">
-    <a href="install.html">Install</a><a href="#look">Screenshots</a><a href="#compare">Compare</a><a href="releases.html">Releases</a>
+    <a href="#look">Screenshots</a><a href="#compare">Compare</a><a href="firefox-add-ons.html">Firefox add-ons</a><a href="releases.html">Releases</a><a href="everything.html">Everything</a>
   </span>
   <span class="sp"></span>
-  <a class="btn" href="everything.html">Everything →</a>
+  <a class="btn" href="install.html">Install</a>
 </div></nav>
 
 <main id="main">
@@ -252,7 +167,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="cta">
       <a class="btn primary" href="install.html">Get them</a>
       <a class="btn" href="#compare">How they compare</a>
-      <a class="btn" href="everything.html">Every feature & patch</a>
+      <a class="btn" href="everything.html">Every feature &amp; patch</a>
     </div>
     <p class="current">Now: oganesson {{og_version}} and tennessine {{ts_version}}, on Chromium {{milestone}}.</p>
   </div>
@@ -276,7 +191,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         <li>Firefox-compatible Sync: passwords, bookmarks, history, tabs, addresses, cards</li>
         <li>Installed web apps open outside links and addresses in your default browser, with a strict mode per app, and can keep running in the tray</li>
         <li>Switches that stop saving browsing and download history</li>
-        <li>Containers that keep each site's logins apart, with Traffic Control's rules, synced with Firefox's Multi-Account Containers</li>
+        <li>Containers that keep each site's logins apart, with rules that open chosen sites in a container (Traffic Control), synced with Firefox's Multi-Account Containers</li>
       </ul>
     </div>
     <div class="pcard ts">
@@ -294,7 +209,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       </ul>
     </div>
   </div>
-  <div class="dubna"><span style="font-size:22px">⚛️</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), containers, no saved history, links out of installed web apps, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
+  <div class="dubna"><span style="font-size:22px" aria-hidden="true">⚛️</span><span><b>dubna</b>, the shared core: Firefox-compatible Sync (C++ plus a Rust library), containers, <a href="firefox-add-ons.html">Firefox add-on APIs</a>, no saved history, links out of installed web apps, interface translations, and the update policy that keeps both browsers on the same Chromium milestone. It's named after the town where both elements were first made.</span></div>
 </div></section>
 
 <section id="look"><div class="wrap">
@@ -346,7 +261,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <details class="wl" open><summary><b>Firefox</b><span>Good if you want full uBlock Origin and Firefox add-ons, and Gecko is fine.</span></summary><ul><li>No mouse gestures on internal pages: add-ons can&#x27;t run there, and the API that lifts that never reaches AMO</li><li>Tab close buttons and the sound icon go away only with userChrome.css</li><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>Telemetry, sponsored shortcuts and AI features on by default</li></ul></details>
     <details class="wl" open><summary><b>Floorp</b><span>Good if you want Firefox with more knobs: workspaces, vertical tabs, gestures.</span></summary><ul><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>A small team on a Firefox fork, so security fixes can arrive after Firefox&#x27;s</li><li>Many of its features sit on top of Firefox&#x27;s code, so each Firefox update can break a few until the team catches up. oganesson works the same way on Chromium</li></ul></details>
     <details class="wl" open><summary><b>Zen</b><span>Good if you liked Arc and want it on Firefox.</span></summary><ul><li>An Arc-style sidebar layout, with no classic horizontal tab strip</li><li>No mouse gestures on internal pages: add-ons can&#x27;t run there, and the API that lifts that never reaches AMO</li><li>Gecko: slower than Blink, and sites are built and tested for Blink first</li><li>A small team on a Firefox fork, so security fixes can arrive after Firefox&#x27;s</li></ul></details>
-    <details class="wl" open><summary><b>oganesson</b><span>Good if you want Firefox&#x27;s habits on Blink with full uBlock Origin, and can live with a one-person project.</span></summary><ul><li>Just me, building it for my own use: features change or disappear without notice, and development may stop at any time</li><li>Many of its features sit on top of Chromium&#x27;s code, so each Chromium update can break a few until they&#x27;re fixed. Tests cover the main paths, not every one</li><li>New Chromium versions come after Helium has them, and a new milestone waits until tennessine&#x27;s upstream has it too; security fixes don&#x27;t wait</li><li>Windows builds are unsigned, so SmartScreen warns, and only a per-user install updates itself. No macOS</li><li>Firefox Sync covers passwords, bookmarks, history, open tabs, addresses and cards, not extensions or settings</li><li>Chrome&#x27;s extension APIs, not Firefox&#x27;s: add-ons can&#x27;t use the built-in containers or hide tabs, and there&#x27;s no response filtering, so uBlock Origin&#x27;s HTML filters don&#x27;t work</li><li>Full uBlock Origin relies on Manifest V2, which Chromium keeps removing; Helium&#x27;s patches keep it working for now</li><li>Not privacy-paranoid: it keeps the password manager, Sync and Google search, each yours to skip, and no fingerprinting noise by default</li></ul></details>
+    <details class="wl" open><summary><b>oganesson</b><span>Good if you want Firefox&#x27;s habits on Blink with full uBlock Origin, and can live with a one-person project.</span></summary><ul><li>Just me, building it for my own use: features change or disappear without notice, and development may stop at any time</li><li>Many of its features sit on top of Chromium&#x27;s code, so each Chromium update can break a few until they&#x27;re fixed. Tests cover the main paths, not every one</li><li>New Chromium versions come after Helium has them, and a new milestone waits until tennessine&#x27;s upstream has it too; security fixes don&#x27;t wait</li><li>Windows builds are unsigned, so SmartScreen warns, and only a per-user install updates itself. No macOS</li><li>Firefox Sync covers passwords, bookmarks, history, open tabs, addresses and cards, not extensions or settings</li><li>Firefox&#x27;s extension APIs are only partly there (<a href="firefox-add-ons.html">see which</a>): add-ons can read containers but not edit them or reach their cookies, can&#x27;t hide tabs, and have no response filtering, so uBlock Origin&#x27;s HTML filters don&#x27;t work</li><li>Full uBlock Origin relies on Manifest V2, which Chromium keeps removing; Helium&#x27;s patches keep it working for now</li><li>Not privacy-paranoid: it keeps the password manager, Sync and Google search, each yours to skip, and no fingerprinting noise by default</li></ul></details>
   </div>
 </div></section>
 
@@ -360,15 +275,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="f"><div class="ic" aria-hidden="true">🖱️</div><h3>Mouse gestures, natively</h3><p>Draw to go back, close a tab or reopen one. Because they're built into the browser, they also work on settings pages, the new tab page and the Web Store, where extensions can't run.</p><div class="who"><i class="o">oganesson</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">📱️</div><h3>One-handed Android</h3><p>Move the address bar to the bottom and the whole layout follows it: the menu, suggestions and tab list grow up from your thumb. Toasts stay out of the way, above the toolbar.</p><div class="who"><i class="t">tennessine</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">🧩️</div><h3>Extensions on a phone</h3><p>Titanium's work runs Chrome extensions on Android, and tennessine installs uBlock Origin automatically on first run, with no developer mode and no extra prompts.</p><div class="who"><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🔌️</div><h3>Nothing phones home</h3><p>No Google services and no browser-vendor services by default, Helium's own servers included. Crash reports stay off until you turn them on. What does connect: on a first start, oganesson's setup asks how it gets what it downloads by itself, and by default certificate revocation data, Widevine, extensions and spellcheck dictionaries come straight from Google and uBlock Origin's filter lists from uBlock's own sources. Each can go through your own helium-services server instead, or wait until you ask. tennessine downloads uBlock Origin once on first run and checks it against a pinned checksum, and updates come through your package manager, oganesson's Windows updater or F-Droid.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
-    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>Google features stay off</h3><p>Push messages through Google's servers and Gemini stay off, with no setting that brings them back. Four you can choose, each off by default, in setup's Google features step or later in Settings: page translation, in Settings &gt; Languages, on this device with Chromium's TranslateKit or with Google Translate; Google Lens, a switch in Settings &gt; Search engine that adds it to an image's menu; casting to a Chromecast or a TV, a switch in Settings &gt; System, with no search for devices on your network until you turn it on; and push messages from closed sites, a switch in Settings &gt; Browser traffic, through Mozilla's push server or your own instead of Google's.</p><div class="who"><i class="o">oganesson</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🔌️</div><h3>Nothing phones home</h3><p>No Google or vendor services by default, Helium's own servers included, and crash reports stay off. On first start, oganesson lets you send routine downloads (certificates, Widevine, extensions, dictionaries, uBlock lists) straight to their source, through your own helium-services server, or on request only.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
+    <div class="f"><div class="ic" aria-hidden="true">🎚️</div><h3>Google features stay off</h3><p>Gemini and Google's push service stay off for good. Four features are opt-in during setup or in Settings, each off by default: page translation (on-device or Google Translate), Google Lens on images, Chromecast/TV casting (no local network scans while off), and web push through Mozilla's server or your own.</p><div class="who"><i class="o">oganesson</i></div></div>
     <div class="f"><div class="ic" aria-hidden="true">🔑️</div><h3>A password manager you keep</h3><p>Some privacy browsers remove the built-in password manager; I keep it. It syncs through Firefox Sync, and you can turn off saving in one switch.</p><div class="who"><i class="o">oganesson</i><i class="t">tennessine</i></div></div>
   </div>
 </div></section>
 
 <section id="compare"><div class="wrap">
   <h2>How they compare</h2>
-  <p class="sub">Compared with the browsers people argue about most: on the desktop also Edge, Helium, Vivaldi, Opera GX and the Firefox-based Floorp and Zen, on Android also Cromite, Edge, Opera, Samsung Internet, Vanadium, Vivaldi and IronFox. Blink browsers come first, then Gecko, each in alphabetical order. Green means the browser has it, on by default or as a setting; most of the others can come closer with extensions.</p>
+  <p class="sub">Compared with Chrome, Brave, Firefox and the other browsers people argue about most: on the desktop also Edge, Helium, Opera GX, Vivaldi and the Firefox-based Floorp and Zen; on Android also Cromite, Edge, Opera, Samsung Internet, Vanadium, Vivaldi and IronFox. Blink browsers come first, then Gecko, each in alphabetical order. Green means the browser has it, on by default or as a setting; most of the others can come closer with extensions.</p>
   <div class="tabs" role="tablist" hidden>
     <button role="tab" aria-selected="true" aria-controls="desk" data-t="desk">Desktop<span class="long"> · oganesson</span></button>
     <button role="tab" aria-selected="false" aria-controls="andr" data-t="andr">Android<span class="long"> · tennessine</span></button>
@@ -405,8 +320,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <tbody>
     <tr><th scope="row">Blink engine<small>faster, and what sites are built and tested for first</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td class="g"><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Gecko</span></td></tr>
     <tr><th scope="row">Full uBlock Origin</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">installed on first run</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">no extensions</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Lite only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">blocker add-ons only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">own blocker; MV2 gone</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">add-on</span></td></tr>
-    <tr><th scope="row">Extensions</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">Chrome's</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Edge's</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Samsung's</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">Chrome's</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i><span class="c">Firefox's</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">Firefox's</span></td></tr>
+    <tr><th scope="row">Extensions</th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">Chrome's + <a href="firefox-add-ons.html">many Firefox add-ons</a></span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Edge's</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">Samsung's</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">Chrome's</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i><span class="c">Firefox's</span></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">Firefox's</span></td></tr>
     <tr><th scope="row">Firefox-compatible Sync</th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Microsoft account</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Opera Sync</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Samsung account</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i><span class="c">Vivaldi Sync</span></td><td class="g"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td></tr>
+    <tr><th scope="row">Containers<small>separate cookies and logins per tab group</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i><span class="c">synced with desktop</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td class="g"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
     <tr><th scope="row">GrapheneOS hardening patches<small>some take full effect only on GrapheneOS itself</small></th><td class="us"><i class="d p"><span class="sr">partly</span></i><span class="c">JIT on by default</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d y"><span class="sr">yes</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td class="g"><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td></tr>
     <tr><th scope="row">Bottom address bar<small>with the menu, suggestions and tab list following it</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><span class="c">–</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td class="g"><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td><td><i class="d p"><span class="sr">partly</span></i><span class="c">bar only</span></td></tr>
     <tr><th scope="row">Switch to stop saving history<small>never written, not cleared later</small></th><td class="us"><i class="d y"><span class="sr">yes</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d y"><span class="sr">yes</span></i><span class="c">history days: never</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><span class="c">–</span></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i></td><td><i class="d n"><span class="sr">no</span></i><span class="c">only clears on exit</span></td><td class="g"><i class="d n"><span class="sr">no</span></i><span class="c">only clears on exit</span></td><td><i class="d n"><span class="sr">no</span></i><span class="c">only clears on exit</span></td></tr>
@@ -448,7 +364,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         <span class="chip off"><b>off</b> · translation (desktop)</span>
         <span class="chip off"><b>off</b> · casting (desktop)</span>
         <span class="chip off"><b>off</b> · push messages (desktop)</span>
-        <span class="chip off"><b>off</b> · Gemini (desktop)</span>
+        <span class="chip off"><b>removed</b> · Gemini (desktop)</span>
       </div>
     </div>
   </div>
@@ -463,15 +379,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="rule"><h3>Zero-day</h3><p>An exploit in the wild: update at once. If an upstream is late, I move the Chromium version myself and fix its patches.</p></div>
     <div class="rule"><h3>Stale</h3><p>If Chrome stable has been ahead for over 7 days, catch up.</p></div>
   </div>
-</div></section>
-<section><div class="wrap">
-  <div class="warn"><span class="ic">⚠️</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
+  <div class="warn"><span class="ic" aria-hidden="true">⚠️</span><p><b>Highly volatile.</b> This is a personal project. Features change or disappear without notice, updates can break things, and development may stop at any time. Use it knowing that.</p></div>
 </div></section>
 
-<section><div class="wrap">
+<section class="band"><div class="wrap">
   <a class="everything" href="everything.html" style="text-decoration:none">
     <div><h2>Every feature, every patch</h2><p>Each change in both browsers, grouped by what it touches, with where it comes from and whether it's on or off. Most are Helium's and maintained there; mine are mostly small switches.</p></div>
-    <div class="big" id="count">444 →</div>
+    <div class="big" id="count">505 →</div>
   </a>
 </div></section>
 
@@ -490,7 +404,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   </div>
 </div></section>
 
-<section class="end"><div class="wrap">
+<section class="end band"><div class="wrap">
   <div class="endcta"><div><h2>Try them</h2><p>oganesson for Linux and Windows, tennessine for Android, both on Chromium {{milestone}}.</p></div>
   <div class="cta"><a class="btn primary" href="install.html">Get them</a><a class="btn" href="everything.html">Every feature &amp; patch</a></div></div>
 </div></section>
@@ -505,6 +419,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 // Without JS everything stays unfolded: both tables, every "Why not" entry.
 const wl=[...document.querySelectorAll('details.wl')];
 wl.forEach((d,i)=>d.open=i===wl.length-1);  // oganesson's own weak points stay open
+// Comparison tables: fade the right edge only while there's more to scroll.
+const syncScrollFade = () => document.querySelectorAll('#compare .tbl').forEach(el => {
+  el.classList.toggle('can-scroll-right', !el.hidden && el.scrollWidth - el.clientWidth - el.scrollLeft > 4);
+});
+document.querySelectorAll('#compare .tbl').forEach(el => el.addEventListener('scroll', syncScrollFade, {passive: true}));
+addEventListener('resize', syncScrollFade, {passive: true});
 // Desktop/Android switches: the comparison tables and the screenshots.
 for (const [tabs, prefix] of [['#compare .tabs', ''], ['.looktabs', 'look-']]) {
   const list = document.querySelector(tabs);
@@ -514,8 +434,10 @@ for (const [tabs, prefix] of [['#compare .tabs', ''], ['.looktabs', 'look-']]) {
     list.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', x === b));
     document.getElementById(prefix + 'desk').hidden = b.dataset.t !== 'desk';
     document.getElementById(prefix + 'andr').hidden = b.dataset.t !== 'andr';
+    syncScrollFade();
   });
 }
+syncScrollFade();
 // Screenshots: a thumbnail shows its picture large; the large one opens the viewer.
 const viewer = document.getElementById('viewer');
 let shown = [], at = 0;

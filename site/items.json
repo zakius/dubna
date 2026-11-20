@@ -1247,7 +1247,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-native-bangs",
-"w": "Adds DuckDuckGo-style \"!bangs\" to the address bar, such as `!w foo` or `!gh foo`. The bang list is downloaded from Helium's server at startup. The setting \"Allow downloading the !bangs list\" (on) controls this. With it off, bangs only work from saved copies.",
+"w": "Adds DuckDuckGo-style \"!bangs\" to the address bar, such as \"!w foo\" or \"!gh foo\". The bang list is downloaded from Helium's server at startup. The setting \"Allow downloading the !bangs list\" (on) controls this. With it off, bangs only work from saved copies.",
 "s": "off",
 "n": "the !bang list comes only through your own helium-services server; without one, bangs are off"
 },
@@ -1382,7 +1382,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/add-helium-versioning",
-"w": "Adds a separate Helium version number. chrome://version shows a \"Helium\" row and a \"Chromium\" row, `--version` prints \"Helium X (Chromium Y)\", and settings and crash reports use the Helium version.",
+"w": "Adds a separate Helium version number. chrome://version shows a \"Helium\" row and a \"Chromium\" row, --version prints \"Helium X (Chromium Y)\", and settings and crash reports use the Helium version.",
 "s": "on",
 "n": ""
 },
@@ -1998,7 +1998,7 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/crash-reporting-prefs",
-"w": "Adds a crash-reporting mode (Disabled, Ask or Automatic; default \"Ask\"; same for all profiles) and report deletion. Official builds upload to crash.helium.computer, which the `--custom-crash-server-url` switch can change. A policy can turn it off. The crash dialog is in another patch.",
+"w": "Adds a crash-reporting mode (Disabled, Ask or Automatic; default \"Ask\"; same for all profiles) and report deletion. Official builds upload to crash.helium.computer, which the --custom-crash-server-url switch can change. A policy can turn it off. The crash dialog is in another patch.",
 "s": "off",
 "n": "reports would go to Helium's server"
 },
@@ -2309,7 +2309,7 @@
 "o": "Helium",
 "a": "Input & shortcuts",
 "p": "helium/settings/custom-keyboard-shortcuts-page",
-"w": "Adds a \"Keyboard shortcuts\" page under System settings. You can search commands, add, remove or change shortcuts, see conflict warnings, and reset everything. It shows only when the `CustomizableBrowserShortcuts` feature is on, which is the default.",
+"w": "Adds a \"Keyboard shortcuts\" page under System settings. You can search commands, add, remove or change shortcuts, see conflict warnings, and reset everything. It shows only when the CustomizableBrowserShortcuts feature is on, which is the default.",
 "s": "on",
 "n": ""
 },
@@ -3343,7 +3343,7 @@
 "o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/exclusive-access-bubble",
-"w": "Restyles the \"Press Esc to exit full screen\" message: rounded corners, no shadow, dark grey background and smaller text. It stays for 2.5 seconds instead of 3.8 and fades faster. The background is always solid, whatever Chrome's transparency setting says.",
+"w": "Restyles the \"Press Esc to exit full screen\" message: rounded corners, no shadow, dark gray background and smaller text. It stays for 2.5 seconds instead of 3.8 and fades faster. The background is always solid, whatever Chrome's transparency setting says.",
 "s": "on",
 "n": ""
 },
@@ -4171,7 +4171,8 @@
 "w": "Update policy: a new release in the current Chromium major version ships at once (as an experiment, the two browsers may differ within a major version). A new major version ships once Helium and Vanadium both have it. Fixes for exploits seen in the wild ship at once.",
 "s": "on",
 "n": "",
-"own": 1
+"own": 1,
+"t": "Update policy"
 },
 {
 "b": "both",
@@ -4525,7 +4526,7 @@
 "o": "tennessine",
 "a": "Tabs & windows",
 "p": "tennessine/app-links",
-"w": "dubna's web app link handling on Android: a link out of an installed web app (WebAPK or shortcut) opens in your default browser. Settings → Web apps lists the installed apps, and a site's page in Site settings links to its own app, to edit each app's scope rules.",
+"w": "dubna's web app link handling on Android: a link out of an installed web app (WebAPK or shortcut) opens in your default browser. Settings > Web apps lists the installed apps, and a site's page in Site settings links to its own app, to edit each app's scope rules.",
 "s": "on",
 "n": "",
 "own": 1
@@ -4744,7 +4745,8 @@
 "w": "Install from the project's F-Droid repository (https://packages.zakius.xyz/fdroid/repo) in F-Droid or Obtainium, with background updates.",
 "s": "on",
 "n": "",
-"own": 1
+"own": 1,
+"t": "F-Droid repository"
 },
 {
 "b": "ts",
@@ -4754,7 +4756,8 @@
 "w": "The APK's native libraries are compressed with Zopfli before signing. F-Droid and Obtainium can't send only the changed parts of an update, so download size is what each update costs.",
 "s": "on",
 "n": "",
-"own": 1
+"own": 1,
+"t": "Zopfli APK compression"
 },
 {
 "b": "ts",
@@ -4804,7 +4807,7 @@
 "o": "oganesson",
 "a": "Settings & flags",
 "p": "Password manager entry points",
-"w": "Passwords and autofill back in the app menu, the Password manager toolbar action, the \"Manage passwords\" footer on login forms, and password import if it works.",
+"w": "Passwords and autofill back in the app menu, the Password manager toolbar action, and the \"Manage passwords\" footer on login forms.",
 "s": "on",
 "n": "",
 "own": 1

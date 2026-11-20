@@ -3,41 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Firefox add-ons in oganesson & tennessine</title>
+<title>Firefox add-ons in oganesson &amp; tennessine</title>
 <meta name="description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine each have, and how many of the most-used Firefox add-ons run.">
-<meta property="og:title" content="Firefox add-ons in oganesson & tennessine">
+<meta property="og:title" content="Firefox add-ons in oganesson &amp; tennessine">
 <meta property="og:description" content="Which of Firefox's WebExtensions APIs oganesson and tennessine each have, and how many of the most-used Firefox add-ons run.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0b10">
 <link rel="canonical" href="https://dubna.zakius.xyz/firefox-add-ons.html">
 <link rel="icon" href="img/favicon.png" type="image/png">
+<link rel="stylesheet" href="style.css">
 <style>
-:root{--bg:#0a0b10;--bg2:#11131b;--card:#151824;--line:#252a3a;--text:#e8e9f0;--dim:#9aa0b4;--faint:#8288a0;
-  --og:#ff9a5a;--ts:#b48cff;--glow:linear-gradient(100deg,#ffb36b 0%,#ff7fa8 45%,#a78bff 100%);
-  --yes:#5be3a1;--part:#f4c95d;--no:#c4566a;
-  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit}
-.wrap{max-width:960px;margin:0 auto;padding:0 24px}
-nav{border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;gap:20px;height:56px;max-width:1240px}
-nav a{text-decoration:none;color:var(--dim);font-size:14px} nav a:hover{color:var(--text)}
-nav b{font-family:var(--mono);white-space:nowrap}
-header{padding:48px 0 28px}
-h1{font-size:clamp(32px,4.4vw,52px);letter-spacing:-.025em;margin:0 0 10px;line-height:1.05}
-h1 em{font-style:normal;background:var(--glow);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lede{color:var(--dim);margin:0;font-size:17px}
+.wrap{max-width:960px}
+nav .wrap,footer .wrap{max-width:1120px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.stats.three{grid-template-columns:repeat(3,1fr)}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .stat b{display:block;font:700 28px/1.1 var(--mono)}
 .stat span{color:var(--dim);font-size:13px}
 .small{color:var(--faint);font-size:13px;margin-top:10px}
 main{padding:12px 24px 80px}
-.tbl{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+.tbl{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:visible}
 table{border-collapse:collapse;width:100%}
 th,td{padding:12px 14px;text-align:left;border-top:1px solid var(--line);font-size:14.5px;vertical-align:top}
-thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600}
+thead th{border-top:0;font-size:13px;color:var(--dim);font-weight:600;position:sticky;top:56px;z-index:1;background:var(--card)}
+thead th:first-child{border-top-left-radius:15px}
+thead th:last-child{border-top-right-radius:15px}
+tbody tr:last-child th[scope=row]{border-bottom-left-radius:15px}
+tbody tr:last-child td:last-child{border-bottom-right-radius:15px}
 thead th.og,thead th.ts{color:var(--text)}
 th[scope=row]{font-weight:600;width:40%}
 th[scope=row] small{display:block;font-weight:400;color:var(--faint);font-size:12.5px;margin-top:2px}
@@ -45,20 +37,13 @@ td{width:30%}
 td.og{background:rgba(255,255,255,.025)}
 tbody th.grp{background:var(--bg2);font:600 12px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.08em;width:auto}
 code{font:12.5px var(--mono);color:#cfd3e4}
-.d{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
-.d.y{background:var(--yes);box-shadow:0 0 12px rgba(91,227,161,.45)}
-.d.p{background:conic-gradient(var(--part) 0 50%,transparent 0);border:2px solid var(--part)}
-.d.n{border:2px solid var(--no)}
-.c{display:block;font-size:12.5px;color:var(--faint);margin-top:3px;line-height:1.35}
-.c a{color:var(--dim)}
-.legend{display:flex;gap:22px;flex-wrap:wrap;margin:16px 0 0;color:var(--dim);font-size:13.5px}
-.notes{margin-top:18px;color:var(--faint);font-size:13px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 14px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
-.skip:focus{top:10px}
-a:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
+.d{vertical-align:-2px;margin-right:6px}
+.c{font-size:12.5px;line-height:1.35}
+@media (max-width:900px){thead th{position:static}}
 @media (max-width:700px){
-  .stats{grid-template-columns:1fr 1fr}
+  .stats,.stats.three{grid-template-columns:1fr 1fr}
+  .stats.three .stat:last-child{grid-column:1/-1}
+  .tbl{overflow:hidden}
   /* One row per feature: its name across, then each browser's state side by side. */
   table,tbody{display:block}
   thead{display:none}
@@ -71,16 +56,21 @@ a:focus-visible{outline:2px solid var(--ts);outline-offset:2px}
   td.ts:before{content:"tennessine"}
   th.grp{padding-bottom:10px}
 }
-footer{padding:40px 0 60px;color:var(--faint);font-size:13.5px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1240px}
 </style>
 </head>
-<body>
+<body class="doc">
 <a class="skip" href="#main">Skip to content</a>
-<nav><div class="wrap"><a href="index.html">← <b>oganesson · tennessine</b></a><span style="flex:1"></span><a href="index.html#compare">Compare</a><a href="everything.html">Everything</a></div></nav>
+<nav><div class="wrap">
+  <a href="index.html"><b>oganesson · tennessine</b></a>
+  <span class="links">
+    <a href="index.html#compare">Compare</a><a href="firefox-add-ons.html" aria-current="page">Firefox add-ons</a><a href="releases.html">Releases</a><a href="everything.html">Everything</a>
+  </span>
+  <span class="sp"></span>
+  <a class="btn" href="install.html">Install</a>
+</div></nav>
 <header><div class="wrap">
   <h1>Firefox <em>add-ons</em></h1>
-  <p class="lede">Both browsers run Chrome's extensions. They are also learning Firefox's WebExtensions APIs, one at a time, so that Firefox add-ons run as they do in Firefox. This page lists the Firefox APIs and behaviours they have beyond Chrome's, and what isn't there yet.</p>
+  <p class="lede">Both browsers run Chrome's extensions. They are also learning Firefox's WebExtensions APIs, one at a time, so that Firefox add-ons run as they do in Firefox. This page lists the Firefox APIs and behaviors they have beyond Chrome's, and what isn't there yet.</p>
   <div class="stats">
     <div class="stat"><b>{{addons}}</b><span>most-used add-ons on addons.mozilla.org that need no account</span></div>
     <div class="stat"><b>{{addons_l1}}</b><span>install</span></div>
@@ -88,7 +78,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
     <div class="stat"><b>{{addons_l3}}</b><span>open their popup and run their content scripts</span></div>
   </div>
   <p class="small">Measured on {{addons_browser}}, {{addons_date}}. The list is the 1000 add-ons with the most users, minus those that need an account; the checks are automatic, so an add-on that starts may still miss a feature.</p>
-  <div class="stats">
+  <div class="stats three">
     <div class="stat"><b>{{tests_total}}</b><span>of Firefox's own WebExtensions test files test what add-ons see</span></div>
     <div class="stat"><b>{{tests_ported}}</b><span>run here</span></div>
     <div class="stat"><b>{{tests_passing}}</b><span>pass</span></div>
@@ -99,41 +89,41 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 <main id="main" class="wrap">
 <div class="tbl">
 <table>
-  <thead><tr><th scope="col">Firefox API or behaviour</th><th scope="col" class="og">oganesson</th><th scope="col" class="ts">tennessine</th></tr></thead>
+  <thead><tr><th scope="col">Firefox API or behavior</th><th scope="col" class="og">oganesson</th><th scope="col" class="ts">tennessine</th></tr></thead>
   <tbody>
   <tr><th class="grp" colspan="3" scope="colgroup">Installing and loading</th></tr>
   <tr><th scope="row">Install a downloaded .xpi<small>a click on a .xpi link opens the install prompt</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">only with a valid AMO signature, as in Firefox; a .xpi a page opens without a click stays a file</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">only with a valid AMO signature, as in Firefox; a .xpi a page opens without a click stays a file; one that fails to install says why</span></td></tr>
-  <tr><th scope="row">SVG icons<small>a .xpi with SVG icons installs, as uBlock Origin's and Pouch's; its background page draws its SVG action icons, and setIcon() an SVG path</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the add-ons page, the install prompt and menus show the default icon; an add-on without a background page shows a letter</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the add-ons page, the install prompt and menus show the default icon; an add-on without a background page shows a letter</span></td></tr>
+  <tr><th scope="row">SVG icons<small>a .xpi with SVG icons installs, like uBlock Origin and Pouch; its background page draws its SVG action icons, and <code>setIcon()</code> accepts an SVG path</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the add-ons page, the install prompt and menus show the default icon; an add-on without a background page shows a letter</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the add-ons page, the install prompt and menus show the default icon; an add-on without a background page shows a letter</span></td></tr>
   <tr><th scope="row">AMO's "Add to Firefox" button<small>addons.mozilla.org gets Firefox's user agent, so it offers the button</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the button also shows for an add-on that is installed, where Firefox offers "Remove"</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the button also shows for an add-on that is installed, where Firefox offers "Remove"; Desktop site keeps working off AMO</span></td></tr>
   <tr><th scope="row">The extension ID from the Gecko ID<small>an add-on keeps its ID and storage wherever it loads from</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
-  <tr><th scope="row">Firefox's manifests load<small>locale files, shortcuts Firefox accepts, versions such as "3.4resigned1", homepage_url and default_popup from the locale files, declarative_net_request rules without the permission</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">rules without the permission start off, as in Firefox; a message in messages.json that isn't an object, a shortcut for android or ios or with Command, or background.page with background.scripts and no service worker stops the add-on loading</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">rules without the permission start off, as in Firefox; a message in messages.json that isn't an object, a shortcut for android or ios or with Command, or background.page with background.scripts and no service worker stops the add-on loading</span></td></tr>
+  <tr><th scope="row">Firefox's manifests load<small>locale files, shortcuts Firefox accepts, versions such as "3.4resigned1", homepage_url and default_popup from the locale files, declarative_net_request rules without the permission</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">rules without the permission start off, as in Firefox; a message in messages.json that isn't an object, a shortcut for Android or iOS or with Command, or background.page with background.scripts and no service worker stops the add-on from loading</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">rules without the permission start off, as in Firefox; a message in messages.json that isn't an object, a shortcut for Android or iOS or with Command, or background.page with background.scripts and no service worker stops the add-on from loading</span></td></tr>
   <tr><th scope="row">Background pages in Manifest V3<small>background.scripts or background.page, also as modules</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">with a service worker beside background.page or background.scripts, the worker runs, not the page or scripts</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">with a service worker beside background.page or background.scripts, the worker runs, not the page or scripts</span></td></tr>
   <tr><th scope="row">Event pages with webRequest<small>Manifest V2, "persistent": false</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">run as persistent pages</span></td></tr>
 
-  <tr><th scope="row"><code>sidebar_action</code> as a side panel<small>the add-on's toolbar menu has "Open side panel"</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the sidebarAction API not yet</span></td><td class="ts"><span class="c">–</span><span class="c">no side panel, as in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>sidebar_action</code> as a side panel<small>the add-on's toolbar menu has "Open side panel"</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no sidebarAction API yet</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">no side panel, as in Firefox for Android</span></td></tr>
   <tr><th class="grp" colspan="3" scope="colgroup">APIs</th></tr>
   <tr><th scope="row"><code>runtime.getBrowserInfo</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">the browser's own name; add-ons that need Firefox's can be listed</span></td></tr>
-  <tr><th scope="row"><code>menus</code><small>Firefox's defaults (every context, a child in its parent's, also when it moves), onShown, onHidden and refresh(), each item's own icon, the password context, the command property, the click's modifiers, button and linkText in every menu, one onclick per item, targetUrlPatterns of any scheme, titles in full, the selection context next to the selection</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">an SVG item icon shows none; the bookmark and tools_menu contexts show no item yet; a command item for the page action or the sidebar does nothing yet; overrideContext and getTargetElement() aren't there yet</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>menus</code><small>Firefox's defaults (every context, a child in its parent's, also when it moves), onShown, onHidden and refresh(), each item's own icon, the password context, the command property, the click's modifiers, button and linkText in every menu, one onclick per item, targetUrlPatterns of any scheme, titles in full, the selection context next to the selection</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">an SVG item icon shows none; the bookmark and tools_menu contexts show no item yet; a command item for the page action or the sidebar does nothing yet; overrideContext and getTargetElement() aren't there yet</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">not in Firefox for Android</span></td></tr>
   <tr><th scope="row"><code>pageAction</code> next to the toolbar action</th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar or show_matches yet</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no button in the address bar or show_matches yet</span></td></tr>
-  <tr><th scope="row"><code>browserAction</code> extras<small>badge text colour, user settings, isEnabled, a windowId in the setters and getters, null that clears a value, Firefox's default badge colours</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no onUserSettingsChanged in Manifest V2; default_area is ignored</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">the toolbar shows no badge</span></td></tr>
+  <tr><th scope="row"><code>browserAction</code> extras<small>badge text color, user settings, isEnabled, a windowId in the setters and getters, null that clears a value, Firefox's default badge colors</small></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no onUserSettingsChanged in Manifest V2; default_area is ignored</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">the toolbar shows no badge</span></td></tr>
   <tr><th scope="row"><code>storage.session</code> and <code>scripting</code> in Manifest V2</th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
   <tr><th scope="row"><code>runtime.getDocumentId</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the ID in Chromium's form, not a UUID</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">the ID in Chromium's form, not a UUID</span></td></tr>
-  <tr><th scope="row"><code>tabs.create</code>'s <code>discarded</code> and <code>title</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">tabs.query doesn't find these tabs as discarded, and tabs.discard() still gives a tab a new ID</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>tabs.create</code>'s <code>discarded</code> and <code>title</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">tabs.query doesn't find these tabs as discarded, and tabs.discard() still gives a tab a new ID</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">not in Firefox for Android</span></td></tr>
   <tr><th scope="row"><code>tabs.move</code> resolves to an array</th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
   <tr><th scope="row"><code>contentScripts.register</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no wrappedJSObject, cloneInto or exportFunction</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no wrappedJSObject, cloneInto or exportFunction</span></td></tr>
   <tr><th scope="row"><code>contextualIdentities</code> and tabs' <code>cookieStoreId</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the cookies API can't reach a container's cookies yet</span></td></tr>
   <tr><th scope="row"><code>cookies</code> with <code>firstPartyDomain</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">as Firefox with first-party isolation off</span></td></tr>
   <tr><th scope="row"><code>proxy.onRequest</code> and <code>proxy.onError</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it; while one listens, a request no add-on answers goes direct if you set a PAC script or auto-detection</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">no proxy username and password or proxyDNS yet; requests before the add-on starts go without it; while one listens, a request no add-on answers goes direct if you set a PAC script or auto-detection</span></td></tr>
-  <tr><th scope="row">Filters on <code>tabs.onUpdated</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">hidden, isArticle, attention and sharingState never match yet</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row">Filters on <code>tabs.onUpdated</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">hidden, isArticle, attention and sharingState never match yet</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">not in Firefox for Android</span></td></tr>
   <tr><th scope="row"><code>tabs.onUpdated</code>'s status<small>loading and complete follow the tab's top frame</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
-  <tr><th scope="row">A loading tab's URL is about:blank</th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
+  <tr><th scope="row">A loading tab's URL is <code>about:blank</code></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
   <tr><th scope="row"><code>setIcon</code> rejects on an error<small>browserAction, action and pageAction</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td><td class="ts"><i class="d y"><span class="sr">yes</span></i><span class="c">for Firefox add-ons</span></td></tr>
   <tr><th scope="row">Messages to another add-on's Gecko ID</th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">the receiver sees the sender's Chromium ID</span></td></tr>
-  <tr><th scope="row">Firefox's bookmark folder IDs<small>such as "toolbar_____"</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the bookmarks menu is Other bookmarks</span></td><td class="ts"><span class="c">–</span><span class="c">not in Firefox for Android</span></td></tr>
+  <tr><th scope="row">Firefox's bookmark folder IDs<small>such as "toolbar_____"</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i><span class="c">the bookmarks menu is Other bookmarks</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">not in Firefox for Android</span></td></tr>
   <tr><th scope="row"><code>i18n</code> extras<small>@@ui_locale as a BCP 47 tag, getPreferredSystemLanguages</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
   <tr><th scope="row"><code>browserSettings</code>, <code>privacy.network.peerConnectionEnabled</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td class="ts"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only; the home page is the policy's or the new tab page, not the one you set</span></td></tr>
   <tr><th scope="row"><code>privacy.network.networkPredictionEnabled</code><small>an add-on turns network prediction on or off</small></th><td class="og"><i class="d y"><span class="sr">yes</span></i></td><td class="ts"><i class="d y"><span class="sr">yes</span></i></td></tr>
-  <tr><th scope="row"><code>theme</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td class="ts"><span class="c">–</span><span class="c">no theme to read, as in Firefox for Android</span></td></tr>
+  <tr><th scope="row"><code>theme</code></th><td class="og"><i class="d p"><span class="sr">partly</span></i><span class="c">read-only</span></td><td class="ts"><span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span><span class="c">no theme to read, as in Firefox for Android</span></td></tr>
 
   <tr><th class="grp" colspan="3" scope="colgroup">Not yet: the open climb steps</th></tr>
 __CLIMB__  </tbody>

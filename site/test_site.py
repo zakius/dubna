@@ -13,6 +13,7 @@ spec = importlib.util.spec_from_file_location('site_py', Path(__file__).with_nam
 site_py = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(site_py)
 feed, notes_html, release_list = site_py.feed, site_py.notes_html, site_py.release_list
+title = site_py.title
 
 NOTES = '''Changes since v1:
 
@@ -47,6 +48,15 @@ class SiteTest(unittest.TestCase):
         self.assertEqual(item.find('pubDate').text, 'Sun, 15 Nov 2026 14:23:31 GMT')
         self.assertEqual(item.find('description').text, notes_html(NOTES, 'oganesson'))
         self.assertIn('id="oganesson-v2"', release_list([RELEASE]))
+
+    def test_titles(self):
+        self.assertEqual(title('ungoogled-chromium/fix-building-with-prunned-binaries'),
+                         'Fix building with pruned binaries')
+        self.assertEqual(title('ungoogled-chromium/remove-uneeded-ui'), 'Remove unneeded UI')
+        self.assertEqual(title('inox-patchset/disable-rlz'), 'Disable RLZ')
+        self.assertEqual(title('tennessine/smaller-apk'), 'Smaller APK')
+        self.assertEqual(title('ungoogled-chromium/fix-building-without-mdns-and-service-discovery'),
+                         'Fix building without mDNS and service discovery')
 
 
 if __name__ == '__main__':

@@ -179,7 +179,13 @@ WORDS = {'ublock': 'uBlock', 'mru': 'MRU', 'ntp': 'NTP', 'webrtc': 'WebRTC', 'we
          'mv2': 'MV2', 'ui': 'UI', 'ua': 'UA', 'url': 'URL', 'urls': 'URLs', 'api': 'API', 'gcm': 'GCM',
          'hsts': 'HSTS', 'http': 'HTTP', 'https': 'HTTPS', 'id': 'ID', 'js': 'JS', 'tls': 'TLS', 'ai': 'AI',
          'devtools': 'DevTools', 'webrequest': 'webRequest', 'webapp': 'web app', 'x86': 'x86',
-         'reenable': 're-enable', 'degoogle': 'de-Google', 'nativelink': 'NativeLink', 'chrome': 'Chrome'}
+         'reenable': 're-enable', 'degoogle': 'de-Google', 'nativelink': 'NativeLink', 'chrome': 'Chrome',
+         'rlz': 'RLZ', 'gaia': 'Gaia', 'mei': 'MEI', 'f1': 'F1', 'ipv6': 'IPv6', 'mdns': 'mDNS',
+         'dial': 'DIAL', 'pac': 'PAC', 'webgl': 'WebGL', 'qr': 'QR', 'pip': 'PiP', 'pgo': 'PGO',
+         'apk': 'APK', 'wasm': 'Wasm', 'v8': 'V8', 'google': 'Google', 'chromium': 'Chromium',
+         'helium': 'Helium', 'brave': 'Brave', 'android': 'Android', 'windows': 'Windows',
+         'safebrowsing': 'Safe Browsing', 'trustedcast': 'TrustedCast',
+         'sharedfunctioninfo': 'SharedFunctionInfo', 'prunned': 'pruned', 'uneeded': 'unneeded'}
 
 
 def title(p):
@@ -330,7 +336,7 @@ def climb_steps():
         # a step oganesson doesn't need.
         says = re.search(r'\*\*tennessine:\*\*\s*(.*)', issue['body'] or '')
         says = says.group(1).lower() if says else ''
-        dash = '<span class="c">–</span>'
+        dash = '<span class="c" aria-hidden="true">–</span><span class="sr">not applicable</span>'
         og = dash if 'tennessine only' in says else no
         ts = dash if says.startswith(('nothing', 'never')) else no
         rows += f'  <tr><th scope="row">{e(what)}</th><td class="og">{og}</td><td class="ts">{ts}</td></tr>\n'
@@ -356,6 +362,7 @@ def build():
             text = re.sub(r'id="count">\d+ →', f'id="count">{len(items)} →', text)
         (www / page).write_text(text)
     build_releases(www)
+    shutil.copy2(SITE / 'style.css', www / 'style.css')
     shutil.copytree(SITE / 'img', www / 'img', dirs_exist_ok=True)
 
 
