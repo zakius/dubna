@@ -111,7 +111,8 @@
 # A downloaded .xpi installs only with a valid AMO signature, whose
 # certificate's common name is its ID, as in Firefox; one without a Gecko ID
 # installs with that ID (firefox_xpi_signature.h). ZipFileInstaller's filter
-# is public for the check, to which a file it doesn't unzip isn't missing.
+# is public for the check, to which a file it doesn't unzip isn't missing,
+# and a theme's META-INF/ is unzipped too, for its signature.
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -4973,3 +4974,18 @@
    // Returns true if `file_path` points to an extension manifest.
    static bool IsManifestFile(const base::FilePath& file_path);
  
+--- a/extensions/browser/zipfile_installer.cc
++++ b/extensions/browser/zipfile_installer.cc
+@@ -192,7 +192,11 @@
+       [](bool is_theme, const base::FilePath& file_path) -> bool {
+         // Note that we ignore the manifest as it has already been extracted and
+         // would cause the unzipping to fail.
+-        return ZipFileInstaller::ShouldExtractFile(is_theme, file_path) &&
++        // Firefox add-ons (dubna): a theme's META-INF/ too, which has the
++        // AMO signature that firefox_xpi_signature.cc checks.
++        return (ZipFileInstaller::ShouldExtractFile(is_theme, file_path) ||
++                file_path.GetComponents().front() ==
++                    FILE_PATH_LITERAL("META-INF")) &&
+                !ZipFileInstaller::IsManifestFile(file_path);
+       },
+       manifest_type == Manifest::Type::kTheme);
