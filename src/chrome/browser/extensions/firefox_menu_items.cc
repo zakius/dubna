@@ -3,16 +3,19 @@
 
 #include "chrome/browser/extensions/firefox_menu_items.h"
 
+#include <algorithm>
 #include <string_view>
 
 #include "base/containers/fixed_flat_set.h"
 #include "base/strings/pattern.h"
+#include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
-#include "chrome/browser/extensions/context_menu_helpers.h"
+#include "base/strings/utf_string_conversions.h"
+#include "base/third_party/icu/icu_utf.h"
+#include "chrome/browser/extensions/context_menu_matcher.h"
 #include "content/public/browser/context_menu_params.h"
 #include "extensions/common/error_utils.h"
 #include "extensions/common/url_pattern.h"
-#include "extensions/common/url_pattern_set.h"
 #include "third_party/blink/public/mojom/context_menu/context_menu.mojom-shared.h"
 #include "url/gurl.h"
 #include "url/url_util.h"
@@ -89,6 +92,90 @@ bool AnyPatternMatches(const std::vector<std::string>& patterns,
   return false;
 }
 
+// Whether `contexts` match the menu of `params`, as Chromium's
+// context_menu_helpers::ExtensionContextAndPatternMatch() matches them
+// without patterns, but with Firefox's link and selection.
+bool ContextsMatch(const content::ContextMenuParams& params,
+                   const MenuItem::ContextList& contexts) {
+  bool on_link =
+      !params.link_url.is_empty() || !params.invalid_link_url.empty();
+  bool has_selection = !params.selection_text.empty() ||
+                       !params.firefox_selection_text.empty();
+  if (contexts.Contains(MenuItem::ALL) ||
+      (has_selection && contexts.Contains(MenuItem::SELECTION)) ||
+      (params.is_editable && contexts.Contains(MenuItem::EDITABLE)) ||
+      (params.is_subframe && contexts.Contains(MenuItem::FRAME)) ||
+      (on_link && contexts.Contains(MenuItem::LINK))) {
+    return true;
+  }
+  switch (params.media_type) {
+    case blink::mojom::ContextMenuDataMediaType::kImage:
+      return contexts.Contains(MenuItem::IMAGE);
+    case blink::mojom::ContextMenuDataMediaType::kVideo:
+      return contexts.Contains(MenuItem::VIDEO);
+    case blink::mojom::ContextMenuDataMediaType::kAudio:
+      return contexts.Contains(MenuItem::AUDIO);
+    case blink::mojom::ContextMenuDataMediaType::kNone:
+      // As in Chromium, the page of a frame is a page too.
+      return !on_link && !has_selection && !params.is_editable &&
+             contexts.Contains(MenuItem::PAGE);
+    default:
+      return false;
+  }
+}
+
+size_t CodePointCount(std::u16string_view text) {
+  size_t count = 0;
+  for (char16_t c : text) {
+    if (!CBU16_IS_TRAIL(c)) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+std::u16string_view FirstCodePoints(std::u16string_view text, size_t count) {
+  size_t end = 0;
+  for (size_t taken = 0; taken < count && end < text.size(); ++taken) {
+    end += CBU16_IS_LEAD(text[end]) && end + 1 < text.size() ? 2 : 1;
+  }
+  return text.substr(0, end);
+}
+
+// Firefox's longest label with a selection in it (ext-menus.js'
+// gMaxLabelLength).
+constexpr size_t kMaxSelectionLabelLength = 64;
+
+// Firefox's label for `item` (ext-menus.js' customizeElement()): the title
+// in full, and with text selected, each %s replaced by the selection without
+// its outer white space, cut so that the label is at most 64 characters,
+// ending in "…" ("selection is: 'just some text 1234…'"). Without a selection
+// %s stays. Chromium cuts the title at 75 characters and the selection at 24
+// (PrintableSelectionText()), and replaces %s with nothing.
+std::u16string FirefoxMenuItemTitle(const MenuItem& item,
+                                    const std::u16string& selection_text) {
+  std::u16string title = base::UTF8ToUTF16(item.title());
+  if (selection_text.empty() || title.find(u"%s") == std::u16string::npos) {
+    return title;
+  }
+  std::u16string_view selection =
+      base::TrimWhitespace(selection_text, base::TRIM_ALL);
+  std::u16string shown(selection);
+  // As ext-menus.js' customizeElement() counts it: the title's UTF-16 units
+  // without one %s, and the selection's code points.
+  size_t length = title.size() - 2 + CodePointCount(selection);
+  if (length > kMaxSelectionLabelLength) {
+    size_t kept = CodePointCount(selection) -
+                  std::min(CodePointCount(selection),
+                           length - kMaxSelectionLabelLength + 1);
+    shown = base::StrCat({FirstCodePoints(selection, kept), u"\u2026"});
+  }
+  // The selection's & is text, as in Firefox, not an access key.
+  base::ReplaceSubstringsAfterOffset(&shown, 0, u"&", u"&&");
+  base::ReplaceSubstringsAfterOffset(&title, 0, u"%s", shown);
+  return title;
+}
+
 }  // namespace
 
 MenuItem::ContextList FirefoxDefaultMenuContexts(
@@ -132,17 +219,17 @@ bool FirefoxMenuItemMatchesContext(const content::ContextMenuParams& params,
       return false;
     }
   }
-  // The contexts alone: the patterns matched above. A link whose URL isn't
-  // valid gets a link_url that isn't empty, so that it has the link context
-  // and not the page's.
-  if (params.link_url.is_empty() && !params.invalid_link_url.empty()) {
-    content::ContextMenuParams link_params(params);
-    link_params.link_url = GURL(params.invalid_link_url);
-    return context_menu_helpers::ExtensionContextAndPatternMatch(
-        link_params, item.contexts(), URLPatternSet());
+  return ContextsMatch(params, item.contexts());
+}
+
+std::u16string ContextMenuMatcher::ItemTitle(
+    const MenuItem* item,
+    const std::u16string& selection_text) const {
+  if (item->firefox_add_on()) {
+    return FirefoxMenuItemTitle(*item, firefox_selection_text_);
   }
-  return context_menu_helpers::ExtensionContextAndPatternMatch(
-      params, item.contexts(), URLPatternSet());
+  return item->TitleWithReplacement(selection_text,
+                                    kMaxExtensionItemTitleLength);
 }
 
 }  // namespace extensions

@@ -34,7 +34,10 @@ bool RunFirefoxMenuCommand(const Extension* extension,
 // to `properties`: `modifiers`, the keys held in `event_flags` (Shift, Alt,
 // Command, Ctrl, and MacCtrl on a Mac), `button`, the mouse button (0, 1 or
 // 2), and `linkText`, the text of the link that the menu is for, and
-// `linkUrl` for a link whose URL isn't valid.
+// `linkUrl` for a link whose URL isn't valid. Its `selectionText` is the
+// text selected anywhere in the frame, with the white space it starts at
+// (" just some text"), where Chromium's is only for a click on the
+// selection, without that space.
 void AddFirefoxClickData(const Extension* extension,
                          const content::ContextMenuParams& params,
                          int event_flags,

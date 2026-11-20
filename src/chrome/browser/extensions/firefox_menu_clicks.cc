@@ -104,6 +104,12 @@ void AddFirefoxClickData(const Extension* extension,
     properties.Set("linkUrl", params.invalid_link_url);
     properties.Set("linkText", params.link_text);
   }
+
+  // The text selected anywhere in the frame, as Firefox gives it
+  // (ContextMenuParams::firefox_selection_text).
+  if (!params.firefox_selection_text.empty()) {
+    properties.Set("selectionText", params.firefox_selection_text);
+  }
 }
 
 bool ContextMenuMatcher::MiddleClickRuns(int command_id) const {

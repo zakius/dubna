@@ -44,7 +44,10 @@ bool SetFirefoxTargetUrlPatterns(const std::vector<std::string>& patterns,
 // them only in the link and media contexts, and an "all" item would show on
 // every image and link. A link whose URL isn't valid (href="http://") is a
 // link, as in Firefox, which no pattern matches; Chromium's menu has no link
-// there.
+// there. And text selected anywhere in the frame gives the selection context,
+// as in Firefox, also on an image or a link next to it
+// (ContextMenuParams::firefox_selection_text); Chromium's has it only on a
+// click on the selection.
 bool FirefoxMenuItemMatchesContext(const content::ContextMenuParams& params,
                                    const MenuItem& item);
 

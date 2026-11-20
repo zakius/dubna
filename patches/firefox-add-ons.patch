@@ -104,6 +104,10 @@
 # A Firefox add-on's targetUrlPatterns take any scheme and match as Firefox's
 # (firefox_menu_items.h); a link with an invalid URL is a link, whose href
 # Blink sends apart (invalid_link_url); and its item titles show in full.
+# Blink sends the text selected in the frame for every menu
+# (firefox_selected_text.h), which gives a Firefox add-on's items the selection
+# context next to the selection, and its titles' %s and selectionText, as in
+# Firefox (ContextMenuMatcher::ItemTitle()).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -938,7 +942,27 @@
  
 --- a/chrome/browser/extensions/context_menu_matcher.cc
 +++ b/chrome/browser/extensions/context_menu_matcher.cc
-@@ -259,14 +259,15 @@ void ContextMenuMatcher::ExecuteCommand(
+@@ -146,8 +146,7 @@
+         menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
+       MenuItem* item = items[0];
+       extension_item_map_[menu_id] = item->id();
+-      title = item->TitleWithReplacement(selection_text,
+-                                         kMaxExtensionItemTitleLength);
++      title = ItemTitle(item, selection_text);
+       submenu_items = GetRelevantExtensionItems(item->children(),
+                                                 can_cross_incognito);
+     }
+@@ -208,8 +207,7 @@
+     title = base::UTF8ToUTF16(extension->name());
+   } else {
+     MenuItem* item = items[0];
+-    title = item->TitleWithReplacement(
+-        selection_text, kMaxExtensionItemTitleLength);
++    title = ItemTitle(item, selection_text);
+   }
+   return title;
+ }
+@@ -259,14 +257,15 @@
      int command_id,
      content::WebContents* web_contents,
      content::RenderFrameHost* render_frame_host,
@@ -956,9 +980,19 @@
  }
  
  bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
+@@ -365,8 +364,7 @@
+       ++num_visible_items;
+ 
+     extension_item_map_[menu_id] = item->id();
+-    std::u16string title = item->TitleWithReplacement(
+-        selection_text, kMaxExtensionItemTitleLength);
++    std::u16string title = ItemTitle(item, selection_text);
+     if (item->type() == MenuItem::NORMAL) {
+       MenuItem::List children =
+           GetRelevantExtensionItems(item->children(), can_cross_incognito);
 --- a/chrome/browser/extensions/context_menu_matcher.h
 +++ b/chrome/browser/extensions/context_menu_matcher.h
-@@ -90,7 +90,13 @@ class ContextMenuMatcher {
+@@ -90,7 +90,19 @@
    void ExecuteCommand(int command_id,
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
@@ -970,9 +1004,37 @@
 +  // Firefox add-ons (dubna): whether a middle click runs the item of
 +  // `command_id`, a Firefox add-on's (firefox_menu_clicks.cc).
 +  bool MiddleClickRuns(int command_id) const;
++
++  // Firefox add-ons (dubna): the text selected in the page, which a Firefox
++  // add-on's item titles read (ContextMenuParams::firefox_selection_text).
++  void set_firefox_selection_text(const std::u16string& text) {
++    firefox_selection_text_ = text;
++  }
  
   private:
    friend class ExtensionContextMenuBrowserTest;
+@@ -112,6 +124,11 @@
+                                        int* index,
+                                        bool is_action_menu_top_level);
+ 
++  // Firefox add-ons (dubna): `item`'s title in the menu, Firefox's for a
++  // Firefox add-on's item (firefox_menu_items.cc).
++  std::u16string ItemTitle(const MenuItem* item,
++                           const std::u16string& selection_text) const;
++
+   // Attempts to get an MenuItem given the id of a context menu item.
+   extensions::MenuItem* GetExtensionMenuItem(int id) const;
+ 
+@@ -131,6 +148,9 @@
+ 
+   // Keep track of and clean up menu models for submenus.
+   std::vector<std::unique_ptr<ui::SimpleMenuModel>> extension_menu_models_;
++
++  // Firefox add-ons (dubna): see set_firefox_selection_text().
++  std::u16string firefox_selection_text_;
+ };
+ 
+ }  // namespace extensions
 --- a/chrome/browser/extensions/extension_action_dispatcher.cc
 +++ b/chrome/browser/extensions/extension_action_dispatcher.cc
 @@ -147,6 +147,11 @@ void ExtensionActionDispatcher::ClearAllValuesForTab(
@@ -1089,17 +1151,7 @@
  
  // The time by which to delay writing updated menu items to storage.
  constexpr int kWriteDelayInSeconds = 1;
-@@ -239,7 +245,8 @@
-   // put "%s" in titles that won't get substituted.
-   base::ReplaceSubstringsAfterOffset(&result, 0, u"%s", selection);
- 
--  if (result.length() > max_length)
-+  // Firefox add-ons (dubna): Firefox shows the title in full.
-+  if (result.length() > max_length && !firefox_add_on_)
-     result = gfx::TruncateString(result, max_length, gfx::WORD_BREAK);
-   return result;
- }
-@@ -277,6 +284,18 @@
+@@ -277,6 +283,18 @@
    }
    value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
    value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
@@ -1118,7 +1170,7 @@
    return value;
  }
  
-@@ -347,6 +366,18 @@
+@@ -347,6 +365,18 @@
      return nullptr;
    }
  
@@ -1137,7 +1189,7 @@
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +467,8 @@
+@@ -436,6 +466,8 @@
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1146,7 +1198,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +498,8 @@
+@@ -465,6 +497,8 @@
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1155,7 +1207,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +726,8 @@
+@@ -691,7 +725,8 @@
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1165,7 +1217,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -704,6 +740,12 @@
+@@ -704,6 +739,12 @@
    const Extension* extension =
        registry->enabled_extensions().GetByID(item->extension_id());
  
@@ -1178,7 +1230,7 @@
    if (item->type() == MenuItem::RADIO)
      RadioItemSelected(item);
  
-@@ -734,6 +776,8 @@
+@@ -734,6 +775,8 @@
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1187,7 +1239,7 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -868,9 +912,11 @@
+@@ -868,9 +911,11 @@
        }
      }
  
@@ -1351,7 +1403,18 @@
  }
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -3963,7 +3963,7 @@ void RenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
+@@ -1158,6 +1158,10 @@
+   }
+   set_content_type(
+       ContextMenuContentTypeFactory::Create(&render_frame_host, params));
++#if BUILDFLAG(ENABLE_EXTENSIONS)
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  extension_items_.set_firefox_selection_text(params.firefox_selection_text);
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+ 
+ #if BUILDFLAG(IS_CHROMEOS)
+   web_app::AppBrowserController* app_controller =
+@@ -3963,7 +3967,7 @@
      RenderFrameHost* render_frame_host = GetRenderFrameHost();
      if (render_frame_host) {
        extension_items_.ExecuteCommand(id, source_web_contents_,
@@ -4705,17 +4768,20 @@
    }
 --- a/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
-@@ -20,6 +20,7 @@
+@@ -20,8 +20,10 @@
        !data.ReadLinkUrl(&out->link_url) ||
        !data.ReadLinkText(&out->link_text) ||
        !data.ReadUnfilteredLinkUrl(&out->unfiltered_link_url) ||
 +      !data.ReadInvalidLinkUrl(&out->invalid_link_url) ||
        !data.ReadSrcUrl(&out->src_url) ||
        !data.ReadSelectionText(&out->selection_text) ||
++      !data.ReadFirefoxSelectionText(&out->firefox_selection_text) ||
        !data.ReadTitleText(&out->title_text) ||
+       !data.ReadAltText(&out->alt_text) ||
+       !data.ReadSuggestedFilename(&out->suggested_filename) ||
 --- a/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
-@@ -54,6 +54,7 @@
+@@ -54,12 +54,15 @@
    params.y = data.mouse_position.y();
    params.link_url = data.link_url;
    params.unfiltered_link_url = data.link_url;
@@ -4723,9 +4789,17 @@
    params.src_url = data.src_url;
    params.has_image_contents = data.has_image_contents;
    params.image_replacement_frame_token = data.image_replacement_frame_token;
+   params.is_image_media_plugin_document = data.is_image_media_plugin_document;
+   params.media_flags = data.media_flags;
+   params.selection_text = base::UTF8ToUTF16(data.selected_text);
++  params.firefox_selection_text =
++      base::UTF8ToUTF16(data.firefox_selection_text);
+   params.selection_start_offset = data.selection_start_offset;
+   params.title_text = base::UTF8ToUTF16(data.title_text);
+   params.alt_text = base::UTF8ToUTF16(data.alt_text);
 --- a/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
 +++ b/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
-@@ -51,6 +51,7 @@
+@@ -51,12 +51,14 @@
    link_url = other.link_url;
    link_text = other.link_text;
    unfiltered_link_url = other.unfiltered_link_url;
@@ -4733,9 +4807,16 @@
    src_url = other.src_url;
    has_image_contents = other.has_image_contents;
    image_replacement_frame_token = other.image_replacement_frame_token;
+   is_image_media_plugin_document = other.is_image_media_plugin_document;
+   media_flags = other.media_flags;
+   selection_text = other.selection_text;
++  firefox_selection_text = other.firefox_selection_text;
+   title_text = other.title_text;
+   alt_text = other.alt_text;
+   suggested_filename = other.suggested_filename;
 --- a/third_party/blink/public/common/context_menu_data/context_menu_data.h
 +++ b/third_party/blink/public/common/context_menu_data/context_menu_data.h
-@@ -107,6 +107,10 @@
+@@ -107,9 +107,17 @@
    // The text of the link that is in the context.
    std::string link_text;
  
@@ -4745,6 +4826,13 @@
 +
    // The raw text of the selection in context.
    std::string selected_text;
+ 
++  // Firefox add-ons (dubna): the text selected in the frame, wherever the
++  // menu opens in it (UntrustworthyContextMenuParams::firefox_selection_text).
++  std::string firefox_selection_text;
++
+   // Title attribute of the selection in context.
+   std::string title_text;
  
 --- a/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
 +++ b/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
@@ -4760,6 +4848,18 @@
    static const GURL& src_url(const blink::UntrustworthyContextMenuParams& r) {
      return r.src_url;
    }
+@@ -76,6 +81,11 @@
+     return r.selection_text;
+   }
+ 
++  static const std::u16string& firefox_selection_text(
++      const blink::UntrustworthyContextMenuParams& r) {
++    return r.firefox_selection_text;
++  }
++
+   static const std::u16string& title_text(
+       const blink::UntrustworthyContextMenuParams& r) {
+     return r.title_text;
 --- a/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
 +++ b/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
 @@ -57,6 +57,11 @@
@@ -4774,6 +4874,18 @@
    // This is the source URL for the element that the context menu was
    // invoked on. Example of elements with source URLs are img, audio, and
    // video.
+@@ -82,6 +87,11 @@
+   // This is the text of the selection that the context menu was invoked on.
+   std::u16string selection_text;
+ 
++  // Firefox add-ons (dubna): the text selected in the frame, wherever the
++  // menu opens in it, as Firefox's menus give it to add-ons
++  // (firefox_selected_text.h). Chromium's own items read selection_text.
++  std::u16string firefox_selection_text;
++
+   // This is the title text of the selection that the context menu was
+   // invoked on.
+   std::u16string title_text;
 --- a/third_party/blink/public/mojom/context_menu/context_menu.mojom
 +++ b/third_party/blink/public/mojom/context_menu/context_menu.mojom
 @@ -100,6 +100,10 @@
@@ -4787,9 +4899,37 @@
    // This is the source URL for the element that the context menu was
    // invoked on. Example of elements with source URLs are img, audio, and
    // video.
+@@ -125,6 +129,10 @@
+   // This is the text of the selection that the context menu was invoked on.
+   mojo_base.mojom.BigString16 selection_text;
+ 
++  // Firefox add-ons (dubna): the text selected in the frame, wherever the
++  // menu opens in it, as Firefox's menus give it.
++  mojo_base.mojom.BigString16 firefox_selection_text;
++
+   // This is the title text of the selection that the context menu was
+   // invoked on.
+   mojo_base.mojom.BigString16 title_text;
 --- a/third_party/blink/renderer/core/page/context_menu_controller.cc
 +++ b/third_party/blink/renderer/core/page/context_menu_controller.cc
-@@ -866,6 +866,11 @@
+@@ -93,6 +93,7 @@
+ #include "third_party/blink/renderer/core/loader/document_loader.h"
+ #include "third_party/blink/renderer/core/mathml/mathml_anchor_element.h"
+ #include "third_party/blink/renderer/core/page/context_menu_provider.h"
++#include "third_party/blink/renderer/core/page/firefox_selected_text.h"
+ #include "third_party/blink/renderer/core/page/focus_controller.h"
+ #include "third_party/blink/renderer/core/page/page.h"
+ #include "third_party/blink/renderer/core/paint/paint_layer.h"
+@@ -789,6 +790,8 @@
+       annotation_container->OpenedContextMenuOverSelection();
+     }
+   }
++  // Firefox add-ons (dubna): see ContextMenuData::firefox_selection_text.
++  data.firefox_selection_text = FirefoxSelectedText(*selected_frame).Utf8();
+ 
+   // If there is a text fragment at the same location as the click indicate that
+   // the context menu is being opened from an existing highlight.
+@@ -866,6 +869,11 @@
    if (auto* anchor = DynamicTo<HTMLAnchorElement>(result.URLElement())) {
      PopulateAnchorContextMenuData(anchor, html_names::kDownloadAttr,
                                    selected_frame, data);
@@ -4801,3 +4941,14 @@
    } else if (auto* svg_anchor = DynamicTo<SVGAElement>(result.URLElement())) {
      PopulateAnchorContextMenuData(svg_anchor, svg_names::kDownloadAttr,
                                    selected_frame, data);
+--- a/third_party/blink/renderer/core/page/build.gni
++++ b/third_party/blink/renderer/core/page/build.gni
+@@ -24,6 +24,8 @@
+   "drag_image.cc",
+   "drag_image.h",
+   "drag_state.h",
++  "firefox_selected_text.cc",
++  "firefox_selected_text.h",
+   "event_with_hit_test_results.h",
+   "focus_changed_observer.cc",
+   "focus_changed_observer.h",
