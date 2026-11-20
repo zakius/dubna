@@ -97,10 +97,6 @@ bool LeavesApp(content::WebContents* contents,
 // ExclusionObserver::MayOpen.
 bool MayOpen(content::WebContents* contents);
 
-// Whether `handle`, a navigation of the page, came from the user's input; see
-// ExclusionObserver::FromInput.
-bool FromInput(content::NavigationHandle* handle);
-
 class OutOfScopeLinkThrottle : public content::NavigationThrottle {
  public:
   // `link`: the page's own link click, which also leaves the app for being
@@ -128,7 +124,7 @@ class OutOfScopeLinkThrottle : public content::NavigationThrottle {
     // one tab per user input, not one per try.
     if (MayOpen(contents)) {
       OpenInDefaultBrowser(contents, handle->GetURL(),
-                           /*background=*/!FromInput(handle));
+                           /*background=*/!handle->HasUserGesture());
     }
     return CANCEL_AND_IGNORE;
   }
@@ -160,7 +156,10 @@ class ExclusionObserver
   void DidGetUserInteraction(const blink::WebInputEvent& event) override {
     take_backs_since_input_ = 0;
     opened_since_input_ = false;
-    input_in_page_ = true;
+    // As in the page: the start of a scroll is no user activation.
+    if (event.GetType() != blink::WebInputEvent::Type::kGestureScrollBegin) {
+      input_in_page_ = true;
+    }
   }
 
   // Whether `handle` came with a user activation from input in the page, as
@@ -198,7 +197,7 @@ class ExclusionObserver
     ++take_backs_since_input_;
     if (MayOpen()) {
       OpenInDefaultBrowser(web_contents(), handle->GetURL(),
-                           /*background=*/!FromInput(handle));
+                           /*background=*/!handle->HasUserGesture());
     }
     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE,
@@ -308,12 +307,6 @@ bool MayOpen(content::WebContents* contents) {
   return !observer || observer->MayOpen();
 }
 
-bool FromInput(content::NavigationHandle* handle) {
-  ExclusionObserver* observer =
-      ExclusionObserver::FromWebContents(handle->GetWebContents());
-  return observer && observer->FromInput(handle);
-}
-
 }  // namespace
 
 bool IsInAppWindow(content::WebContents* contents) {
@@ -376,7 +369,7 @@ void MaybeAddThrottle(content::NavigationThrottleRegistry& registry) {
   // buttons that fetch the provider's URL and assign it). Exclusions, and
   // with a strict scope every URL out of it, all.
   registry.AddThrottle(std::make_unique<OutOfScopeLinkThrottle>(
-      registry, handle.WasInitiatedByLinkClick() && FromInput(&handle) &&
+      registry, handle.WasInitiatedByLinkClick() && handle.HasUserGesture() &&
                     !handle.IsPost()));
 }
 
