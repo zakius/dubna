@@ -15,9 +15,11 @@ event if its rotated log no longer reaches that far, and the last 24 hours.
 The 18:00 chains still to come are not projected. The first line is
 "headroom: yes", "headroom: no" or "headroom: unknown"; the later lines show
 the numbers behind it.
-There is headroom when the 5-hour session is under SESSION_MAX percent and, at
-the pace, the week would have room left at its reset for another run (RUN_COST)
-and still keep RESERVE points for unexpected work.
+There is headroom when the 5-hour session is under SESSION_MAX percent, the
+week's usage is under its even pace (100 - RESERVE points spread over the 7
+days), and, at the pace, the week would have room left at its reset for another
+run (RUN_COST) and still keep RESERVE points for unexpected work. The even pace
+makes the runs last the whole week and wait whenever other work gets ahead of it.
 
 Fable's own weekly limit doesn't count: when it is reached, Opus does the
 reviews (docs/nightly.md, "Fable review before the push").
@@ -106,8 +108,9 @@ def assess(events, now):
     day_rate = own_usage(events, reset, recent) / ((now - recent) / DAY)
     pace = max(week_rate, day_rate)
     left = 100 - (used + pace * ((reset - now) / DAY))
+    even = (100 - RESERVE) * ((now - start) / WEEK)
 
-    headroom = session_used < SESSION_MAX and left >= RUN_COST + RESERVE
+    headroom = session_used < SESSION_MAX and used < even and left >= RUN_COST + RESERVE
     return headroom, [
         f'five_hour: {session_used:.0f}% used, resets {when(session):%a %H:%M} UTC',
         f'seven_day: {used:.0f}% used, resets {reset:%a %H:%M} UTC '
@@ -117,6 +120,7 @@ def assess(events, now):
         f'{day_rate:.1f} over the last 24 h',
         f'at the reset: {max(left, 0):.0f} points left at this pace '
         f'(needs {RUN_COST + RESERVE}: {RUN_COST} for a run, {RESERVE} kept free)',
+        f'even pace for the week: {even:.0f}% by now ({100 - RESERVE} at the reset)',
         f'as of {stamp:%Y-%m-%d %H:%M} UTC',
     ]
 
