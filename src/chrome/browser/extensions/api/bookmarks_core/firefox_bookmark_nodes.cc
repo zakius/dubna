@@ -4,26 +4,43 @@
 #include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_nodes.h"
 
 #include <optional>
+#include <string_view>
 #include <utility>
 
 #include "base/functional/bind.h"
+#include "chrome/browser/bookmarks/bookmark_model_factory.h"
+#include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_ids.h"
 #include "chrome/browser/extensions/bookmarks/bookmarks_error_constants.h"
+#include "components/bookmarks/browser/bookmark_model.h"
 #include "extensions/common/firefox_add_on.h"
 
 namespace extensions {
 
 namespace {
 
-// Gives `node`, a node of the bookmarks API, and its children Firefox's type.
-// Chromium gives a bookmark a URL and a folder none.
-void ToFirefoxNode(base::DictValue& node) {
+// Gives the folder ID under `key` of `dict` Firefox's ID, if it has one.
+void ToFirefoxId(const bookmarks::BookmarkModel& model,
+                 base::DictValue& dict,
+                 std::string_view key) {
+  std::string* id = dict.FindString(key);
+  if (id) {
+    ToFirefoxBookmarkId(model, id);
+  }
+}
+
+// Gives `node`, a node of the bookmarks API, and its children Firefox's type
+// and IDs. Chromium gives a bookmark a URL and a folder none.
+void ToFirefoxNode(const bookmarks::BookmarkModel& model,
+                   base::DictValue& node) {
   node.Set("type", node.contains("url") ? "bookmark" : "folder");
+  ToFirefoxId(model, node, "id");
+  ToFirefoxId(model, node, "parentId");
   base::ListValue* children = node.FindList("children");
   if (!children) {
     return;
   }
   for (base::Value& child : *children) {
-    ToFirefoxNode(child.GetDict());
+    ToFirefoxNode(model, child.GetDict());
   }
 }
 
@@ -40,13 +57,27 @@ bool WillDispatchFirefoxBookmarkEvent(
   if (!extension || !IsFirefoxAddOn(*extension)) {
     return true;
   }
+  const bookmarks::BookmarkModel& model =
+      *BookmarkModelFactory::GetForBrowserContext(browser_context);
   event_args_out = event_args->data.Clone();
   base::ListValue& args = *event_args_out;
-  // onCreated(id, node) and onRemoved(id, {parentId, index, node}).
+  // Each event but onImportBegan and onImportEnded has the node's ID first,
+  // then an object: the node for onCreated, and for the others its parent
+  // IDs (onRemoved, onMoved), its node (onRemoved), or neither.
+  if (args.size() < 2) {
+    return true;
+  }
+  ToFirefoxBookmarkId(model, &args[0].GetString());
+  base::DictValue& info = args[1].GetDict();
   if (event_name == api::bookmarks::OnCreated::kEventName) {
-    ToFirefoxNode(args[1].GetDict());
-  } else if (event_name == api::bookmarks::OnRemoved::kEventName) {
-    ToFirefoxNode(*args[1].GetDict().FindDict("node"));
+    ToFirefoxNode(model, info);
+    return true;
+  }
+  ToFirefoxId(model, info, "parentId");
+  ToFirefoxId(model, info, "oldParentId");
+  base::DictValue* node = info.FindDict("node");
+  if (node) {
+    ToFirefoxNode(model, *node);
   }
   return true;
 }
@@ -54,6 +85,7 @@ bool WillDispatchFirefoxBookmarkEvent(
 }  // namespace
 
 base::ListValue FirefoxBookmarkResults(const Extension* extension,
+                                       const bookmarks::BookmarkModel& model,
                                        base::ListValue results) {
   if (!extension || !IsFirefoxAddOn(*extension)) {
     return results;
@@ -62,10 +94,10 @@ base::ListValue FirefoxBookmarkResults(const Extension* extension,
   // them (get(), getTree(), search() and the others).
   for (base::Value& result : results) {
     if (result.is_dict()) {
-      ToFirefoxNode(result.GetDict());
+      ToFirefoxNode(model, result.GetDict());
     } else if (result.is_list()) {
       for (base::Value& node : result.GetList()) {
-        ToFirefoxNode(node.GetDict());
+        ToFirefoxNode(model, node.GetDict());
       }
     }
   }
