@@ -120,6 +120,8 @@
 # (firefox_menu_icons.h), and its password, bookmark and tools_menu contexts;
 # a password item shows on a password field, a bookmark or tools_menu one in
 # its other contexts.
+# Bookmark nodes have Firefox's type, and bookmarks.create takes it
+# (firefox_bookmark_nodes.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -207,18 +209,20 @@
        DownloadItem::TARGET_DISPOSITION_PROMPT)
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -68,6 +68,10 @@
+@@ -68,6 +68,12 @@ source_set("extensions") {
      "api/bookmarks/bookmarks_api_watcher.h",
      "api/bookmarks_core/bookmarks_function.cc",
      "api/bookmarks_core/bookmarks_function.h",
 +
-+    # Firefox add-ons (dubna): Firefox's bookmark folder IDs.
++    # Firefox add-ons (dubna): Firefox's bookmark folder IDs and nodes.
 +    "api/bookmarks_core/firefox_bookmark_ids.cc",
 +    "api/bookmarks_core/firefox_bookmark_ids.h",
++    "api/bookmarks_core/firefox_bookmark_nodes.cc",
++    "api/bookmarks_core/firefox_bookmark_nodes.h",
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -175,11 +179,23 @@
+@@ -175,11 +181,23 @@ source_set("extensions") {
      "api/storage/syncable_settings_storage.h",
      "api/tab_capture/tab_capture_registry.cc",
      "api/tab_capture/tab_capture_registry.h",
@@ -242,7 +246,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +281,14 @@
+@@ -265,6 +283,14 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -257,7 +261,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +353,22 @@
+@@ -329,6 +355,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -280,7 +284,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +429,14 @@
+@@ -389,6 +431,14 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -354,15 +358,31 @@
  #if BUILDFLAG(ENABLE_EXTENSIONS)
 --- a/chrome/browser/extensions/api/bookmarks/bookmarks_api.cc
 +++ b/chrome/browser/extensions/api/bookmarks/bookmarks_api.cc
-@@ -25,6 +25,7 @@
+@@ -25,6 +25,8 @@
  #include "build/build_config.h"
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/bookmarks/managed_bookmark_service_factory.h"
 +#include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_ids.h"
++#include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_nodes.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_error_constants.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_features.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_helpers.h"
-@@ -530,7 +531,7 @@ ExtensionFunction::ResponseAction BookmarksRemoveFunctionBase::RunOnReady() {
+@@ -102,8 +104,12 @@ void BookmarkEventRouter::DispatchEvent(
+     scoped_refptr<const extensions::EventArgs> event_args) {
+   EventRouter* event_router = EventRouter::Get(browser_context_);
+   if (event_router) {
+-    event_router->BroadcastEvent(std::make_unique<extensions::Event>(
+-        histogram_value, event_name, std::move(event_args)));
++    auto event = std::make_unique<extensions::Event>(histogram_value,
++                                                     event_name, event_args);
++    // Firefox add-ons (dubna): Firefox's nodes (firefox_bookmark_nodes.h).
++    event->will_dispatch_callback =
++        FirefoxBookmarkEventCallback(event_name, std::move(event_args));
++    event_router->BroadcastEvent(std::move(event));
+   }
+ }
+ 
+@@ -530,7 +536,7 @@ ExtensionFunction::ResponseAction BookmarksRemoveFunctionBase::RunOnReady() {
    }
  
    int64_t id;
@@ -371,7 +391,7 @@
      return RespondNow(Error(bookmarks_errors::kInvalidIdError));
    }
  
-@@ -600,7 +601,7 @@ const BookmarkNode* BookmarksCreateFunction::CreateBookmarkNode(
+@@ -600,7 +606,7 @@ const BookmarkNode* BookmarksCreateFunction::CreateBookmarkNode(
                        ? model->account_other_node()->id()
                        : model->other_node()->id();
      }
@@ -380,7 +400,18 @@
      *error = bookmarks_errors::kInvalidIdError;
      return nullptr;
    }
-@@ -704,7 +705,8 @@ ExtensionFunction::ResponseAction BookmarksMoveFunction::RunOnReady() {
+@@ -645,6 +651,10 @@ const BookmarkNode* BookmarksCreateFunction::CreateBookmarkNode(
+   if (details.url) {
+     url_string = *details.url;
+   }
++  // Firefox add-ons (dubna): Firefox's type (firefox_bookmark_nodes.h).
++  if (!ApplyFirefoxBookmarkType(details.type, &url_string, error)) {
++    return nullptr;
++  }
+ 
+   GURL url(url_string);
+   if (!url_string.empty() && !url.is_valid()) {
+@@ -704,7 +714,8 @@ ExtensionFunction::ResponseAction BookmarksMoveFunction::RunOnReady() {
      parent = node->parent();
    } else {
      int64_t parent_id;
@@ -392,15 +423,29 @@
  
 --- a/chrome/browser/extensions/api/bookmarks_core/bookmarks_function.cc
 +++ b/chrome/browser/extensions/api/bookmarks_core/bookmarks_function.cc
-@@ -13,6 +13,7 @@
+@@ -13,6 +13,8 @@
  #include "chrome/browser/bookmarks/bookmark_model_factory.h"
  #include "chrome/browser/bookmarks/managed_bookmark_service_factory.h"
  #include "chrome/browser/extensions/api/bookmarks/bookmarks_api_watcher.h"
 +#include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_ids.h"
++#include "chrome/browser/extensions/api/bookmarks_core/firefox_bookmark_nodes.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_error_constants.h"
  #include "chrome/browser/extensions/bookmarks/bookmarks_features.h"
  #include "chrome/browser/profiles/profile.h"
-@@ -58,7 +59,7 @@ const BookmarkNode* BookmarksFunction::GetBookmarkNodeFromId(
+@@ -46,6 +48,12 @@ ExtensionFunction::ResponseAction BookmarksFunction::Run() {
+   return RunOnReady();
+ }
+ 
++ExtensionFunction::ResponseValue BookmarksFunction::ArgumentList(
++    base::ListValue results) {
++  return ExtensionFunction::ArgumentList(
++      FirefoxBookmarkResults(extension(), std::move(results)));
++}
++
+ BookmarkModel* BookmarksFunction::GetBookmarkModel() {
+   return BookmarkModelFactory::GetForBrowserContext(GetProfile());
+ }
+@@ -58,7 +66,7 @@ const BookmarkNode* BookmarksFunction::GetBookmarkNodeFromId(
      const std::string& id_string,
      std::string* error) {
    int64_t id;
@@ -5420,3 +5465,56 @@
    bool GetAcceleratorForCommandId(int command_id,
                                    ui::Accelerator* accelerator) const override;
  
+--- a/chrome/browser/extensions/api/bookmarks_core/bookmarks_function.h
++++ b/chrome/browser/extensions/api/bookmarks_core/bookmarks_function.h
+@@ -35,6 +35,11 @@ class BookmarksFunction : public ExtensionFunction,
+   // Run semantic equivalent called when the bookmarks are ready.
+   virtual ResponseAction RunOnReady() = 0;
+ 
++  // Firefox add-ons (dubna): hides ExtensionFunction::ArgumentList(), so that
++  // what each bookmarks function answers a Firefox add-on has Firefox's nodes
++  // (firefox_bookmark_nodes.h).
++  ResponseValue ArgumentList(base::ListValue results);
++
+   // Helper to get the BookmarkModel.
+   bookmarks::BookmarkModel* GetBookmarkModel();
+ 
+--- a/chrome/common/extensions/api/bookmarks.json
++++ b/chrome/common/extensions/api/bookmarks.json
+@@ -47,6 +47,12 @@
+         "enum": ["managed"],
+         "description": "Indicates the reason why this node is unmodifiable. The <var>managed</var> value indicates that this node was configured by the system administrator. Omitted if the node can be modified by the user and the extension (default)."
+       },
++      {
++        "id": "BookmarkTreeNodeType",
++        "type": "string",
++        "enum": ["bookmark", "folder"],
++        "description": "Firefox add-ons (dubna): Firefox's type of a node, a bookmark or a folder."
++      },
+       {
+         "id": "BookmarkTreeNode",
+         "type": "object",
+@@ -106,6 +112,11 @@
+             "type": "boolean",
+             "description": "Whether this node is synced with the user's remote account storage by the browser. This can be used to distinguish between account and local-only versions of the same $(ref:FolderType). The value of this property may change for an existing node, for example as a result of user action.<p>Note: this reflects whether the node is saved to the browser's built-in account provider. It is possible that a node could be synced via a third-party, even if this value is false.</p><p>For managed nodes (nodes where <code>unmodifiable</code> is set to <code>true</code>), this property will always be <code>false</code>.</p>"
+           },
++          "type": {
++            "$ref": "BookmarkTreeNodeType",
++            "optional": true,
++            "description": "Firefox add-ons (dubna): the type of this node, given to Firefox add-ons only."
++          },
+           "children": {
+             "type": "array",
+             "optional": true,
+@@ -136,6 +147,11 @@
+           "url": {
+             "type": "string",
+             "optional": true
++          },
++          "type": {
++            "$ref": "BookmarkTreeNodeType",
++            "optional": true,
++            "description": "Firefox add-ons (dubna): the type of the node to create. A folder has no URL, and a bookmark needs one."
+           }
+         }
+       }
