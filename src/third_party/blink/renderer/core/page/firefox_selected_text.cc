@@ -41,8 +41,10 @@ String FirefoxSelectedText(const LocalFrame& frame) {
   String text = frame.SelectedText(TextIteratorBehavior::Builder()
                                        .SetSkipsUnselectableContent(true)
                                        .Build());
-  if (text.empty()) {
-    return text;
+  // White space alone is no selection to Firefox, which trims the text to
+  // tell (SelectionUtils).
+  if (!text.LengthWithStrippedWhiteSpace()) {
+    return String();
   }
   if (StartsAtSpace(frame, text)) {
     StringBuilder builder;
