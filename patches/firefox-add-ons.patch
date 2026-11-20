@@ -113,6 +113,9 @@
 # installs with that ID (firefox_xpi_signature.h). ZipFileInstaller's filter
 # is public for the check, to which a file it doesn't unzip isn't missing,
 # and a theme's META-INF/ is unzipped too, for its signature.
+# menus.onShown, onHidden and refresh() are Firefox's: a page's, an action's
+# and a tab's menu tell their ContextMenuMatcher where they appended the
+# extension items and when they open and close (firefox_menu_events.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -269,7 +272,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +425,10 @@
+@@ -389,6 +425,14 @@
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -277,6 +280,10 @@
 +    # Firefox add-ons (dubna): what a menus click does in Firefox.
 +    "firefox_menu_clicks.cc",
 +    "firefox_menu_clicks.h",
++
++    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh().
++    "firefox_menu_events.cc",
++    "firefox_menu_events.h",
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
@@ -947,7 +954,15 @@
  
 --- a/chrome/browser/extensions/context_menu_matcher.cc
 +++ b/chrome/browser/extensions/context_menu_matcher.cc
-@@ -146,8 +146,7 @@
+@@ -10,6 +10,7 @@
+ #include "base/strings/utf_string_conversions.h"
+ #include "build/chromeos_buildflags.h"
+ #include "chrome/app/chrome_command_ids.h"
++#include "chrome/browser/extensions/firefox_menu_events.h"
+ #include "chrome/common/extensions/api/context_menus.h"
+ #include "components/guest_view/common/guest_view_constants.h"
+ #include "content/public/browser/browser_context.h"
+@@ -146,8 +147,7 @@
          menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
        MenuItem* item = items[0];
        extension_item_map_[menu_id] = item->id();
@@ -957,7 +972,7 @@
        submenu_items = GetRelevantExtensionItems(item->children(),
                                                  can_cross_incognito);
      }
-@@ -208,8 +207,7 @@
+@@ -208,8 +208,7 @@
      title = base::UTF8ToUTF16(extension->name());
    } else {
      MenuItem* item = items[0];
@@ -967,7 +982,7 @@
    }
    return title;
  }
-@@ -259,14 +257,15 @@
+@@ -259,14 +258,15 @@
      int command_id,
      content::WebContents* web_contents,
      content::RenderFrameHost* render_frame_host,
@@ -985,7 +1000,7 @@
  }
  
  bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
-@@ -365,8 +364,7 @@
+@@ -365,8 +365,7 @@
        ++num_visible_items;
  
      extension_item_map_[menu_id] = item->id();
@@ -997,7 +1012,39 @@
            GetRelevantExtensionItems(item->children(), can_cross_incognito);
 --- a/chrome/browser/extensions/context_menu_matcher.h
 +++ b/chrome/browser/extensions/context_menu_matcher.h
-@@ -90,7 +90,19 @@
+@@ -27,6 +27,7 @@
+ 
+ namespace extensions {
+ class ExtensionContextMenuBrowserTest;
++struct FirefoxMenuState;
+ 
+ // This class contains code that is shared between the various places where
+ // context menu items added by the extension or app should be shown.
+@@ -70,6 +71,23 @@
+ 
+   void Clear();
+ 
++  // Firefox add-ons (dubna): menus.onShown, onHidden and refresh() in the
++  // menu that this matcher fills (firefox_menu_events.h). The menu tells
++  // where it appended the extension items, from `start` in its model to its
++  // end, and with what; then a Firefox*MenuShown() as it opens, and
++  // FirefoxMenuHidden() as it closes. refresh() calls FirefoxRefresh().
++  void FirefoxItemsAppended(size_t start,
++                            const std::u16string& selection_text,
++                            bool is_action_menu);
++  void FirefoxPageMenuShown(content::WebContents* web_contents,
++                            content::RenderFrameHost* frame,
++                            const content::ContextMenuParams& params);
++  void FirefoxActionMenuShown(const Extension& extension,
++                              content::WebContents* active_tab);
++  void FirefoxTabMenuShown(content::WebContents* tab);
++  void FirefoxMenuHidden();
++  void FirefoxRefresh(const ExtensionId& extension_id);
++
+   // This function returns the top level context menu title of an extension
+   // based on a printable selection text.
+   std::u16string GetTopLevelContextMenuTitle(
+@@ -90,7 +108,19 @@
    void ExecuteCommand(int command_id,
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
@@ -1018,7 +1065,7 @@
  
   private:
    friend class ExtensionContextMenuBrowserTest;
-@@ -112,6 +124,11 @@
+@@ -112,6 +142,11 @@
                                         int* index,
                                         bool is_action_menu_top_level);
  
@@ -1030,7 +1077,15 @@
    // Attempts to get an MenuItem given the id of a context menu item.
    extensions::MenuItem* GetExtensionMenuItem(int id) const;
  
-@@ -131,6 +148,9 @@
+@@ -126,11 +161,17 @@
+ 
+   bool is_smart_text_selection_enabled_;
+ 
++  // Firefox add-ons (dubna): see FirefoxItemsAppended().
++  std::unique_ptr<FirefoxMenuState> firefox_menu_;
++
+   // Maps the id from a context menu item to the MenuItem's internal id.
+   std::map<int, extensions::MenuItem::Id> extension_item_map_;
  
    // Keep track of and clean up menu models for submenus.
    std::vector<std::unique_ptr<ui::SimpleMenuModel>> extension_menu_models_;
@@ -1426,7 +1481,34 @@
  
  #if BUILDFLAG(IS_CHROMEOS)
    web_app::AppBrowserController* app_controller =
-@@ -3963,7 +3967,7 @@
+@@ -1185,6 +1189,10 @@
+     glic_item_executed_ = false;
+     glic_share_image_item_shown_ = false;
+     glic_share_image_item_executed_ = false;
++#if BUILDFLAG(ENABLE_EXTENSIONS)
++    // Firefox add-ons (dubna): see ContextMenuMatcher.
++    extension_items_.FirefoxMenuHidden();
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+   }
+   RenderViewContextMenuBase::MenuClosed(source);
+ }
+@@ -1548,8 +1556,15 @@
+           ContextMenuContentType::ITEM_GROUP_ALL_EXTENSION)) {
+     DCHECK(!content_type_->SupportsGroup(
+         ContextMenuContentType::ITEM_GROUP_CURRENT_EXTENSION));
++    // Firefox add-ons (dubna): see ContextMenuMatcher.
++    size_t firefox_start = menu_model_.GetItemCount();
+     extensions::context_menu_helpers::PopulateExtensionItems(
+         browser_context_, params_, extension_items_);
++    extension_items_.FirefoxItemsAppended(
++        firefox_start,
++        extensions::context_menu_helpers::PrintableSelectionText(
++            params_.selection_text),
++        /*is_action_menu=*/false);
+   }
+ 
+   if (content_type_->SupportsGroup(
+@@ -3963,7 +3978,7 @@
      RenderFrameHost* render_frame_host = GetRenderFrameHost();
      if (render_frame_host) {
        extension_items_.ExecuteCommand(id, source_web_contents_,
@@ -1435,6 +1517,18 @@
      }
      return;
    }
+@@ -4591,6 +4606,11 @@
+ }
+ 
+ void RenderViewContextMenu::NotifyMenuShown() {
++#if BUILDFLAG(ENABLE_EXTENSIONS)
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  extension_items_.FirefoxPageMenuShown(source_web_contents_,
++                                        GetRenderFrameHost(), params_);
++#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+   auto* cb = GetMenuShownCallback();
+   if (!cb->is_null()) {
+     std::move(*cb).Run(this);
 --- a/chrome/browser/resources/extensions/keyboard_shortcuts.html.ts
 +++ b/chrome/browser/resources/extensions/keyboard_shortcuts.html.ts
 @@ -24,6 +24,7 @@ export function getHtml(this: KeyboardShortcutsElement) {
@@ -2022,7 +2116,18 @@
          "type": "function",
 --- a/chrome/common/extensions/api/context_menus.json
 +++ b/chrome/common/extensions/api/context_menus.json
-@@ -42,6 +42,22 @@
+@@ -6,6 +6,10 @@
+   {
+     "namespace": "contextMenus",
+     "description": "Use the <code>chrome.contextMenus</code> API to add items to Google Chrome's context menu. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
++    // Firefox add-ons (dubna): refresh() (firefox_context_menus_api.h).
++    "compiler_options": {
++      "implemented_in": "chrome/browser/extensions/api/context_menus/firefox_context_menus_api.h"
++    },
+     "properties": {
+       "ACTION_MENU_TOP_LEVEL_LIMIT": {
+         "value": 6,
+@@ -42,6 +46,22 @@
            {
              "name": "tab",
              "description": "Applies to the context menu of a tab in the tab strip."
@@ -2045,7 +2150,7 @@
            }
          ],
          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
-@@ -82,6 +98,24 @@
+@@ -82,6 +102,24 @@
              "optional": true,
              "description": "If the element is a link, the URL it points to."
            },
@@ -2070,7 +2175,7 @@
            "srcUrl": {
              "type": "string",
              "optional": true,
-@@ -133,6 +167,13 @@
+@@ -133,6 +171,13 @@
              "optional": true,
              "description": "The type of menu item. Defaults to <code>normal</code>."
            },
@@ -2084,7 +2189,7 @@
            "id": {
              "type": "string",
              "optional": true,
-@@ -203,6 +244,14 @@
+@@ -203,6 +248,14 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -2099,7 +2204,7 @@
            }
          }
        }
-@@ -257,6 +306,12 @@
+@@ -257,6 +310,12 @@
                  "$ref": "ItemType",
                  "optional": true
                },
@@ -2112,7 +2217,7 @@
                "title": {
                  "type": "string",
                  "optional": true
-@@ -314,6 +369,13 @@
+@@ -314,6 +373,13 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -2126,6 +2231,62 @@
                }
              }
            }
+@@ -357,6 +423,20 @@
+           "parameters": [],
+           "description": "Resolves when removal is complete."
+         }
++      },
++      // Firefox add-ons (dubna): Firefox's refresh(), which rebuilds the
++      // add-on's items in the open menu (firefox_menu_events.h).
++      {
++        "name": "refresh",
++        "type": "function",
++        "nodoc": true,
++        "description": "Updates the extension's items in the shown menu.",
++        "parameters": [],
++        "returns_async": {
++          "name": "callback",
++          "optional": true,
++          "parameters": []
++        }
+       }
+     ],
+     "events": [
+@@ -377,6 +457,34 @@
+             "optional": true
+           }
+         ]
++      },
++      // Firefox add-ons (dubna): Firefox's onShown and onHidden, which a
++      // Firefox add-on gets as a menu with its items opens and closes
++      // (firefox_menu_events.h).
++      {
++        "name": "onShown",
++        "type": "function",
++        "nodoc": true,
++        "description": "Fired when a menu is shown.",
++        "parameters": [
++          {
++            "name": "info",
++            "type": "object",
++            "additionalProperties": {"type": "any"}
++          },
++          {
++            "name": "tab",
++            "$ref": "tabs.Tab",
++            "optional": true
++          }
++        ]
++      },
++      {
++        "name": "onHidden",
++        "type": "function",
++        "nodoc": true,
++        "description": "Fired when a menu is hidden.",
++        "parameters": []
+       }
+     ]
+   }
 --- a/chrome/common/extensions/api/page_action.json
 +++ b/chrome/common/extensions/api/page_action.json
 @@ -7,7 +7,7 @@
@@ -4996,3 +5157,123 @@
                 !ZipFileInstaller::IsManifestFile(file_path);
        },
        manifest_type == Manifest::Type::kTheme);
+--- a/chrome/browser/extensions/api/context_menus/BUILD.gn
++++ b/chrome/browser/extensions/api/context_menus/BUILD.gn
+@@ -11,6 +11,10 @@
+   sources = [
+     "context_menus_api.cc",
+     "context_menus_api.h",
++
++    # Firefox add-ons (dubna): Firefox's menus.refresh().
++    "firefox_context_menus_api.cc",
++    "firefox_context_menus_api.h",
+   ]
+ 
+   deps = [
+--- a/chrome/browser/extensions/extension_context_menu_model.cc
++++ b/chrome/browser/extensions/extension_context_menu_model.cc
+@@ -697,9 +697,19 @@
+ 
+ void ExtensionContextMenuModel::OnMenuWillShow(ui::SimpleMenuModel* menu) {
+   action_taken_ = ContextMenuAction::kNoAction;
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  const Extension* extension = GetExtension();
++  if (menu == this && extension && extension_items_) {
++    extension_items_->FirefoxActionMenuShown(*extension,
++                                             GetActiveWebContents());
++  }
+ }
+ 
+ void ExtensionContextMenuModel::MenuClosed(ui::SimpleMenuModel* menu) {
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  if (menu == this && extension_items_) {
++    extension_items_->FirefoxMenuHidden();
++  }
+   // `action_taken_` can be deleted when the extensions toggle menu is closed.
+   if (action_taken_) {
+     ContextMenuAction action = *action_taken_;
+@@ -771,7 +781,11 @@
+   AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
+   SetElementIdentifierAt(GetIndexOfCommandId(HOME_PAGE).value(),
+                          kHomePageMenuItem);
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  size_t firefox_start = GetItemCount();
+   AppendExtensionItems();
++  extension_items_->FirefoxItemsAppended(firefox_start, std::u16string(),
++                                         /*is_action_menu=*/true);
+ 
+   // Site permissions section.
+   bool is_required_by_policy = IsExtensionRequiredByPolicy(extension, profile_);
+@@ -975,7 +989,11 @@
+   // mnemonics in the menu.
+   base::ReplaceChars(extension_name, "&", "&&", &extension_name);
+   AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  size_t firefox_start = GetItemCount();
+   AppendExtensionItems();
++  extension_items_->FirefoxItemsAppended(firefox_start, std::u16string(),
++                                         /*is_action_menu=*/true);
+   AddSeparator(ui::NORMAL_SEPARATOR);
+ 
+   // Add page access items if active web contents exist and the extension
+--- a/chrome/browser/ui/tabs/tab_menu_model.cc
++++ b/chrome/browser/ui/tabs/tab_menu_model.cc
+@@ -682,6 +682,8 @@
+           return item->contexts().Contains(extensions::MenuItem::TAB);
+         }));
+ 
++    // Firefox add-ons (dubna): see ContextMenuMatcher.
++    size_t firefox_start = GetItemCount();
+     int extension_index = 0;
+     // Iterate over all extensions that have menu items loaded in the
+     // MenuManager.
+@@ -691,6 +693,8 @@
+                                              &extension_index,
+                                              /*is_action_menu=*/false);
+     }
++    extension_items_->FirefoxItemsAppended(firefox_start, std::u16string(),
++                                           /*is_action_menu=*/false);
+   }
+ #endif
+ 
+--- a/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.cc
++++ b/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.cc
+@@ -121,6 +121,26 @@
+   }
+ }
+ 
++void TabContextMenuController::OnMenuWillShow(ui::SimpleMenuModel* source) {
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  tabs::TabInterface* tab = tab_handle_.Get();
++  if (source == model_.get() && tab && tab_menu_model_ &&
++      tab_menu_model_->extension_items()) {
++    tab_menu_model_->extension_items()->FirefoxTabMenuShown(
++        tab->GetContents());
++  }
++#endif
++}
++
++void TabContextMenuController::MenuClosed(ui::SimpleMenuModel* source) {
++#if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
++  if (source == model_.get() && tab_menu_model_ &&
++      tab_menu_model_->extension_items()) {
++    tab_menu_model_->extension_items()->FirefoxMenuHidden();
++  }
++#endif
++}
++
+ bool TabContextMenuController::GetAcceleratorForCommandId(
+     int command_id,
+     ui::Accelerator* accelerator) const {
+--- a/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.h
++++ b/chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.h
+@@ -81,6 +81,9 @@
+   bool IsCommandIdVisible(int command_id) const override;
+   bool IsCommandIdAlerted(int command_id) const override;
+   void ExecuteCommand(int command_id, int event_flags) override;
++  // Firefox add-ons (dubna): see ContextMenuMatcher.
++  void OnMenuWillShow(ui::SimpleMenuModel* source) override;
++  void MenuClosed(ui::SimpleMenuModel* source) override;
+   bool GetAcceleratorForCommandId(int command_id,
+                                   ui::Accelerator* accelerator) const override;
+ 
