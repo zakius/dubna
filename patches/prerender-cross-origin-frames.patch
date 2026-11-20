@@ -1,0 +1,22 @@
+# A prerendered page's cross-origin iframes wait until the page is opened (Chromium's
+# Prerender2CrossOriginIframes): a site's origin trial and Chromium 159's default no longer turn
+# it on, only chrome://flags does.
+--- a/content/browser/preloading/prerender/prerender_host.cc
++++ b/content/browser/preloading/prerender/prerender_host.cc
+@@ -727,10 +727,13 @@
+       MaybeSetNoVarySearch(*parsed_headers->no_vary_search_with_parse_error);
+     }
+ 
++    // dubna: a prerendered page's cross-origin iframes (ads, trackers, embeds)
++    // wait for the page to be opened, unless chrome://flags lets them load
++    // early. Not a site's origin trial, nor Chromium's default from 159 on.
+     const bool is_prerender_2_cross_origin_iframes_enabled =
+-        attributes_.enable_cross_origin_prerender_iframes ||
+-        base::FeatureList::IsEnabled(
+-            blink::features::kPrerender2CrossOriginIframes);
++        base::FeatureList::GetStateIfOverridden(
++            blink::features::kPrerender2CrossOriginIframes)
++            .value_or(false);
+     if (is_prerender_2_cross_origin_iframes_enabled &&
+         std::ranges::contains(
+             parsed_headers->supports_loading_mode,
