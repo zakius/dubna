@@ -88,6 +88,9 @@
 # its CSS (firefox_ui_locale.h).
 # i18n.getPreferredSystemLanguages() is Firefox's: the system's languages, read
 # in the browser, so content scripts have it too (firefox_i18n_api.h).
+# tabs.create takes Firefox's discarded and title: the tab is inserted unloaded,
+# as a session restore's tab that waits to be selected, and a Firefox add-on
+# calls such a tab discarded (firefox_discarded_tab.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -175,7 +178,7 @@
        DownloadItem::TARGET_DISPOSITION_PROMPT)
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
-@@ -68,6 +68,10 @@ source_set("extensions") {
+@@ -68,6 +68,10 @@
      "api/bookmarks/bookmarks_api_watcher.h",
      "api/bookmarks_core/bookmarks_function.cc",
      "api/bookmarks_core/bookmarks_function.h",
@@ -186,10 +189,14 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -175,11 +179,19 @@ source_set("extensions") {
+@@ -175,11 +179,23 @@
      "api/storage/syncable_settings_storage.h",
      "api/tab_capture/tab_capture_registry.cc",
      "api/tab_capture/tab_capture_registry.h",
++
++    # Firefox add-ons (dubna): Firefox's discarded tabs.
++    "api/tabs/firefox_discarded_tab.cc",
++    "api/tabs/firefox_discarded_tab.h",
 +
 +    # Firefox add-ons (dubna): tabs.onUpdated's status in Firefox.
 +    "api/tabs/firefox_tab_status.cc",
@@ -206,7 +213,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +277,10 @@ source_set("extensions") {
+@@ -265,6 +281,10 @@
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -217,7 +224,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +345,22 @@ source_set("extensions") {
+@@ -329,6 +349,22 @@
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -240,7 +247,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +421,10 @@ source_set("extensions") {
+@@ -389,6 +425,10 @@
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -927,7 +934,12 @@
  
 --- a/chrome/browser/extensions/extension_tab_util.cc
 +++ b/chrome/browser/extensions/extension_tab_util.cc
-@@ -25,6 +25,7 @@
+@@ -21,10 +21,12 @@
+ #include "base/strings/stringprintf.h"
+ #include "base/strings/utf_string_conversions.h"
+ #include "build/build_config.h"
++#include "chrome/browser/extensions/api/tabs/firefox_discarded_tab.h"
+ #include "chrome/browser/extensions/browser_extension_window_controller.h"
  #include "chrome/browser/extensions/browser_window_util.h"
  #include "chrome/browser/extensions/chrome_extension_function_details.h"
  #include "chrome/browser/extensions/extension_management.h"
@@ -935,7 +947,7 @@
  #include "chrome/browser/extensions/window_controller_list.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/browser/tab_group_sync/tab_group_sync_service_factory.h"
-@@ -58,6 +59,7 @@
+@@ -58,6 +60,7 @@
  #include "extensions/common/constants.h"
  #include "extensions/common/error_utils.h"
  #include "extensions/common/extension.h"
@@ -943,7 +955,17 @@
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/options_page_info.h"
  #include "extensions/common/mojom/api_permission_id.mojom-shared.h"
-@@ -438,11 +440,18 @@ api::tabs::Tab ExtensionTabUtil::CreateTabObject(
+@@ -434,15 +437,28 @@
+                       tab_lifecycle_unit_external->GetTabState() ==
+                           ::mojom::LifecycleUnitState::FROZEN;
+ #endif  // BUILDFLAG(IS_ANDROID)
++  // Firefox add-ons (dubna): Firefox calls a tab discarded until it loads its
++  // page, as a tab from tabs.create's discarded (firefox_discarded_tab.h).
++  if (extension && IsFirefoxAddOn(*extension) &&
++      IsFirefoxDiscardedTab(*contents)) {
++    tab_object.discarded = true;
++  }
+ 
    tab_object.muted_info = CreateMutedInfo(contents);
  
    tab_object.incognito = contents->GetBrowserContext()->IsOffTheRecord();
@@ -2008,6 +2030,27 @@
          }
        },
        {
+@@ -409,6 +411,20 @@
+                 "minimum": 0,
+                 "optional": true,
+                 "description": "The ID of an existing tab to create a split view with. If specified, the split-with tab must meet the following conditions: <ul><li>It must not be an already split tab.</li><li>It must be in the same window as the newly created tab.</li><li>If <var>windowId</var> is specified, it must be the same as the split-with tab's window ID.</li><li>If <var>index</var> is specified, it must be an index adjacent to the split-with tab and will affect the relative positioning of the newly created tab.</li></ul>"
++              },
++              // Firefox add-ons (dubna): Firefox's discarded tab and its title
++              // (firefox_discarded_tab.h).
++              "discarded": {
++                "type": "boolean",
++                "optional": true,
++                "nodoc": true,
++                "description": "Firefox's: the tab opens without loading its page, until it is selected."
++              },
++              "title": {
++                "type": "string",
++                "optional": true,
++                "nodoc": true,
++                "description": "Firefox's: the title of a discarded tab until it loads."
+               }
+             }
+           }
 --- a/chrome/common/extensions/chrome_extensions_client.cc
 +++ b/chrome/common/extensions/chrome_extensions_client.cc
 @@ -29,6 +29,8 @@
@@ -4090,3 +4133,89 @@
    switch (getModifierPolicy(e.keyCode)) {
      case ModifierPolicy.REQUIRED:
        return hasModifier(e, false);
+--- a/chrome/browser/extensions/api/tabs/tabs_api.cc
++++ b/chrome/browser/extensions/api/tabs/tabs_api.cc
+@@ -18,6 +18,7 @@
+ #include "base/types/optional_util.h"
+ #include "base/unguessable_token.h"
+ #include "chrome/browser/devtools/devtools_window.h"
++#include "chrome/browser/extensions/api/tabs/firefox_discarded_tab.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_util.h"
+ #include "chrome/browser/extensions/browser_extension_window_controller.h"
+@@ -894,6 +895,18 @@
+   }
+ #endif
+ 
++  // Firefox add-ons (dubna): Firefox's discarded and title
++  // (firefox_discarded_tab.h). A discarded tab opens in the background.
++  if (std::optional<std::string> discarded_error =
++          FirefoxDiscardedTabError(create_properties, validated_url_)) {
++    return RespondNow(Error(std::move(*discarded_error)));
++  }
++  discarded_ = create_properties.discarded.value_or(false);
++  title_ = create_properties.title;
++  if (discarded_) {
++    active_ = false;
++  }
++
+   opener_tab_id_ = create_properties.opener_tab_id;
+ 
+   // TODO(jstritar): Add a constant, chrome.tabs.TAB_ID_ACTIVE, that
+@@ -1124,6 +1137,8 @@
+ 
+   options.active = active_;
+   options.pinned = pinned_;
++  options.discarded = discarded_;
++  options.title = title_;
+   options.index = index_;
+   options.split_with_tab_id = split_with_tab_id_;
+ 
+--- a/chrome/browser/extensions/api/tabs/tabs_api.h
++++ b/chrome/browser/extensions/api/tabs/tabs_api.h
+@@ -130,6 +130,9 @@
+   std::optional<bool> pinned_;
+   std::optional<int> index_;
+   std::optional<int> split_with_tab_id_;
++  // Firefox add-ons (dubna): Firefox's discarded and title.
++  bool discarded_ = false;
++  std::optional<std::string> title_;
+ 
+   // The validated URL to open.
+   GURL validated_url_;
+--- a/chrome/browser/extensions/open_tab_helper.cc
++++ b/chrome/browser/extensions/open_tab_helper.cc
+@@ -7,6 +7,7 @@
+ #include "base/memory/weak_ptr.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/types/expected_macros.h"
++#include "chrome/browser/extensions/api/tabs/firefox_discarded_tab.h"
+ #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
+ #include "chrome/browser/extensions/browser_window_util.h"
+ #include "chrome/browser/extensions/chrome_extension_function_details.h"
+@@ -196,6 +197,13 @@
+                                     ? WindowOpenDisposition::kNewForegroundTab
+                                     : WindowOpenDisposition::kNewBackgroundTab;
+ 
++  // Firefox add-ons (dubna): a discarded tab is inserted as a tab that loads
++  // its page when it is selected (firefox_discarded_tab.h).
++  if (params.discarded) {
++    navigate_params.contents_to_insert = CreateFirefoxDiscardedTab(
++        *browser.GetProfile(), validated_url, params.title);
++  }
++
+   // If splitWithTabId is specified, determine the relative positioning of the
+   // new tab. Defaults to the right of the target tab if index is not specified.
+   tabs::TabInterface* split_tab = nullptr;
+--- a/chrome/browser/extensions/open_tab_helper.h
++++ b/chrome/browser/extensions/open_tab_helper.h
+@@ -33,6 +33,9 @@
+     std::optional<int> index;
+     std::optional<int> bookmark_id;
+     std::optional<int> split_with_tab_id;
++    // Firefox add-ons (dubna): Firefox's discarded tab and its title.
++    bool discarded = false;
++    std::optional<std::string> title;
+   };
+ 
+ #if !BUILDFLAG(IS_ANDROID)
