@@ -1,20 +1,20 @@
 # Nightly runs
 
-The nightly update is a chain of T3 scheduled tasks in the dubna project. The router starts the daily chain at 18:00: it checks space, the upstreams and the releases, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. After the daily chain, climb rounds follow: each is one climb stage, which starts the next round itself ("Climb rounds"). So the router, the upstream checks, the tasks stage and the site run once a day, and the climb runs on. Only one stage runs at a time, and never two builds at once.
+The nightly update is a chain of T3 scheduled tasks. The router starts the daily chain at 18:00: it checks space, the upstreams and the releases, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. After the daily chain, climb rounds follow: each is one climb stage, which starts the next round itself ("Climb rounds"). So the router, the upstream checks, the tasks stage and the site run once a day, and the climb runs on. Only one stage runs at a time, and never two builds at once.
 
-| Task | Id | Job |
-|---|---|---|
-| dubna nightly · router | `scheduled-task:d1826b95-4bfd-4bd8-b749-46bfed2cef0f` | The daily chain: status, space, what comes next, the final report, the first climb round |
-| dubna nightly · release | `scheduled-task:815cf2ed-72bb-4b97-8e17-63b6293f7159` | Release each main that is past its last release, and fix missing platforms |
-| dubna nightly · update oganesson | `scheduled-task:8625b77b-636b-4947-950f-e635b35f3548` | Update the desktop browser |
-| dubna nightly · update tennessine | `scheduled-task:d9b93584-ffe2-47ba-9feb-6e9f496ae974` | Update the Android browser |
-| dubna nightly · tasks | `scheduled-task:59929e97-ca31-4513-828a-2bc54e01ce67` | A batch of open issues |
-| dubna nightly · climb | `scheduled-task:cef297bb-8c2e-43b2-bcdb-fffdee0cefcc` | A batch of WebExtensions climb steps, mostly implementation: as many as one build can ship, pushed to main without a tag. In a round, it starts the next round |
-| dubna nightly · site | `scheduled-task:8f483e0f-4477-4461-b9c7-f69fdf612de5` | Bring the site and its release notes up to date |
+| Task | Job |
+|---|---|
+| dubna nightly · router | The daily chain: status, space, what comes next, the final report, the first climb round |
+| dubna nightly · release | Release each main that is past its last release, and fix missing platforms |
+| dubna nightly · update oganesson | Update the desktop browser |
+| dubna nightly · update tennessine | Update the Android browser |
+| dubna nightly · tasks | A batch of open issues |
+| dubna nightly · climb | A batch of WebExtensions climb steps, mostly implementation: as many as one build can ship, pushed to main without a tag. In a round, it starts the next round |
+| dubna nightly · site | Bring the site and its release notes up to date |
 
-Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4764-aadc-a18c4c602b29:e68f137f-f5bb-4692-a8e6-db45394ca597`), and posts there. tools/usage_pace.py counts the usage of this thread apart, so a new thread needs its id there too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
+Every task is bound to one thread, the router's, and posts there. The router's task id and that thread's id are machine config, not in Git: the `router` and `thread` lines of ~/.config/dubna/nightly-ids (tab-separated). tools/usage_pace.py counts that thread's usage apart, and a `past-thread` line's too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
 
-The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
+The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's webhook URL, from ~/.config/dubna/stage-webhooks.tsv (the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
 
 Paths: each stage prompt names dubna's main checkout. The main checkouts of dubna, oganesson and tennessine sit side by side, and the standing worktrees are in `.worktrees/` beside them. `work/` in this file means dubna's main checkout's `work/`, never a worktree's.
 
@@ -77,7 +77,7 @@ When the router finds a round still open, it closes it: `end climb died` if the 
 
 1. Post the report in your thread. It is for the maintainer, who reviews it later: every fix, judgement call and flaky test, and anything failed or skipped.
 2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> <dubna's main checkout>/work/nightly.log`.
-3. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
+3. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id: `awk -F'\t' '$1=="router"{print $2}' ~/.config/dubna/nightly-ids`. Do nothing after it.
 
 Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
 

@@ -28,8 +28,21 @@ import datetime, json, sys, time
 from pathlib import Path
 
 LOGS = Path.home() / '.t3' / 'userdata' / 'logs' / 'provider'
-# The router's thread (its task's boundThreadId), where every nightly stage runs.
-NIGHTLY_THREAD = 'e68f137f-f5bb-4692-a8e6-db45394ca597'
+IDS = Path.home() / '.config' / 'dubna' / 'nightly-ids'
+
+
+def nightly_threads():
+    """Ids of the nightly thread and any earlier one, as the provider logs write them.
+
+    The logs URL-encode a thread id's colons, so match its last part, a UUID."""
+    ids = []
+    for line in IDS.read_text().splitlines():
+        key, _, value = line.partition('\t')
+        if key in ('thread', 'past-thread'):
+            ids.append(value.rsplit(':', 1)[-1])
+    return ids
+
+
 SESSION_MAX = 50
 # An evening run has cost 8 to 15 points of the week. This counts it lower,
 # so that more rounds start.
@@ -44,6 +57,7 @@ UTC = datetime.timezone.utc
 def read_events():
     """(time, unifiedWindows, nightly) of every rate_limit_event of the last 8 days, oldest first."""
     events = []
+    threads = nightly_threads()
     cutoff = time.time() - 8 * 86400
     for log in LOGS.glob('events.*.log*'):
         if log.stat().st_mtime < cutoff:
@@ -54,7 +68,7 @@ def read_events():
             info = json.loads(line[line.index('{'):])['event']['payload']['rate_limit_info']
             if 'unifiedWindows' in info:
                 stamp = datetime.datetime.fromisoformat(line[1:line.index(']')])
-                events.append((stamp, info['unifiedWindows'], NIGHTLY_THREAD in line))
+                events.append((stamp, info['unifiedWindows'], any(thread in line for thread in threads)))
     events.sort(key=lambda event: event[0])
     return events
 
