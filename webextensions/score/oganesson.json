@@ -1,11 +1,11 @@
 {
- "date": "2026-11-20",
+ "date": "2026-11-21",
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
  "levels": {
   "L0": 839,
   "L1": 836,
-  "L2": 766,
-  "L3": 693
+  "L2": 774,
+  "L3": 700
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -389,8 +389,8 @@
    "error": null
   },
   "{1018e4d6-728f-4b20-ad56-37578a4de76b}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (ui.js:504)"
+   "level": "L3",
+   "error": null
   },
   "{531906d3-e22f-4a6c-a102-8057b88a1a63}": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '5j6u4lcwgfgm5pe1gi') (93789956-b54f-4cd9-95e7-bd63695e5a2a:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'gys4xsxenfg121xrns') (b82e100b-cbde-4c9e-aaee-980cbe09e9dc:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (0f72a3a7-7e99-414e-9efe-236a1e644ba2:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (0697adb3-81dc-41e9-a834-063a9b1dec4b:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -701,8 +701,8 @@
    "error": null
   },
   "{4853d046-c5a3-436b-bc36-220fd935ee1d}": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:207)"
+   "level": "L3",
+   "error": null
   },
   "{174b2d58-b983-4501-ab4b-07e71203cb43}": {
    "level": "L3",
@@ -1009,8 +1009,8 @@
    "error": null
   },
   "offline-qr-code@rugk.github.io": {
-   "level": "L1",
-   "error": "Uncaught TypeError: browser.menus.refresh is not a function (background/modules/ContextMenu.js:58)"
+   "level": "L2",
+   "error": "Uncaught (in promise) Error: show no random tip, because randomize did not pass (common/modules/RandomTips/RandomTips.js:333)"
   },
   "remove-paywall@example.com": {
    "level": "L3",
@@ -1605,8 +1605,8 @@
    "error": null
   },
   "YandexSearchEngineExtension@space.kdev": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:43)"
+   "level": "L3",
+   "error": null
   },
   "{defe5404-0b6f-4cce-a119-ee0df858e5f9}": {
    "level": "L1",
@@ -1733,8 +1733,8 @@
    "error": null
   },
   "{c5867acc-54c9-4074-9574-04d8818d53e8}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:339)"
+   "level": "L3",
+   "error": null
   },
   "{db420ff1-427a-4cda-b5e7-7d395b9f16e1}": {
    "level": "L3",
@@ -2005,8 +2005,8 @@
    "error": null
   },
   "{3579f63b-d8ee-424f-bbb6-6d0ce3285e6a}": {
-   "level": "L1",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'removeListener') (background.js:7)"
+   "level": "L3",
+   "error": null
   },
   "bidev@ingenit.com": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjFkZWJlOWY0NTdiOTMzNDkzODU0OTY5YjdhN2Q3Y2U1ZGI5MzY1YTAiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjAzZjZjZjczYTFlMjNjZWYyZjdiMDJkYzA3YmI3N2RhZTliZDg0M2UiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2406,7 +2406,7 @@
   },
   "newtabtools@darktrojan.net": {
    "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background.js:262)"
+   "error": "Uncaught (in promise) TypeError: Error in invocation of topSites.get(optional function callback): No matching signature. (tiles.js:63)"
   },
   "{333f4540-f467-419b-8410-233078ae8813}": {
    "level": "L3",
@@ -2685,8 +2685,8 @@
    "error": null
   },
   "ao3-enhancements@jsmnbom": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (background/background.js:133)"
+   "level": "L3",
+   "error": null
   },
   "cookie-manager@robwu.nl": {
    "level": "L2",
@@ -3237,8 +3237,8 @@
    "error": null
   },
   "view-image-info@jeffersonscher.com": {
-   "level": "L1",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'addListener') (view-image-info-background.js:408)"
+   "level": "L3",
+   "error": null
   },
   "{f69e22c7-bc50-414a-9269-0f5c344cd94c}": {
    "level": "L3",

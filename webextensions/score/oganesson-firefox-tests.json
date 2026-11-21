@@ -1,8 +1,8 @@
 {
- "date": "2026-11-20",
+ "date": "2026-11-21",
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
- "passing": 14,
- "ported": 88,
+ "passing": 17,
+ "ported": 92,
  "total": 841,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
@@ -56,7 +56,7 @@
   "browser/components/extensions/test/browser/browser_ext_contextMenus.js": {
    "port": "firefox/browser_ext_contextMenus.py",
    "passed": false,
-   "error": "FAIL: test_02 (firefox.browser_ext_contextMenus.ContextMenusTest.test_02): AssertionError: 0 != 1 : contextMenu item for password input element was found (context=password)",
+   "error": "FAIL: test_02 (firefox.browser_ext_contextMenus.ContextMenusTest.test_02): AssertionError: browser.test: Promise rejected, expecting rejection to match '/cannot be an ancestor/', got 'Error: Unknown error.': Should not be able to reparent an item as descendent of itself",
    "passing": [
     "test_01",
     "test_bookmark_context_requires_permission",
@@ -77,6 +77,16 @@
    "error": "FAIL: test_actions_context_menu (firefox.browser_ext_contextMenus_commands.ContextMenusCommandsTest.test_actions_context_menu): AssertionError: timed out after 30s waiting for the message 'test-opened'; the add-ons logged: []",
    "passing": [
     "test_v3_action_context_menu"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_contextMenus_icons.js": {
+   "port": "firefox/browser_ext_contextMenus_icons.py",
+   "passed": false,
+   "error": "FAIL: test_child_icon (firefox.browser_ext_contextMenus_icons.ContextMenusIconsTest.test_child_icon): AssertionError: browser.test: child4's icon - Expected: the SVG data: URL, Actual: None",
+   "passing": [
+    "test_child_icon_update",
+    "test_manifest_without_icons",
+    "test_root_icon"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_onclick.js": {
@@ -106,9 +116,13 @@
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_targetUrlPatterns.js": {
    "port": "firefox/browser_ext_contextMenus_targetUrlPatterns.py",
-   "passed": false,
-   "error": "FAIL: test_01_unsupported_schemes (firefox.browser_ext_contextMenus_targetUrlPatterns.ContextMenusTargetUrlPatternsTest.test_01_unsupported_schemes): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_unsupported_schemes",
+    "test_02_unsupported_scheme_without_pattern",
+    "test_03_invalid_http_url_without_pattern"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_contextMenus_uninstall.js": {
    "port": "firefox/browser_ext_contextMenus_uninstall.py",
@@ -153,11 +167,12 @@
   },
   "browser/components/extensions/test/browser/browser_ext_menus_capture_secondary_click.js": {
    "port": "firefox/browser_ext_menus_capture_secondary_click.py",
-   "passed": false,
-   "error": "FAIL: test_03_disabled_item (firefox.browser_ext_menus_capture_secondary_click.MenusCaptureSecondaryClickTest.test_03_disabled_item): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught TypeError: Cannot read properties of undefined (reading \\'addList",
+   "passed": true,
+   "error": null,
    "passing": [
     "test_01_buttons",
-    "test_02_submenu"
+    "test_02_submenu",
+    "test_03_disabled_item"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_errors.js": {
@@ -168,6 +183,12 @@
     "test_03_remove_error"
    ]
   },
+  "browser/components/extensions/test/browser/browser_ext_menus_event_order.js": {
+   "port": "firefox/browser_ext_menus_event_order.py",
+   "passed": false,
+   "error": "FAIL: test_01_menus_click_event_sequence (firefox.browser_ext_menus_event_order.MenusEventOrderTest.test_01_menus_click_event_sequence): AssertionError: [] is not true : Tools menu item should exist",
+   "passing": []
+  },
   "browser/components/extensions/test/browser/browser_ext_menus_eventpage.js": {
    "port": "firefox/browser_ext_menus_eventpage.py",
    "passed": false,
@@ -176,11 +197,33 @@
     "test_04_actions_context_menu"
    ]
   },
+  "browser/components/extensions/test/browser/browser_ext_menus_events.js": {
+   "port": "firefox/browser_ext_menus_events.py",
+   "passed": false,
+   "error": "FAIL: test_02_show_hide_without_menu_item (firefox.browser_ext_menus_events.MenusEventsTest.test_02_show_hide_without_menu_item): AssertionError: browser.test: info.targetElementId must be set in onShown",
+   "passing": [
+    "test_01_no_show_hide_for_unsupported_menu",
+    "test_05_show_hide_browserAction",
+    "test_09_show_hide_tab"
+   ]
+  },
   "browser/components/extensions/test/browser/browser_ext_menus_incognito.js": {
    "port": "firefox/browser_ext_menus_incognito.py",
    "passed": false,
-   "error": "FAIL: test_01_no_show_hide_for_private_window (firefox.browser_ext_menus_incognito.MenusIncognitoTest.test_01_no_show_hide_for_private_window): AssertionError: timed out after 30s waiting for the message 'menu-id'; the add-ons logged: ['\"Uncaught TypeError: Cannot read properties of undefined (readi",
+   "error": "FAIL: test_01_no_show_hide_for_private_window (firefox.browser_ext_menus_incognito.MenusIncognitoTest.test_01_no_show_hide_for_private_window): AssertionError: browser.test: menu exists not_allowed | menu exists spanning_allowed | expected events received for fefhfigkjpgbmnnmlmocjdmpoacmbfji. - Expe",
    "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_menus_refresh.js": {
+   "port": "firefox/browser_ext_menus_refresh.py",
+   "passed": false,
+   "error": "FAIL: test_03_refresh_menus_with_tools_menu (firefox.browser_ext_menus_refresh.MenusRefreshTest.test_03_refresh_menus_with_tools_menu): AssertionError: unexpectedly None : expected label: an item labelled 'first'",
+   "passing": [
+    "test_01_refresh_menus_with_browser_action",
+    "test_02_refresh_menus_with_tab",
+    "test_04_refresh_menus_with_page",
+    "test_05_refresh_without_menus_at_onShown",
+    "test_06_refresh_without_onShown"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_startup_restored.js": {
    "port": "firefox/browser_ext_menus_startup_restored.py",
@@ -191,34 +234,38 @@
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement.js": {
    "port": "firefox/browser_ext_menus_targetElement.py",
    "passed": false,
-   "error": "FAIL: test_01_required_permission (firefox.browser_ext_menus_targetElement.MenusTargetElementTest.test_01_required_permission): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'",
+   "error": "FAIL: test_02_getTargetElement_in_page (firefox.browser_ext_menus_targetElement.MenusTargetElementTest.test_02_getTargetElement_in_page): AssertionError: timed out after 30s waiting for the message 'checkIsValidDone'; the add-ons logged: []",
    "passing": [
+    "test_01_required_permission",
     "test_04_getTargetElement_after_removing_element"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_extension.js": {
    "port": "firefox/browser_ext_menus_targetElement_extension.py",
    "passed": false,
-   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 15s waiting for a target with 'chrome-extension://iabnmbkkennaaindkbklbodbmlhhjnen/tab.html'",
+   "error": "FAIL: test_01_getTargetElement_in_extension_tab (firefox.browser_ext_menus_targetElement_extension.MenusTargetElementExtensionTest.test_01_getTargetElement_in_extension_tab): AssertionError: timed out after 30s waiting for the message 'elementChecked'; the add-ons logged: []",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement_shadow.js": {
    "port": "firefox/browser_ext_menus_targetElement_shadow.py",
    "passed": false,
-   "error": "FAIL: test_01_menuInShadowDOM (firefox.browser_ext_menus_targetElement_shadow.MenusTargetElementShadowTest.test_01_menuInShadowDOM): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (readi",
+   "error": "FAIL: test_01_menuInShadowDOM (firefox.browser_ext_menus_targetElement_shadow.MenusTargetElementShadowTest.test_01_menuInShadowDOM): AssertionError: browser.test: undefined should be an integer | Unexpected error in getTargetElement: TypeError: Cannot read properties of undefined (reading 'getTarget",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_viewType.js": {
    "port": "firefox/browser_ext_menus_viewType.py",
    "passed": false,
-   "error": "FAIL: test_01_extension_tab_view_type (firefox.browser_ext_menus_viewType.MenusViewTypeTest.test_01_extension_tab_view_type): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'ad",
+   "error": "FAIL: test_01_extension_tab_view_type (firefox.browser_ext_menus_viewType.MenusViewTypeTest.test_01_extension_tab_view_type): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contex",
    "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_menus_visible.js": {
    "port": "firefox/browser_ext_menus_visible.py",
-   "passed": false,
-   "error": "FAIL: test_01_visible_false (firefox.browser_ext_menus_visible.MenusVisibleTest.test_01_visible_false): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefined (reading \\'addListener\\')\", source:",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_visible_false",
+    "test_02_visible_true"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_pageAction_context.js": {
    "port": "firefox/browser_ext_pageAction_context.py",
@@ -346,7 +393,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://gojbjonoanjfdbkfokkloockjnjd",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://oopcojdnkjnfhomkoegmmlnldjed",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -477,7 +524,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://nopkdonbilkgjckcnfnafehnpcanpdpg/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://lhpcmnadomkhllgloapjadplojfbfdep/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -548,7 +595,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://pcajneidkl",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://nfnapkgdba",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -651,7 +698,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://oibcifebbjpobncadifpoamojhgi",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://edodklfndjkapifldmhfhedlndfo",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
