@@ -124,17 +124,25 @@ Event::WillDispatchCallback FirefoxBookmarkEventCallback(
                              std::move(event_args));
 }
 
-bool ApplyFirefoxBookmarkType(api::bookmarks::BookmarkTreeNodeType type,
+bool ApplyFirefoxBookmarkType(const std::optional<std::string>& type,
                               std::string* url,
                               std::string* error) {
-  if (type == api::bookmarks::BookmarkTreeNodeType::kFolder) {
-    url->clear();
-  } else if (type == api::bookmarks::BookmarkTreeNodeType::kBookmark &&
-             url->empty()) {
-    *error = bookmarks_errors::kInvalidUrlError;
-    return false;
+  if (!type) {
+    return true;
   }
-  return true;
+  if (*type == "folder") {
+    url->clear();
+    return true;
+  }
+  if (*type == "bookmark") {
+    if (url->empty()) {
+      *error = bookmarks_errors::kInvalidUrlError;
+      return false;
+    }
+    return true;
+  }
+  *error = "Error at property 'type': Value must be one of bookmark, folder.";
+  return false;
 }
 
 }  // namespace extensions

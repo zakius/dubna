@@ -4,6 +4,7 @@
 #ifndef CHROME_BROWSER_EXTENSIONS_API_BOOKMARKS_CORE_FIREFOX_BOOKMARK_NODES_H_
 #define CHROME_BROWSER_EXTENSIONS_API_BOOKMARKS_CORE_FIREFOX_BOOKMARK_NODES_H_
 
+#include <optional>
 #include <string>
 
 #include "base/memory/scoped_refptr.h"
@@ -44,9 +45,11 @@ Event::WillDispatchCallback FirefoxBookmarkEventCallback(
 // Firefox's bookmarks.create() takes the type of the node: a "folder" has no
 // URL, even when it was given one, and a "bookmark" needs one, where Chromium
 // would make a folder. Clears `url` for a folder; sets `error` and returns
-// false for a bookmark without a URL. Any extension may pass the type, as the
-// schema takes it from all of them.
-bool ApplyFirefoxBookmarkType(api::bookmarks::BookmarkTreeNodeType type,
+// false for a bookmark without a URL, or for another type. Any extension may
+// pass the type, as the schema takes it from all of them. The schema has it as
+// a plain string: a named enum type would show on every extension's
+// chrome.bookmarks, and Chromium allows no new inline enums.
+bool ApplyFirefoxBookmarkType(const std::optional<std::string>& type,
                               std::string* url,
                               std::string* error);
 
