@@ -5,7 +5,7 @@
   "L0": 839,
   "L1": 836,
   "L2": 774,
-  "L3": 700
+  "L3": 701
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the popup did not open"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'l76hfxlt8fvkf3iyvt') (48d6f3f2-88de-4d3c-ab34-99d1cec26982:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '0w48g0ajuenorbh78j') (58ebf668-b43e-4000-b7b4-7f59a00dea35:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (de279406-b52a-4fd4-850c-cd96468444df:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (b3206d9d-bdcb-4e6b-8982-e7740c93550d:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -1929,8 +1929,8 @@
    "error": null
   },
   "default-bookmark-folder@gustiaux.com": {
-   "level": "L2",
-   "error": "Uncaught (in promise) ReferenceError: UNNAMED_FOLDER is not defined (scripts/popup/popup.js:12)"
+   "level": "L3",
+   "error": null
   },
   "bookmarkdupes@martin-vaeth.org": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjE5ODY2ZTZkMDYzMzZjMTNmNDEyYzE0MTVhZmYxYjM0MWU5ZWVmMzEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjVjMmQ4YTZiMDZmNTI4ODViMDRhMjZkYTk3ZDM5MTUyOTY3ZmYyNjEiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
