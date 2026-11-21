@@ -121,6 +121,8 @@
 # extension items and when they open and close (firefox_menu_events.h).
 # Firefox's onShown listener gets an undefined tab where the menu has none
 # (firefox_menu_shown_tab.h).
+# Only Firefox add-ons' bindings have contextMenus.onShown, onHidden and
+# refresh() (firefox_menu_events_bindings.h).
 # menus.create and update take Firefox's icons, which the item shows
 # (firefox_menu_icons.h), and its password, bookmark and tools_menu contexts;
 # a password item shows on a password field, a bookmark or tools_menu one in
@@ -4094,7 +4096,7 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +270,10 @@ source_set("renderer") {
+@@ -246,6 +270,15 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -4102,6 +4104,11 @@
 +    # Firefox add-ons (dubna): menus.onShown's tab, undefined without one.
 +    "bindings/firefox_menu_shown_tab.cc",
 +    "bindings/firefox_menu_shown_tab.h",
++
++    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh() only for
++    # Firefox add-ons.
++    "firefox_menu_events_bindings.cc",
++    "firefox_menu_events_bindings.h",
    ]
  
    configs += [ "//build/config:precompiled_headers" ]
@@ -4321,15 +4328,16 @@
      case mojom::ContextType::kUnspecified:
 --- a/extensions/renderer/native_extension_bindings_system.cc
 +++ b/extensions/renderer/native_extension_bindings_system.cc
-@@ -49,6 +49,7 @@
+@@ -49,6 +49,8 @@
  #include "extensions/renderer/extension_frame_helper.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extension_js_runner.h"
++#include "extensions/renderer/firefox_menu_events_bindings.h"
 +#include "extensions/renderer/firefox_storage.h"
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/module_system.h"
-@@ -248,6 +249,10 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
+@@ -248,6 +250,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
  bool IsAPIFeatureAvailable(v8::Local<v8::Context> context,
                             const std::string& name) {
    ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
@@ -4337,10 +4345,15 @@
 +  if (IsHiddenFromFirefoxAddOn(*script_context, name)) {
 +    return false;
 +  }
++  // Firefox add-ons (dubna): contextMenus' Firefox events and refresh() are
++  // theirs alone (firefox_menu_events_bindings.h).
++  if (IsFirefoxMenusMemberHidden(script_context->extension(), name)) {
++    return false;
++  }
    return script_context->GetAvailability(name).is_available();
  }
  
-@@ -1031,9 +1036,16 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
+@@ -1031,9 +1042,16 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
    CHECK(
        gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
  
