@@ -76,8 +76,21 @@ bool WillDispatchFirefoxBookmarkEvent(
   ToFirefoxId(model, info, "parentId");
   ToFirefoxId(model, info, "oldParentId");
   base::DictValue* node = info.FindDict("node");
-  if (node) {
-    ToFirefoxNode(model, *node);
+  if (!node) {
+    return true;
+  }
+  ToFirefoxNode(model, *node);
+  // onRemoved's node has left its parent, so Chromium gives it no parentId or
+  // index; Firefox gives it where it was, as removeInfo has it.
+  if (event_name == api::bookmarks::OnRemoved::kEventName) {
+    const std::string* parent_id = info.FindString("parentId");
+    if (parent_id) {
+      node->Set("parentId", *parent_id);
+    }
+    std::optional<int> index = info.FindInt("index");
+    if (index) {
+      node->Set("index", *index);
+    }
   }
   return true;
 }
