@@ -19,7 +19,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-WORK = Path.home() / 'dev/dubna/work'
+WORK = Path.home() / 'dev/superheavy/dubna/work'
 PAUSE = WORK / 'rounds-paused'
 LOG = WORK / 'nightly.log'
 WEBHOOKS = Path.home() / '.config/dubna/stage-webhooks.tsv'

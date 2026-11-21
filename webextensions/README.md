@@ -19,7 +19,7 @@ We get there in small steps (the "climb"). Each step is one API, one install flo
 
 ## The old work
 
-The WebExtensions work from Chromium 154 is archived in `~/dev/oganesson-webextensions` (`main/patches/core/firefox-*.patch`, `main/patches/ui/firefox-*.patch`, and the status table in `main/docs/firefox-webextensions.md`). Use it as a reference only. Don't apply it as it is. Each archived patch is a climb step: rewrite it to the current rules (new files, small hooks, no edits to an upstream's patches), on the current Chromium, with a test.
+The WebExtensions work from Chromium 154 is archived in `~/dev/superheavy/.worktrees/oganesson-webextensions` (`main/patches/core/firefox-*.patch`, `main/patches/ui/firefox-*.patch`, and the status table in `main/docs/firefox-webextensions.md`). Use it as a reference only. Don't apply it as it is. Each archived patch is a climb step: rewrite it to the current rules (new files, small hooks, no edits to an upstream's patches), on the current Chromium, with a test.
 
 ## How we measure
 
