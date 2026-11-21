@@ -119,6 +119,8 @@
 # menus.onShown, onHidden and refresh() are Firefox's: a page's, an action's
 # and a tab's menu tell their ContextMenuMatcher where they appended the
 # extension items and when they open and close (firefox_menu_events.h).
+# Firefox's onShown listener gets an undefined tab where the menu has none
+# (firefox_menu_shown_tab.h).
 # menus.create and update take Firefox's icons, which the item shows
 # (firefox_menu_icons.h), and its password, bookmark and tools_menu contexts;
 # a password item shows on a password field, a bookmark or tools_menu one in
@@ -4092,6 +4094,17 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
+@@ -246,6 +270,10 @@ source_set("renderer") {
+     "worker_thread_dispatcher.h",
+     "worker_thread_util.cc",
+     "worker_thread_util.h",
++
++    # Firefox add-ons (dubna): menus.onShown's tab, undefined without one.
++    "bindings/firefox_menu_shown_tab.cc",
++    "bindings/firefox_menu_shown_tab.h",
+   ]
+ 
+   configs += [ "//build/config:precompiled_headers" ]
 --- a/extensions/renderer/api/context_menus_custom_bindings.cc
 +++ b/extensions/renderer/api/context_menus_custom_bindings.cc
 @@ -10,6 +10,7 @@
@@ -5673,3 +5686,23 @@
  
    if (!promise.IsEmpty())
      arguments->Return(promise);
+--- a/extensions/renderer/bindings/api_event_handler.cc
++++ b/extensions/renderer/bindings/api_event_handler.cc
+@@ -22,6 +22,7 @@
+ #include "extensions/renderer/bindings/api_binding_util.h"
+ #include "extensions/renderer/bindings/api_response_validator.h"
+ #include "extensions/renderer/bindings/event_emitter.h"
++#include "extensions/renderer/bindings/firefox_menu_shown_tab.h"
+ #include "extensions/renderer/bindings/get_per_context_data.h"
+ #include "extensions/renderer/bindings/js_runner.h"
+ #include "gin/converter.h"
+@@ -297,6 +298,9 @@ void APIEventHandler::FireEventInContext(const std::string& event_name,
+   for (const auto& arg : args) {
+     v8_args.push_back(converter->ToV8Value(arg, context));
+   }
++  // Firefox add-ons (dubna): onShown's tab, undefined without one
++  // (firefox_menu_shown_tab.h).
++  AddFirefoxMenuShownTab(event_name, v8_args);
+ 
+   FireEventInContext(event_name, context, &v8_args, std::move(filter),
+                      /*on_dispatched_callback=*/v8::Local<v8::Function>(),

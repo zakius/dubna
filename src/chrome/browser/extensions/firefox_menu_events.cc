@@ -331,6 +331,8 @@ void SendOnShown(FirefoxMenuState& state,
   info.Set("menuIds", ShownMenuIds(items, *manager, extension.id()));
   base::ListValue args;
   args.Append(std::move(info));
+  // Without a tab, the renderer gives the listener undefined for it, as
+  // Firefox does (firefox_menu_shown_tab.h).
   if (tab) {
     ExtensionTabUtil::ScrubTabBehavior scrub_tab_behavior =
         ExtensionTabUtil::GetScrubTabBehavior(
