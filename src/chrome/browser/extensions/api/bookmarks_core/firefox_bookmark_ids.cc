@@ -57,7 +57,12 @@ bool ParseBookmarkId(const Extension* extension,
                      std::string_view id_string,
                      int64_t* id) {
   if (base::StringToInt64(id_string, id)) {
+    // For a Firefox add-on, another spelling of a mapped folder's number
+    // ("000000000000" for the root) finds nothing, as in Firefox. The number
+    // itself still finds the folder: the API gave it before it gave Firefox's
+    // IDs, and an add-on may have saved it.
     if (extension && IsFirefoxAddOn(*extension) &&
+        base::NumberToString(*id) != id_string &&
         !FirefoxFolderId(model, *id).empty()) {
       // No node has the ID -1.
       *id = -1;

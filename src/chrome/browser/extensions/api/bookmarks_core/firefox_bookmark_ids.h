@@ -26,9 +26,10 @@ class Extension;
 // and the API refuses, while it is empty. A folder that the account has is the
 // account's, as where bookmarks.create() puts a bookmark without a parent.
 // A Firefox add-on sees these folders only by Firefox's IDs
-// (ToFirefoxBookmarkId()), so for it their numbers are no node's ID and find
+// (ToFirefoxBookmarkId()), so for it another spelling of their numbers finds
 // nothing, as "000000000000" finds nothing in Firefox, where Chromium reads it
-// as the root's 0.
+// as the root's 0. The numbers themselves still find them, as the API gave
+// them before.
 bool ParseBookmarkId(const Extension* extension,
                      const bookmarks::BookmarkModel& model,
                      std::string_view id_string,
