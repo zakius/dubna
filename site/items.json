@@ -4386,6 +4386,16 @@
 {
 "b": "ts",
 "o": "tennessine",
+"a": "Address bar & search",
+"p": "tennessine/bookmark-autofill",
+"w": "The address bar autofills bookmarks: typing the start of a bookmark's address, with or without https:// and www., completes it, and Enter opens it. Upstream only history autofills, so with history not saved nothing did.",
+"s": "on",
+"n": "",
+"own": 1
+},
+{
+"b": "ts",
+"o": "tennessine",
 "a": "Look & layout",
 "p": "tennessine/page-zoom-follows-font-size",
 "w": "Page zoom follows Android's font size: a smaller system font makes whole pages smaller, multiplied with the default zoom setting.",
