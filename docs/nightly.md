@@ -16,11 +16,13 @@ Every task is bound to one thread, the router's (`thread:project:950447f9-e52b-4
 
 The stages have webhook triggers, so they never start on their own. `run_scheduled_task_now` refuses webhook tasks, so the router starts a stage by posting to the task's `webhookUrl` (from `list_scheduled_tasks`; the URL is a secret, so never write it to the log or Git). A stage starts the router with `run_scheduled_task_now`.
 
+Paths: each stage prompt names dubna's main checkout. The main checkouts of dubna, oganesson and tennessine sit side by side, and the standing worktrees are in `.worktrees/` beside them. `work/` in this file means dubna's main checkout's `work/`, never a worktree's.
+
 Don't open threads: for a helper agent, use the native Agent tool (`run_in_background: false`; several calls in one message run at once), never `delegate_task` or `t3_thread_launch`. Another active thread holds up the next round ("Climb rounds", item 5).
 
 ## The log
 
-The chain keeps its state in `/home/zakius/dev/superheavy/dubna/work/nightly.log` (not in Git). Each line is a UTC time, then an event:
+The chain keeps its state in `work/nightly.log` (not in Git). Each line is a UTC time, then an event:
 
 ```
 2026-11-11T17:00:12Z begin
@@ -47,7 +49,7 @@ The daily chain is the router's: space, the upstream checks, updates, releases, 
 
 The next round starts only when all of these hold. The router checks them at the end of the daily chain, and the climb stage at the end of each round. Check in order and report the first that fails.
 
-1. The rounds aren't paused: /home/zakius/dev/superheavy/dubna/work/rounds-paused doesn't exist. The maintainer pauses them with `tools/rounds.py pause <reason>` to edit something between rounds, and `tools/rounds.py resume` starts the next round. When paused, report the file's reason.
+1. The rounds aren't paused: `work/rounds-paused` doesn't exist. The maintainer pauses them with `tools/rounds.py pause <reason>` to edit something between rounds, and `tools/rounds.py resume` starts the next round. When paused, report the file's reason.
 2. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`.
 3. No other run is queued in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1). A queued run is the 18:00 router or a stage started by hand, and it goes first: the rounds start again after its daily chain.
 4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). Fable's limit doesn't count: Opus reviews when Fable can't. The week's usage, this thread's included, must be under an even pace (93 points over the 7 days), so the rounds last the whole week and leave room for the maintainer's other work. The projection to the reset counts only the work outside this thread. The 18:00 chains still to come aren't projected either.
@@ -56,7 +58,7 @@ The next round starts only when all of these hold. The router checks them at the
 To start a round, check 1 once more (a pause can come while the other checks run), then append `begin`, `round <N>` (the ended chain's round number plus one, or 1 after the daily chain) and `start climb round <N>`, then post to the climb webhook as the last tool call:
 
 ```sh
-STAGE=climb; u=$(awk -F'\t' -v s="$STAGE" '$1==s{print $2}' /home/zakius/.config/dubna/stage-webhooks.tsv); [ -n "$u" ] && curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -X POST -H 'content-type: application/json' -d '{}' "$u"
+STAGE=climb; u=$(awk -F'\t' -v s="$STAGE" '$1==s{print $2}' ~/.config/dubna/stage-webhooks.tsv); [ -n "$u" ] && curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -X POST -H 'content-type: application/json' -d '{}' "$u"
 ```
 
 The URLs in that file are secrets: never print, log or commit them. If the command prints nothing or curl fails, append `end climb died <HTTP code>` and `end chain nothing`, and report it (a 404 means the URLs were rotated in Settings: the maintainer must refresh the file).
@@ -67,14 +69,14 @@ When the router finds a round still open, it closes it: `end climb died` if the 
 
 ## Starting a stage
 
-1. git -C /home/zakius/dev/superheavy/dubna pull -q, read this file, and read the stage's own prompt.
+1. Pull dubna's main checkout (git -C <it> pull -q), read this file, and read the stage's own prompt.
 2. Read the log from the last `begin`. Its last line should be `start <this stage>`: its details are your job, and the end lines before it say what landed tonight.
 3. If the last line is not your `start` line, someone started the stage by hand. Append `start <stage> manual` yourself, do the job, and write the end line, but don't start the router at the end.
 
 ## Ending a stage
 
 1. Post the report in your thread. It is for the maintainer, who reviews it later: every fix, judgement call and flaky test, and anything failed or skipped.
-2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> /home/zakius/dev/superheavy/dubna/work/nightly.log`.
+2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> <dubna's main checkout>/work/nightly.log`.
 3. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id from the table. Do nothing after it.
 
 Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
@@ -139,7 +141,7 @@ Meanwhile, rerunning the failed release job (gh run rerun <id> --failed) to get 
 
 Keep what speeds up later work. Never delete worktrees, their submodule checkouts, the shared work/ trees, build or download caches, docker images, or prepared patch-check trees (work/rebase, work/chromium/src). Delete only true garbage (merged branches, scratch logs). When disk use is above 85%, delete the least valuable thing first, and say so.
 
-Each repo has one standing worktree that every run reuses: /home/zakius/dev/superheavy/.worktrees/<repo>-update (not /tmp: a Chromium build doesn't fit there), and /home/zakius/dev/superheavy/.worktrees/dubna-site for the site. If it doesn't exist yet, create it once (git worktree add), link the main checkout's build scratch into it (ln -s /home/zakius/dev/superheavy/<repo>/work work) so that builds reuse its tree, caches and package history and share its build lock, and keep it afterwards.
+Each repo has one standing worktree that every run reuses: `.worktrees/<repo>-update` (not /tmp: a Chromium build doesn't fit there), and `.worktrees/dubna-site` for the site. If it doesn't exist yet, create it once (git worktree add), link the main checkout's build scratch into it (ln -s <main checkout>/work work) so that builds reuse its tree, caches and package history and share its build lock, and keep it afterwards.
 
 Each run: git fetch, check out a new branch from origin/main (git checkout -B), then git submodule update --init (it only moves what changed). If the worktree has uncommitted or unpushed work from an earlier run, don't discard it. Report it and stop for the maintainer, or carry it on if it is the same job. Don't commit in the main checkout.
 
@@ -184,7 +186,7 @@ What it checks: oganesson's series, with dubna's shared patches in it, applied t
 
 Each check run fetches the files from googlesource again, which takes about 20 minutes, so make as few runs as you can.
 
-1. Work in /home/zakius/dev/superheavy/.worktrees/oganesson-next. It is a standing worktree with a work/ of its own. Never link it to the main checkout's work/: the check assembles work/helium-tree for its checkout's Helium, and the main checkout's one belongs to the builds. Discard any patch edits an earlier run left (git checkout -- . in the worktree and in its dubna submodule), then git fetch, check out next-<N> from origin/main (N is the beta's milestone), and git submodule update --init.
+1. Work in `.worktrees/oganesson-next`. It is a standing worktree with a work/ of its own. Never link it to the main checkout's work/: the check assembles work/helium-tree for its checkout's Helium, and the main checkout's one belongs to the builds. Discard any patch edits an earlier run left (git checkout -- . in the worktree and in its dubna submodule), then git fetch, check out next-<N> from origin/main (N is the beta's milestone), and git submodule update --init.
 2. ./oganesson.py check-patches --chromium-version <beta> --keep work/next. Run it detached, as "Long jobs" says. It exits 1 whenever one of our patches fails, which is the usual result: the run itself failed only when its log has no `Linux:` and `Windows:` summary lines. `FAILED` lines are our patches. A patch's "an upstream patch failed in these files too" line names the files whose hunks depend on how the upstream rebases its patch.
 3. For each failed hunk of ours in a file that isn't on such a line, find the Chromium change that breaks it. Fix only those hunks. List the others in the issue and prepare nothing for them: the upstream's rebase decides their context, and the milestone update fits them. work/next/src is patched, so take the beta's own file from its Git (git -C work/next/src show HEAD:<path>, or git -C work/next/src/<dependency> for a file in v8, skia and the other dependency folders). Take the current milestone's from googlesource (curl -s https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/<path>?format=TEXT | base64 -d, or the dependency's own repo at the commit the current DEPS names), and diff the two.
    a. If an anchor exists that both versions have, rewrite the hunk on it, so that the patch applies to both. This fix can ship now.

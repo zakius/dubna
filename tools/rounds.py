@@ -15,11 +15,21 @@ either way; only the rounds after it wait for resume.
 """
 import datetime
 import re
+import subprocess
 import sys
 import urllib.request
 from pathlib import Path
 
-WORK = Path.home() / 'dev/superheavy/dubna/work'
+
+def main_checkout():
+    """dubna's main checkout, also when this runs from one of its worktrees."""
+    common = subprocess.run(['git', '-C', str(Path(__file__).parent), 'rev-parse',
+                             '--path-format=absolute', '--git-common-dir'],
+                            capture_output=True, text=True, check=True).stdout.strip()
+    return Path(common).parent
+
+
+WORK = main_checkout() / 'work'
 PAUSE = WORK / 'rounds-paused'
 LOG = WORK / 'nightly.log'
 WEBHOOKS = Path.home() / '.config/dubna/stage-webhooks.tsv'
