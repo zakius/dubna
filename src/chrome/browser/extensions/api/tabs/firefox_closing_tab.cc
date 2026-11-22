@@ -4,8 +4,14 @@
 #include "chrome/browser/extensions/api/tabs/firefox_closing_tab.h"
 
 #include "base/functional/bind.h"
+#include "base/location.h"
+#include "base/task/sequenced_task_runner.h"
 
 namespace extensions {
+
+FirefoxClosingTab::FirefoxClosingTab() = default;
+
+FirefoxClosingTab::~FirefoxClosingTab() = default;
 
 void FirefoxClosingTab::Observe(tabs::TabInterface& tab) {
   will_detach_subscription_ = tab.RegisterWillDetach(base::BindRepeating(
@@ -21,8 +27,18 @@ FirefoxTabStatus::Audience FirefoxClosingTab::PinnedAudience() const {
 
 void FirefoxClosingTab::WillDetach(tabs::TabInterface* tab,
                                    tabs::TabInterface::DetachReason reason) {
-  // A tab detached to be deleted is never inserted again.
   closing_ = reason == tabs::TabInterface::DetachReason::kDelete;
+  if (closing_) {
+    // The tab is detached in this task, and its pinned update with it; a
+    // tab still there afterwards stayed open.
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, base::BindOnce(&FirefoxClosingTab::CloseEnded,
+                                  weak_factory_.GetWeakPtr()));
+  }
+}
+
+void FirefoxClosingTab::CloseEnded() {
+  closing_ = false;
 }
 
 }  // namespace extensions
