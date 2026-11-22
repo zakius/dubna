@@ -30,9 +30,15 @@ bool MatchesWithDocumentUrl(
   if (!filter.Run(item)) {
     return false;
   }
+  if (!item->firefox_add_on()) {
+    return true;
+  }
+  // These menus have no link or medium for targetUrlPatterns to match.
+  if (!item->firefox_target_url_patterns().empty()) {
+    return false;
+  }
   const URLPatternSet& patterns = item->document_url_patterns();
-  return !item->firefox_add_on() || patterns.is_empty() ||
-         patterns.MatchesURL(url);
+  return patterns.is_empty() || patterns.MatchesURL(url);
 }
 
 // When a Firefox add-on was installed, and for other extensions no time,

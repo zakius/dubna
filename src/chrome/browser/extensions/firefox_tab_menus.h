@@ -25,7 +25,9 @@ namespace extensions {
 // documentUrlPatterns, matched against the URL of `tab` (may be null) as the
 // menu opens. Firefox shows such an item only on a tab that matches, also
 // after a refresh() once the tab has navigated. Chromium matches them only
-// in a page's menu, and shows the item on every tab.
+// in a page's menu, and shows the item on every tab. A Firefox add-on's item
+// with targetUrlPatterns never shows in these menus, which have no link or
+// medium for them to match, as in Firefox (enabledForContext()).
 base::RepeatingCallback<bool(const MenuItem*)> WithFirefoxDocumentUrl(
     base::RepeatingCallback<bool(const MenuItem*)> filter,
     content::WebContents* tab);
