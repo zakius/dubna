@@ -152,6 +152,13 @@
 # A Firefox add-on's menus items get Firefox's access keys: its title's & as
 # Firefox reads it, else the label's first letter or digit, else a digit
 # (firefox_menu_access_keys.h).
+# menus.getTargetElement() is Firefox's: Blink keeps each window's last menu
+# target with a new ID (firefox_menu_target.h), which the menu's params carry
+# (firefox_target_element_id) into onShown's and onClicked's targetElementId,
+# and blink's WebElement::FirefoxMenuTarget() gives the element back to the
+# window's pages and content scripts. Only a Firefox add-on with the menus
+# permission gets them, and its content scripts get browser.menus with
+# getTargetElement() alone (firefox_menu_target_element.h).
 # A Firefox add-on's host patterns in permissions and optional_permissions are
 # host permissions and optional ones in Manifest V3 too, as in Firefox
 # (firefox_host_permissions.h).
@@ -2558,7 +2565,7 @@
        {
          "id": "OnClickData",
          "type": "object",
-@@ -82,6 +111,29 @@
+@@ -82,6 +111,36 @@
              "optional": true,
              "description": "If the element is a link, the URL it points to."
            },
@@ -2585,10 +2592,17 @@
 +            "optional": true,
 +            "nodoc": true
 +          },
++          // Firefox add-ons (dubna): the ID that menus.getTargetElement
++          // takes (firefox_menu_target_element.h).
++          "targetElementId": {
++            "type": "integer",
++            "optional": true,
++            "nodoc": true
++          },
            "srcUrl": {
              "type": "string",
              "optional": true,
-@@ -133,6 +185,13 @@
+@@ -133,6 +192,13 @@
              "optional": true,
              "description": "The type of menu item. Defaults to <code>normal</code>."
            },
@@ -2602,7 +2616,7 @@
            "id": {
              "type": "string",
              "optional": true,
-@@ -157,6 +216,17 @@
+@@ -157,6 +223,17 @@
              "optional": true,
              "description": "List of contexts this menu item will appear in. Defaults to <code>['page']</code>."
            },
@@ -2620,7 +2634,7 @@
            "visible": {
              "type": "boolean",
              "optional": true,
-@@ -203,6 +273,14 @@
+@@ -203,6 +280,14 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -2635,7 +2649,7 @@
            }
          }
        }
-@@ -257,6 +335,12 @@
+@@ -257,6 +342,12 @@
                  "$ref": "ItemType",
                  "optional": true
                },
@@ -2648,7 +2662,7 @@
                "title": {
                  "type": "string",
                  "optional": true
-@@ -273,6 +357,16 @@
+@@ -273,6 +364,16 @@
                  "minItems": 1,
                  "optional": true
                },
@@ -2665,7 +2679,7 @@
                "visible": {
                  "type": "boolean",
                  "optional": true,
-@@ -314,6 +408,14 @@
+@@ -314,6 +415,14 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -2680,7 +2694,7 @@
                }
              }
            }
-@@ -357,6 +459,20 @@
+@@ -357,6 +466,20 @@
            "parameters": [],
            "description": "Resolves when removal is complete."
          }
@@ -2701,7 +2715,7 @@
        }
      ],
      "events": [
-@@ -377,6 +493,34 @@
+@@ -377,6 +500,34 @@
              "optional": true
            }
          ]
@@ -3669,7 +3683,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,23 @@ static_library("common") {
+@@ -402,6 +402,25 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -3682,6 +3696,8 @@
 +    "firefox_host_permissions.h",
 +    "firefox_locale_files.cc",
 +    "firefox_locale_files.h",
++    "firefox_menus_permission.cc",
++    "firefox_menus_permission.h",
 +    "firefox_page_action.cc",
 +    "firefox_page_action.h",
 +    "firefox_svg_icons.cc",
@@ -4388,7 +4404,7 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +270,15 @@ source_set("renderer") {
+@@ -246,6 +270,19 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -4401,6 +4417,10 @@
 +    # Firefox add-ons.
 +    "firefox_menu_events_bindings.cc",
 +    "firefox_menu_events_bindings.h",
++
++    # Firefox add-ons (dubna): menus.getTargetElement.
++    "firefox_menu_target_element.cc",
++    "firefox_menu_target_element.h",
    ]
  
    configs += [ "//build/config:precompiled_headers" ]
@@ -4620,16 +4640,17 @@
      case mojom::ContextType::kUnspecified:
 --- a/extensions/renderer/native_extension_bindings_system.cc
 +++ b/extensions/renderer/native_extension_bindings_system.cc
-@@ -49,6 +49,8 @@
+@@ -49,6 +49,9 @@
  #include "extensions/renderer/extension_frame_helper.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extension_js_runner.h"
 +#include "extensions/renderer/firefox_menu_events_bindings.h"
++#include "extensions/renderer/firefox_menu_target_element.h"
 +#include "extensions/renderer/firefox_storage.h"
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/module_system.h"
-@@ -248,6 +250,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
+@@ -248,6 +251,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
  bool IsAPIFeatureAvailable(v8::Local<v8::Context> context,
                             const std::string& name) {
    ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
@@ -4645,7 +4666,17 @@
    return script_context->GetAvailability(name).is_available();
  }
  
-@@ -1031,9 +1042,16 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
+@@ -598,6 +610,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
+   if (context->context_type() == mojom::ContextType::kContentScript) {
+     SetScriptingParams(context);
+   }
++  // Firefox add-ons (dubna): menus.getTargetElement in content scripts
++  // (firefox_menu_target_element.h).
++  AddFirefoxContentScriptMenus(context);
+ }
+ 
+ void NativeExtensionBindingsSystem::WillReleaseScriptContext(
+@@ -1031,11 +1046,21 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
    CHECK(
        gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
  
@@ -4664,7 +4695,12 @@
 +                              api_name_string);
    if (root_binding.IsEmpty())
      return v8::Local<v8::Object>();
++  // Firefox add-ons (dubna): menus.getTargetElement
++  // (firefox_menu_target_element.h).
++  AddFirefoxGetTargetElement(script_context, api_name_string, root_binding);
  
+   v8::Maybe<bool> success =
+       apis->CreateDataProperty(context, api_name, root_binding);
 --- a/extensions/renderer/resources/context_menus_handlers.js
 +++ b/extensions/renderer/resources/context_menus_handlers.js
 @@ -53,6 +53,21 @@
@@ -5439,7 +5475,7 @@
    }
 --- a/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
-@@ -17,6 +17,8 @@
+@@ -17,6 +17,8 @@ bool StructTraits<blink::mojom::UntrustworthyContextMenuParamsDataView,
      Read(blink::mojom::UntrustworthyContextMenuParamsDataView data,
           blink::UntrustworthyContextMenuParams* out) {
    if (!data.ReadMediaType(&out->media_type) ||
@@ -5448,9 +5484,18 @@
        !data.ReadLinkUrl(&out->link_url) ||
        !data.ReadLinkText(&out->link_text) ||
        !data.ReadUnfilteredLinkUrl(&out->unfiltered_link_url) ||
+@@ -43,6 +45,8 @@ bool StructTraits<blink::mojom::UntrustworthyContextMenuParamsDataView,
+ 
+   out->x = data.x();
+   out->y = data.y();
++  // Firefox add-ons (dubna): see firefox_target_element_id.
++  out->firefox_target_element_id = data.firefox_target_element_id();
+   out->has_image_contents = data.has_image_contents();
+   out->is_image_media_plugin_document = data.is_image_media_plugin_document();
+   out->media_flags = data.media_flags();
 --- a/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
-@@ -54,12 +54,15 @@
+@@ -54,12 +54,16 @@ UntrustworthyContextMenuParams ContextMenuParamsBuilder::Build(
    params.y = data.mouse_position.y();
    params.link_url = data.link_url;
    params.unfiltered_link_url = data.link_url;
@@ -5463,23 +5508,25 @@
    params.selection_text = base::UTF8ToUTF16(data.selected_text);
 +  params.firefox_selection_text =
 +      base::UTF8ToUTF16(data.firefox_selection_text);
++  params.firefox_target_element_id = data.firefox_target_element_id;
    params.selection_start_offset = data.selection_start_offset;
    params.title_text = base::UTF8ToUTF16(data.title_text);
    params.alt_text = base::UTF8ToUTF16(data.alt_text);
 --- a/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
 +++ b/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
-@@ -46,6 +46,8 @@
+@@ -46,6 +46,9 @@ UntrustworthyContextMenuParams& UntrustworthyContextMenuParams::operator=(
  void UntrustworthyContextMenuParams::Assign(
      const UntrustworthyContextMenuParams& other) {
    media_type = other.media_type;
 +  invalid_link_url = other.invalid_link_url;
 +  firefox_selection_text = other.firefox_selection_text;
++  firefox_target_element_id = other.firefox_target_element_id;
    x = other.x;
    y = other.y;
    link_url = other.link_url;
 --- a/third_party/blink/public/common/context_menu_data/context_menu_data.h
 +++ b/third_party/blink/public/common/context_menu_data/context_menu_data.h
-@@ -107,9 +107,17 @@
+@@ -107,9 +107,22 @@ struct ContextMenuData {
    // The text of the link that is in the context.
    std::string link_text;
  
@@ -5494,12 +5541,17 @@
 +  // menu opens in it (UntrustworthyContextMenuParams::firefox_selection_text).
 +  std::string firefox_selection_text;
 +
++  // Firefox add-ons (dubna): the menus.getTargetElement ID of the element
++  // that the menu opens on
++  // (UntrustworthyContextMenuParams::firefox_target_element_id).
++  int firefox_target_element_id = 0;
++
    // Title attribute of the selection in context.
    std::string title_text;
  
 --- a/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
 +++ b/third_party/blink/public/common/context_menu_data/context_menu_mojom_traits.h
-@@ -48,6 +48,11 @@
+@@ -48,6 +48,11 @@ struct BLINK_COMMON_EXPORT
      return r.unfiltered_link_url;
    }
  
@@ -5511,7 +5563,7 @@
    static const GURL& src_url(const blink::UntrustworthyContextMenuParams& r) {
      return r.src_url;
    }
-@@ -76,6 +81,11 @@
+@@ -76,6 +81,16 @@ struct BLINK_COMMON_EXPORT
      return r.selection_text;
    }
  
@@ -5520,12 +5572,17 @@
 +    return r.firefox_selection_text;
 +  }
 +
++  static int32_t firefox_target_element_id(
++      const blink::UntrustworthyContextMenuParams& r) {
++    return r.firefox_target_element_id;
++  }
++
    static const std::u16string& title_text(
        const blink::UntrustworthyContextMenuParams& r) {
      return r.title_text;
 --- a/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
 +++ b/third_party/blink/public/common/context_menu_data/untrustworthy_context_menu_params.h
-@@ -57,6 +57,11 @@
+@@ -57,6 +57,11 @@ struct BLINK_COMMON_EXPORT UntrustworthyContextMenuParams {
    // this field in the frontend process.
    GURL unfiltered_link_url;
  
@@ -5537,7 +5594,7 @@
    // This is the source URL for the element that the context menu was
    // invoked on. Example of elements with source URLs are img, audio, and
    // video.
-@@ -82,6 +87,11 @@
+@@ -82,6 +87,16 @@ struct BLINK_COMMON_EXPORT UntrustworthyContextMenuParams {
    // This is the text of the selection that the context menu was invoked on.
    std::u16string selection_text;
  
@@ -5546,12 +5603,17 @@
 +  // (firefox_selected_text.h). Chromium's own items read selection_text.
 +  std::u16string firefox_selection_text;
 +
++  // Firefox add-ons (dubna): the ID of the element that the menu opens on,
++  // which menus.getTargetElement takes in its frame (firefox_menu_target.h),
++  // and Firefox's menus give add-ons as targetElementId. 0 for none.
++  int firefox_target_element_id = 0;
++
    // This is the title text of the selection that the context menu was
    // invoked on.
    std::u16string title_text;
 --- a/third_party/blink/public/mojom/context_menu/context_menu.mojom
 +++ b/third_party/blink/public/mojom/context_menu/context_menu.mojom
-@@ -100,6 +100,10 @@
+@@ -100,6 +100,10 @@ struct UntrustworthyContextMenuParams {
    // this field in the frontend process.
    url.mojom.Url unfiltered_link_url;
  
@@ -5562,7 +5624,7 @@
    // This is the source URL for the element that the context menu was
    // invoked on. Example of elements with source URLs are img, audio, and
    // video.
-@@ -125,6 +129,10 @@
+@@ -125,6 +129,14 @@ struct UntrustworthyContextMenuParams {
    // This is the text of the selection that the context menu was invoked on.
    mojo_base.mojom.BigString16 selection_text;
  
@@ -5570,29 +5632,36 @@
 +  // menu opens in it, as Firefox's menus give it.
 +  mojo_base.mojom.BigString16 firefox_selection_text;
 +
++  // Firefox add-ons (dubna): the ID of the element that the menu opens on,
++  // for menus.getTargetElement. 0 for none.
++  int32 firefox_target_element_id;
++
    // This is the title text of the selection that the context menu was
    // invoked on.
    mojo_base.mojom.BigString16 title_text;
 --- a/third_party/blink/renderer/core/page/context_menu_controller.cc
 +++ b/third_party/blink/renderer/core/page/context_menu_controller.cc
-@@ -93,6 +93,7 @@
+@@ -93,6 +93,8 @@
  #include "third_party/blink/renderer/core/loader/document_loader.h"
  #include "third_party/blink/renderer/core/mathml/mathml_anchor_element.h"
  #include "third_party/blink/renderer/core/page/context_menu_provider.h"
++#include "third_party/blink/renderer/core/page/firefox_menu_target.h"
 +#include "third_party/blink/renderer/core/page/firefox_selected_text.h"
  #include "third_party/blink/renderer/core/page/focus_controller.h"
  #include "third_party/blink/renderer/core/page/page.h"
  #include "third_party/blink/renderer/core/paint/paint_layer.h"
-@@ -789,6 +790,8 @@
+@@ -789,6 +791,10 @@ bool ContextMenuController::ShowContextMenu(
        annotation_container->OpenedContextMenuOverSelection();
      }
    }
 +  // Firefox add-ons (dubna): see ContextMenuData::firefox_selection_text.
 +  data.firefox_selection_text = FirefoxSelectedText(*selected_frame).Utf8();
++  // Firefox add-ons (dubna): see ContextMenuData::firefox_target_element_id.
++  data.firefox_target_element_id = SetFirefoxMenuTarget(result.InnerNode());
  
    // If there is a text fragment at the same location as the click indicate that
    // the context menu is being opened from an existing highlight.
-@@ -866,6 +869,11 @@
+@@ -866,6 +872,11 @@ bool ContextMenuController::ShowContextMenu(
    if (auto* anchor = DynamicTo<HTMLAnchorElement>(result.URLElement())) {
      PopulateAnchorContextMenuData(anchor, html_names::kDownloadAttr,
                                    selected_frame, data);
@@ -5606,10 +5675,12 @@
                                    selected_frame, data);
 --- a/third_party/blink/renderer/core/page/build.gni
 +++ b/third_party/blink/renderer/core/page/build.gni
-@@ -24,6 +24,8 @@
+@@ -24,6 +24,10 @@ blink_core_sources_page = [
    "drag_image.cc",
    "drag_image.h",
    "drag_state.h",
++  "firefox_menu_target.cc",
++  "firefox_menu_target.h",
 +  "firefox_selected_text.cc",
 +  "firefox_selected_text.h",
    "event_with_hit_test_results.h",
@@ -6061,3 +6132,23 @@
      // Iterate through unhandled permissions (in |host_data|) and add an install
      // warning for each.
      for (const auto& permission_str : host_data) {
+--- a/third_party/blink/public/web/web_element.h
++++ b/third_party/blink/public/web/web_element.h
+@@ -56,6 +56,7 @@ class Element;
+ class Image;
+ class LayoutBox;
+ class WebLabelElement;
++class WebLocalFrame;
+ 
+ enum class WebElementInteractionDisallowedReason {
+   kDisabled,
+@@ -78,6 +79,9 @@ class BLINK_EXPORT WebElement : public WebNode {
+   // Returns the empty WebElement if the argument doesn't represent an Element.
+   static WebElement FromV8Value(v8::Isolate*, v8::Local<v8::Value>);
+ 
++  // Firefox add-ons (dubna): menus.getTargetElement (firefox_menu_target.h).
++  static WebElement FirefoxMenuTarget(WebLocalFrame& frame, int id);
++
+   WebElement& operator=(const WebElement& e) {
+     WebNode::Assign(e);
+     return *this;

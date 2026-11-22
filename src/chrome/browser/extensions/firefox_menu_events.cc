@@ -38,6 +38,7 @@
 #include "extensions/common/event_args.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
+#include "extensions/common/firefox_menus_permission.h"
 #include "extensions/common/mojom/context_type.mojom.h"
 #include "extensions/common/mojom/view_type.mojom.h"
 #include "extensions/common/permissions/permissions_data.h"
@@ -237,6 +238,12 @@ base::DictValue PageMenuInfo(const Extension& extension,
   std::u16string selection = SelectionText(params);
   if (!selection.empty()) {
     info.Set("selectionText", selection);
+  }
+  // The element's ID for menus.getTargetElement, with Firefox's menus
+  // permission only (firefox_menus_permission.h).
+  if (params.firefox_target_element_id &&
+      HasFirefoxMenusPermission(extension)) {
+    info.Set("targetElementId", params.firefox_target_element_id);
   }
   return info;
 }

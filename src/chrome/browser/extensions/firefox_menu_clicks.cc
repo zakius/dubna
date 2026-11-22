@@ -17,6 +17,7 @@
 #include "content/public/browser/web_contents.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
+#include "extensions/common/firefox_menus_permission.h"
 #include "extensions/common/manifest_constants.h"
 #include "ui/events/event_constants.h"
 
@@ -112,6 +113,14 @@ void AddFirefoxClickData(const Extension* extension,
   // (ContextMenuParams::firefox_selection_text).
   if (!params.firefox_selection_text.empty()) {
     properties.Set("selectionText", params.firefox_selection_text);
+  }
+
+  // The ID of the element that the page's menu opened on, which
+  // menus.getTargetElement takes, with Firefox's menus permission only
+  // (firefox_menus_permission.h).
+  if (params.firefox_target_element_id &&
+      HasFirefoxMenusPermission(*extension)) {
+    properties.Set("targetElementId", params.firefox_target_element_id);
   }
 
   if (!frame) {

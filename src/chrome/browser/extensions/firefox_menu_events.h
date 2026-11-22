@@ -28,11 +28,13 @@ class ContextMenuMatcher;
 // As the menu opens, onShown goes to each Firefox add-on that listens to it,
 // or in an action menu to the action's add-on only, with the IDs of its items
 // that the menu shows and, for an add-on with the host permissions of the
-// page (or activeTab on the tab), the page's URLs and text. As it closes,
-// after a click on an item has fired onClicked, onHidden goes to those
-// add-ons and to those whose items it showed. While it is open, refresh()
-// rebuilds the calling add-on's items in it, where they were. Other
-// extensions get no events.
+// page (or activeTab on the tab), the page's URLs and text, and with
+// Firefox's menus permission the targetElementId of the element that a
+// page's menu opened on (firefox_menu_target.h). As it closes, after a
+// click on an item has fired onClicked, onHidden goes to those add-ons and
+// to those whose items it showed. While it is open, refresh() rebuilds the
+// calling add-on's items in it, where they were. Other extensions get no
+// events.
 //
 // What a ContextMenuMatcher keeps of its menu for this.
 struct FirefoxMenuState {

@@ -40,7 +40,10 @@ bool RunFirefoxMenuCommand(const Extension* extension,
 // (" just some text"), where Chromium's is only for a click on the
 // selection, without that space. Its `viewType` is the view of the page in
 // `frame`, the frame of a page's menu (firefox_menu_view_types.h); a tab's
-// or a toolbar button's menu has no frame and no viewType.
+// or a toolbar button's menu has no frame and no viewType. Its
+// `targetElementId`, for an add-on with Firefox's menus permission, is the
+// ID of the element that a page's menu opened on, which
+// menus.getTargetElement takes (firefox_menu_target.h).
 void AddFirefoxClickData(const Extension* extension,
                          content::RenderFrameHost* frame,
                          const content::ContextMenuParams& params,
