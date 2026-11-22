@@ -76,8 +76,9 @@ When the router finds a round still open, it closes it: `end climb died` if the 
 ## Ending a stage
 
 1. Post the report in your thread. It is for the maintainer, who reviews it later: every fix, judgement call and flaky test, and anything failed or skipped.
-2. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> <dubna's main checkout>/work/nightly.log`.
-3. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id: `awk -F'\t' '$1=="router"{print $2}' ~/.config/dubna/nightly-ids`. Do nothing after it.
+2. Pull the main checkout of each repo the stage pushed to main (git -C <it> pull -q --ff-only), so that it doesn't stay behind until the next release. Its post-merge hook moves the submodules.
+3. Append the end line: `echo "$(date -u +%FT%TZ) end <stage> <result> <one-line summary>" >> <dubna's main checkout>/work/nightly.log`.
+4. Unless the stage was started by hand, or it is the climb stage of a round ("Climb rounds"), start the router as the last tool call: load `mcp__t3-code__run_scheduled_task_now` (ToolSearch `select:mcp__t3-code__run_scheduled_task_now`) and call it with the router's id: `awk -F'\t' '$1=="router"{print $2}' ~/.config/dubna/nightly-ids`. Do nothing after it.
 
 Every update goes out tonight, with no green light needed: try hard. Fix failing patches, carry new upstream patches, and work around build breaks. If it builds, the tests pass and the Fable review is done, push and release it, then report every fix and judgement call. When a stage is clean, take it to the end without stopping to report in between.
 
