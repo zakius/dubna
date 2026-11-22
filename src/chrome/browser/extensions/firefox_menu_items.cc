@@ -296,7 +296,11 @@ bool ContextMenuMatcher::AppendFirefoxActionItems(
     menu_model_->AddSubMenu(menu_id, name, submenu.get());
     extension_menu_models_.push_back(std::move(submenu));
   }
-  menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
+  // Only after an item that shows: appended after the menu's own items, at a
+  // refresh(), the separator would otherwise come first once moved.
+  if (visible) {
+    menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
+  }
   return true;
 }
 
