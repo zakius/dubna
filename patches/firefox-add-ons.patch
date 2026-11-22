@@ -1491,7 +1491,7 @@
  
  // The time by which to delay writing updated menu items to storage.
  constexpr int kWriteDelayInSeconds = 1;
-@@ -277,6 +289,28 @@ base::DictValue MenuItem::ToValue() const {
+@@ -277,6 +289,29 @@ base::DictValue MenuItem::ToValue() const {
    }
    value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
    value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
@@ -1500,7 +1500,8 @@
 +  if (!firefox_command_.empty()) {
 +    value.Set(kFirefoxCommandKey, firefox_command_);
 +  }
-+  if (!firefox_target_url_patterns_.empty()) {
++  // Empty too: an item without the key takes Chromium's (Populate()).
++  if (firefox_add_on_) {
 +    base::ListValue patterns;
 +    for (const std::string& pattern : firefox_target_url_patterns_) {
 +      patterns.Append(pattern);
@@ -1520,7 +1521,7 @@
    return value;
  }
  
-@@ -347,6 +381,33 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
+@@ -347,6 +382,33 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
      return nullptr;
    }
  
@@ -1554,7 +1555,7 @@
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +497,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
+@@ -436,6 +498,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1563,7 +1564,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +528,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
+@@ -465,6 +529,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1572,7 +1573,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +756,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -691,7 +757,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1582,7 +1583,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -734,6 +800,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -734,6 +801,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1593,7 +1594,7 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -793,6 +863,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -793,6 +864,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
        WriteToStorage(extension, item->id().extension_key);
      }
    }
@@ -1606,7 +1607,7 @@
    {
      // Dispatch to menu item's .onclick handler (this is the legacy API, from
      // before chrome.contextMenus.onClicked existed).
-@@ -868,9 +944,11 @@ void MenuManager::SanitizeRadioListsInMenu(
+@@ -868,9 +945,11 @@ void MenuManager::SanitizeRadioListsInMenu(
        }
      }
  
@@ -1619,7 +1620,7 @@
        (*i)->SetChecked(true);
  
      i = radio_run_iter;
-@@ -910,7 +988,9 @@ void MenuManager::WriteToStorage(const Extension* extension,
+@@ -910,7 +989,9 @@ void MenuManager::WriteToStorage(const Extension* extension,
    // |webview_instance_id| to be an invalid ID. It's possible for |extension| to
    // be null in the case that |webview_instance_id| is valid.
    CHECK(extension, base::NotFatalUntil::M161);
@@ -1630,7 +1631,7 @@
      return;
    }
  
-@@ -938,6 +1018,11 @@ void MenuManager::WriteToStorageInternal(
+@@ -938,6 +1019,11 @@ void MenuManager::WriteToStorageInternal(
    for (TestObserver& observer : observers_)
      observer.WillWriteToStorage(extension_key.extension_id);
  
@@ -1642,7 +1643,7 @@
    if (store_) {
      store_->SetExtensionValue(
          extension_key.extension_id, kContextMenusKey,
-@@ -974,6 +1059,8 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
+@@ -974,6 +1060,8 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
        AddContextItem(extension, std::move(item));
      }
    }
@@ -1651,7 +1652,7 @@
  
    for (TestObserver& observer : observers_)
      observer.DidReadFromStorage(extension_id);
-@@ -981,6 +1068,12 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
+@@ -981,6 +1069,12 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
  
  void MenuManager::OnExtensionLoaded(content::BrowserContext* browser_context,
                                      const Extension* extension) {
@@ -1664,7 +1665,7 @@
    if (store_ && BackgroundInfo::HasLazyContext(extension)) {
      store_->GetExtensionValue(
          extension->id(), kContextMenusKey,
-@@ -993,6 +1086,12 @@ void MenuManager::OnExtensionUnloaded(content::BrowserContext* browser_context,
+@@ -993,6 +1087,12 @@ void MenuManager::OnExtensionUnloaded(content::BrowserContext* browser_context,
                                        const Extension* extension,
                                        UnloadedExtensionReason reason) {
    MenuItem::ExtensionKey extension_key(extension->id());

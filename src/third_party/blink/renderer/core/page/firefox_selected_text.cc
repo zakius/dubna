@@ -11,6 +11,7 @@
 #include "third_party/blink/renderer/core/frame/local_frame.h"
 #include "third_party/blink/renderer/core/html/parser/html_parser_idioms.h"
 #include "third_party/blink/renderer/platform/wtf/text/string_builder.h"
+#include "third_party/blink/renderer/platform/wtf/text/unicode.h"
 
 namespace blink {
 
@@ -18,6 +19,25 @@ namespace {
 
 // Firefox's SelectionUtils passes up to 16K characters to add-ons.
 constexpr wtf_size_t kMaxLength = 16384;
+
+// The white space of JavaScript's trim(), ECMAScript's WhiteSpace and
+// LineTerminator: also U+00A0 (&nbsp;), U+FEFF and Unicode's other spaces,
+// which String::StripWhiteSpace() leaves out.
+bool IsJavaScriptSpace(UChar c) {
+  switch (c) {
+    case '\t':
+    case '\n':
+    case '\v':
+    case '\f':
+    case '\r':
+    case 0x2028:
+    case 0x2029:
+    case 0xFEFF:
+      return true;
+    default:
+      return unicode::Category(c) == unicode::kSeparator_Space;
+  }
+}
 
 // Whether the selection starts at white space that the rendered text leaves
 // out, such as the indent of a line.
@@ -41,9 +61,9 @@ String FirefoxSelectedText(const LocalFrame& frame) {
   String text = frame.SelectedText(TextIteratorBehavior::Builder()
                                        .SetSkipsUnselectableContent(true)
                                        .Build());
-  // White space alone is no selection to Firefox, which trims the text to
-  // tell (SelectionUtils).
-  if (!text.LengthWithStrippedWhiteSpace()) {
+  // White space alone is no selection to Firefox, which trims the text with
+  // trim() to tell (SelectionUtils).
+  if (text.StripWhiteSpace(IsJavaScriptSpace).empty()) {
     return String();
   }
   if (StartsAtSpace(frame, text)) {
