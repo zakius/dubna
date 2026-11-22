@@ -4,7 +4,7 @@
  "levels": {
   "L0": 839,
   "L1": 833,
-  "L2": 772,
+  "L2": 771,
   "L3": 698
  },
  "addons": {
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'oz9908op8tvroiv3l1') (43df8155-38b5-4eeb-856b-fa0822a58122:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '3iyxzckaznr6exlapf') (a7cc463c-2868-4b59-910a-8974881b3ee4:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (f1c5ce31-dd3d-4fab-aecf-23e5260958ca:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (fec64397-0705-4995-aa8e-c8201550e362:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -901,7 +901,7 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L2",
+   "level": "L1",
    "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
@@ -1010,7 +1010,7 @@
   },
   "offline-qr-code@rugk.github.io": {
    "level": "L2",
-   "error": "Uncaught (in promise) Error: show no random tip, because randomize did not pass (common/modules/RandomTips/RandomTips.js:333)"
+   "error": "Uncaught (in promise) Error: using selection is disabled (popup/modules/InitQrCode.js:37)"
   },
   "remove-paywall@example.com": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjdmZWQ1OThhOTFkNWVlOThiNWE4MmQ1Y2VkNTBmMmFlNjBjMDg4ZTMiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImFhN2RjMjZkNWJlZjQ1ZjdmMTI4YTg5MDE5MWEzZDQwOWE3NDEwZGQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",

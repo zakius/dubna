@@ -420,7 +420,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://lnpdamkahanbdebolcgjbfjpilbl",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://jlidibbgehgfkhnmhfegaidlmfom",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -551,7 +551,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://ldahcaofcbmadijnbeangmopgppmngea/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://lpjegbnhlncenbgcmcnpinalmdelilek/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -622,7 +622,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://gjigojhcgc",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://empfkiafbf",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -744,7 +744,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://bolbkpfijeffiljpkhcidnbfnmoh",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://phdfnmhjdgcnakfcdmnieeekdkdg",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
