@@ -327,7 +327,7 @@
   {"path": "browser/components/extensions/test/xpcshell/test_ext_manifest_omnibox.js", "api": "manifest", "state": "todo"},
   {"path": "browser/components/extensions/test/xpcshell/test_ext_manifest_permissions.js", "api": "manifest", "state": "todo"},
   {"path": "browser/components/extensions/test/xpcshell/test_ext_menu_caller.js", "api": "menus", "state": "todo"},
-  {"path": "browser/components/extensions/test/xpcshell/test_ext_menu_startup.js", "api": "menus", "state": "todo"},
+  {"path": "browser/components/extensions/test/xpcshell/test_ext_menu_startup.js", "api": "menus", "state": "ported", "port": "firefox/test_ext_menu_startup.py"},
   {"path": "browser/components/extensions/test/xpcshell/test_ext_pageAction_shutdown.js", "api": "pageAction", "state": "ported", "port": "firefox/test_ext_pageAction_shutdown.py"},
   {"path": "browser/components/extensions/test/xpcshell/test_ext_pkcs11_management.js", "api": "pkcs11", "state": "todo"},
   {"path": "browser/components/extensions/test/xpcshell/test_ext_settings_overrides_defaults.js", "api": "chrome_settings_overrides", "state": "todo"},

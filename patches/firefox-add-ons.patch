@@ -139,6 +139,10 @@
 # (firefox_bookmark_nodes.h).
 # The bookmarks API gives a Firefox add-on Firefox's folder IDs, such as
 # toolbar_____ and unfiled_____, in its nodes and events (firefox_bookmark_ids.h).
+# The menus items of a Firefox add-on whose background Firefox runs as an event
+# page, Manifest V3's or one with "persistent": false, stay across a restart,
+# a disable and a reinstall of the same version, in its extension prefs, and
+# such an add-on's items need an id, as in Firefox (firefox_menu_store.h).
 # A tab's menu and an action's menu match a Firefox add-on's
 # documentUrlPatterns against the tab's URL as the menu opens, and the tab's
 # menu lists Firefox add-ons in the order they were installed
@@ -270,7 +274,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +283,22 @@ source_set("extensions") {
+@@ -265,6 +283,26 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -290,10 +294,14 @@
 +    # Firefox add-ons (dubna): Firefox's menus viewTypes.
 +    "firefox_menu_view_types.cc",
 +    "firefox_menu_view_types.h",
++
++    # Firefox add-ons (dubna): Firefox's menus kept across restarts.
++    "firefox_menu_store.cc",
++    "firefox_menu_store.h",
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +363,22 @@ source_set("extensions") {
+@@ -329,6 +367,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -316,7 +324,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +439,18 @@ source_set("extensions") {
+@@ -389,6 +443,18 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -335,7 +343,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +716,9 @@ source_set("extensions") {
+@@ -654,6 +720,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -504,16 +512,29 @@
    }
 --- a/chrome/browser/extensions/api/context_menus/context_menus_api.cc
 +++ b/chrome/browser/extensions/api/context_menus/context_menus_api.cc
-@@ -10,6 +10,8 @@
+@@ -10,6 +10,9 @@
  #include "base/strings/string_util.h"
  #include "base/values.h"
  #include "chrome/browser/extensions/context_menu_helpers.h"
 +#include "chrome/browser/extensions/firefox_menu_icons.h"
++#include "chrome/browser/extensions/firefox_menu_store.h"
 +#include "chrome/browser/extensions/firefox_menu_view_types.h"
  #include "chrome/browser/extensions/menu_manager.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/common/extensions/api/context_menus.h"
-@@ -63,6 +65,25 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
+@@ -42,7 +45,10 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
+   if (params->create_properties.id) {
+     id.string_uid = *params->create_properties.id;
+   } else {
+-    if (BackgroundInfo::HasLazyContext(extension())) {
++    // Firefox add-ons (dubna): Firefox asks for an id where it keeps the
++    // items (firefox_menu_store.h).
++    if (BackgroundInfo::HasLazyContext(extension()) ||
++        KeepsFirefoxMenus(*extension())) {
+       return RespondNow(Error(kIdRequiredError));
+     }
+ 
+@@ -63,6 +69,25 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
                                              &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -539,7 +560,7 @@
    return RespondNow(NoArguments());
  }
  
-@@ -87,6 +108,25 @@ ExtensionFunction::ResponseAction ContextMenusUpdateFunction::Run() {
+@@ -87,6 +112,25 @@ ExtensionFunction::ResponseAction ContextMenusUpdateFunction::Run() {
                                              item_id, &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -1410,16 +1431,17 @@
  
 --- a/chrome/browser/extensions/menu_manager.cc
 +++ b/chrome/browser/extensions/menu_manager.cc
-@@ -20,6 +20,8 @@
+@@ -20,6 +20,9 @@
  #include "base/values.h"
  #include "chrome/browser/extensions/extension_menu_icon_loader.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
 +#include "chrome/browser/extensions/firefox_menu_clicks.h"
 +#include "chrome/browser/extensions/firefox_menu_icons.h"
++#include "chrome/browser/extensions/firefox_menu_store.h"
  #include "chrome/browser/extensions/menu_manager_factory.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/common/extensions/api/context_menus.h"
-@@ -36,6 +38,7 @@
+@@ -36,6 +39,7 @@
  #include "extensions/browser/state_store.h"
  #include "extensions/buildflags/buildflags.h"
  #include "extensions/common/extension.h"
@@ -1427,7 +1449,7 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/mojom/context_type.mojom.h"
  #include "extensions/common/mojom/event_dispatcher.mojom.h"
-@@ -74,6 +77,14 @@ const char kTargetURLPatternsKey[] = "target_url_patterns";
+@@ -74,6 +78,14 @@ const char kTargetURLPatternsKey[] = "target_url_patterns";
  const char kTitleKey[] = "title";
  const char kMenuManagerTypeKey[] = "type";
  const char kVisibleKey[] = "visible";
@@ -1442,7 +1464,7 @@
  
  // The time by which to delay writing updated menu items to storage.
  constexpr int kWriteDelayInSeconds = 1;
-@@ -277,6 +288,28 @@ base::DictValue MenuItem::ToValue() const {
+@@ -277,6 +289,28 @@ base::DictValue MenuItem::ToValue() const {
    }
    value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
    value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
@@ -1471,7 +1493,7 @@
    return value;
  }
  
-@@ -347,6 +380,33 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
+@@ -347,6 +381,33 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
      return nullptr;
    }
  
@@ -1505,7 +1527,7 @@
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +496,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
+@@ -436,6 +497,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1514,7 +1536,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +527,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
+@@ -465,6 +528,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1523,7 +1545,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +755,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -691,7 +756,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1533,7 +1555,7 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -734,6 +799,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -734,6 +800,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
@@ -1544,7 +1566,7 @@
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -793,6 +862,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -793,6 +863,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
        WriteToStorage(extension, item->id().extension_key);
      }
    }
@@ -1557,7 +1579,7 @@
    {
      // Dispatch to menu item's .onclick handler (this is the legacy API, from
      // before chrome.contextMenus.onClicked existed).
-@@ -868,9 +943,11 @@ void MenuManager::SanitizeRadioListsInMenu(
+@@ -868,9 +944,11 @@ void MenuManager::SanitizeRadioListsInMenu(
        }
      }
  
@@ -1570,7 +1592,30 @@
        (*i)->SetChecked(true);
  
      i = radio_run_iter;
-@@ -974,6 +1051,8 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
+@@ -910,7 +988,9 @@ void MenuManager::WriteToStorage(const Extension* extension,
+   // |webview_instance_id| to be an invalid ID. It's possible for |extension| to
+   // be null in the case that |webview_instance_id| is valid.
+   CHECK(extension, base::NotFatalUntil::M161);
+-  if (!BackgroundInfo::HasLazyContext(extension)) {
++  // Firefox add-ons (dubna): see firefox_menu_store.h.
++  if (!BackgroundInfo::HasLazyContext(extension) &&
++      !KeepsFirefoxMenus(*extension)) {
+     return;
+   }
+ 
+@@ -938,6 +1018,11 @@ void MenuManager::WriteToStorageInternal(
+   for (TestObserver& observer : observers_)
+     observer.WillWriteToStorage(extension_key.extension_id);
+ 
++  // Firefox add-ons (dubna): see firefox_menu_store.h.
++  if (WriteFirefoxMenus(browser_context_, extension_key.extension_id,
++                        all_items)) {
++    return;
++  }
+   if (store_) {
+     store_->SetExtensionValue(
+         extension_key.extension_id, kContextMenusKey,
+@@ -974,6 +1059,8 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
        AddContextItem(extension, std::move(item));
      }
    }
@@ -1579,6 +1624,32 @@
  
    for (TestObserver& observer : observers_)
      observer.DidReadFromStorage(extension_id);
+@@ -981,6 +1068,12 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
+ 
+ void MenuManager::OnExtensionLoaded(content::BrowserContext* browser_context,
+                                     const Extension* extension) {
++  // Firefox add-ons (dubna): see firefox_menu_store.h.
++  if (std::optional<base::Value> items =
++          ReadFirefoxMenus(browser_context_, *extension)) {
++    ReadFromStorage(extension->id(), std::move(items));
++    return;
++  }
+   if (store_ && BackgroundInfo::HasLazyContext(extension)) {
+     store_->GetExtensionValue(
+         extension->id(), kContextMenusKey,
+@@ -993,6 +1086,12 @@ void MenuManager::OnExtensionUnloaded(content::BrowserContext* browser_context,
+                                       const Extension* extension,
+                                       UnloadedExtensionReason reason) {
+   MenuItem::ExtensionKey extension_key(extension->id());
++  // Firefox add-ons (dubna): a pending write keeps the items, as Firefox
++  // writes them when the add-on shuts down; after this it would find none.
++  auto write_task = write_tasks_.find(extension_key);
++  if (write_task != write_tasks_.end() && KeepsFirefoxMenus(*extension)) {
++    write_task->second.FireNow();
++  }
+   if (context_items_.contains(extension_key)) {
+     RemoveAllContextItems(extension_key);
+   }
 --- a/chrome/browser/extensions/menu_manager.h
 +++ b/chrome/browser/extensions/menu_manager.h
 @@ -12,6 +12,7 @@
