@@ -159,6 +159,11 @@
 # window's pages and content scripts. Only a Firefox add-on with the menus
 # permission gets them, and its content scripts get browser.menus with
 # getTargetElement() alone (firefox_menu_target_element.h).
+# Where Firefox refuses a menus.create or update as Chromium does, a Firefox
+# add-on gets Firefox's text: an id in use or missing, an item made its own or
+# its descendant's child, an invalid url pattern (firefox_menu_errors.h). Its
+# runtime.lastError is null without an error, as in Firefox
+# (firefox_last_error.h).
 # A Firefox add-on's host patterns in permissions and optional_permissions are
 # host permissions and optional ones in Manifest V3 too, as in Firefox
 # (firefox_host_permissions.h).
@@ -290,7 +295,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +287,26 @@ source_set("extensions") {
+@@ -265,6 +287,30 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -314,10 +319,14 @@
 +    # Firefox add-ons (dubna): Firefox's menus kept across restarts.
 +    "firefox_menu_store.cc",
 +    "firefox_menu_store.h",
++
++    # Firefox add-ons (dubna): Firefox's menus error texts.
++    "firefox_menu_errors.cc",
++    "firefox_menu_errors.h",
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +371,22 @@ source_set("extensions") {
+@@ -329,6 +375,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -340,7 +349,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +447,18 @@ source_set("extensions") {
+@@ -389,6 +451,18 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -359,7 +368,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +724,9 @@ source_set("extensions") {
+@@ -654,6 +728,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -528,29 +537,40 @@
    }
 --- a/chrome/browser/extensions/api/context_menus/context_menus_api.cc
 +++ b/chrome/browser/extensions/api/context_menus/context_menus_api.cc
-@@ -10,6 +10,9 @@
+@@ -10,11 +10,16 @@
  #include "base/strings/string_util.h"
  #include "base/values.h"
  #include "chrome/browser/extensions/context_menu_helpers.h"
++#include "chrome/browser/extensions/firefox_menu_errors.h"
 +#include "chrome/browser/extensions/firefox_menu_icons.h"
 +#include "chrome/browser/extensions/firefox_menu_store.h"
 +#include "chrome/browser/extensions/firefox_menu_view_types.h"
  #include "chrome/browser/extensions/menu_manager.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/common/extensions/api/context_menus.h"
-@@ -42,7 +45,10 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/error_utils.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+ #include "extensions/common/url_pattern_set.h"
+ 
+@@ -42,8 +47,13 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
    if (params->create_properties.id) {
      id.string_uid = *params->create_properties.id;
    } else {
 -    if (BackgroundInfo::HasLazyContext(extension())) {
+-      return RespondNow(Error(kIdRequiredError));
 +    // Firefox add-ons (dubna): Firefox asks for an id where it keeps the
-+    // items (firefox_menu_store.h).
++    // items (firefox_menu_store.h), in its own text (firefox_menu_errors.h).
 +    if (BackgroundInfo::HasLazyContext(extension()) ||
 +        KeepsFirefoxMenus(*extension())) {
-       return RespondNow(Error(kIdRequiredError));
++      return RespondNow(Error(IsFirefoxAddOn(*extension())
++                                  ? kFirefoxMenuIdRequiredError
++                                  : kIdRequiredError));
      }
  
-@@ -63,6 +69,25 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
+     // The Generated Id is added by context_menus_custom_bindings.js.
+@@ -63,6 +73,25 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
                                              &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -576,7 +596,7 @@
    return RespondNow(NoArguments());
  }
  
-@@ -87,6 +112,25 @@ ExtensionFunction::ResponseAction ContextMenusUpdateFunction::Run() {
+@@ -87,6 +116,25 @@ ExtensionFunction::ResponseAction ContextMenusUpdateFunction::Run() {
                                              item_id, &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -1076,10 +1096,11 @@
    }
 --- a/chrome/browser/extensions/context_menu_helpers.h
 +++ b/chrome/browser/extensions/context_menu_helpers.h
-@@ -10,12 +10,14 @@
+@@ -10,12 +10,15 @@
  #include "base/notreached.h"
  #include "base/strings/string_number_conversions.h"
  #include "base/types/optional_util.h"
++#include "chrome/browser/extensions/firefox_menu_errors.h"
 +#include "chrome/browser/extensions/firefox_menu_items.h"
  #include "chrome/browser/extensions/menu_manager.h"
  #include "chrome/common/extensions/api/context_menus.h"
@@ -1091,7 +1112,16 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/utils/extension_utils.h"
  
-@@ -160,6 +162,14 @@
+@@ -145,6 +148,8 @@ bool CreateMenuItem(const PropertyWithEnumT& create_properties,
+   if (menu_manager->GetItemById(item_id)) {
+     *error =
+         ErrorUtils::FormatErrorMessage(kDuplicateIDError, GetIDString(item_id));
++    // Firefox add-ons (dubna): see firefox_menu_errors.h.
++    SetFirefoxDuplicateMenuIdError(extension, GetIDString(item_id), error);
+     return false;
+   }
+ 
+@@ -160,6 +165,14 @@ bool CreateMenuItem(const PropertyWithEnumT& create_properties,
      contexts = GetContexts(*create_properties.contexts);
    else
      contexts.Add(MenuItem::PAGE);
@@ -1106,7 +1136,7 @@
  
    if (contexts.Contains(MenuItem::LAUNCHER)) {
      // Launcher item is not allowed for <webview>.
-@@ -203,9 +213,19 @@
+@@ -203,9 +216,21 @@ bool CreateMenuItem(const PropertyWithEnumT& create_properties,
        new MenuItem(item_id, title, checked, visible, enabled, type, contexts));
  
    // URL Patterns.
@@ -1124,13 +1154,21 @@
            base::OptionalToPtr(create_properties.document_url_patterns),
 -          base::OptionalToPtr(create_properties.target_url_patterns), error)) {
 +          target_url_patterns, error)) {
++    // Firefox add-ons (dubna): see firefox_menu_errors.h.
++    SetFirefoxUrlPatternError(extension, error);
      return false;
    }
  
-@@ -328,12 +348,26 @@
+@@ -326,14 +351,33 @@ bool UpdateMenuItem(const PropertyWithEnumT& update_properties,
+                   item_id.extension_key));
+   if (parent_id.get()) {
      MenuItem* parent = GetParent(*parent_id, menu_manager, error);
-     if (!parent || !menu_manager->ChangeParent(item->id(), &parent->id()))
+-    if (!parent || !menu_manager->ChangeParent(item->id(), &parent->id()))
++    if (!parent || !menu_manager->ChangeParent(item->id(), &parent->id())) {
++      // Firefox add-ons (dubna): see firefox_menu_errors.h.
++      SetFirefoxMenuParentError(extension, error);
        return false;
++    }
 +    // Firefox add-ons (dubna): a moved item without contexts takes its new
 +    // parent's, as on create.
 +    if (!update_properties.contexts && extension && IsFirefoxAddOn(*extension))
@@ -1152,6 +1190,8 @@
            base::OptionalToPtr(update_properties.document_url_patterns),
 -          base::OptionalToPtr(update_properties.target_url_patterns), error)) {
 +          target_url_patterns, error)) {
++    // Firefox add-ons (dubna): see firefox_menu_errors.h.
++    SetFirefoxUrlPatternError(extension, error);
      return false;
    }
  
@@ -4404,7 +4444,7 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +270,19 @@ source_set("renderer") {
+@@ -246,6 +270,23 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -4421,6 +4461,10 @@
 +    # Firefox add-ons (dubna): menus.getTargetElement.
 +    "firefox_menu_target_element.cc",
 +    "firefox_menu_target_element.h",
++
++    # Firefox add-ons (dubna): runtime.lastError null without an error.
++    "firefox_last_error.cc",
++    "firefox_last_error.h",
    ]
  
    configs += [ "//build/config:precompiled_headers" ]
@@ -4640,17 +4684,18 @@
      case mojom::ContextType::kUnspecified:
 --- a/extensions/renderer/native_extension_bindings_system.cc
 +++ b/extensions/renderer/native_extension_bindings_system.cc
-@@ -49,6 +49,9 @@
+@@ -49,6 +49,10 @@
  #include "extensions/renderer/extension_frame_helper.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extension_js_runner.h"
++#include "extensions/renderer/firefox_last_error.h"
 +#include "extensions/renderer/firefox_menu_events_bindings.h"
 +#include "extensions/renderer/firefox_menu_target_element.h"
 +#include "extensions/renderer/firefox_storage.h"
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/module_system.h"
-@@ -248,6 +251,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
+@@ -248,6 +252,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
  bool IsAPIFeatureAvailable(v8::Local<v8::Context> context,
                             const std::string& name) {
    ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
@@ -4666,7 +4711,7 @@
    return script_context->GetAvailability(name).is_available();
  }
  
-@@ -598,6 +610,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
+@@ -598,6 +611,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
    if (context->context_type() == mojom::ContextType::kContentScript) {
      SetScriptingParams(context);
    }
@@ -4676,7 +4721,7 @@
  }
  
  void NativeExtensionBindingsSystem::WillReleaseScriptContext(
-@@ -1031,11 +1046,21 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
+@@ -1031,11 +1047,23 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
    CHECK(
        gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
  
@@ -4698,6 +4743,8 @@
 +  // Firefox add-ons (dubna): menus.getTargetElement
 +  // (firefox_menu_target_element.h).
 +  AddFirefoxGetTargetElement(script_context, api_name_string, root_binding);
++  // Firefox add-ons (dubna): runtime.lastError null (firefox_last_error.h).
++  AddFirefoxNullLastError(script_context, api_name_string, root_binding);
  
    v8::Maybe<bool> success =
        apis->CreateDataProperty(context, api_name, root_binding);
@@ -6152,3 +6199,18 @@
    WebElement& operator=(const WebElement& e) {
      WebNode::Assign(e);
      return *this;
+--- a/extensions/renderer/bindings/api_last_error.cc
++++ b/extensions/renderer/bindings/api_last_error.cc
+@@ -267,6 +267,12 @@ void APILastError::SetErrorOnPrimaryParent(v8::Local<v8::Context> context,
+   // optionally throw it if one exists.
+   if (!parent->Get(context, key).ToLocal(&v8_error))
+     return;
++  // Firefox add-ons (dubna): a Firefox add-on's runtime has a null lastError
++  // under it without an error (extensions/renderer/firefox_last_error.h).
++  if (v8_error->IsNull() &&
++      !parent->HasOwnProperty(context, key).FromMaybe(true)) {
++    v8_error = v8::Undefined(isolate);
++  }
+ 
+   if (!v8_error->IsUndefined()) {
+     // There may be an existing last error to overwrite.

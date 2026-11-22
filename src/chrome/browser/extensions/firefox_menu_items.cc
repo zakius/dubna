@@ -16,6 +16,7 @@
 #include "base/third_party/icu/icu_utf.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
 #include "chrome/browser/extensions/firefox_menu_access_keys.h"
+#include "chrome/browser/extensions/firefox_menu_errors.h"
 #include "chrome/common/extensions/api/context_menus.h"
 #include "content/public/browser/context_menu_params.h"
 #include "extensions/common/error_utils.h"
@@ -31,8 +32,6 @@
 namespace extensions {
 
 namespace {
-
-constexpr char kInvalidURLPatternError[] = "Invalid url pattern '*'";
 
 // The schemes of Firefox's <all_urls> (MatchPattern.cpp's PermittedSchemes).
 constexpr auto kAllUrlsSchemes = base::MakeFixedFlatSet<std::string_view>(
@@ -203,7 +202,8 @@ bool SetFirefoxTargetUrlPatterns(const std::vector<std::string>& patterns,
                                  std::string* error) {
   for (const std::string& pattern : patterns) {
     if (!IsValidPattern(pattern)) {
-      *error = ErrorUtils::FormatErrorMessage(kInvalidURLPatternError, pattern);
+      *error = ErrorUtils::FormatErrorMessage(kFirefoxInvalidUrlPatternError,
+                                              pattern);
       return false;
     }
   }
