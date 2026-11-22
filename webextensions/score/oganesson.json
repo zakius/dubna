@@ -3,9 +3,9 @@
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
  "levels": {
   "L0": 839,
-  "L1": 836,
-  "L2": 774,
-  "L3": 701
+  "L1": 833,
+  "L2": 771,
+  "L3": 698
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '5myalhmbubchrlbppu') (d5f85b77-4b20-4639-82eb-5aa48ac8cbed:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'qcosgi1250x5prmsds') (989a29c5-4369-45df-9032-dd4353e60f2b:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (d137402e-893a-420b-b675-e412428709df:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (864783cd-3bc4-44b8-813f-fa61e16db396:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -1801,8 +1801,8 @@
    "error": null
   },
   "switchyomega@feliscatus.addons.mozilla.org": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on could not be installed because it appears to be corrupt."
   },
   "{38d8ce8d-f84f-4f1c-b946-41ec3bd7b6d7}": {
    "level": "L3",
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjlkNDAyN2NiNTU1NzI0NGQxMThmYTczN2ZiM2UzNzZlZTk3NjMzYWYiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImUwMThlZmU3MzQwZGI0YzNjZDkxODZkOGJmYmI1ZDJlYmViMGU1MzIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2465,8 +2465,8 @@
    "error": null
   },
   "{72b2e02b-3a71-4895-886c-fd12ebe36ba3}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on could not be installed because it appears to be corrupt."
   },
   "gNoAi@sphglk": {
    "level": "L3",
@@ -3205,8 +3205,8 @@
    "error": null
   },
   "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}": {
-   "level": "L3",
-   "error": null
+   "level": "L0",
+   "error": "This add-on could not be installed because it appears to be corrupt."
   },
   "{323353ee-cfbd-4178-9676-85566d98c8b1}": {
    "level": "L3",
