@@ -4,7 +4,7 @@
  "levels": {
   "L0": 839,
   "L1": 833,
-  "L2": 771,
+  "L2": 772,
   "L3": 698
  },
  "addons": {
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'qcosgi1250x5prmsds') (989a29c5-4369-45df-9032-dd4353e60f2b:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'oz9908op8tvroiv3l1') (43df8155-38b5-4eeb-856b-fa0822a58122:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (864783cd-3bc4-44b8-813f-fa61e16db396:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (f1c5ce31-dd3d-4fab-aecf-23e5260958ca:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -901,7 +901,7 @@
    "error": null
   },
   "{87e997f4-ae0e-42e6-a780-ff73977188c5}": {
-   "level": "L1",
+   "level": "L2",
    "error": "Uncaught (in promise) SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON (_generated_background_page.html:1)"
   },
   "{dd3d7613-0246-469d-bc65-2a3cc1668adc}": {
@@ -2270,7 +2270,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImUwMThlZmU3MzQwZGI0YzNjZDkxODZkOGJmYmI1ZDJlYmViMGU1MzIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6IjdmZWQ1OThhOTFkNWVlOThiNWE4MmQ1Y2VkNTBmMmFlNjBjMDg4ZTMiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",

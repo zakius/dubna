@@ -1,8 +1,8 @@
 {
  "date": "2026-11-22",
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
- "passing": 17,
- "ported": 94,
+ "passing": 20,
+ "ported": 95,
  "total": 841,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
@@ -143,17 +143,25 @@
   "browser/components/extensions/test/browser/browser_ext_menus.js": {
    "port": "firefox/browser_ext_menus.py",
    "passed": false,
-   "error": "FAIL: test_01_permissions (firefox.browser_ext_menus.MenusTest.test_01_permissions): AssertionError: browser.test: browser.contextMenus unavailable with  'menus' permission - Expected: undefined, Actual: object | browser.menus unavailable with 'contextMenus' permission - Expected: undefined, Actual:",
+   "error": "FAIL: test_02_action_context_menus (firefox.browser_ext_menus.MenusTest.test_02_action_context_menus) (kind='page'): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
    "passing": [
+    "test_01_permissions",
+    "test_04_tab_context_menu",
     "test_05_onclick_frameid",
     "test_06_multiple_contexts_init"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_accesskey.js": {
    "port": "firefox/browser_ext_menus_accesskey.py",
-   "passed": false,
-   "error": "FAIL: test_01_accesskeys (firefox.browser_ext_menus_accesskey.MenusAccesskeyTest.test_01_accesskeys): AssertionError: browser.test: Accesskey for item 3 (amp at end) - Expected: E, Actual: None | Accesskey for item 4 (escaped amp) - Expected: A, Actual: None | Accesskey for item 8 (no amp, leading p",
+   "passed": true,
+   "error": null,
    "passing": [
+    "test_01_accesskeys",
+    "test_02_accesskeys_selection",
+    "test_03_accesskeys_ime_scripts",
+    "test_04_accesskeys_ime_scripts_mixed",
+    "test_05_accesskeys_top_level_menu",
+    "test_06_accesskeys_refresh_while_open",
     "test_07_accesskeys_menu_without_accesskeys"
    ]
   },
@@ -194,6 +202,8 @@
    "passed": false,
    "error": "FAIL: test_05_menu_create_id_reuse (firefox.browser_ext_menus_eventpage.MenusEventPageIdReuseTest.test_05_menu_create_id_reuse): AssertionError: browser.test: lastError message for missing id - Expected: The menu id test-click already exists in menus.create., Actual: Cannot create item with duplicat",
    "passing": [
+    "test_02_menu_onclick",
+    "test_03_menu_onshown",
     "test_04_actions_context_menu"
    ]
   },
@@ -222,14 +232,17 @@
     "test_02_refresh_menus_with_tab",
     "test_04_refresh_menus_with_page",
     "test_05_refresh_without_menus_at_onShown",
-    "test_06_refresh_without_onShown"
+    "test_06_refresh_without_onShown",
+    "test_07_refresh_menus_during_navigation"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_startup_restored.js": {
    "port": "firefox/browser_ext_menus_startup_restored.py",
-   "passed": false,
-   "error": "FAIL: test_01_menu_create_id (firefox.browser_ext_menus_startup_restored.MenusStartupRestoredTest.test_01_menu_create_id): AssertionError: browser.test: Context menu should have been restored",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_menu_create_id"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_targetElement.js": {
    "port": "firefox/browser_ext_menus_targetElement.py",
@@ -255,8 +268,10 @@
   "browser/components/extensions/test/browser/browser_ext_menus_viewType.js": {
    "port": "firefox/browser_ext_menus_viewType.py",
    "passed": false,
-   "error": "FAIL: test_01_extension_tab_view_type (firefox.browser_ext_menus_viewType.MenusViewTypeTest.test_01_extension_tab_view_type): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Error in invocation of contextMenus.create(contex",
-   "passing": []
+   "error": "FAIL: test_02_sidebar_panel_view_type (firefox.browser_ext_menus_viewType.MenusViewTypeTest.test_02_sidebar_panel_view_type): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: []",
+   "passing": [
+    "test_01_extension_tab_view_type"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_menus_visible.js": {
    "port": "firefox/browser_ext_menus_visible.py",
@@ -307,8 +322,8 @@
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated.js": {
    "port": "firefox/browser_ext_tabs_onUpdated.py",
-   "passed": false,
-   "error": "FAIL: test_08_pin_discarded_tab (firefox.browser_ext_tabs_onUpdated.TabsOnUpdatedTest.test_08_pin_discarded_tab): AssertionError: browser.test: Expect pinned to be set to true - Expected: false, Actual: true",
+   "passed": true,
+   "error": null,
    "passing": [
     "test_01_onUpdated_sequence",
     "test_02_pinned",
@@ -316,7 +331,8 @@
     "test_04_url",
     "test_05_title",
     "test_06_without_tabs_permission",
-    "test_07_onUpdated_after_onRemoved"
+    "test_07_onUpdated_after_onRemoved",
+    "test_08_pin_discarded_tab"
    ]
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_onUpdated_filter.js": {
@@ -353,6 +369,16 @@
    "passed": false,
    "error": "FAIL: test_01_manifest_commands (firefox.test_ext_manifest_commands.ManifestCommandsTest.test_01_manifest_commands): AssertionError: browser.test: Command+Y: There should be no manifest errors. - Actual: Extensions.loadUnpacked: {'code': -32600, 'message': \"Invalid value for 'commands[1].suggested_k",
    "passing": []
+  },
+  "browser/components/extensions/test/xpcshell/test_ext_menu_startup.js": {
+   "port": "firefox/test_ext_menu_startup.py",
+   "passed": false,
+   "error": "FAIL: test_01_menu_onInstalled (firefox.test_ext_menu_startup.MenuStartupTest.test_01_menu_onInstalled): AssertionError: browser.test: correct error creating menu - Expected: The menu id test-top-level already exists in menus.create., Actual: Cannot create item with duplicate id test-top-level | cor",
+   "passing": [
+    "test_02_menu_persisted_cleared_after_ext_update",
+    "test_03_menu_nested",
+    "test_04_extension_without_background"
+   ]
   },
   "browser/components/extensions/test/xpcshell/test_ext_pageAction_shutdown.js": {
    "port": "firefox/test_ext_pageAction_shutdown.py",
@@ -394,7 +420,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://jniidhfcibkiijbndhgkphmcldkc",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://lnpdamkahanbdebolcgjbfjpilbl",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -525,7 +551,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://loldacipmoppekmmkcgknhhhggfkngec/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://ldahcaofcbmadijnbeangmopgppmngea/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -596,7 +622,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://pidaliamio",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://gjigojhcgc",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -718,7 +744,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://oomlcpicnmffklbmehkhpbibhoea",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://bolbkpfijeffiljpkhcidnbfnmoh",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
