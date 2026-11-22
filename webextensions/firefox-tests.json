@@ -769,7 +769,7 @@
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_networkStatus.js", "api": "networkStatus", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_notifications_incognito.js", "api": "notifications", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_notifications_unsupported.js", "api": "notifications", "state": "todo"},
-  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_optional_host_permissions.js", "api": "", "state": "todo"},
+  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_optional_host_permissions.js", "api": "", "state": "ported", "port": "firefox/test_ext_optional_host_permissions.py"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_permission_warnings.js", "api": "permissions", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_permission_xhr.js", "api": "permissions", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_permissions.js", "api": "permissions", "state": "todo"},

@@ -152,6 +152,9 @@
 # A Firefox add-on's menus items get Firefox's access keys: its title's & as
 # Firefox reads it, else the label's first letter or digit, else a digit
 # (firefox_menu_access_keys.h).
+# A Firefox add-on's host patterns in permissions and optional_permissions are
+# host permissions and optional ones in Manifest V3 too, as in Firefox
+# (firefox_host_permissions.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -3666,7 +3669,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,21 @@
+@@ -402,6 +402,23 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -3675,6 +3678,8 @@
 +    "firefox_cookie_store.h",
 +    "firefox_gecko_id.cc",
 +    "firefox_gecko_id.h",
++    "firefox_host_permissions.cc",
++    "firefox_host_permissions.h",
 +    "firefox_locale_files.cc",
 +    "firefox_locale_files.h",
 +    "firefox_page_action.cc",
@@ -6034,3 +6039,25 @@
  
    FireEventInContext(event_name, context, &v8_args, std::move(filter),
                       /*on_dispatched_callback=*/v8::Local<v8::Function>(),
+--- a/extensions/common/manifest_handlers/permissions_parser.cc
++++ b/extensions/common/manifest_handlers/permissions_parser.cc
+@@ -19,6 +19,7 @@
+ #include "extensions/common/extensions_client.h"
+ #include "extensions/common/features/feature.h"
+ #include "extensions/common/features/feature_provider.h"
++#include "extensions/common/firefox_host_permissions.h"
+ #include "extensions/common/manifest.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handler.h"
+@@ -285,6 +286,11 @@ bool ParseHelper(Extension* extension,
+     ParseHostPermissions(extension, key, host_data, *api_permissions,
+                          host_permissions);
+   } else {
++    // Firefox add-ons (dubna): a Firefox add-on's host patterns here are host
++    // permissions in Manifest V3 too (firefox_host_permissions.h).
++    ParseHostPermissions(extension, key,
++                         TakeFirefoxHostPatterns(*extension, &host_data),
++                         *api_permissions, host_permissions);
+     // Iterate through unhandled permissions (in |host_data|) and add an install
+     // warning for each.
+     for (const auto& permission_str : host_data) {
