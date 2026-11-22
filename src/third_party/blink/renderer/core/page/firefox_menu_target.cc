@@ -3,6 +3,7 @@
 
 #include "third_party/blink/renderer/core/page/firefox_menu_target.h"
 
+#include "base/rand_util.h"
 #include "third_party/blink/public/web/web_element.h"
 #include "third_party/blink/public/web/web_local_frame.h"
 #include "third_party/blink/renderer/core/dom/document.h"
@@ -73,10 +74,11 @@ int SetFirefoxMenuTarget(Node* node) {
     target = MakeGarbageCollected<FirefoxLastMenuTarget>(*window);
     Supplement<LocalDOMWindow>::ProvideTo(*window, target);
   }
-  // Unique in the renderer process, so that one window's ID never names
-  // another's target. Firefox's is the contextmenu event's time stamp, which
-  // only differs between the menus of one tab.
-  static int last_id = 0;
+  // New for each menu in the renderer process, from a random start in each
+  // process, so that one window's ID almost never names another's target,
+  // also in another process (a cross-site frame, an add-on's page), as
+  // Firefox's, the contextmenu event's time stamp, almost never does.
+  static int last_id = base::RandIntInclusive(1, 1 << 30);
   target->id = ++last_id;
   target->element = element;
   return target->id;
