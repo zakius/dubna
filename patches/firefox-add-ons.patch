@@ -131,6 +131,10 @@
 # (firefox_bookmark_nodes.h).
 # The bookmarks API gives a Firefox add-on Firefox's folder IDs, such as
 # toolbar_____ and unfiled_____, in its nodes and events (firefox_bookmark_ids.h).
+# A tab's menu and an action's menu match a Firefox add-on's
+# documentUrlPatterns against the tab's URL as the menu opens, and the tab's
+# menu lists Firefox add-ons in the order they were installed
+# (firefox_tab_menus.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -255,7 +259,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +283,14 @@ source_set("extensions") {
+@@ -265,6 +283,18 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -267,10 +271,14 @@
 +    # Firefox add-ons (dubna): Firefox's menus item icons.
 +    "firefox_menu_icons.cc",
 +    "firefox_menu_icons.h",
++
++    # Firefox add-ons (dubna): Firefox's tab and action menus.
++    "firefox_tab_menus.cc",
++    "firefox_tab_menus.h",
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +355,22 @@ source_set("extensions") {
+@@ -329,6 +359,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -293,7 +301,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +431,14 @@ source_set("extensions") {
+@@ -389,6 +435,14 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -5398,7 +5406,15 @@
    deps = [
 --- a/chrome/browser/extensions/extension_context_menu_model.cc
 +++ b/chrome/browser/extensions/extension_context_menu_model.cc
-@@ -535,7 +535,8 @@
+@@ -23,6 +23,7 @@
+ #include "chrome/browser/extensions/extension_ui_util.h"
+ #include "chrome/browser/extensions/extension_uninstall_dialog.h"
+ #include "chrome/browser/extensions/extension_util.h"
++#include "chrome/browser/extensions/firefox_tab_menus.h"
+ #include "chrome/browser/extensions/menu_manager.h"
+ #include "chrome/browser/extensions/permissions_url_constants.h"
+ #include "chrome/browser/policy/developer_tools_policy_checker.h"
+@@ -535,7 +536,8 @@ void ExtensionContextMenuModel::ExecuteCommand(int command_id,
    if (ContextMenuMatcher::IsExtensionsCustomCommandId(command_id)) {
      CHECK(extension_items_, base::NotFatalUntil::M161);
      extension_items_->ExecuteCommand(command_id, GetActiveWebContents(),
@@ -5408,7 +5424,7 @@
      action_taken_ = ContextMenuAction::kCustomCommand;
      return;
    }
-@@ -697,9 +698,19 @@
+@@ -697,9 +699,19 @@ void ExtensionContextMenuModel::ExecuteCommand(int command_id,
  
  void ExtensionContextMenuModel::OnMenuWillShow(ui::SimpleMenuModel* menu) {
    action_taken_ = ContextMenuAction::kNoAction;
@@ -5428,7 +5444,21 @@
    // `action_taken_` can be deleted when the extensions toggle menu is closed.
    if (action_taken_) {
      ContextMenuAction action = *action_taken_;
-@@ -771,7 +782,11 @@
+@@ -759,9 +771,12 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
+           ? std::optional<ActionInfo::Type>(extension_action_->action_type())
+           : std::nullopt;
+ 
++  // Firefox add-ons (dubna): see WithFirefoxDocumentUrl().
+   extension_items_ = std::make_unique<ContextMenuMatcher>(
+       profile_, this, this,
+-      base::BindRepeating(MenuItemMatchesAction, action_type));
++      WithFirefoxDocumentUrl(
++          base::BindRepeating(MenuItemMatchesAction, action_type),
++          GetActiveWebContents()));
+ 
+   // Home page section.
+   std::string extension_name = extension->name();
+@@ -771,7 +786,11 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
    AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
    SetElementIdentifierAt(GetIndexOfCommandId(HOME_PAGE).value(),
                           kHomePageMenuItem);
@@ -5440,7 +5470,20 @@
  
    // Site permissions section.
    bool is_required_by_policy = IsExtensionRequiredByPolicy(extension, profile_);
-@@ -975,7 +990,11 @@
+@@ -966,16 +985,23 @@ void ExtensionContextMenuModel::InitMenu(const Extension* extension,
+   if (extension_action_)
+     action_type = extension_action_->action_type();
+ 
++  // Firefox add-ons (dubna): see WithFirefoxDocumentUrl().
+   extension_items_ = std::make_unique<ContextMenuMatcher>(
+       profile_, this, this,
+-      base::BindRepeating(MenuItemMatchesAction, action_type));
++      WithFirefoxDocumentUrl(
++          base::BindRepeating(MenuItemMatchesAction, action_type),
++          GetActiveWebContents()));
+ 
+   std::string extension_name = extension->name();
+   // Ampersands need to be escaped to avoid being treated like
    // mnemonics in the menu.
    base::ReplaceChars(extension_name, "&", "&&", &extension_name);
    AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
@@ -5454,16 +5497,40 @@
    // Add page access items if active web contents exist and the extension
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
-@@ -682,6 +682,8 @@
-           return item->contexts().Contains(extensions::MenuItem::TAB);
-         }));
+@@ -72,6 +72,7 @@
+ 
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+ #include "chrome/browser/extensions/context_menu_matcher.h"
++#include "chrome/browser/extensions/firefox_tab_menus.h"
+ #include "chrome/browser/extensions/menu_manager.h"
+ #include "extensions/common/extension_features.h"
+ #endif
+@@ -676,21 +677,29 @@ void TabMenuModel::Build(int index) {
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+   if (base::FeatureList::IsEnabled(
+           extensions_features::kExtensionTabContextMenu)) {
++    // Firefox add-ons (dubna): see WithFirefoxDocumentUrl().
+     extension_items_ = std::make_unique<extensions::ContextMenuMatcher>(
+         tab_strip_->profile(), delegate(), this,
+-        base::BindRepeating([](const extensions::MenuItem* item) {
+-          return item->contexts().Contains(extensions::MenuItem::TAB);
+-        }));
++        extensions::WithFirefoxDocumentUrl(
++            base::BindRepeating([](const extensions::MenuItem* item) {
++              return item->contexts().Contains(extensions::MenuItem::TAB);
++            }),
++            tab_strip_->GetWebContentsAt(index)));
  
 +    // Firefox add-ons (dubna): see ContextMenuMatcher.
 +    size_t firefox_start = GetItemCount();
      int extension_index = 0;
      // Iterate over all extensions that have menu items loaded in the
      // MenuManager.
-@@ -691,6 +693,8 @@
++    // Firefox add-ons (dubna): see FirefoxTabMenuExtensions().
+     for (const auto& key :
+-         extensions::MenuManager::Get(tab_strip_->profile())->ExtensionIds()) {
++         extensions::FirefoxTabMenuExtensions(tab_strip_->profile())) {
+       extension_items_->AppendExtensionItems(key, std::u16string(),
                                               &extension_index,
                                               /*is_action_menu=*/false);
      }
@@ -5472,7 +5539,7 @@
    }
  #endif
  
-@@ -801,7 +805,7 @@
+@@ -801,7 +810,7 @@ void TabMenuModel::ActivatedAt(size_t index, int event_flags) {
        content::ContextMenuParams params;
        params.page_url = web_contents->GetLastCommittedURL();
        matcher->ExecuteCommand(GetCommandIdAt(index), web_contents, nullptr,
