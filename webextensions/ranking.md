@@ -1,6 +1,6 @@
 # What the corpus misses in Chromium
 
-Written by `tools/amo_corpus.py scan` from the 839 add-ons of `corpus.json`. Each row is a manifest key, permission or `browser.*` API that add-ons use and Chromium doesn't have, with the number of add-ons that use it and the first 10 of them by users. The matching is approximate: APIs are found by name in the scripts, so a name in a comment or in code that never runs counts, an API reached another way (`const api = browser; api.menus`) does not, only Firefox's namespaces count, and a member counts as missing when its namespace's schema doesn't name it. Read an add-on before filing a step for it alone.
+Written by `tools/amo_corpus.py scan` from the 836 add-ons of `corpus.json`. Each row is a manifest key, permission or `browser.*` API that add-ons use and Chromium doesn't have, with the number of add-ons that use it and the first 10 of them by users. The matching is approximate: APIs are found by name in the scripts, so a name in a comment or in code that never runs counts, an API reached another way (`const api = browser; api.menus`) does not, only Firefox's namespaces count, and a member counts as missing when its namespace's schema doesn't name it. Read an add-on before filing a step for it alone.
 
 ## Manifest keys
 
@@ -46,7 +46,7 @@ Written by `tools/amo_corpus.py scan` from the 839 add-ons of `corpus.json`. Eac
 | `sessions.getTabValue` | 7 | tree-style-tab, simple-tab-groups, sidebery, new-tab-suspender, google-translate-elemen, open-tabs-next-to-current, reloadmatic |
 | `sessions.setTabValue` | 7 | tree-style-tab, simple-tab-groups, sidebery, new-tab-suspender, google-translate-elemen, open-tabs-next-to-current, reloadmatic |
 | `tabs.hide` | 7 | tree-style-tab, sidebery, tab-stash, groupspeeddial, foxytab, google-translate-elemen, tridactyl-vim |
-| `proxy.register` | 6 | rutracker-add-on, доступ-к-рутрекеру, zeroomega, switchyomega, rpa, lostfilm-tv-официальный-плагин |
+| `proxy.register` | 5 | rutracker-add-on, доступ-к-рутрекеру, zeroomega, rpa, lostfilm-tv-официальный-плагин |
 | `tabs.saveAsPDF` | 6 | gesturefy, tranquility-1, print-edit-we, foxytab, print-to-pdf-document, save-pdf |
 | `pageAction.openPopup` | 4 | traduzir-paginas-web, canvasblocker, qr-code-address-bar, google-translate-elemen |
 | `pageAction.setBadgeBackgroundColor` | 4 | easy-video-downloader, open-in-internet-explorer, soundcloud-mp3-downloader, dark-theme-for-google |
@@ -54,7 +54,7 @@ Written by `tools/amo_corpus.py scan` from the 839 add-ons of `corpus.json`. Eac
 | `sessions.getWindowValue` | 4 | tree-style-tab, simple-tab-groups, sidebery, google-translate-elemen |
 | `sessions.setWindowValue` | 4 | tree-style-tab, simple-tab-groups, sidebery, google-translate-elemen |
 | `tabs.show` | 4 | tree-style-tab, sidebery, foxytab, tridactyl-vim |
-| `proxy.unregister` | 3 | zeroomega, switchyomega, rpa |
+| `proxy.unregister` | 2 | zeroomega, rpa |
 | `tabs.print` | 3 | gesturefy, print-edit-we, foxytab |
 | `tabs.printPreview` | 3 | gesturefy, print-edit-we, capture-print |
 | `tabs.warmup` | 3 | tree-style-tab, sidebery, groupspeeddial |
@@ -62,7 +62,7 @@ Written by `tools/amo_corpus.py scan` from the 839 add-ons of `corpus.json`. Eac
 | `contextualIdentities.getSupportedIcons` | 2 | multi-account-containers, tree-style-tab |
 | `events.data` | 2 | browsec, tubernet |
 | `find` | 2 | text-link, glitterdrag |
-| `proxy.registerProxyScript` | 2 | zeroomega, switchyomega |
+| `proxy.registerProxyScript` | 1 | zeroomega |
 | `runtime.setUninstallUrl` | 2 | yandexbar, yandex-homepage |
 | `sessions.forgetClosedTab` | 2 | new-tab-override, undoclosetabbutton |
 | `sessions.removeTabValue` | 2 | tree-style-tab, simple-tab-groups |

@@ -3584,14 +3584,6 @@
   "sha256": "2ae4e7640e69a62795b109fd76526c558c1211fbcc848c183226b08bb310c914"
  },
  {
-  "id": "switchyomega@feliscatus.addons.mozilla.org",
-  "slug": "switchyomega",
-  "users": 11800,
-  "version": "2.5.10",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/848109/switchyomega-2.5.10.xpi",
-  "sha256": "dfefc2da59eeb2e92a32fc75fb05426feeea4c39ee01b7a797395ed29ed7cf77"
- },
- {
   "id": "{38d8ce8d-f84f-4f1c-b946-41ec3bd7b6d7}",
   "slug": "color-picker-webext",
   "users": 11783,
@@ -4910,14 +4902,6 @@
   "version": "1.2",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4735190/ultra_volume_booster-1.2.xpi",
   "sha256": "326e1a45060f5edd5208a18836d78bc36a90eea962fc0efbc0c02786170fc1da"
- },
- {
-  "id": "{72b2e02b-3a71-4895-886c-fd12ebe36ba3}",
-  "slug": "bulk-media-downloader",
-  "users": 7360,
-  "version": "0.2.0",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/715116/bulk_media_downloader-0.2.0.xpi",
-  "sha256": "130596ac3984f0abeb28a14913926e11a90930ab8e20bd27c1ed732fab93a204"
  },
  {
   "id": "gNoAi@sphglk",
@@ -6390,14 +6374,6 @@
   "version": "6.0.16",
   "xpi": "https://addons.mozilla.org/firefox/downloads/file/4467124/seznam_doplnek_esko-6.0.16.xpi",
   "sha256": "5de3d10334a5d07c4ae45fb6c69543e2206be77b17c4fee3c63a4e0f58c2dbb8"
- },
- {
-  "id": "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}",
-  "slug": "google-translator-webextension",
-  "users": 4970,
-  "version": "0.5.4",
-  "xpi": "https://addons.mozilla.org/firefox/downloads/file/576166/google_translator_webextension-0.5.4.xpi",
-  "sha256": "9b1978b3d368b6c681005b7f4c0ef480d7f5e7f5d37387232e2e7dc208f80c10"
  },
  {
   "id": "{323353ee-cfbd-4178-9676-85566d98c8b1}",

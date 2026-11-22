@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only
 """The WebExtensions climb's corpus (webextensions/README.md): the 1000 add-ons
 with the most users on addons.mozilla.org, as a fixed list, without the ones
-in webextensions/needs-account.json.
+in webextensions/needs-account.json and webextensions/firefox-refuses.json.
 
   amo_corpus.py fetch [--refresh] [--cache DIR]
   amo_corpus.py scan --chromium SRC [--cache DIR]
@@ -31,6 +31,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS = ROOT / 'webextensions/corpus.json'
 NEEDS_ACCOUNT = ROOT / 'webextensions/needs-account.json'
+FIREFOX_REFUSES = ROOT / 'webextensions/firefox-refuses.json'
 RANKING = ROOT / 'webextensions/ranking.md'
 CACHE = Path.home() / '.cache/dubna-amo-corpus'
 SIZE = 1000
@@ -74,9 +75,9 @@ def entries(pages, size=SIZE):
     raise ValueError(f'AMO listed {len(corpus)} add-ons, not {size}')
 
 
-def without(corpus, needs_account):
-    """The corpus entries that aren't in `needs_account`, in order."""
-    left_out = {item['id'] for item in needs_account}
+def without(corpus, left_out_items):
+    """The corpus entries that aren't in `left_out_items`, in order."""
+    left_out = {item['id'] for item in left_out_items}
     return [item for item in corpus if item['id'] not in left_out]
 
 
@@ -111,7 +112,8 @@ def download(cache, item):
 
 def fetch(refresh, cache):
     if refresh or not CORPUS.exists():
-        corpus = without(entries(search_pages()), json.loads(NEEDS_ACCOUNT.read_text()))
+        left_out = json.loads(NEEDS_ACCOUNT.read_text()) + json.loads(FIREFOX_REFUSES.read_text())
+        corpus = without(entries(search_pages()), left_out)
         CORPUS.write_text(json.dumps(corpus, indent=1) + '\n')
         print(f'{CORPUS.relative_to(ROOT)}: {len(corpus)} add-ons')
     corpus = json.loads(CORPUS.read_text())

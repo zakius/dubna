@@ -2,7 +2,7 @@
  "date": "2026-11-22",
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
  "levels": {
-  "L0": 839,
+  "L0": 836,
   "L1": 833,
   "L2": 771,
   "L3": 698
@@ -1800,10 +1800,6 @@
    "level": "L3",
    "error": null
   },
-  "switchyomega@feliscatus.addons.mozilla.org": {
-   "level": "L0",
-   "error": "This add-on could not be installed because it appears to be corrupt."
-  },
   "{38d8ce8d-f84f-4f1c-b946-41ec3bd7b6d7}": {
    "level": "L3",
    "error": null
@@ -2463,10 +2459,6 @@
   "{b8130e0a-478d-4100-99bd-04bdfabc7f74}": {
    "level": "L3",
    "error": null
-  },
-  "{72b2e02b-3a71-4895-886c-fd12ebe36ba3}": {
-   "level": "L0",
-   "error": "This add-on could not be installed because it appears to be corrupt."
   },
   "gNoAi@sphglk": {
    "level": "L3",
@@ -3203,10 +3195,6 @@
   "sko-extension@firma.seznam.cz": {
    "level": "L3",
    "error": null
-  },
-  "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}": {
-   "level": "L0",
-   "error": "This add-on could not be installed because it appears to be corrupt."
   },
   "{323353ee-cfbd-4178-9676-85566d98c8b1}": {
    "level": "L3",

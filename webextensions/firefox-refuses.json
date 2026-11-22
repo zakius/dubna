@@ -1,0 +1,17 @@
+[
+ {
+  "id": "switchyomega@feliscatus.addons.mozilla.org",
+  "slug": "switchyomega",
+  "why": "a SHA-1 PKCS #7 signature without a COSE signature"
+ },
+ {
+  "id": "{72b2e02b-3a71-4895-886c-fd12ebe36ba3}",
+  "slug": "bulk-media-downloader",
+  "why": "a SHA-1 PKCS #7 signature without a COSE signature"
+ },
+ {
+  "id": "{059cddf1-f66c-4b63-a79a-c35ac7e6ac65}",
+  "slug": "google-translator-webextension",
+  "why": "a SHA-1 PKCS #7 signature without a COSE signature"
+ }
+]
