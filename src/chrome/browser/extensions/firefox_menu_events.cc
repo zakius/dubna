@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <set>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -376,23 +377,46 @@ ExtensionId EntryExtensionId(const ui::MenuModel& model,
   return ExtensionId();
 }
 
-// The index that ContextMenuMatcher::AppendExtensionItems() takes for new
-// items next to those in `model`: after the last one's command ID.
-int NextExtensionIndex(const ui::MenuModel& model, const ItemMap& items) {
-  int last = -1;
-  for (const auto& [command_id, id] : items) {
-    last = std::max(last, command_id);
+// The number of items `items` have, their children's too.
+int CountItems(const MenuItem::OwnedList& items) {
+  int count = static_cast<int>(items.size());
+  for (const auto& item : items) {
+    count += CountItems(item->children());
   }
+  return count;
+}
+
+// The indexes, from ContextMenuMatcher::ConvertToExtensionsCustomCommandId(0),
+// of the command IDs that the extension items in `model` have.
+std::set<int> UsedExtensionIndexes(const ui::MenuModel& model,
+                                   const ItemMap& items) {
+  int first = ContextMenuMatcher::ConvertToExtensionsCustomCommandId(0);
+  std::set<int> used;
+  for (const auto& [command_id, id] : items) {
+    used.insert(command_id - first);
+  }
+  // An add-on's submenu has no item of its own.
   for (size_t i = 0; i < model.GetItemCount(); ++i) {
     int command_id = model.GetCommandIdAt(i);
     if (ContextMenuMatcher::IsExtensionsCustomCommandId(command_id)) {
-      last = std::max(last, command_id);
+      used.insert(command_id - first);
     }
   }
-  if (last < 0) {
-    return 0;
+  return used;
+}
+
+// The lowest index from 1 with `count` free indexes from it. Not 0: at 0,
+// AppendExtensionItems() adds the separator before the first extension item,
+// which the menu still has.
+int FreeExtensionIndex(const std::set<int>& used, int count) {
+  int index = 1;
+  for (int used_index : used) {
+    if (used_index >= index + count) {
+      break;
+    }
+    index = std::max(index, used_index + 1);
   }
-  return last - ContextMenuMatcher::ConvertToExtensionsCustomCommandId(0) + 1;
+  return index;
 }
 
 // Firefox's access keys (firefox_menu_access_keys.h), in the menu and in
@@ -643,12 +667,16 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
     std::erase_if(extension_item_map_, [&extension_id](const auto& entry) {
       return entry.second.extension_key.extension_id == extension_id;
     });
-    // After the other add-ons' items, with the IDs the add-on's old ones
-    // had free again: taking new ones at each refresh() would run out of
-    // the menu's range of extension command IDs. At least 1: at 0,
-    // AppendExtensionItems() adds the separator before the first extension
-    // item, which the menu still has.
-    index = std::max(1, NextExtensionIndex(*menu_model_, extension_item_map_));
+    // The lowest free IDs, the add-on's old ones among them, enough for all
+    // its items and its submenu. IDs above the other add-ons' would climb
+    // when add-ons refresh in turn, and past the menu's range of extension
+    // command IDs, AppendExtensionItems() appends nothing.
+    const MenuItem::OwnedList* items =
+        MenuManager::Get(browser_context_)
+            ->MenuItems(MenuItem::ExtensionKey(extension_id));
+    index = FreeExtensionIndex(
+        UsedExtensionIndexes(*menu_model_, extension_item_map_),
+        (items ? CountItems(*items) : 0) + 1);
   }
 
   // AppendExtensionItems() appends to the model's end, from where they move.
