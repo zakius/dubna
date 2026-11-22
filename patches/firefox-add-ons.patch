@@ -86,6 +86,8 @@
 # A Firefox add-on's tabs.onUpdated status follows the tab's top frame, as in
 # Firefox: "loading" before the URL too, and nothing for a frame's navigation
 # (firefox_tab_status.h). Other extensions keep Chromium's status updates.
+# A pinned tab that closes sends a Firefox add-on no tabs.onUpdated "pinned:
+# false", as in Firefox (firefox_closing_tab.h).
 # A Firefox add-on's @@ui_locale is Firefox's, the BCP 47 tag that
 # getUILanguage() gives, with or without _locales, in getMessage() and in
 # its CSS (firefox_ui_locale.h).
@@ -250,10 +252,14 @@
      "api/chrome_extensions_api_client.cc",
      "api/chrome_extensions_api_client.h",
      "api/cookies/chrome_cookies_api_delegate.cc",
-@@ -175,11 +181,23 @@ source_set("extensions") {
+@@ -175,11 +181,27 @@ source_set("extensions") {
      "api/storage/syncable_settings_storage.h",
      "api/tab_capture/tab_capture_registry.cc",
      "api/tab_capture/tab_capture_registry.h",
++
++    # Firefox add-ons (dubna): no "pinned" update for a closing tab.
++    "api/tabs/firefox_closing_tab.cc",
++    "api/tabs/firefox_closing_tab.h",
 +
 +    # Firefox add-ons (dubna): Firefox's discarded tabs.
 +    "api/tabs/firefox_discarded_tab.cc",
@@ -274,7 +280,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +283,26 @@ source_set("extensions") {
+@@ -265,6 +287,26 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -301,7 +307,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +367,22 @@ source_set("extensions") {
+@@ -329,6 +371,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -324,7 +330,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +443,18 @@ source_set("extensions") {
+@@ -389,6 +447,18 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -343,7 +349,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +720,9 @@ source_set("extensions") {
+@@ -654,6 +724,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -857,7 +863,15 @@
    return true;
  }
  
-@@ -132,10 +146,30 @@ TabsEventRouter::TabEntry::TabEntry(TabsEventRouter& router,
+@@ -123,6 +137,7 @@ TabsEventRouter::TabEntry::TabEntry(TabsEventRouter& router,
+   pinned_state_subscription_ =
+       tab->RegisterPinnedStateChanged(base::BindRepeating(
+           &TabEntry::OnPinnedStateChanged, weak_factory_.GetWeakPtr()));
++  firefox_closing_.Observe(*tab);
+ 
+   group_changed_subscription_ = tab->RegisterGroupChanged(base::BindRepeating(
+       &TabEntry::OnGroupChanged, weak_factory_.GetWeakPtr()));
+@@ -132,10 +147,30 @@ TabsEventRouter::TabEntry::TabEntry(TabsEventRouter& router,
        audible_helper->RegisterRecentlyAudibleChangedCallback(
            base::BindRepeating(&TabEntry::OnRecentlyAudibleStateChanged,
                                weak_factory_.GetWeakPtr()));
@@ -888,7 +902,7 @@
  void TabsEventRouter::TabEntry::NavigationEntryCommitted(
      const content::LoadCommittedDetails& load_details) {
    // Send 'status' of tab change. Expecting 'loading' is fired.
-@@ -147,14 +181,17 @@ void TabsEventRouter::TabEntry::NavigationEntryCommitted(
+@@ -147,14 +182,17 @@ void TabsEventRouter::TabEntry::NavigationEntryCommitted(
      changed_property_names.insert(tabs_constants::kUrlKey);
    }
  
@@ -908,7 +922,7 @@
      return;
    }
  
-@@ -171,7 +208,7 @@ void TabsEventRouter::TabEntry::DidStopLoading() {
+@@ -171,7 +209,7 @@ void TabsEventRouter::TabEntry::DidStopLoading() {
      changed_property_names.insert(tabs_constants::kUrlKey);
    }
  
@@ -917,7 +931,16 @@
  }
  
  void TabsEventRouter::TabEntry::TitleWasSet(content::NavigationEntry* entry) {
-@@ -302,15 +339,17 @@ TabsEventRouter::TabEntry* TabsEventRouter::GetTabEntry(
+@@ -206,7 +244,7 @@ void TabsEventRouter::TabEntry::OnRecentlyAudibleStateChanged(
+ 
+ void TabsEventRouter::TabEntry::OnPinnedStateChanged(tabs::TabInterface* tab,
+                                                      bool new_pinned_state) {
+-  router_->TabUpdated(this, {kPinnedKey});
++  router_->TabUpdated(this, {kPinnedKey}, firefox_closing_.PinnedAudience());
+ }
+ 
+ void TabsEventRouter::TabEntry::OnGroupChanged(
+@@ -302,15 +340,17 @@ TabsEventRouter::TabEntry* TabsEventRouter::GetTabEntry(
  }
  
  void TabsEventRouter::TabUpdated(TabEntry* entry,
@@ -938,7 +961,7 @@
    CHECK(!changed_property_names.empty(), base::NotFatalUntil::M161);
    CHECK(contents, base::NotFatalUntil::M161);
  
-@@ -324,7 +363,7 @@ void TabsEventRouter::DispatchTabUpdatedEvent(
+@@ -324,7 +364,7 @@ void TabsEventRouter::DispatchTabUpdatedEvent(
    event->user_gesture = EventRouter::UserGestureState::kNotEnabled;
    event->will_dispatch_callback =
        base::BindRepeating(&WillDispatchTabUpdatedEvent, contents,
@@ -949,15 +972,16 @@
  
 --- a/chrome/browser/extensions/api/tabs/tabs_event_router.h
 +++ b/chrome/browser/extensions/api/tabs/tabs_event_router.h
-@@ -18,6 +18,7 @@
+@@ -18,6 +18,8 @@
  #include "base/scoped_multi_source_observation.h"
  #include "base/values.h"
  #include "build/build_config.h"
++#include "chrome/browser/extensions/api/tabs/firefox_closing_tab.h"
 +#include "chrome/browser/extensions/api/tabs/firefox_tab_status.h"
  #include "chrome/browser/tab_list/tab_list_interface.h"
  #include "chrome/browser/tab_list/tab_list_interface_observer.h"
  #include "components/favicon/core/favicon_driver.h"
-@@ -94,6 +95,8 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
+@@ -94,6 +96,8 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
      bool SetAudible(bool new_val);
  
      // content::WebContentsObserver:
@@ -966,7 +990,7 @@
      void NavigationEntryCommitted(
          const content::LoadCommittedDetails& load_details) override;
      void DidStopLoading() override;
-@@ -107,6 +110,10 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
+@@ -107,6 +111,10 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
      }
  
     private:
@@ -977,17 +1001,20 @@
      // Called when the recently-audible state for the tab changed.
      void OnRecentlyAudibleStateChanged(bool was_recently_audible);
  
-@@ -124,6 +131,9 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
+@@ -124,6 +132,12 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
      // changes.
      bool complete_waiting_on_load_ = false;
  
 +    // Firefox add-ons: the status changes that follow the top frame.
 +    FirefoxTabStatus firefox_status_;
 +
++    // Firefox add-ons: no "pinned" update for a closing tab.
++    FirefoxClosingTab firefox_closing_;
++
      GURL url_;
  
      // Callback subscription to be notified as the "pinned" state changes.
-@@ -168,13 +178,17 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
+@@ -168,13 +182,17 @@ class TabsEventRouter : public favicon::FaviconDriverObserver,
  
    // Internal processing of tab updated events. Intended to be called when
    // there's any changed property.
