@@ -123,6 +123,10 @@
 # (firefox_menu_shown_tab.h).
 # Only Firefox add-ons' bindings have contextMenus.onShown, onHidden and
 # refresh() (firefox_menu_events_bindings.h).
+# A Firefox add-on's action menu starts with its items and a separator, as in
+# Firefox; past six items, the sixth place is a submenu with the add-on's name
+# that holds the rest, which Chromium dropped (firefox_menu_items.cc). A click
+# there has the active tab's URL as its pageUrl (firefox_menu_events.cc).
 # menus.create and update take Firefox's icons, which the item shows
 # (firefox_menu_icons.h), and its password, bookmark and tools_menu contexts;
 # a password item shows on a password field, a bookmark or tools_menu one in
@@ -1104,7 +1108,21 @@
  #include "chrome/common/extensions/api/context_menus.h"
  #include "components/guest_view/common/guest_view_constants.h"
  #include "content/public/browser/browser_context.h"
-@@ -146,8 +148,7 @@ void ContextMenuMatcher::AppendExtensionItems(
+@@ -88,6 +90,13 @@ void ContextMenuMatcher::AppendExtensionItems(
+   if (items.empty())
+     return;
+ 
++  // Firefox add-ons (dubna): Firefox's action menu (firefox_menu_items.cc).
++  if (is_action_menu && AppendFirefoxActionItems(extension, items,
++                                                 can_cross_incognito,
++                                                 selection_text, index)) {
++    return;
++  }
++
+   bool prepend_separator = false;
+ 
+ #if !BUILDFLAG(IS_CHROMEOS)
+@@ -146,8 +155,7 @@ void ContextMenuMatcher::AppendExtensionItems(
          menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
        MenuItem* item = items[0];
        extension_item_map_[menu_id] = item->id();
@@ -1114,7 +1132,7 @@
        submenu_items = GetRelevantExtensionItems(item->children(),
                                                  can_cross_incognito);
      }
-@@ -163,7 +164,9 @@ void ContextMenuMatcher::AppendExtensionItems(
+@@ -163,7 +171,9 @@ void ContextMenuMatcher::AppendExtensionItems(
                                        selection_text, submenu, index,
                                        false);  // is_action_menu_top_level
      }
@@ -1125,7 +1143,7 @@
        SetExtensionIcon(extension_key);
      }
    }
-@@ -208,8 +211,7 @@ std::u16string ContextMenuMatcher::GetTopLevelContextMenuTitle(
+@@ -208,8 +218,7 @@ std::u16string ContextMenuMatcher::GetTopLevelContextMenuTitle(
      title = base::UTF8ToUTF16(extension->name());
    } else {
      MenuItem* item = items[0];
@@ -1135,7 +1153,7 @@
    }
    return title;
  }
-@@ -259,14 +261,15 @@ void ContextMenuMatcher::ExecuteCommand(
+@@ -259,14 +268,16 @@ void ContextMenuMatcher::ExecuteCommand(
      int command_id,
      content::WebContents* web_contents,
      content::RenderFrameHost* render_frame_host,
@@ -1149,11 +1167,12 @@
    MenuManager* manager = MenuManager::Get(browser_context_);
    manager->ExecuteCommand(browser_context_, web_contents, render_frame_host,
 -                          params, item->id());
-+                          params, item->id(), event_flags);
++                          FirefoxClickParams(*item, web_contents, params),
++                          item->id(), event_flags);
  }
  
  bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
-@@ -316,6 +319,10 @@ MenuItem::List ContextMenuMatcher::GetRelevantExtensionItems(
+@@ -316,6 +327,10 @@ MenuItem::List ContextMenuMatcher::GetRelevantExtensionItems(
      if (!filter_.Run(item))
        continue;
  
@@ -1164,7 +1183,7 @@
      if (item->id().incognito == browser_context_->IsOffTheRecord() ||
          can_cross_incognito)
        result.push_back(item);
-@@ -365,8 +372,7 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
+@@ -365,8 +380,7 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
        ++num_visible_items;
  
      extension_item_map_[menu_id] = item->id();
@@ -1174,7 +1193,7 @@
      if (item->type() == MenuItem::NORMAL) {
        MenuItem::List children =
            GetRelevantExtensionItems(item->children(), can_cross_incognito);
-@@ -396,6 +402,8 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
+@@ -396,6 +410,8 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
      } else if (item->type() == MenuItem::SEPARATOR && enable_separators) {
        menu_model->AddSeparator(ui::NORMAL_SEPARATOR);
      }
@@ -1243,7 +1262,7 @@
  
   private:
    friend class ExtensionContextMenuBrowserTest;
-@@ -112,6 +147,15 @@ class ContextMenuMatcher {
+@@ -112,12 +147,37 @@ class ContextMenuMatcher {
                                         int* index,
                                         bool is_action_menu_top_level);
  
@@ -1259,7 +1278,29 @@
    // Attempts to get an MenuItem given the id of a context menu item.
    extensions::MenuItem* GetExtensionMenuItem(int id) const;
  
-@@ -126,11 +170,20 @@ class ContextMenuMatcher {
+   // This will set the icon on the most recently-added item in the menu_model_.
+   void SetExtensionIcon(const MenuItem::ExtensionKey& extension_key);
+ 
++  // Firefox add-ons (dubna): a Firefox add-on's items in its action menu, as
++  // Firefox has them (firefox_menu_items.cc). Returns false for another
++  // extension's items, which Chromium's code appends.
++  bool AppendFirefoxActionItems(const Extension* extension,
++                                const MenuItem::List& items,
++                                bool can_cross_incognito,
++                                const std::u16string& selection_text,
++                                int* index);
++
++  // Firefox add-ons (dubna): `params` of a click on `item`, with Firefox's
++  // pageUrl in an action menu (firefox_menu_events.cc).
++  content::ContextMenuParams FirefoxClickParams(
++      const MenuItem& item,
++      content::WebContents* web_contents,
++      const content::ContextMenuParams& params) const;
++
+   raw_ptr<content::BrowserContext, DanglingUntriaged> browser_context_;
+   raw_ptr<ui::SimpleMenuModel, DanglingUntriaged> menu_model_;
+   raw_ptr<ui::SimpleMenuModel::Delegate, DanglingUntriaged> delegate_;
+@@ -126,11 +186,20 @@ class ContextMenuMatcher {
  
    bool is_smart_text_selection_enabled_;
  

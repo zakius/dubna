@@ -4,7 +4,9 @@
 #include "chrome/browser/extensions/firefox_menu_items.h"
 
 #include <algorithm>
+#include <memory>
 #include <string_view>
+#include <utility>
 
 #include "base/containers/fixed_flat_set.h"
 #include "base/strings/pattern.h"
@@ -14,11 +16,15 @@
 #include "base/third_party/icu/icu_utf.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
 #include "chrome/browser/extensions/firefox_menu_access_keys.h"
+#include "chrome/common/extensions/api/context_menus.h"
 #include "content/public/browser/context_menu_params.h"
 #include "extensions/common/error_utils.h"
+#include "extensions/common/extension.h"
+#include "extensions/common/firefox_add_on.h"
 #include "extensions/common/url_pattern.h"
 #include "third_party/blink/public/mojom/context_menu/context_menu.mojom-shared.h"
 #include "third_party/blink/public/mojom/forms/form_control_type.mojom-shared.h"
+#include "ui/menus/simple_menu_model.h"
 #include "url/gurl.h"
 #include "url/url_util.h"
 
@@ -240,6 +246,58 @@ std::u16string ContextMenuMatcher::ItemTitle(
   }
   return item->TitleWithReplacement(selection_text,
                                     kMaxExtensionItemTitleLength);
+}
+
+// Firefox's buildTopLevelElements() for an action menu: all the items at the
+// top, where Chromium shows the first six and drops the others. Past
+// ACTION_MENU_TOP_LEVEL_LIMIT, the limit's place is a submenu with the
+// add-on's name that holds the rest. Firefox counts the items that show; the
+// model has the hidden ones too. A separator follows, before the menu's own
+// items, which FirefoxItemsAppended() puts after the add-on's.
+bool ContextMenuMatcher::AppendFirefoxActionItems(
+    const Extension* extension,
+    const MenuItem::List& items,
+    bool can_cross_incognito,
+    const std::u16string& selection_text,
+    int* index) {
+  if (!extension || !IsFirefoxAddOn(*extension)) {
+    return false;
+  }
+  const size_t limit = api::context_menus::ACTION_MENU_TOP_LEVEL_LIMIT;
+  size_t visible = std::ranges::count_if(
+      items, [](const MenuItem* item) { return item->visible(); });
+  MenuItem::List top_level;
+  MenuItem::List overflow;
+  size_t shown = 0;
+  for (MenuItem* item : items) {
+    if (visible > limit && shown == limit - 1) {
+      overflow.push_back(item);
+      continue;
+    }
+    top_level.push_back(item);
+    if (item->visible()) {
+      ++shown;
+    }
+  }
+
+  RecursivelyAppendExtensionItems(top_level, can_cross_incognito,
+                                  selection_text, menu_model_, index,
+                                  /*is_action_menu_top_level=*/false);
+  if (!overflow.empty()) {
+    int menu_id = ConvertToExtensionsCustomCommandId(*index);
+    ++(*index);
+    auto submenu = std::make_unique<ui::SimpleMenuModel>(delegate_);
+    RecursivelyAppendExtensionItems(overflow, can_cross_incognito,
+                                    selection_text, submenu.get(), index,
+                                    /*is_action_menu_top_level=*/false);
+    // An & in the name is text, not an access key.
+    std::u16string name = base::UTF8ToUTF16(extension->name());
+    base::ReplaceSubstringsAfterOffset(&name, 0, u"&", u"&&");
+    menu_model_->AddSubMenu(menu_id, name, submenu.get());
+    extension_menu_models_.push_back(std::move(submenu));
+  }
+  menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
+  return true;
 }
 
 }  // namespace extensions

@@ -502,6 +502,26 @@ void ContextMenuMatcher::FirefoxItemsAppended(
   state.end = menu_model_->GetItemCount();
   state.selection_text = selection_text;
   state.is_action_menu = is_action_menu;
+
+  // A Firefox add-on's action menu starts with its items and the separator
+  // after them (AppendFirefoxActionItems()), where Chromium's starts with the
+  // add-on's name and a separator, which follow.
+  MenuItem* item = nullptr;
+  if (is_action_menu && !extension_item_map_.empty()) {
+    item = GetExtensionMenuItem(extension_item_map_.begin()->first);
+  }
+  if (item && item->firefox_add_on()) {
+    size_t from = start;
+    while (from < state.end &&
+           menu_model_->GetTypeAt(from) == ui::MenuModel::TYPE_SEPARATOR) {
+      ++from;
+    }
+    for (size_t i = 0; from + i < state.end; ++i) {
+      MoveEntry(*menu_model_, from + i, i);
+    }
+    state.start = 0;
+    state.end -= from;
+  }
   AssignAccessKeys(*menu_model_, extension_menu_models_, extension_item_map_,
                    browser_context_);
 }
@@ -538,6 +558,12 @@ void ContextMenuMatcher::FirefoxActionMenuShown(
   }
   FirefoxMenuState& state = *firefox_menu_;
   state.action_extension_id = extension.id();
+  // A Firefox add-on's menu that opens without its items gets those of
+  // refresh() at its top too.
+  if (IsFirefoxAddOn(extension) && extension_item_map_.empty()) {
+    state.start = 0;
+    state.end = 0;
+  }
   state.Open(browser_context_);
   if (!CanAccess(extension, browser_context_)) {
     return;
@@ -561,6 +587,20 @@ void ContextMenuMatcher::FirefoxTabMenuShown(content::WebContents* tab) {
                 extension_item_map_, tab);
   }
   AddAddOnsOfShownItems(state, extension_item_map_);
+}
+
+content::ContextMenuParams ContextMenuMatcher::FirefoxClickParams(
+    const MenuItem& item,
+    content::WebContents* web_contents,
+    const content::ContextMenuParams& params) const {
+  content::ContextMenuParams result = params;
+  // Firefox's action menu has the active tab's URL as its pageUrl
+  // (actionContextMenu()); Chromium's has none.
+  if (firefox_menu_ && firefox_menu_->is_action_menu &&
+      item.firefox_add_on() && web_contents) {
+    result.page_url = web_contents->GetLastCommittedURL();
+  }
+  return result;
 }
 
 void ContextMenuMatcher::FirefoxMenuHidden() {
