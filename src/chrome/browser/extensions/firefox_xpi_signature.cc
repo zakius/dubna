@@ -21,11 +21,15 @@
 #include "base/files/file_util.h"
 #include "base/strings/string_util.h"
 #include "base/strings/string_view_util.h"
+#include "components/cbor/reader.h"
+#include "components/cbor/values.h"
+#include "components/cbor/writer.h"
 #include "extensions/browser/zipfile_installer.h"
 #include "net/cert/x509_certificate.h"
 #include "net/cert/x509_util.h"
 #include "third_party/boringssl/src/include/openssl/bytestring.h"
 #include "third_party/boringssl/src/include/openssl/digest.h"
+#include "third_party/boringssl/src/include/openssl/ecdsa.h"
 #include "third_party/boringssl/src/include/openssl/evp.h"
 #include "third_party/boringssl/src/include/openssl/nid.h"
 #include "third_party/boringssl/src/include/openssl/obj.h"
@@ -189,6 +193,19 @@ constexpr std::string_view kManifestNames[] = {
     "META-INF/MANIFEST.MF", "META-INF/MANIFEST.mf", "META-INF/Manifest.MF",
     "META-INF/Manifest.mf", "META-INF/mANIFEST.MF", "META-INF/mANIFEST.mf",
     "META-INF/manifest.MF", "META-INF/manifest.mf"};
+
+// The COSE signature's files, by the names Firefox finds them by:
+// "(M|/M)ETA-INF/cose.sig$" and "(M|/M)ETA-INF/cose.manifest$".
+constexpr char kCoseSignatureName[] = "META-INF/cose.sig";
+constexpr char kCoseManifestName[] = "META-INF/cose.manifest";
+
+// The CBOR tag of a COSE_Sign, 98, which cbor::Reader doesn't read.
+constexpr std::string_view kCoseSignTag = "\xd8\x62";
+
+// COSE's header labels that Firefox reads (cose-rust's decoder.rs): "alg",
+// and "kid", which holds the certificates.
+constexpr int64_t kCoseAlgorithm = 1;
+constexpr int64_t kCoseKeyId = 4;
 
 CBS CbsOf(std::string_view data) {
   CBS cbs;
@@ -713,6 +730,136 @@ bool VerifySignature(const Signer& signer,
                           signed_data.size());
 }
 
+bool IsEmptyMap(const cbor::Value& value) {
+  return value.is_map() && value.GetMap().empty();
+}
+
+// The map that the CBOR byte string `value` holds, a COSE protected header,
+// if it has `size` entries.
+std::optional<cbor::Value> ReadHeader(const cbor::Value& value, size_t size) {
+  if (!value.is_bytestring()) {
+    return std::nullopt;
+  }
+  std::optional<cbor::Value> header = cbor::Reader::Read(value.GetBytestring());
+  if (!header || !header->is_map() || header->GetMap().size() != size) {
+    return std::nullopt;
+  }
+  return header;
+}
+
+// cose-rust's decode_signature_struct() and Firefox's
+// CoseVerificationCallback(): whether `signature`, a COSE_Signature of a
+// COSE_Sign whose protected header is `body_header`, is an ECDSA signature
+// of `payload` by the certificate that its protected header gives, which
+// has a chain to the add-ons root with the `intermediates`, as a PKCS #7
+// signer's has. On true, `certificate` is that certificate.
+bool VerifyCoseSignature(const cbor::Value& signature,
+                         const cbor::Value& body_header,
+                         std::string_view payload,
+                         const std::vector<std::string_view>& intermediates,
+                         std::string* certificate) {
+  if (!signature.is_array() || signature.GetArray().size() != 3) {
+    return false;
+  }
+  const cbor::Value::ArrayValue& parts = signature.GetArray();
+  std::optional<cbor::Value> header = ReadHeader(parts[0], 2);
+  if (!header || !IsEmptyMap(parts[1]) || !parts[2].is_bytestring()) {
+    return false;
+  }
+  const cbor::Value::MapValue& map = header->GetMap();
+  const auto algorithm = map.find(cbor::Value(kCoseAlgorithm));
+  const auto key_id = map.find(cbor::Value(kCoseKeyId));
+  if (algorithm == map.end() || !algorithm->second.is_integer() ||
+      key_id == map.end() || !key_id->second.is_bytestring()) {
+    return false;
+  }
+  // ES256, ES384 and ES512, the algorithms Firefox verifies.
+  const EVP_MD* md = nullptr;
+  switch (algorithm->second.GetInteger()) {
+    case -7:
+      md = EVP_sha256();
+      break;
+    case -35:
+      md = EVP_sha384();
+      break;
+    case -36:
+      md = EVP_sha512();
+      break;
+    default:
+      return false;
+  }
+  // cose-rust's get_sig_struct_bytes(): RFC 8152's Sig_structure, with a
+  // null for its empty external_aad, as AMO signs it.
+  cbor::Value::ArrayValue structure;
+  structure.emplace_back(std::string_view("Signature"));
+  structure.emplace_back(body_header.Clone());
+  structure.emplace_back(parts[0].Clone());
+  structure.emplace_back(cbor::Value::null);
+  structure.emplace_back(base::as_byte_span(payload));
+  std::optional<std::vector<uint8_t>> signed_data =
+      cbor::Writer::Write(cbor::Value(std::move(structure)));
+  if (!signed_data) {
+    return false;
+  }
+  const std::string digest = Digest(md, base::as_string_view(*signed_data));
+  const std::string_view signer = key_id->second.GetBytestringAsString();
+  bssl::UniquePtr<X509> parsed = ParseCertificate(signer);
+  EVP_PKEY* key = parsed ? X509_get0_pubkey(parsed.get()) : nullptr;
+  const EC_KEY* ec_key = key ? EVP_PKEY_get0_EC_KEY(key) : nullptr;
+  const cbor::Value::BinaryValue& bytes = parts[2].GetBytestring();
+  if (!ec_key ||
+      !ECDSA_verify_p1363(reinterpret_cast<const uint8_t*>(digest.data()),
+                          digest.size(), bytes.data(), bytes.size(), ec_key) ||
+      !VerifyChain(signer, intermediates)) {
+    return false;
+  }
+  *certificate = std::string(signer);
+  return true;
+}
+
+// cose-rust's decode_signature(), as Firefox's VerifyCOSESignature() calls
+// it: whether `cose`, cose.sig, is a detached COSE_Sign of `manifest`,
+// cose.manifest, whose signatures all verify, with the intermediates in its
+// protected header. On true, `certificate` is the last signature's
+// certificate, which Firefox takes the add-on's ID from.
+bool VerifyCose(std::string_view cose,
+                std::string_view manifest,
+                std::string* certificate) {
+  if (!cose.starts_with(kCoseSignTag)) {
+    return false;
+  }
+  const std::string_view sign = cose.substr(kCoseSignTag.size());
+  std::optional<cbor::Value> value =
+      cbor::Reader::Read(base::as_byte_span(sign));
+  if (!value || !value->is_array() || value->GetArray().size() != 4) {
+    return false;
+  }
+  const cbor::Value::ArrayValue& parts = value->GetArray();
+  std::optional<cbor::Value> body_header = ReadHeader(parts[0], 1);
+  if (!body_header || !IsEmptyMap(parts[1]) || !parts[2].is_null() ||
+      !parts[3].is_array() || parts[3].GetArray().empty()) {
+    return false;
+  }
+  const auto key_id = body_header->GetMap().find(cbor::Value(kCoseKeyId));
+  if (key_id == body_header->GetMap().end() || !key_id->second.is_array()) {
+    return false;
+  }
+  std::vector<std::string_view> intermediates;
+  for (const cbor::Value& intermediate : key_id->second.GetArray()) {
+    if (!intermediate.is_bytestring()) {
+      return false;
+    }
+    intermediates.push_back(intermediate.GetBytestringAsString());
+  }
+  for (const cbor::Value& signature : parts[3].GetArray()) {
+    if (!VerifyCoseSignature(signature, parts[0], manifest, intermediates,
+                             certificate)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool ReadSignatureFile(const base::FilePath& unzip_dir,
                        const std::string& name,
                        std::string* contents) {
@@ -740,9 +887,8 @@ XpiSignature CheckXpiSignature(const base::FilePath& unzip_dir,
       !ReadSignatureFile(unzip_dir, mf_name, &mf)) {
     return XpiSignature::kInvalid;
   }
-  // The signature's own files, which no digest covers. Firefox also checks
-  // META-INF/cose.sig, a COSE signature, when a .xpi has one; to this it is
-  // a file like the others, whose digest manifest.mf gives.
+  // The signature's own files, which no digest covers. The COSE signature's
+  // are files that manifest.mf covers like the others.
   files.erase(rsa_name);
   files.erase(sf_name);
   files.erase(mf_name);
@@ -772,9 +918,30 @@ XpiSignature CheckXpiSignature(const base::FilePath& unzip_dir,
       !VerifyManifest(mf, signer.md, unzip_dir, files, is_theme)) {
     return XpiSignature::kInvalid;
   }
+  // Firefox checks the COSE signature whenever a .xpi has one: cose.manifest
+  // gives the SHA-256 of every file but the signatures'. Its certificate then
+  // gives the ID. Without one, a SHA-1 PKCS #7 is a weak signature, which
+  // Firefox refuses (XPIInstall.sys.mjs, hasStrongSignature()).
+  std::string certificate(signer_certificate);
+  if (files.contains(kCoseSignatureName)) {
+    std::string cose, cose_manifest;
+    if (!ReadSignatureFile(unzip_dir, kCoseSignatureName, &cose) ||
+        !files.contains(kCoseManifestName) ||
+        !ReadSignatureFile(unzip_dir, kCoseManifestName, &cose_manifest)) {
+      return XpiSignature::kInvalid;
+    }
+    files.erase(kCoseSignatureName);
+    files.erase(kCoseManifestName);
+    if (!VerifyCose(cose, cose_manifest, &certificate) ||
+        !VerifyManifest(cose_manifest, EVP_sha256(), unzip_dir, files,
+                        is_theme)) {
+      return XpiSignature::kInvalid;
+    }
+  } else if (signer.md == EVP_sha1()) {
+    return XpiSignature::kInvalid;
+  }
   scoped_refptr<net::X509Certificate> parsed =
-      net::X509Certificate::CreateFromBytes(
-          base::as_byte_span(signer_certificate));
+      net::X509Certificate::CreateFromBytes(base::as_byte_span(certificate));
   if (!parsed) {
     return XpiSignature::kInvalid;
   }

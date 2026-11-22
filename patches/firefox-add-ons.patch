@@ -308,6 +308,16 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
+@@ -654,6 +704,9 @@ source_set("extensions") {
+     "//ui/menus",
+     "//ui/native_window_tracker",
+     "//ui/shell_dialogs",
++
++    # Firefox add-ons (dubna): a .xpi's COSE signature.
++    "//components/cbor",
+   ]
+   public_deps = [
+     "//chrome/browser/extensions/api/messaging",
 --- a/chrome/browser/extensions/api/BUILD.gn
 +++ b/chrome/browser/extensions/api/BUILD.gn
 @@ -65,6 +65,15 @@ group("api_implementations") {

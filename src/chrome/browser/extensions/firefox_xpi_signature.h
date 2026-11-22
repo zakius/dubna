@@ -30,8 +30,12 @@ enum class XpiSignature {
 // META-INF/mozilla.sf, SHA-256 or SHA-1, by a certificate for code signing
 // whose chain ends at Mozilla's add-ons root; mozilla.sf gives the digest of
 // META-INF/manifest.mf, which gives the digest of every other file, and every
-// file is listed. On kValid, `signer_id` is the signing certificate's common
-// name, which is the add-on's ID. The command-line switch
+// file is listed. A COSE signature, META-INF/cose.sig, is checked whenever
+// the .xpi has one: an ECDSA signature of META-INF/cose.manifest, which gives
+// every file's SHA-256, by a certificate with a chain to the same root. A
+// SHA-1 PKCS #7 counts only with a COSE signature, as in Firefox. On kValid,
+// `signer_id` is the common name of the COSE signature's certificate, or else
+// the PKCS #7's, which is the add-on's ID. The command-line switch
 // --firefox-add-ons-signature-root=<PEM or DER file> trusts one more root, as
 // Firefox's xpinstall.signatures.dev-root pref picks another one, for tests.
 // `is_theme` says whether the add-on is a theme, of which ZipFileInstaller
