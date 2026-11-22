@@ -164,9 +164,8 @@
 # its descendant's child, an invalid url pattern (firefox_menu_errors.h). Its
 # runtime.lastError is null without an error, as in Firefox
 # (firefox_last_error.h).
-# A Firefox add-on's host patterns in permissions and optional_permissions are
-# host permissions and optional ones in Manifest V3 too, as in Firefox
-# (firefox_host_permissions.h).
+# A Firefox add-on's host patterns in optional_permissions are optional host
+# permissions in Manifest V3 too, as in Firefox (firefox_host_permissions.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -6167,14 +6166,15 @@
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handler.h"
-@@ -285,6 +286,11 @@ bool ParseHelper(Extension* extension,
+@@ -285,6 +286,12 @@ bool ParseHelper(Extension* extension,
      ParseHostPermissions(extension, key, host_data, *api_permissions,
                           host_permissions);
    } else {
-+    // Firefox add-ons (dubna): a Firefox add-on's host patterns here are host
-+    // permissions in Manifest V3 too (firefox_host_permissions.h).
++    // Firefox add-ons (dubna): a Firefox add-on's host patterns in
++    // optional_permissions are host permissions in Manifest V3 too
++    // (firefox_host_permissions.h).
 +    ParseHostPermissions(extension, key,
-+                         TakeFirefoxHostPatterns(*extension, &host_data),
++                         TakeFirefoxHostPatterns(*extension, key, &host_data),
 +                         *api_permissions, host_permissions);
      // Iterate through unhandled permissions (in |host_data|) and add an install
      // warning for each.

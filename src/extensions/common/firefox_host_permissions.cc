@@ -9,6 +9,7 @@
 #include "base/strings/string_split.h"
 #include "base/strings/string_util.h"
 #include "extensions/common/firefox_add_on.h"
+#include "extensions/common/manifest_constants.h"
 
 namespace extensions {
 
@@ -35,9 +36,11 @@ bool IsPermissionName(std::string_view value) {
 
 std::vector<std::string> TakeFirefoxHostPatterns(
     const Extension& extension,
+    std::string_view key,
     std::vector<std::string>* unhandled) {
   std::vector<std::string> patterns;
-  if (!IsFirefoxAddOn(extension)) {
+  if (key != manifest_keys::kOptionalPermissions ||
+      !IsFirefoxAddOn(extension)) {
     return patterns;
   }
   std::vector<std::string> names;
