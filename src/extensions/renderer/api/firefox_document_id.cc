@@ -64,7 +64,7 @@ RequestResult HandleFirefoxGetDocumentId(
   v8::Local<v8::Value> target = (*parse_result.arguments)[0];
   blink::WebFrame* frame = nullptr;
   if (std::optional<blink::WebFrame*> window_frame =
-          blink::WebFrame::FromWindow(isolate, target)) {
+          blink::WebFrame::FromWindowOrNullopt(isolate, target)) {
     frame = *window_frame;
   } else if (blink::WebElement element =
                  blink::WebElement::FromV8Value(isolate, target);

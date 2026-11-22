@@ -101,8 +101,8 @@
 # them (firefox_locale_files.h), and i18n.getMessage() puts in substitutions
 # as Firefox does (firefox_i18n_substitutions.h).
 # runtime.getDocumentId() is Firefox's, synchronous: the renderer finds the
-# frame of a window (blink's WebFrame::FromWindow()) or frame element and asks
-# the browser for its documentId with a synchronous message
+# frame of a window (blink's WebFrame::FromWindowOrNullopt()) or frame
+# element and asks the browser for its documentId with a synchronous message
 # (firefox_document_id.h).
 # UserScriptLoader::SendUpdate() sends a renderer process only the
 # contentScripts scripts of its cookie store (firefox_content_script_stores.h).
@@ -1583,17 +1583,15 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -734,6 +801,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
+@@ -734,4 +801,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
      properties.Set("selectionText", params.selection_text);
  
-   properties.Set("editable", params.is_editable);
 +  // Firefox add-ons (dubna): Firefox's modifiers, button, linkText and
 +  // viewType.
 +  AddFirefoxClickData(extension, render_frame_host, params, event_flags,
 +                      properties);
+   properties.Set("editable", params.is_editable);
  
- #if BUILDFLAG(ENABLE_GUEST_VIEW)
-   WebViewGuest* webview_guest =
 @@ -793,6 +864,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
        WriteToStorage(extension, item->id().extension_key);
      }
@@ -1991,19 +1989,16 @@
  #include "extensions/common/extension.h"
  #include "third_party/skia/include/core/SkBitmap.h"
  #include "ui/base/models/dialog_model.h"
-@@ -97,6 +99,11 @@ content::WebContents* GetWebContentsForProfile(Profile* profile) {
-     }
+@@ -98,2 +100,8 @@ content::WebContents* GetWebContentsForProfile(Profile* profile) {
    }
- 
++
 +  // Firefox add-ons (dubna): the tab the user sees, not the first tab
 +  // (install_failure_message_android.h).
 +  if (content::WebContents* visible = extensions::GetVisibleTab(profile)) {
 +    return visible;
 +  }
-   for (const TabModel* tab_model : TabModelList::models()) {
-     if (tab_model->GetProfile() != profile) {
-       continue;
-@@ -158,6 +165,12 @@ void ExtensionInstallUIAndroid::OnInstallSuccess(
+ 
+@@ -158,6 +166,12 @@ void ExtensionInstallUIAndroid::OnInstallSuccess(
  
  void ExtensionInstallUIAndroid::OnInstallFailure(
      const extensions::CrxInstallError& error) {
@@ -3021,23 +3016,23 @@
    // Weak. Owned by menu_runner_;
 --- a/content/browser/renderer_host/navigation_request.cc
 +++ b/content/browser/renderer_host/navigation_request.cc
-@@ -4934,7 +4934,15 @@ UrlInfo NavigationRequest::GetUrlInfo() {
-     // simplify some of that code and would be good for consistency, since both
-     // about:blank and about:srcdoc inherit the origin per spec
-     // (https://html.spec.whatwg.org/multipage/document-sequences.html#determining-the-origin).
--    url_info_init.WithOrigin(*GetInitiatorOrigin());
-+    //
-+    // Firefox add-ons (dubna): a same-document navigation keeps its document,
-+    // and so the document's origin, whoever starts it. An add-on's
-+    // tabs.update() to about:blank#ref on a new tab's about:blank, which has
-+    // no site, would fail the site checks with the add-on's origin otherwise.
+@@ -4940,6 +4940,16 @@ UrlInfo NavigationRequest::GetUrlInfo() {
+     CHECK(!url_info_init.origin().has_value());
+   }
+ 
++  // Firefox add-ons (dubna): a same-document navigation keeps its document,
++  // and so the document's origin, whoever starts it. An add-on's
++  // tabs.update() to about:blank#ref on a new tab's about:blank, which has
++  // no site, would fail the site checks with the add-on's origin otherwise.
++  if (!IsLoadDataWithBaseURL() && GetURL().IsAboutBlank() &&
++      GetInitiatorOrigin().has_value() && IsSameDocument()) {
 +    url_info_init.WithOrigin(
-+        IsSameDocument()
-+            ? frame_tree_node_->current_frame_host()->GetLastCommittedOrigin()
-+            : *GetInitiatorOrigin());
-   } else {
-     // Overriding the origin for a URL is dangerous and only allowed in very
-     // narrow cases which are handled explicitly above.  Please think very
++        frame_tree_node_->current_frame_host()->GetLastCommittedOrigin());
++  }
++
+   // Propagate the tentative origin to commit value (for data: URLs that will be
+   // rendered) to the UrlInfo, to make sure the nonce remains the same
+   // throughout the navigation.
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
 @@ -300,6 +300,15 @@
@@ -5153,17 +5148,11 @@
    GURL validated_url_;
 --- a/chrome/browser/extensions/open_tab_helper.cc
 +++ b/chrome/browser/extensions/open_tab_helper.cc
-@@ -7,6 +7,7 @@
- #include "base/memory/weak_ptr.h"
- #include "base/strings/string_number_conversions.h"
+@@ -9,2 +9,3 @@
  #include "base/types/expected_macros.h"
 +#include "chrome/browser/extensions/api/tabs/firefox_discarded_tab.h"
  #include "chrome/browser/extensions/api/tabs/tabs_constants.h"
- #include "chrome/browser/extensions/browser_window_util.h"
- #include "chrome/browser/extensions/chrome_extension_function_details.h"
-@@ -196,6 +197,13 @@
-                                     ? WindowOpenDisposition::kNewForegroundTab
-                                     : WindowOpenDisposition::kNewBackgroundTab;
+@@ -198,2 +199,9 @@
  
 +  // Firefox add-ons (dubna): a discarded tab is inserted as a tab that loads
 +  // its page when it is selected (firefox_discarded_tab.h).
@@ -5173,8 +5162,6 @@
 +  }
 +
    // If splitWithTabId is specified, determine the relative positioning of the
-   // new tab. Defaults to the right of the target tab if index is not specified.
-   tabs::TabInterface* split_tab = nullptr;
 --- a/chrome/browser/extensions/open_tab_helper.h
 +++ b/chrome/browser/extensions/open_tab_helper.h
 @@ -33,6 +33,9 @@
@@ -5375,19 +5362,16 @@
  #include "base/unguessable_token.h"
  #include "third_party/blink/public/common/tokens/tokens.h"
  #include "third_party/blink/public/mojom/frame/frame.mojom-shared.h"
-@@ -189,6 +191,12 @@
-   // the given node is not a frame, iframe or if the frame is empty.
+@@ -190,2 +192,9 @@
    static WebFrame* FromFrameOwnerElement(const WebNode&);
- 
++
 +  // Firefox add-ons (dubna): the frame of `value` when it is a window, local
 +  // or remote, of any world: null when the window's frame is gone, and
 +  // nullopt when `value` is no window.
-+  static std::optional<WebFrame*> FromWindow(v8::Isolate*,
-+                                             v8::Local<v8::Value> value);
-+
-   // Whether the owner element of this frame is in the document tree or the
-   // shadow tree, per https://w3c.github.io/webcomponents/spec/shadow/.
-   mojom::TreeScopeType GetTreeScopeType() const { return scope_; }
++  static std::optional<WebFrame*> FromWindowOrNullopt(
++      v8::Isolate*,
++      v8::Local<v8::Value> value);
+ 
 --- a/third_party/blink/renderer/core/frame/web_frame.cc
 +++ b/third_party/blink/renderer/core/frame/web_frame.cc
 @@ -12,8 +12,10 @@
@@ -5401,12 +5385,13 @@
  #include "third_party/blink/renderer/core/frame/frame_owner.h"
  #include "third_party/blink/renderer/core/frame/frame_swap_scope.h"
  #include "third_party/blink/renderer/core/frame/local_frame.h"
-@@ -146,6 +148,15 @@
+@@ -146,6 +148,16 @@
    return nullptr;
  }
  
-+std::optional<WebFrame*> WebFrame::FromWindow(v8::Isolate* isolate,
-+                                              v8::Local<v8::Value> value) {
++std::optional<WebFrame*> WebFrame::FromWindowOrNullopt(
++    v8::Isolate* isolate,
++    v8::Local<v8::Value> value) {
 +  DOMWindow* window = V8Window::ToWrappable(isolate, value);
 +  if (!window) {
 +    return std::nullopt;
@@ -5449,17 +5434,15 @@
    }
 --- a/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_mojom_traits.cc
-@@ -20,8 +20,10 @@
+@@ -17,6 +17,8 @@
+     Read(blink::mojom::UntrustworthyContextMenuParamsDataView data,
+          blink::UntrustworthyContextMenuParams* out) {
+   if (!data.ReadMediaType(&out->media_type) ||
++      !data.ReadInvalidLinkUrl(&out->invalid_link_url) ||
++      !data.ReadFirefoxSelectionText(&out->firefox_selection_text) ||
        !data.ReadLinkUrl(&out->link_url) ||
        !data.ReadLinkText(&out->link_text) ||
        !data.ReadUnfilteredLinkUrl(&out->unfiltered_link_url) ||
-+      !data.ReadInvalidLinkUrl(&out->invalid_link_url) ||
-       !data.ReadSrcUrl(&out->src_url) ||
-       !data.ReadSelectionText(&out->selection_text) ||
-+      !data.ReadFirefoxSelectionText(&out->firefox_selection_text) ||
-       !data.ReadTitleText(&out->title_text) ||
-       !data.ReadAltText(&out->alt_text) ||
-       !data.ReadSuggestedFilename(&out->suggested_filename) ||
 --- a/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
 +++ b/third_party/blink/common/context_menu_data/context_menu_params_builder.cc
 @@ -54,12 +54,15 @@
@@ -5480,21 +5463,15 @@
    params.alt_text = base::UTF8ToUTF16(data.alt_text);
 --- a/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
 +++ b/third_party/blink/common/context_menu_data/untrustworthy_context_menu_params.cc
-@@ -51,12 +51,14 @@
-   link_url = other.link_url;
-   link_text = other.link_text;
-   unfiltered_link_url = other.unfiltered_link_url;
+@@ -46,6 +46,8 @@
+ void UntrustworthyContextMenuParams::Assign(
+     const UntrustworthyContextMenuParams& other) {
+   media_type = other.media_type;
 +  invalid_link_url = other.invalid_link_url;
-   src_url = other.src_url;
-   has_image_contents = other.has_image_contents;
-   image_replacement_frame_token = other.image_replacement_frame_token;
-   is_image_media_plugin_document = other.is_image_media_plugin_document;
-   media_flags = other.media_flags;
-   selection_text = other.selection_text;
 +  firefox_selection_text = other.firefox_selection_text;
-   title_text = other.title_text;
-   alt_text = other.alt_text;
-   suggested_filename = other.suggested_filename;
+   x = other.x;
+   y = other.y;
+   link_url = other.link_url;
 --- a/third_party/blink/public/common/context_menu_data/context_menu_data.h
 +++ b/third_party/blink/public/common/context_menu_data/context_menu_data.h
 @@ -107,9 +107,17 @@
