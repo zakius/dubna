@@ -8,6 +8,7 @@
 
 namespace content {
 struct ContextMenuParams;
+class RenderFrameHost;
 class WebContents;
 }  // namespace content
 
@@ -37,8 +38,11 @@ bool RunFirefoxMenuCommand(const Extension* extension,
 // `linkUrl` for a link whose URL isn't valid. Its `selectionText` is the
 // text selected anywhere in the frame, with the white space it starts at
 // (" just some text"), where Chromium's is only for a click on the
-// selection, without that space.
+// selection, without that space. Its `viewType` is the view of the page in
+// `frame`, the frame of a page's menu (firefox_menu_view_types.h); a tab's
+// or a toolbar button's menu has no frame and no viewType.
 void AddFirefoxClickData(const Extension* extension,
+                         content::RenderFrameHost* frame,
                          const content::ContextMenuParams& params,
                          int event_flags,
                          base::DictValue& properties);

@@ -9,10 +9,12 @@
 #include "build/build_config.h"
 #include "chrome/browser/extensions/browser_window_util.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
+#include "chrome/browser/extensions/firefox_menu_view_types.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/browser/ui/extensions/extensions_container.h"
 #include "chrome/browser/ui/toolbar/toolbar_action_view_model.h"
 #include "content/public/browser/context_menu_params.h"
+#include "content/public/browser/web_contents.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
 #include "extensions/common/manifest_constants.h"
@@ -61,6 +63,7 @@ bool RunFirefoxMenuCommand(const Extension* extension,
 }
 
 void AddFirefoxClickData(const Extension* extension,
+                         content::RenderFrameHost* frame,
                          const content::ContextMenuParams& params,
                          int event_flags,
                          base::DictValue& properties) {
@@ -109,6 +112,15 @@ void AddFirefoxClickData(const Extension* extension,
   // (ContextMenuParams::firefox_selection_text).
   if (!params.firefox_selection_text.empty()) {
     properties.Set("selectionText", params.firefox_selection_text);
+  }
+
+  if (!frame) {
+    return;
+  }
+  content::WebContents* web_contents =
+      content::WebContents::FromRenderFrameHost(frame);
+  if (const char* view_type = FirefoxMenuViewType(web_contents)) {
+    properties.Set("viewType", view_type);
   }
 }
 

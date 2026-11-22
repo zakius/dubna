@@ -17,6 +17,7 @@
 #include "chrome/browser/extensions/context_menu_matcher.h"
 #include "chrome/browser/extensions/extension_tab_util.h"
 #include "chrome/browser/extensions/firefox_menu_access_keys.h"
+#include "chrome/browser/extensions/firefox_menu_view_types.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/common/extensions/api/context_menus.h"
 #include "content/public/browser/browser_context.h"
@@ -117,21 +118,6 @@ bool IsTab(content::WebContents* web_contents) {
   return GetViewType(web_contents) == mojom::ViewType::kTabContents;
 }
 
-// Firefox's viewType of the page: "tab", or an add-on's "popup" or
-// "sidebar" (this browser's side panel).
-const char* ViewType(content::WebContents* web_contents) {
-  switch (GetViewType(web_contents)) {
-    case mojom::ViewType::kTabContents:
-      return "tab";
-    case mojom::ViewType::kExtensionPopup:
-      return "popup";
-    case mojom::ViewType::kExtensionSidePanel:
-      return "sidebar";
-    default:
-      return nullptr;
-  }
-}
-
 // A link, also one whose URL isn't valid (href="http://"), which Firefox
 // calls a link (firefox_menu_items.h).
 bool OnLink(const content::ContextMenuParams& params) {
@@ -206,7 +192,7 @@ base::DictValue PageMenuInfo(const Extension& extension,
                              const content::ContextMenuParams& params) {
   base::DictValue info;
   info.Set("contexts", PageContexts(params));
-  if (const char* view_type = ViewType(web_contents)) {
+  if (const char* view_type = FirefoxMenuViewType(web_contents)) {
     info.Set("viewType", view_type);
   }
   bool on_media = true;

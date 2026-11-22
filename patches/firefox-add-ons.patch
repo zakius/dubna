@@ -127,6 +127,10 @@
 # (firefox_menu_icons.h), and its password, bookmark and tools_menu contexts;
 # a password item shows on a password field, a bookmark or tools_menu one in
 # its other contexts.
+# menus.create and update take Firefox's viewTypes: a Firefox add-on's item
+# with them shows only in the menus of a page in those views, so in no tab's
+# or toolbar button's menu, and onClicked's info has the page's viewType, as
+# onShown's has (firefox_menu_view_types.h).
 # Bookmark nodes have Firefox's type, and bookmarks.create takes it
 # (firefox_bookmark_nodes.h).
 # The bookmarks API gives a Firefox add-on Firefox's folder IDs, such as
@@ -262,7 +266,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +283,18 @@ source_set("extensions") {
+@@ -265,6 +283,22 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -278,10 +282,14 @@
 +    # Firefox add-ons (dubna): Firefox's tab and action menus.
 +    "firefox_tab_menus.cc",
 +    "firefox_tab_menus.h",
++
++    # Firefox add-ons (dubna): Firefox's menus viewTypes.
++    "firefox_menu_view_types.cc",
++    "firefox_menu_view_types.h",
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +359,22 @@ source_set("extensions") {
+@@ -329,6 +363,22 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -304,7 +312,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +435,18 @@ source_set("extensions") {
+@@ -389,6 +439,18 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -323,7 +331,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +704,9 @@ source_set("extensions") {
+@@ -654,6 +716,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -492,15 +500,16 @@
    }
 --- a/chrome/browser/extensions/api/context_menus/context_menus_api.cc
 +++ b/chrome/browser/extensions/api/context_menus/context_menus_api.cc
-@@ -10,6 +10,7 @@
+@@ -10,6 +10,8 @@
  #include "base/strings/string_util.h"
  #include "base/values.h"
  #include "chrome/browser/extensions/context_menu_helpers.h"
 +#include "chrome/browser/extensions/firefox_menu_icons.h"
++#include "chrome/browser/extensions/firefox_menu_view_types.h"
  #include "chrome/browser/extensions/menu_manager.h"
  #include "chrome/browser/profiles/profile.h"
  #include "chrome/common/extensions/api/context_menus.h"
-@@ -63,6 +64,19 @@
+@@ -63,6 +65,25 @@ ExtensionFunction::ResponseAction ContextMenusCreateFunction::Run() {
                                              &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -517,10 +526,16 @@
 +        *MenuManager::Get(browser_context())->GetItemById(id),
 +        params->create_properties.icons->additional_properties);
 +  }
++  // Firefox add-ons (dubna): see firefox_menu_view_types.h.
++  if (params->create_properties.view_types) {
++    SetFirefoxMenuViewTypes(
++        *params->create_properties.view_types,
++        *MenuManager::Get(browser_context())->GetItemById(id));
++  }
    return RespondNow(NoArguments());
  }
  
-@@ -87,6 +101,19 @@
+@@ -87,6 +108,25 @@ ExtensionFunction::ResponseAction ContextMenusUpdateFunction::Run() {
                                              item_id, &error)) {
      return RespondNow(Error(std::move(error)));
    }
@@ -536,6 +551,12 @@
 +        browser_context(), *extension(),
 +        *MenuManager::Get(browser_context())->GetItemById(item_id),
 +        params->update_properties.icons->additional_properties);
++  }
++  // Firefox add-ons (dubna): see firefox_menu_view_types.h.
++  if (params->update_properties.view_types) {
++    SetFirefoxMenuViewTypes(
++        *params->update_properties.view_types,
++        *MenuManager::Get(browser_context())->GetItemById(item_id));
 +  }
    return RespondNow(NoArguments());
  }
@@ -1083,7 +1104,7 @@
  #include "chrome/common/extensions/api/context_menus.h"
  #include "components/guest_view/common/guest_view_constants.h"
  #include "content/public/browser/browser_context.h"
-@@ -146,8 +148,7 @@
+@@ -146,8 +148,7 @@ void ContextMenuMatcher::AppendExtensionItems(
          menu_model_->AddSeparator(ui::NORMAL_SEPARATOR);
        MenuItem* item = items[0];
        extension_item_map_[menu_id] = item->id();
@@ -1093,7 +1114,7 @@
        submenu_items = GetRelevantExtensionItems(item->children(),
                                                  can_cross_incognito);
      }
-@@ -163,7 +164,9 @@
+@@ -163,7 +164,9 @@ void ContextMenuMatcher::AppendExtensionItems(
                                        selection_text, submenu, index,
                                        false);  // is_action_menu_top_level
      }
@@ -1104,7 +1125,7 @@
        SetExtensionIcon(extension_key);
      }
    }
-@@ -208,8 +211,7 @@
+@@ -208,8 +211,7 @@ std::u16string ContextMenuMatcher::GetTopLevelContextMenuTitle(
      title = base::UTF8ToUTF16(extension->name());
    } else {
      MenuItem* item = items[0];
@@ -1114,7 +1135,7 @@
    }
    return title;
  }
-@@ -259,14 +261,15 @@
+@@ -259,14 +261,15 @@ void ContextMenuMatcher::ExecuteCommand(
      int command_id,
      content::WebContents* web_contents,
      content::RenderFrameHost* render_frame_host,
@@ -1132,7 +1153,18 @@
  }
  
  bool ContextMenuMatcher::GetRelevantExtensionTopLevelItems(
-@@ -365,8 +368,7 @@
+@@ -316,6 +319,10 @@ MenuItem::List ContextMenuMatcher::GetRelevantExtensionItems(
+     if (!filter_.Run(item))
+       continue;
+ 
++    // Firefox add-ons (dubna): see SetFirefoxPageView().
++    if (!InFirefoxView(*item))
++      continue;
++
+     if (item->id().incognito == browser_context_->IsOffTheRecord() ||
+         can_cross_incognito)
+       result.push_back(item);
+@@ -365,8 +372,7 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
        ++num_visible_items;
  
      extension_item_map_[menu_id] = item->id();
@@ -1142,7 +1174,7 @@
      if (item->type() == MenuItem::NORMAL) {
        MenuItem::List children =
            GetRelevantExtensionItems(item->children(), can_cross_incognito);
-@@ -396,6 +398,8 @@
+@@ -396,6 +402,8 @@ void ContextMenuMatcher::RecursivelyAppendExtensionItems(
      } else if (item->type() == MenuItem::SEPARATOR && enable_separators) {
        menu_model->AddSeparator(ui::NORMAL_SEPARATOR);
      }
@@ -1153,7 +1185,7 @@
  }
 --- a/chrome/browser/extensions/context_menu_matcher.h
 +++ b/chrome/browser/extensions/context_menu_matcher.h
-@@ -27,6 +27,7 @@
+@@ -27,6 +27,7 @@ class RenderFrameHost;
  
  namespace extensions {
  class ExtensionContextMenuBrowserTest;
@@ -1161,7 +1193,7 @@
  
  // This class contains code that is shared between the various places where
  // context menu items added by the extension or app should be shown.
-@@ -70,6 +71,23 @@
+@@ -70,6 +71,23 @@ class ContextMenuMatcher {
  
    void Clear();
  
@@ -1185,7 +1217,7 @@
    // This function returns the top level context menu title of an extension
    // based on a printable selection text.
    std::u16string GetTopLevelContextMenuTitle(
-@@ -90,7 +108,19 @@
+@@ -90,7 +108,24 @@ class ContextMenuMatcher {
    void ExecuteCommand(int command_id,
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
@@ -1203,10 +1235,15 @@
 +  void set_firefox_selection_text(const std::u16string& text) {
 +    firefox_selection_text_ = text;
 +  }
++
++  // Firefox add-ons (dubna): the menu is of a page in `web_contents`, whose
++  // view a Firefox add-on's items with viewTypes must name
++  // (firefox_menu_view_types.h). Other menus have no view.
++  void SetFirefoxPageView(content::WebContents* web_contents);
  
   private:
    friend class ExtensionContextMenuBrowserTest;
-@@ -112,6 +142,11 @@
+@@ -112,6 +147,15 @@ class ContextMenuMatcher {
                                         int* index,
                                         bool is_action_menu_top_level);
  
@@ -1215,10 +1252,14 @@
 +  std::u16string ItemTitle(const MenuItem* item,
 +                           const std::u16string& selection_text) const;
 +
++  // Firefox add-ons (dubna): whether `item` shows in the menu's view
++  // (firefox_menu_view_types.cc).
++  bool InFirefoxView(const MenuItem& item) const;
++
    // Attempts to get an MenuItem given the id of a context menu item.
    extensions::MenuItem* GetExtensionMenuItem(int id) const;
  
-@@ -126,11 +161,17 @@
+@@ -126,11 +170,20 @@ class ContextMenuMatcher {
  
    bool is_smart_text_selection_enabled_;
  
@@ -1233,6 +1274,9 @@
 +
 +  // Firefox add-ons (dubna): see set_firefox_selection_text().
 +  std::u16string firefox_selection_text_;
++
++  // Firefox add-ons (dubna): see SetFirefoxPageView(). Empty without a view.
++  std::string firefox_view_type_;
  };
  
  }  // namespace extensions
@@ -1342,7 +1386,7 @@
  #include "extensions/common/manifest_handlers/background_info.h"
  #include "extensions/common/mojom/context_type.mojom.h"
  #include "extensions/common/mojom/event_dispatcher.mojom.h"
-@@ -74,6 +77,12 @@
+@@ -74,6 +77,14 @@ const char kTargetURLPatternsKey[] = "target_url_patterns";
  const char kTitleKey[] = "title";
  const char kMenuManagerTypeKey[] = "type";
  const char kVisibleKey[] = "visible";
@@ -1352,10 +1396,12 @@
 +const char kFirefoxTargetURLPatternsKey[] = "firefox_target_url_patterns";
 +// Firefox add-ons (dubna): MenuItem::firefox_icons().
 +const char kFirefoxIconsKey[] = "firefox_icons";
++// Firefox add-ons (dubna): MenuItem::firefox_view_types().
++const char kFirefoxViewTypesKey[] = "firefox_view_types";
  
  // The time by which to delay writing updated menu items to storage.
  constexpr int kWriteDelayInSeconds = 1;
-@@ -277,6 +286,21 @@
+@@ -277,6 +288,28 @@ base::DictValue MenuItem::ToValue() const {
    }
    value.Set(kDocumentURLPatternsKey, document_url_patterns_.ToValue());
    value.Set(kTargetURLPatternsKey, target_url_patterns_.ToValue());
@@ -1374,10 +1420,17 @@
 +  if (!firefox_icons_.empty()) {
 +    value.Set(kFirefoxIconsKey, firefox_icons_.Clone());
 +  }
++  if (!firefox_view_types_.empty()) {
++    base::ListValue view_types;
++    for (const std::string& view_type : firefox_view_types_) {
++      view_types.Append(view_type);
++    }
++    value.Set(kFirefoxViewTypesKey, std::move(view_types));
++  }
    return value;
  }
  
-@@ -347,6 +371,28 @@
+@@ -347,6 +380,33 @@ std::unique_ptr<MenuItem> MenuItem::Populate(const std::string& extension_id,
      return nullptr;
    }
  
@@ -1402,11 +1455,16 @@
 +  if (const base::DictValue* icons = value.FindDict(kFirefoxIconsKey)) {
 +    result->set_firefox_icons(icons->Clone());
 +  }
++  std::vector<std::string> firefox_view_types;
++  if (!GetStringList(value, kFirefoxViewTypesKey, &firefox_view_types)) {
++    return nullptr;
++  }
++  result->set_firefox_view_types(std::move(firefox_view_types));
 +
    // parent_id is filled in from the value, but it might not be valid. It's left
    // to be validated upon being added (via AddChildItem) to the menu manager.
    std::unique_ptr<Id> parent_id = std::make_unique<Id>(
-@@ -436,6 +482,8 @@
+@@ -436,6 +496,8 @@ bool MenuManager::AddContextItem(const Extension* extension,
  
    const std::string& extension_id = extension ? extension->id() : "";
    CHECK_EQ(extension_id, key.extension_id, base::NotFatalUntil::M161);
@@ -1415,7 +1473,7 @@
  
    bool first_item = !context_items_.contains(key);
    context_items_[key].push_back(std::move(item));
-@@ -465,6 +513,8 @@
+@@ -465,6 +527,8 @@ bool MenuManager::AddChildItem(const MenuItem::Id& parent_id,
        items_by_id_.contains(child->id())) {
      return false;
    }
@@ -1424,7 +1482,7 @@
    MenuItem* child_ptr = child.get();
    parent->AddChild(std::move(child));
    items_by_id_[child_ptr->id()] = child_ptr;
-@@ -691,7 +741,8 @@
+@@ -691,7 +755,8 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
                                   WebContents* web_contents,
                                   content::RenderFrameHost* render_frame_host,
                                   const content::ContextMenuParams& params,
@@ -1434,16 +1492,18 @@
    EventRouter* event_router = EventRouter::Get(context);
    if (!event_router)
      return;
-@@ -734,6 +785,8 @@
+@@ -734,6 +799,10 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
      properties.Set("selectionText", params.selection_text);
  
    properties.Set("editable", params.is_editable);
-+  // Firefox add-ons (dubna): Firefox's modifiers, button and linkText.
-+  AddFirefoxClickData(extension, params, event_flags, properties);
++  // Firefox add-ons (dubna): Firefox's modifiers, button, linkText and
++  // viewType.
++  AddFirefoxClickData(extension, render_frame_host, params, event_flags,
++                      properties);
  
  #if BUILDFLAG(ENABLE_GUEST_VIEW)
    WebViewGuest* webview_guest =
-@@ -793,6 +846,12 @@
+@@ -793,6 +862,12 @@ void MenuManager::ExecuteCommand(content::BrowserContext* context,
        WriteToStorage(extension, item->id().extension_key);
      }
    }
@@ -1456,7 +1516,7 @@
    {
      // Dispatch to menu item's .onclick handler (this is the legacy API, from
      // before chrome.contextMenus.onClicked existed).
-@@ -868,9 +927,11 @@
+@@ -868,9 +943,11 @@ void MenuManager::SanitizeRadioListsInMenu(
        }
      }
  
@@ -1469,7 +1529,7 @@
        (*i)->SetChecked(true);
  
      i = radio_run_iter;
-@@ -974,6 +1035,8 @@
+@@ -974,6 +1051,8 @@ void MenuManager::ReadFromStorage(const std::string& extension_id,
        AddContextItem(extension, std::move(item));
      }
    }
@@ -1488,7 +1548,7 @@
  #include <vector>
  
  #include "base/gtest_prod_util.h"
-@@ -117,6 +118,9 @@
+@@ -117,6 +118,9 @@ class MenuItem {
      PAGE_ACTION = 2048,
      ACTION = 4096,
      TAB = 8192,
@@ -1498,7 +1558,7 @@
    };
  
    // An item can be only one of these types.
-@@ -195,6 +199,10 @@
+@@ -195,6 +199,10 @@ class MenuItem {
    const URLPatternSet& target_url_patterns() const {
      return target_url_patterns_;
    }
@@ -1509,7 +1569,7 @@
  
    // Simple mutator methods.
    void set_title(const std::string& new_title) { title_ = new_title; }
-@@ -209,6 +217,33 @@
+@@ -209,6 +217,42 @@ class MenuItem {
      target_url_patterns_ = patterns.Clone();
    }
  
@@ -1540,10 +1600,19 @@
 +  const gfx::Image& firefox_icon() const { return firefox_icon_; }
 +  void set_firefox_icon(const gfx::Image& icon) { firefox_icon_ = icon; }
 +
++  // Firefox add-ons (dubna): menus.create's viewTypes, the views whose menus
++  // show the item (firefox_menu_view_types.h). Empty when none.
++  const std::vector<std::string>& firefox_view_types() const {
++    return firefox_view_types_;
++  }
++  void set_firefox_view_types(std::vector<std::string> view_types) {
++    firefox_view_types_ = std::move(view_types);
++  }
++
    // Returns the title with any instances of %s replaced by `selection`. The
    // result will be no longer than `max_length`.
    std::u16string TitleWithReplacement(const std::u16string& selection,
-@@ -270,6 +305,9 @@
+@@ -270,6 +314,9 @@ class MenuItem {
    // In what contexts should the item be shown?
    ContextList contexts_;
  
@@ -1553,7 +1622,7 @@
    // If this item is a child of another item, the unique id of its parent. If
    // this is a top-level item with no parent, this will be NULL.
    std::unique_ptr<Id> parent_id_;
-@@ -284,6 +322,15 @@
+@@ -284,6 +331,17 @@ class MenuItem {
  
    // Any children this item may have.
    OwnedList children_;
@@ -1566,10 +1635,12 @@
 +  // Firefox add-ons (dubna): see firefox_icons().
 +  base::DictValue firefox_icons_;
 +  gfx::Image firefox_icon_;
++  // Firefox add-ons (dubna): see firefox_view_types().
++  std::vector<std::string> firefox_view_types_;
  };
  
  // This class keeps track of menu items added by extensions.
-@@ -372,7 +419,9 @@
+@@ -372,7 +430,9 @@ class MenuManager : public ProfileObserver,
                        content::WebContents* web_contents,
                        content::RenderFrameHost* render_frame_host,
                        const content::ContextMenuParams& params,
@@ -1652,18 +1723,19 @@
  }
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -1158,6 +1158,10 @@
+@@ -1158,6 +1158,11 @@ RenderViewContextMenu::RenderViewContextMenu(
    }
    set_content_type(
        ContextMenuContentTypeFactory::Create(&render_frame_host, params));
 +#if BUILDFLAG(ENABLE_EXTENSIONS)
 +  // Firefox add-ons (dubna): see ContextMenuMatcher.
 +  extension_items_.set_firefox_selection_text(params.firefox_selection_text);
++  extension_items_.SetFirefoxPageView(source_web_contents_);
 +#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
  
  #if BUILDFLAG(IS_CHROMEOS)
    web_app::AppBrowserController* app_controller =
-@@ -1185,6 +1189,10 @@
+@@ -1185,6 +1190,10 @@ void RenderViewContextMenu::MenuClosed(ui::SimpleMenuModel* source) {
      glic_item_executed_ = false;
      glic_share_image_item_shown_ = false;
      glic_share_image_item_executed_ = false;
@@ -1674,7 +1746,7 @@
    }
    RenderViewContextMenuBase::MenuClosed(source);
  }
-@@ -1548,8 +1556,15 @@
+@@ -1548,8 +1557,15 @@ void RenderViewContextMenu::InitMenu() {
            ContextMenuContentType::ITEM_GROUP_ALL_EXTENSION)) {
      DCHECK(!content_type_->SupportsGroup(
          ContextMenuContentType::ITEM_GROUP_CURRENT_EXTENSION));
@@ -1690,7 +1762,7 @@
    }
  
    if (content_type_->SupportsGroup(
-@@ -3963,7 +3978,7 @@
+@@ -3963,7 +3979,7 @@ void RenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
      RenderFrameHost* render_frame_host = GetRenderFrameHost();
      if (render_frame_host) {
        extension_items_.ExecuteCommand(id, source_web_contents_,
@@ -1699,7 +1771,7 @@
      }
      return;
    }
-@@ -4591,6 +4606,11 @@
+@@ -4591,6 +4607,11 @@ void RenderViewContextMenu::OnProtocolHandlerRegistryChanged() {
  }
  
  void RenderViewContextMenu::NotifyMenuShown() {
@@ -2333,7 +2405,22 @@
            }
          ],
          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
-@@ -82,6 +103,24 @@
+@@ -52,6 +73,14 @@
+         "enum": ["normal", "checkbox", "radio", "separator"],
+         "description": "The type of menu item."
+       },
++      // Firefox add-ons (dubna): Firefox's views whose menus show an item
++      // (firefox_menu_view_types.h).
++      {
++        "id": "ViewType",
++        "type": "string",
++        "enum": ["tab", "popup", "sidebar"],
++        "nodoc": true
++      },
+       {
+         "id": "OnClickData",
+         "type": "object",
+@@ -82,6 +111,29 @@
              "optional": true,
              "description": "If the element is a link, the URL it points to."
            },
@@ -2355,10 +2442,15 @@
 +            "optional": true,
 +            "nodoc": true
 +          },
++          "viewType": {
++            "type": "string",
++            "optional": true,
++            "nodoc": true
++          },
            "srcUrl": {
              "type": "string",
              "optional": true,
-@@ -133,6 +172,13 @@
+@@ -133,6 +185,13 @@
              "optional": true,
              "description": "The type of menu item. Defaults to <code>normal</code>."
            },
@@ -2372,7 +2464,25 @@
            "id": {
              "type": "string",
              "optional": true,
-@@ -203,6 +249,14 @@
+@@ -157,6 +216,17 @@
+             "optional": true,
+             "description": "List of contexts this menu item will appear in. Defaults to <code>['page']</code>."
+           },
++          // Firefox add-ons (dubna): Firefox's viewTypes
++          // (firefox_menu_view_types.h).
++          "viewTypes": {
++            "type": "array",
++            "items": {
++              "$ref": "ViewType"
++            },
++            "minItems": 1,
++            "optional": true,
++            "nodoc": true
++          },
+           "visible": {
+             "type": "boolean",
+             "optional": true,
+@@ -203,6 +273,14 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -2387,7 +2497,7 @@
            }
          }
        }
-@@ -257,6 +311,12 @@
+@@ -257,6 +335,12 @@
                  "$ref": "ItemType",
                  "optional": true
                },
@@ -2400,7 +2510,24 @@
                "title": {
                  "type": "string",
                  "optional": true
-@@ -314,6 +374,14 @@
+@@ -273,6 +357,16 @@
+                 "minItems": 1,
+                 "optional": true
+               },
++              // Firefox add-ons (dubna): as in CreateProperties.
++              "viewTypes": {
++                "type": "array",
++                "items": {
++                  "$ref": "ViewType"
++                },
++                "minItems": 1,
++                "optional": true,
++                "nodoc": true
++              },
+               "visible": {
+                 "type": "boolean",
+                 "optional": true,
+@@ -314,6 +408,14 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -2415,7 +2542,7 @@
                }
              }
            }
-@@ -357,6 +425,20 @@
+@@ -357,6 +459,20 @@
            "parameters": [],
            "description": "Resolves when removal is complete."
          }
@@ -2436,7 +2563,7 @@
        }
      ],
      "events": [
-@@ -377,6 +459,34 @@
+@@ -377,6 +493,34 @@
              "optional": true
            }
          ]
