@@ -135,6 +135,9 @@
 # documentUrlPatterns against the tab's URL as the menu opens, and the tab's
 # menu lists Firefox add-ons in the order they were installed
 # (firefox_tab_menus.h).
+# A Firefox add-on's menus items get Firefox's access keys: its title's & as
+# Firefox reads it, else the label's first letter or digit, else a digit
+# (firefox_menu_access_keys.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -301,7 +304,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +435,14 @@ source_set("extensions") {
+@@ -389,6 +435,18 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -313,6 +316,10 @@
 +    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh().
 +    "firefox_menu_events.cc",
 +    "firefox_menu_events.h",
++
++    # Firefox add-ons (dubna): Firefox's access keys for menus items.
++    "firefox_menu_access_keys.cc",
++    "firefox_menu_access_keys.h",
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",

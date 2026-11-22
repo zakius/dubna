@@ -16,6 +16,7 @@
 #include "base/values.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
 #include "chrome/browser/extensions/extension_tab_util.h"
+#include "chrome/browser/extensions/firefox_menu_access_keys.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/common/extensions/api/context_menus.h"
 #include "content/public/browser/browser_context.h"
@@ -408,6 +409,23 @@ int NextExtensionIndex(const ui::MenuModel& model, const ItemMap& items) {
   return last - ContextMenuMatcher::ConvertToExtensionsCustomCommandId(0) + 1;
 }
 
+// Firefox's access keys (firefox_menu_access_keys.h), in the menu and in
+// the extension items' submenus, each a menu of its own.
+void AssignAccessKeys(
+    ui::SimpleMenuModel& model,
+    const std::vector<std::unique_ptr<ui::SimpleMenuModel>>& submenus,
+    const ItemMap& items,
+    content::BrowserContext* context) {
+  MenuManager* menu_manager = MenuManager::Get(context);
+  if (!menu_manager) {
+    return;
+  }
+  AssignFirefoxAccessKeys(model, items, *menu_manager);
+  for (const auto& submenu : submenus) {
+    AssignFirefoxAccessKeys(*submenu, items, *menu_manager);
+  }
+}
+
 // Moves the entry at `from` to `to`, before it, with what the extension
 // items have: their type, label, radio group, submenu and icon.
 void MoveEntry(ui::SimpleMenuModel& model, size_t from, size_t to) {
@@ -498,6 +516,8 @@ void ContextMenuMatcher::FirefoxItemsAppended(
   state.end = menu_model_->GetItemCount();
   state.selection_text = selection_text;
   state.is_action_menu = is_action_menu;
+  AssignAccessKeys(*menu_model_, extension_menu_models_, extension_item_map_,
+                   browser_context_);
 }
 
 void ContextMenuMatcher::FirefoxPageMenuShown(
@@ -622,6 +642,8 @@ void ContextMenuMatcher::FirefoxRefresh(const ExtensionId& extension_id) {
   if (appended) {
     state.shown_to.insert(extension_id);
   }
+  AssignAccessKeys(*menu_model_, extension_menu_models_, extension_item_map_,
+                   browser_context_);
 
   if (ui::MenuModelDelegate* delegate = menu_model_->menu_model_delegate()) {
     delegate->OnMenuStructureChanged();

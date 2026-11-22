@@ -13,6 +13,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/third_party/icu/icu_utf.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
+#include "chrome/browser/extensions/firefox_menu_access_keys.h"
 #include "content/public/browser/context_menu_params.h"
 #include "extensions/common/error_utils.h"
 #include "extensions/common/url_pattern.h"
@@ -148,33 +149,34 @@ std::u16string_view FirstCodePoints(std::u16string_view text, size_t count) {
 constexpr size_t kMaxSelectionLabelLength = 64;
 
 // Firefox's label for `item` (ext-menus.js' customizeElement()): the title
-// in full, and with text selected, each %s replaced by the selection without
-// its outer white space, cut so that the label is at most 64 characters,
-// ending in "…" ("selection is: 'just some text 1234…'"). Without a selection
-// %s stays. Chromium cuts the title at 75 characters and the selection at 24
+// in full, with its access key (firefox_menu_access_keys.h), and with text
+// selected, each %s replaced by the selection without its outer white space,
+// cut so that the label is at most 64 characters, ending in "…"
+// ("selection is: 'just some text 1234…'"). Without a selection %s stays.
+// Chromium cuts the title at 75 characters and the selection at 24
 // (PrintableSelectionText()), and replaces %s with nothing.
 std::u16string FirefoxMenuItemTitle(const MenuItem& item,
                                     const std::u16string& selection_text) {
-  std::u16string title = base::UTF8ToUTF16(item.title());
-  if (selection_text.empty() || title.find(u"%s") == std::u16string::npos) {
-    return title;
+  FirefoxMenuLabel parsed =
+      ParseFirefoxMenuTitle(base::UTF8ToUTF16(item.title()));
+  std::u16string& label = parsed.label;
+  if (selection_text.empty() || label.find(u"%s") == std::u16string::npos) {
+    return FirefoxMenuTitle(label, parsed.access_key);
   }
   std::u16string_view selection =
       base::TrimWhitespace(selection_text, base::TRIM_ALL);
   std::u16string shown(selection);
-  // As ext-menus.js' customizeElement() counts it: the title's UTF-16 units
+  // As ext-menus.js' customizeElement() counts it: the label's UTF-16 units
   // without one %s, and the selection's code points.
-  size_t length = title.size() - 2 + CodePointCount(selection);
+  size_t length = label.size() - 2 + CodePointCount(selection);
   if (length > kMaxSelectionLabelLength) {
     size_t kept = CodePointCount(selection) -
                   std::min(CodePointCount(selection),
                            length - kMaxSelectionLabelLength + 1);
     shown = base::StrCat({FirstCodePoints(selection, kept), u"\u2026"});
   }
-  // The selection's & is text, as in Firefox, not an access key.
-  base::ReplaceSubstringsAfterOffset(&shown, 0, u"&", u"&&");
-  base::ReplaceSubstringsAfterOffset(&title, 0, u"%s", shown);
-  return title;
+  base::ReplaceSubstringsAfterOffset(&label, 0, u"%s", shown);
+  return FirefoxMenuTitle(label, parsed.access_key);
 }
 
 }  // namespace
