@@ -5,7 +5,7 @@
   "L0": 836,
   "L1": 833,
   "L2": 771,
-  "L3": 698
+  "L3": 699
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
+   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'n6s1s9inprhg2vu8uv') (00334ddc-89c2-4650-9e88-1732d7f829e1:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'lkvjqao8a7dfstukol') (a006e47d-432d-4588-8d67-85acca3fd583:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (852e26f3-bc61-43e8-972e-9f6f3e494678:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (0d39e653-2436-4d48-9a69-4206ba507540:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -2266,7 +2266,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImNiYjM3NTRjMzQ0M2FmNDg0Y2U3NjJhNWIwOTlkNWU3NmY1OWNkYTIiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImJiN2JlYTc0YjQ2NTcyMzIxMTBlZGRlZGM2NzI4ZDg5NjJjYzgzOTQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
@@ -2881,8 +2881,8 @@
    "error": null
   },
   "0.id@reloadmatic.webex": {
-   "level": "L2",
-   "error": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'. (content-script.js:189)"
+   "level": "L3",
+   "error": null
   },
   "unwanted@twitch.tv": {
    "level": "L2",
