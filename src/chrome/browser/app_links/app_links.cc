@@ -15,6 +15,8 @@
 #include "chrome/browser/profiles/profile.h"
 #include "components/prefs/pref_change_registrar.h"
 #include "components/prefs/pref_service.h"
+#include "content/public/browser/document_user_data.h"
+#include "content/public/browser/global_routing_id.h"
 #include "content/public/browser/navigation_controller.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/navigation_handle.h"
@@ -97,13 +99,50 @@ bool LeavesApp(content::WebContents* contents,
 // ExclusionObserver::MayOpen.
 bool MayOpen(content::WebContents* contents);
 
+// The URL a page last asked AppLinkHost about and the browser kept in the
+// app, with whether the page counted it as from the user's input: only input
+// in the page itself, not a script's a.click() or pushState() with the
+// activation of a click in another window, which Chromium carries into a new
+// app window, nor input that gave the page no activation (a touch that
+// scrolls, Esc). The browser's checks of the navigation that follows count it
+// as the page did.
+class PageAsk : public content::DocumentUserData<PageAsk> {
+ public:
+  GURL url;
+  bool activation = false;
+
+ private:
+  explicit PageAsk(content::RenderFrameHost* page) : DocumentUserData(page) {}
+  friend DocumentUserData;
+  DOCUMENT_USER_DATA_KEY_DECL();
+};
+
+DOCUMENT_USER_DATA_KEY_IMPL(PageAsk);
+
+// Whether the page `page`'s navigation to `url` came from the user's input,
+// as the page counted it when it asked about `url`; nullopt if it didn't ask.
+std::optional<bool> PageActivation(content::RenderFrameHost* page,
+                                   const GURL& url) {
+  PageAsk* ask = page ? PageAsk::GetForCurrentDocument(page) : nullptr;
+  if (!ask || ask->url != url) {
+    return std::nullopt;
+  }
+  const bool activation = ask->activation;
+  PageAsk::DeleteForCurrentDocument(page);
+  return activation;
+}
+
 class OutOfScopeLinkThrottle : public content::NavigationThrottle {
  public:
   // `link`: the page's own link click, which also leaves the app for being
   // out of its scope; any other navigation only for an exclusion.
+  // `activation`: the navigation came from the user's input.
   OutOfScopeLinkThrottle(content::NavigationThrottleRegistry& registry,
-                         bool link)
-      : content::NavigationThrottle(registry), link_(link) {}
+                         bool link,
+                         bool activation)
+      : content::NavigationThrottle(registry),
+        link_(link),
+        activation_(activation) {}
 
   ThrottleCheckResult WillStartRequest() override { return Check(link_); }
 
@@ -124,12 +163,13 @@ class OutOfScopeLinkThrottle : public content::NavigationThrottle {
     // one tab per user input, not one per try.
     if (MayOpen(contents)) {
       OpenInDefaultBrowser(contents, handle->GetURL(),
-                           /*background=*/!handle->HasUserGesture());
+                           /*background=*/!activation_);
     }
     return CANCEL_AND_IGNORE;
   }
 
   const bool link_;
+  const bool activation_;
 };
 
 // The page's frame asks AppLinkHost before it changes its address, so such
@@ -162,7 +202,8 @@ class ExclusionObserver
     }
   }
 
-  // Whether `handle` came with a user activation from input in the page, as
+  // For a navigation the page didn't ask about (PageAsk): whether `handle`
+  // came with a user activation after input reached the page, close to how
   // the page's own check counts it (blink's document_input.h): not with the
   // activation of a click in another window, which Chromium carries into a
   // new app window's script, or of the click that loaded the page.
@@ -187,8 +228,11 @@ class ExclusionObserver
         handle->IsHistory()) {
       return;
     }
+    // The page's own count when it asked; this record when it didn't.
+    std::optional<bool> page =
+        PageActivation(handle->GetRenderFrameHost(), handle->GetURL());
     if (!LeavesApp(web_contents(), handle->GetURL(),
-                   /*out_of_scope=*/FromInput(handle))) {
+                   /*out_of_scope=*/page.value_or(FromInput(handle)))) {
       return;
     }
     if (take_backs_since_input_ == kMaxTakeBacksPerInput) {
@@ -196,8 +240,9 @@ class ExclusionObserver
     }
     ++take_backs_since_input_;
     if (MayOpen()) {
-      OpenInDefaultBrowser(web_contents(), handle->GetURL(),
-                           /*background=*/!handle->HasUserGesture());
+      OpenInDefaultBrowser(
+          web_contents(), handle->GetURL(),
+          /*background=*/!page.value_or(handle->HasUserGesture()));
     }
     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE,
@@ -288,6 +333,12 @@ class AppLinkHost : public blink::mojom::AppLinkHost {
             ? content::WebContents::FromRenderFrameHost(frame)
             : nullptr;
     if (!contents || !LeavesApp(contents, url, link)) {
+      if (contents) {
+        // The page opens in the background what isn't from input.
+        PageAsk* ask = PageAsk::GetOrCreateForCurrentDocument(frame);
+        ask->url = url;
+        ask->activation = !background;
+      }
       std::move(callback).Run(false);
       return;
     }
@@ -364,13 +415,28 @@ void MaybeAddThrottle(content::NavigationThrottleRegistry& registry) {
       (handle.GetPageTransition() & ui::PAGE_TRANSITION_FORWARD_BACK)) {
     return;
   }
+  // From the user's input as the page counted it, when the page navigates
+  // itself and asked; otherwise, as for the first navigation of a tab or
+  // window a click opens, which has had no input of its own, the gesture.
+  content::RenderFrameHost* page =
+      handle.GetWebContents()->GetPrimaryMainFrame();
+  const std::optional<blink::LocalFrameToken>& initiator =
+      handle.GetInitiatorFrameToken();
+  std::optional<bool> page_activation;
+  if (initiator && page->GetGlobalFrameToken() ==
+                       content::GlobalRenderFrameHostToken(
+                           handle.GetInitiatorProcessId(), *initiator)) {
+    page_activation = PageActivation(page, handle.GetURL());
+  }
+  const bool activation = page_activation.value_or(handle.HasUserGesture());
   // Out of scope, only the page's own link clicks: not redirects or form
   // posts, and not scripts navigating, even from a click handler (sign-in
   // buttons that fetch the provider's URL and assign it). Exclusions, and
   // with a strict scope every URL out of it, all.
   registry.AddThrottle(std::make_unique<OutOfScopeLinkThrottle>(
-      registry, handle.WasInitiatedByLinkClick() && handle.HasUserGesture() &&
-                    !handle.IsPost()));
+      registry,
+      handle.WasInitiatedByLinkClick() && activation && !handle.IsPost(),
+      activation));
 }
 
 }  // namespace app_links
