@@ -3655,6 +3655,17 @@
 "b": "og",
 "o": "oganesson",
 "a": "Tabs & windows",
+"p": "oganesson/core/web-install-badge",
+"w": "A page's navigator.install() call no longer pops up an install dialog. The address bar's install icon lights up with a dot instead, also for another site's app, and a click on it opens the install dialog. A new page in the tab drops the request. The <install> element and the menu's \"Install page as app...\" are unchanged.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Quiet app install requests"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Tabs & windows",
 "p": "oganesson/ui/app-window-modal-dialog",
 "w": "A \"Leave this page?\" dialog in one window no longer freezes installed web app windows, and one in an app window no longer freezes the rest of the browser. Regular browser windows still wait for the dialog, as in Chromium.",
 "s": "on",
