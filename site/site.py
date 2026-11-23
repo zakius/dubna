@@ -23,10 +23,10 @@ needs an update.
   site/site.py reviewed   record the repos' current commits in reviewed.json,
                           after updating the site
 
-The repos are found next to dubna (../oganesson, ../tennessine), or through
-OGANESSON and TENNESSINE. Only our changes are checked: Helium's series (we move
-it), our own patches and docs. Titanium and Vanadium are summarized on the site,
-not listed patch by patch.
+The repos are found next to dubna's main checkout (../oganesson, ../tennessine),
+even from a worktree, or through OGANESSON and TENNESSINE. Only our changes are
+checked: Helium's series (we move it), our own patches and docs. Titanium and
+Vanadium are summarized on the site, not listed patch by patch.
 """
 import email.utils
 import html
@@ -45,10 +45,16 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parent
 SITE_URL = 'https://dubna.zakius.xyz'
 DUBNA = SITE.parent
+# The browsers sit next to dubna's main checkout, also when this is a worktree.
+GIT_COMMON = subprocess.run(['git', '-C', str(DUBNA), 'rev-parse', '--path-format=absolute',
+                             '--git-common-dir'], capture_output=True, text=True).stdout.strip()
+SIDE = DUBNA.parent
+if GIT_COMMON.endswith('/.git'):  # not a submodule's .git/modules/dubna
+    SIDE = Path(GIT_COMMON).parent.parent
 REPOS = {
     'dubna': DUBNA,
-    'oganesson': Path(os.environ.get('OGANESSON', DUBNA.parent / 'oganesson')),
-    'tennessine': Path(os.environ.get('TENNESSINE', DUBNA.parent / 'tennessine')),
+    'oganesson': Path(os.environ.get('OGANESSON', SIDE / 'oganesson')),
+    'tennessine': Path(os.environ.get('TENNESSINE', SIDE / 'tennessine')),
 }
 # What users see, per repo: a commit touching these may need a site update.
 WATCHED = {
