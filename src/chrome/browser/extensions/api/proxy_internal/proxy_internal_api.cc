@@ -43,6 +43,15 @@ constexpr char kOnError[] = "proxy.onError";
 // hang.
 constexpr base::TimeDelta kAnswerTimeout = base::Seconds(20);
 
+// Firefox asks the add-ons once for each request, where the browser may
+// resolve a request's proxy twice: the first request after an add-on started
+// listening was asked twice, 1 ms apart, with one resolution in the NetLog,
+// and a preconnect looks its proxy up before its connection resolves it. So
+// an ask for a URL whose ask is still waiting for the add-ons takes its
+// answer (FirefoxProxyRequests::Ask()), and so does one that comes this soon
+// after the ask for it started.
+constexpr base::TimeDelta kSameRequest = base::Milliseconds(50);
+
 // Firefox's port as parseInt() reads it: a number, or a string's leading
 // digits.
 std::optional<int> ReadPort(const base::Value* value) {
@@ -224,13 +233,23 @@ bool MaySee(const Extension& extension, const GURL& url) {
 struct FirefoxProxyRequests::Request {
   GURL url;
   bool incognito = false;
+  net::ProxyList own;
+  base::TimeTicks started;
   // The add-ons still to ask, the one asked now, and the proxies decided so
   // far, at first the browser's own.
   std::vector<ExtensionId> left;
   ExtensionId asked;
   net::ProxyList proxies;
-  Answer answer;
+  // Each waits for the proxies decided, kSameRequest's too.
+  std::vector<Answer> answers;
   base::OneShotTimer timeout;
+
+  bool Same(const GURL& other_url,
+            bool other_incognito,
+            const net::ProxyList& other_own) const {
+    return url == other_url && incognito == other_incognito &&
+           own.Equals(other_own);
+  }
 };
 
 FirefoxProxyRequests::FirefoxProxyRequests(content::BrowserContext* context)
@@ -308,13 +327,32 @@ void FirefoxProxyRequests::Ask(content::BrowserContext* context,
                                const GURL& url,
                                net::ProxyList own,
                                Answer answer) {
+  const bool incognito = context->IsOffTheRecord();
+  for (auto& [id, request] : requests_) {
+    if (request->Same(url, incognito, own)) {
+      request->answers.push_back(std::move(answer));
+      return;
+    }
+  }
+  const base::TimeTicks now = base::TimeTicks::Now();
+  std::erase_if(answered_, [now](const std::unique_ptr<Request>& request) {
+    return now - request->started >= kSameRequest;
+  });
+  for (const std::unique_ptr<Request>& request : answered_) {
+    if (request->Same(url, incognito, own)) {
+      std::move(answer).Run(request->proxies);
+      return;
+    }
+  }
   int request_id = next_request_id_++;
   auto request = std::make_unique<Request>();
   request->url = url;
+  request->incognito = incognito;
+  request->own = own;
+  request->started = now;
   request->proxies = std::move(own);
-  request->incognito = context->IsOffTheRecord();
   request->left = Listeners(context, url);
-  request->answer = std::move(answer);
+  request->answers.push_back(std::move(answer));
   requests_[request_id] = std::move(request);
   AskNext(request_id);
 }
@@ -384,10 +422,15 @@ void FirefoxProxyRequests::OnAnswer(const ExtensionId& extension_id,
 
 void FirefoxProxyRequests::Finish(int request_id) {
   auto it = requests_.find(request_id);
-  Answer answer = std::move(it->second->answer);
-  net::ProxyList proxies = std::move(it->second->proxies);
+  std::unique_ptr<Request> request = std::move(it->second);
   requests_.erase(it);
-  std::move(answer).Run(std::move(proxies));
+  std::vector<Answer> answers = std::move(request->answers);
+  net::ProxyList proxies = request->proxies;
+  request->timeout.Stop();
+  answered_.push_back(std::move(request));
+  for (Answer& answer : answers) {
+    std::move(answer).Run(proxies);
+  }
 }
 
 void FirefoxProxyRequests::DispatchError(const ExtensionId& extension_id,

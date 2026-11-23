@@ -56,7 +56,10 @@ class FirefoxProxyRequests : public BrowserContextKeyedAPI,
   // Asks the listening add-ons for the proxy of a request of `context` to
   // `url`. `answer` runs once, at the latest when the service shuts down.
   // `own` is the browser's own proxies for it, which the first answer builds
-  // on, as in Firefox.
+  // on, as in Firefox. Firefox asks once for each request, where the browser
+  // may resolve one request's proxy twice: an ask for the same URL while one
+  // is waiting for the add-ons, or soon after one started, takes its answer
+  // (kSameRequest in the .cc).
   void Ask(content::BrowserContext* context,
            const GURL& url,
            net::ProxyList own,
@@ -98,6 +101,8 @@ class FirefoxProxyRequests : public BrowserContextKeyedAPI,
   raw_ptr<content::BrowserContext> context_;
   base::RepeatingClosureList listening_changed_;
   std::map<int, std::unique_ptr<Request>> requests_;
+  // Those answered lately, for kSameRequest.
+  std::vector<std::unique_ptr<Request>> answered_;
   int next_request_id_ = 1;
 };
 
