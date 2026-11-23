@@ -10,7 +10,9 @@
 
 #include "extensions/browser/extension_action.h"
 #include "extensions/browser/firefox_action_window.h"
+#include "extensions/common/api/extension_action/action_info.h"
 #include "extensions/common/firefox_add_on.h"
+#include "extensions/common/firefox_page_action.h"
 
 namespace extensions {
 
@@ -111,6 +113,28 @@ gfx::Image FirefoxActionValues::SvgDefaultIcon(const ExtensionAction& action) {
 void FirefoxActionValues::SetSvgDefaultIcon(ExtensionAction& action,
                                             const gfx::Image& icon) {
   action.firefox_svg_default_icon_ = icon;
+}
+
+void FirefoxActionValues::SetShowMatches(ExtensionAction& action,
+                                         int tab_id,
+                                         std::optional<bool> matches) {
+  if (matches) {
+    action.firefox_show_matches_[tab_id] = *matches;
+  } else {
+    action.firefox_show_matches_.erase(tab_id);
+  }
+}
+
+bool FirefoxActionValues::ShowOrHide(ExtensionAction& action,
+                                     const Extension& extension,
+                                     int tab_id,
+                                     bool visible) {
+  if (action.action_type() != ActionInfo::Type::kPage ||
+      !HasFirefoxShowMatches(extension)) {
+    return false;
+  }
+  action.is_visible_[tab_id] = visible;
+  return true;
 }
 
 }  // namespace extensions
