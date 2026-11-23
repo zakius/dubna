@@ -876,7 +876,9 @@ XpiSignature CheckXpiSignature(const base::FilePath& unzip_dir,
   std::set<std::string> files = FilesIn(unzip_dir);
   const std::string rsa_name = OneSignatureFile(files, ".rsa", ".RSA");
   if (rsa_name.empty()) {
-    return XpiSignature::kMissing;
+    // Unsigned only without a COSE signature too: one alone is broken.
+    return files.contains(kCoseSignatureName) ? XpiSignature::kInvalid
+                                               : XpiSignature::kMissing;
   }
   const std::string sf_name = OneSignatureFile(files, ".sf", ".SF");
   const std::string mf_name = OneManifestFile(files);

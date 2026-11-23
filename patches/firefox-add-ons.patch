@@ -118,6 +118,9 @@
 # installs with that ID (firefox_xpi_signature.h). ZipFileInstaller's filter
 # is public for the check, to which a file it doesn't unzip isn't missing,
 # and a theme's META-INF/ is unzipped too, for its signature.
+# An unsigned .xpi installs after a warning, first in the install prompt's
+# list, and chrome://extensions marks it as not verified among its runtime
+# warnings (firefox_xpi_installer.h).
 # menus.onShown, onHidden and refresh() are Firefox's: a page's, an action's
 # and a tab's menu tell their ContextMenuMatcher where they appended the
 # extension items and when they open and close (firefox_menu_events.h).
@@ -620,6 +623,26 @@
 +  }
    return RespondNow(NoArguments());
  }
+ 
+--- a/chrome/browser/extensions/api/developer_private/extension_info_generator.cc
++++ b/chrome/browser/extensions/api/developer_private/extension_info_generator.cc
+@@ -27,6 +27,7 @@
+ #include "chrome/browser/extensions/extension_service.h"
+ #include "chrome/browser/extensions/extension_ui_util.h"
+ #include "chrome/browser/extensions/extension_util.h"
++#include "chrome/browser/extensions/firefox_xpi_installer.h"
+ #include "chrome/browser/extensions/shared_module_service_factory.h"
+ #include "chrome/browser/extensions/sync/account_extension_tracker.h"
+ #include "chrome/browser/profiles/profile.h"
+@@ -865,6 +866,9 @@ void ExtensionInfoGenerator::FillExtensionInfo(const Extension& extension,
+   for (const std::string& warning : warnings) {
+     info.runtime_warnings.push_back(warning);
+   }
++  // Firefox add-ons (dubna): an add-on from an unsigned .xpi is not verified.
++  AddUnverifiedXpiWarning(browser_context_, extension.id(),
++                          info.runtime_warnings);
+ 
+   info.state = state;
  
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
@@ -1432,6 +1455,26 @@
    }
  }
  
+--- a/chrome/browser/extensions/extension_install_prompt.cc
++++ b/chrome/browser/extensions/extension_install_prompt.cc
+@@ -12,6 +12,7 @@
+ #include "base/task/single_thread_task_runner.h"
+ #include "chrome/browser/extensions/extension_install_prompt_show_params.h"
+ #include "chrome/browser/extensions/extension_util.h"
++#include "chrome/browser/extensions/firefox_xpi_installer.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/ui/extensions/extension_install_ui.h"
+ #include "chrome/common/buildflags.h"
+@@ -270,6 +271,9 @@ void ExtensionInstallPrompt::ShowConfirmation() {
+   }
+ 
+   prompt_->set_extension(extension_.get());
++  // Firefox add-ons (dubna): an unsigned .xpi's warning, first in the list
++  // (firefox_xpi_installer.h).
++  extensions::AddUnsignedXpiWarning(extension_.get(), *prompt_);
+   if (permissions_to_display) {
+     prompt_->AddPermissionSet(*permissions_to_display);
+   }
 --- a/chrome/browser/extensions/extension_tab_util.cc
 +++ b/chrome/browser/extensions/extension_tab_util.cc
 @@ -21,10 +21,12 @@

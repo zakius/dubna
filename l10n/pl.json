@@ -258,5 +258,20 @@
     "name": "IDS_CONTAINERS_SYNC_DELETED_KEEP",
     "source": "Keep it",
     "message": "Zachowaj"
+  },
+  {
+    "name": "IDS_FIREFOX_XPI_UNSIGNED_PROMPT_WARNING",
+    "source": "Mozilla hasn't checked this add-on. Malicious add-ons can steal your private information or harm your computer. Add it only if you trust its source.",
+    "message": "Mozilla nie sprawdziła tego dodatku. Złośliwe dodatki mogą wykraść Twoje prywatne dane lub zaszkodzić komputerowi. Dodaj go tylko wtedy, gdy ufasz jego źródłu."
+  },
+  {
+    "name": "IDS_FIREFOX_XPI_UNVERIFIED",
+    "source": "This add-on could not be verified: Mozilla hasn't checked it. Proceed with caution.",
+    "message": "Nie udało się zweryfikować tego dodatku: Mozilla go nie sprawdziła. Zachowaj ostrożność."
+  },
+  {
+    "name": "IDS_FIREFOX_XPI_UNSIGNED_OVER_VERIFIED",
+    "source": "This add-on could not be installed because it has not been verified, and a verified add-on with the same ID is installed.",
+    "message": "Nie można zainstalować tego dodatku, ponieważ nie został zweryfikowany, a zainstalowany jest zweryfikowany dodatek o tym samym identyfikatorze."
   }
 ]

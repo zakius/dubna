@@ -16,8 +16,8 @@ namespace extensions {
 enum class XpiSignature {
   // Signed by AMO, or by the root that the switch names.
   kValid,
-  // Without a META-INF/*.rsa: Firefox says the add-on "has not been
-  // verified".
+  // Unsigned, with neither a META-INF/*.rsa nor a META-INF/cose.sig: Firefox
+  // installs it after a warning when signatures aren't required.
   kMissing,
   // Anything else that fails: Firefox says it "appears to be corrupt".
   kInvalid,
