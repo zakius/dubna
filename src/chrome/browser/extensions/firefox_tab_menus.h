@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "base/auto_reset.h"
 #include "base/functional/callback.h"
 #include "chrome/browser/extensions/menu_manager.h"
 
@@ -15,6 +16,8 @@ class WebContents;
 }  // namespace content
 
 namespace extensions {
+
+class ExtensionAction;
 
 // Firefox add-ons (dubna's webextensions/README.md): the menus of a tab, as
 // Firefox has them (ext-menus.js): the tab strip's menu of a tab and an
@@ -38,6 +41,26 @@ base::RepeatingCallback<bool(const MenuItem*)> WithFirefoxDocumentUrl(
 // all of them (MenuManager::ExtensionIds()).
 std::vector<MenuItem::ExtensionKey> FirefoxTabMenuExtensions(
     content::BrowserContext* context);
+
+// While it lives, the button menu that an add-on's ExtensionContextMenuModel
+// builds or shows is that of `action`'s button. A Firefox add-on's page action
+// next to its other action has a button of its own (oganesson's location
+// bar), whose menu shows the add-on's page_action items and reports
+// page_action to menus.onShown, as Firefox's does.
+class ScopedFirefoxMenuAction {
+ public:
+  explicit ScopedFirefoxMenuAction(ExtensionAction* action);
+  ScopedFirefoxMenuAction(const ScopedFirefoxMenuAction&) = delete;
+  ScopedFirefoxMenuAction& operator=(const ScopedFirefoxMenuAction&) = delete;
+  ~ScopedFirefoxMenuAction();
+
+ private:
+  base::AutoReset<ExtensionAction*> reset_;
+};
+
+// The action of the button whose menu is built or shown: the scoped one, or
+// else `primary`, the add-on's own action.
+ExtensionAction* FirefoxMenuAction(ExtensionAction* primary);
 
 }  // namespace extensions
 

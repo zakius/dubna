@@ -23,6 +23,8 @@ namespace extensions {
 
 namespace {
 
+ExtensionAction* g_menu_action = nullptr;
+
 bool MatchesWithDocumentUrl(
     const base::RepeatingCallback<bool(const MenuItem*)>& filter,
     const GURL& url,
@@ -73,6 +75,15 @@ std::vector<MenuItem::ExtensionKey> FirefoxTabMenuExtensions(
                              return FirefoxInstallTime(context, key);
                            });
   return ordered;
+}
+
+ScopedFirefoxMenuAction::ScopedFirefoxMenuAction(ExtensionAction* action)
+    : reset_(&g_menu_action, action) {}
+
+ScopedFirefoxMenuAction::~ScopedFirefoxMenuAction() = default;
+
+ExtensionAction* FirefoxMenuAction(ExtensionAction* primary) {
+  return g_menu_action ? g_menu_action : primary;
 }
 
 }  // namespace extensions

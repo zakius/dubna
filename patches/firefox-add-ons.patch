@@ -124,6 +124,9 @@
 # menus.onShown, onHidden and refresh() are Firefox's: a page's, an action's
 # and a tab's menu tell their ContextMenuMatcher where they appended the
 # extension items and when they open and close (firefox_menu_events.h).
+# A button menu built or shown under a ScopedFirefoxMenuAction is that
+# action's: a page action's own button shows its page_action items
+# (firefox_tab_menus.h).
 # Firefox's onShown listener gets an undefined tab where the menu has none
 # (firefox_menu_shown_tab.h).
 # Only Firefox add-ons' bindings have contextMenus.onShown, onHidden and
@@ -5840,13 +5843,14 @@
      action_taken_ = ContextMenuAction::kCustomCommand;
      return;
    }
-@@ -697,9 +699,19 @@ void ExtensionContextMenuModel::ExecuteCommand(int command_id,
+@@ -697,9 +699,20 @@ void ExtensionContextMenuModel::ExecuteCommand(int command_id,
  
  void ExtensionContextMenuModel::OnMenuWillShow(ui::SimpleMenuModel* menu) {
    action_taken_ = ContextMenuAction::kNoAction;
 +  // Firefox add-ons (dubna): see ContextMenuMatcher.
 +  const Extension* extension = GetExtension();
 +  if (menu == this && extension && extension_items_) {
++    ScopedFirefoxMenuAction scoped_action(extension_action_);
 +    extension_items_->FirefoxActionMenuShown(*extension,
 +                                             GetActiveWebContents());
 +  }
@@ -5860,7 +5864,17 @@
    // `action_taken_` can be deleted when the extensions toggle menu is closed.
    if (action_taken_) {
      ContextMenuAction action = *action_taken_;
-@@ -759,9 +771,12 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
+@@ -752,16 +765,20 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
+         base::NotFatalUntil::M161);
+   CHECK(extension, base::NotFatalUntil::M161);
+ 
+-  extension_action_ =
+-      ExtensionActionManager::Get(profile_)->GetExtensionAction(*extension);
++  // Firefox add-ons (dubna): see ScopedFirefoxMenuAction.
++  extension_action_ = FirefoxMenuAction(
++      ExtensionActionManager::Get(profile_)->GetExtensionAction(*extension));
+   std::optional<ActionInfo::Type> action_type =
+       extension_action_
            ? std::optional<ActionInfo::Type>(extension_action_->action_type())
            : std::nullopt;
  
@@ -5874,7 +5888,7 @@
  
    // Home page section.
    std::string extension_name = extension->name();
-@@ -771,7 +786,11 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
+@@ -771,7 +788,11 @@ void ExtensionContextMenuModel::InitMenuWithFeature(
    AddItem(HOME_PAGE, base::UTF8ToUTF16(extension_name));
    SetElementIdentifierAt(GetIndexOfCommandId(HOME_PAGE).value(),
                           kHomePageMenuItem);
@@ -5886,7 +5900,15 @@
  
    // Site permissions section.
    bool is_required_by_policy = IsExtensionRequiredByPolicy(extension, profile_);
-@@ -966,16 +985,23 @@ void ExtensionContextMenuModel::InitMenu(const Extension* extension,
+@@ -961,21 +982,29 @@ void ExtensionContextMenuModel::InitMenu(const Extension* extension,
+   CHECK(extension, base::NotFatalUntil::M161);
+ 
+   std::optional<ActionInfo::Type> action_type;
+-  extension_action_ =
+-      ExtensionActionManager::Get(profile_)->GetExtensionAction(*extension);
++  // Firefox add-ons (dubna): see ScopedFirefoxMenuAction.
++  extension_action_ = FirefoxMenuAction(
++      ExtensionActionManager::Get(profile_)->GetExtensionAction(*extension));
    if (extension_action_)
      action_type = extension_action_->action_type();
  

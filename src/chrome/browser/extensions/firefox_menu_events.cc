@@ -19,6 +19,7 @@
 #include "chrome/browser/extensions/extension_tab_util.h"
 #include "chrome/browser/extensions/firefox_menu_access_keys.h"
 #include "chrome/browser/extensions/firefox_menu_view_types.h"
+#include "chrome/browser/extensions/firefox_tab_menus.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/common/extensions/api/context_menus.h"
 #include "content/public/browser/browser_context.h"
@@ -268,11 +269,12 @@ base::DictValue BrowserMenuInfo(const Extension& extension,
   return info;
 }
 
-// The context of the menu of `extension`'s toolbar button.
+// The context of the menu of `extension`'s toolbar button, or of its page
+// action's button (FirefoxMenuAction()).
 const char* ActionContext(const Extension& extension,
                           content::BrowserContext* context) {
-  ExtensionAction* action =
-      ExtensionActionManager::Get(context)->GetExtensionAction(extension);
+  ExtensionAction* action = FirefoxMenuAction(
+      ExtensionActionManager::Get(context)->GetExtensionAction(extension));
   if (action && action->action_type() == ActionInfo::Type::kPage) {
     return "page_action";
   }
