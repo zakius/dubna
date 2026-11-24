@@ -6,6 +6,8 @@
 
 #include <string_view>
 
+#include "v8/include/v8-forward.h"
+
 namespace extensions {
 
 class Extension;
@@ -19,6 +21,10 @@ class Extension;
 // by `'onShown' in chrome.contextMenus`.
 bool IsFirefoxMenusMemberHidden(const Extension* extension,
                                 std::string_view name);
+
+// Whether `context` is a Firefox add-on's, for the bindings, which don't see
+// extensions (FirefoxUpdateFilters::SetAddOnCheck).
+bool IsFirefoxAddOnContext(v8::Local<v8::Context> context);
 
 }  // namespace extensions
 

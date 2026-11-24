@@ -4577,16 +4577,19 @@
  }
  
  bool EventEmitter::HasListeners() const {
-@@ -155,13 +157,42 @@ void EventEmitter::AddListener(gin::Arguments* arguments) {
+@@ -155,13 +157,45 @@ void EventEmitter::AddListener(gin::Arguments* arguments) {
      return;
    }
  
 -  if (!arguments->PeekNext().IsEmpty() && !supports_filters_) {
 +  // Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated or
-+  // proxy.onRequest (firefox_update_filter.h), an object, null or undefined.
++  // proxy.onRequest (firefox_update_filter.h), an object, null or undefined;
++  // a Firefox add-on's alone.
 +  std::string_view firefox_event = listeners_->GetEventName();
 +  bool takes_firefox_filter =
-+      !supports_filters_ && FirefoxUpdateFilters::Takes(firefox_event);
++      !supports_filters_ &&
++      FirefoxUpdateFilters::Takes(firefox_event,
++                                  arguments->GetHolderCreationContext());
 +  std::optional<FirefoxUpdateFilters::Filter> firefox_filter;
 +  if (takes_firefox_filter && !arguments->PeekNext().IsEmpty()) {
 +    v8::Local<v8::Value> value;
@@ -4622,7 +4625,7 @@
      arguments->ThrowTypeError("Invalid invocation");
      return;
    }
-@@ -187,9 +218,15 @@ void EventEmitter::AddListener(gin::Arguments* arguments) {
+@@ -187,9 +221,15 @@ void EventEmitter::AddListener(gin::Arguments* arguments) {
    }
  
    std::string error;
@@ -4641,7 +4644,7 @@
    }
  }
  
-@@ -206,6 +243,7 @@ void EventEmitter::RemoveListener(gin::Arguments* arguments) {
+@@ -206,6 +246,7 @@ void EventEmitter::RemoveListener(gin::Arguments* arguments) {
    }
  
    listeners_->RemoveListener(listener, arguments->GetHolderCreationContext());
@@ -4649,7 +4652,7 @@
  }
  
  bool EventEmitter::HasListener(v8::Local<v8::Function> listener) {
-@@ -245,6 +283,10 @@ v8::Local<v8::Value> EventEmitter::DispatchSync(
+@@ -245,6 +286,10 @@ v8::Local<v8::Value> EventEmitter::DispatchSync(
      v8::LocalVector<v8::Value>* args,
      mojom::EventFilteringInfoPtr filter,
      v8::Local<v8::Function> listener_error_callback_function) {
@@ -4660,7 +4663,7 @@
    // Note that |listeners_| can be modified during handling.
    v8::LocalVector<v8::Function> listeners =
        listeners_->GetListeners(std::move(filter), context);
-@@ -265,13 +307,24 @@ v8::Local<v8::Value> EventEmitter::DispatchSync(
+@@ -265,13 +310,24 @@ v8::Local<v8::Value> EventEmitter::DispatchSync(
    uint32_t results_index = 0;
  
    v8::TryCatch try_catch(isolate);
@@ -4729,7 +4732,12 @@
      case mojom::ContextType::kUnspecified:
 --- a/extensions/renderer/native_extension_bindings_system.cc
 +++ b/extensions/renderer/native_extension_bindings_system.cc
-@@ -49,6 +49,10 @@
+@@ -45,10 +45,15 @@
+ #include "extensions/renderer/bindings/api_binding_hooks.h"
+ #include "extensions/renderer/bindings/api_binding_js_util.h"
+ #include "extensions/renderer/bindings/api_binding_util.h"
++#include "extensions/renderer/bindings/firefox_update_filter.h"
+ #include "extensions/renderer/console.h"
  #include "extensions/renderer/extension_frame_helper.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extension_js_runner.h"
@@ -4740,7 +4748,7 @@
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/module_system.h"
-@@ -248,6 +252,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
+@@ -248,6 +253,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
  bool IsAPIFeatureAvailable(v8::Local<v8::Context> context,
                             const std::string& name) {
    ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
@@ -4756,7 +4764,20 @@
    return script_context->GetAvailability(name).is_available();
  }
  
-@@ -598,6 +611,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
+@@ -550,7 +564,11 @@
+           base::BindRepeating(&AddConsoleError),
+           APILastError(base::BindRepeating(&GetLastErrorParents),
+                        base::BindRepeating(&AddConsoleError))),
+-      messaging_service_(this) {}
++      messaging_service_(this) {
++  // Firefox add-ons (dubna): Firefox's filters on tabs.onUpdated and
++  // proxy.onRequest are theirs alone (firefox_update_filter.h).
++  FirefoxUpdateFilters::SetAddOnCheck(&IsFirefoxAddOnContext);
++}
+ 
+ NativeExtensionBindingsSystem::~NativeExtensionBindingsSystem() = default;
+ 
+@@ -598,6 +616,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
    if (context->context_type() == mojom::ContextType::kContentScript) {
      SetScriptingParams(context);
    }
@@ -4766,7 +4787,7 @@
  }
  
  void NativeExtensionBindingsSystem::WillReleaseScriptContext(
-@@ -1031,11 +1047,23 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
+@@ -1031,11 +1052,23 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
    CHECK(
        gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
  
