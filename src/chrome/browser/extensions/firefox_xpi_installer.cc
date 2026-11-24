@@ -183,6 +183,22 @@ void OnInstalled(base::WeakPtr<Profile> profile,
                                         : std::nullopt);
 }
 
+// Without a signature, any site could serve a .xpi of an installed add-on's
+// ID, which would take its storage: only one from an unsigned .xpi may be
+// replaced by an unsigned one. The error when `extension_id` is installed
+// and isn't.
+std::optional<std::u16string> UnsignedOverVerified(
+    base::WeakPtr<Profile> profile,
+    const ExtensionId& extension_id) {
+  if (!profile ||
+      !ExtensionRegistry::Get(profile.get())
+           ->GetInstalledExtension(extension_id) ||
+      IsUnsignedXpi(profile.get(), extension_id)) {
+    return std::nullopt;
+  }
+  return l10n_util::GetStringUTF16(IDS_FIREFOX_XPI_UNSIGNED_OVER_VERIFIED);
+}
+
 void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
                      base::WeakPtr<Profile> profile,
                      const base::FilePath& xpi,
@@ -198,19 +214,19 @@ void InstallUnzipped(scoped_refptr<CrxInstaller> installer,
   const ExtensionId extension_id =
       checked.has_value() ? ExtensionIdFromGeckoId(checked->gecko_id)
                           : ExtensionId();
-  // Without a signature, any site could serve a .xpi of an installed add-on's
-  // ID, which would take its storage: only one from an unsigned .xpi may be
-  // replaced so.
-  if (checked.has_value() && checked->is_unsigned &&
-      ExtensionRegistry::Get(profile.get())
-          ->GetInstalledExtension(extension_id) &&
-      !IsUnsignedXpi(profile.get(), extension_id)) {
-    checked = base::unexpected(
-        l10n_util::GetStringUTF16(IDS_FIREFOX_XPI_UNSIGNED_OVER_VERIFIED));
+  if (checked.has_value() && checked->is_unsigned) {
+    if (std::optional<std::u16string> error =
+            UnsignedOverVerified(profile, extension_id)) {
+      checked = base::unexpected(*error);
+    }
   }
   if (checked.has_value()) {
     if (checked->is_unsigned) {
       UnsignedInstalls().insert(extension_id);
+      // Again when the install happens, after the prompt: a signed add-on
+      // of its ID may have installed while the prompt was open.
+      installer->set_firefox_install_check(
+          base::BindOnce(&UnsignedOverVerified, profile, extension_id));
     }
     installer->AddInstallerCallback(base::BindOnce(
         &OnInstalled, profile, extension_id, checked->is_unsigned));

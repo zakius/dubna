@@ -38,7 +38,9 @@ class InstallPromptData;
 // Firefox installs it with xpinstall.signatures.required set to false; one
 // without a Gecko ID has no ID, as in Firefox. It doesn't install over an
 // installed add-on of its ID that isn't from an unsigned .xpi: a site could
-// otherwise take that add-on's ID and storage. It installs packed after the
+// otherwise take that add-on's ID and storage. That is checked before the
+// install prompt opens and again when the install happens, after the user
+// accepts it (CrxInstaller's install check). It installs packed after the
 // install prompt, with the ID from its Gecko ID, as a .crx from another site
 // does when the user allows it. One that fails, a broken signature among
 // them, gets a load error, with Firefox's reason: loading it unpacked would

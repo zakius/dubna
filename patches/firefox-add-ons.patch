@@ -176,6 +176,9 @@
 # (firefox_last_error.h).
 # A Firefox add-on's host patterns in optional_permissions are optional host
 # permissions in Manifest V3 too, as in Firefox (firefox_host_permissions.h).
+# An unsigned .xpi's install is checked again when it happens, after the
+# prompt: CrxInstaller runs a Firefox add-on's install check just before it
+# adds the extension (firefox_xpi_installer.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -3467,6 +3470,54 @@
  
    std::string error;
    bool removal_triggered = scripting::RemoveScripts(
+--- a/extensions/browser/crx_installer.cc
++++ b/extensions/browser/crx_installer.cc
+@@ -1139,6 +1139,17 @@
+     return;
+   }
+ 
++  // Firefox add-ons (dubna): an install that its check refuses now.
++  if (firefox_install_check_) {
++    std::optional<std::u16string> error =
++        std::move(firefox_install_check_).Run();
++    if (error) {
++      ReportFailureFromUIThread(CrxInstallError(
++          CrxInstallErrorType::OTHER, CrxInstallErrorDetail::NONE, *error));
++      return;
++    }
++  }
++
+   extension()->permissions_data()->BindToCurrentThread();
+ 
+   if (!update_from_settings_page_) {
+--- a/extensions/browser/crx_installer.h
++++ b/extensions/browser/crx_installer.h
+@@ -280,6 +280,15 @@
+   void set_expectations_verified_callback(
+       ExpectationsVerifiedCallback callback);
+ 
++  // Firefox add-ons (dubna's firefox_xpi_installer.h): runs on the UI thread
++  // after the install prompt, just before the extension is added or replaces
++  // the installed one. An error it returns fails the install.
++  using FirefoxInstallCheck =
++      base::OnceCallback<std::optional<std::u16string>()>;
++  void set_firefox_install_check(FirefoxInstallCheck check) {
++    firefox_install_check_ = std::move(check);
++  }
++
+   bool did_handle_successfully() const { return did_handle_successfully_; }
+ 
+   content::BrowserContext* browser_context() { return browser_context_; }
+@@ -596,6 +605,9 @@
+   // after unpack success.
+   ExpectationsVerifiedCallback expectations_verified_callback_;
+ 
++  // See set_firefox_install_check().
++  FirefoxInstallCheck firefox_install_check_;
++
+   // Subscription for a callback that runs when the BrowserContext is
+   // destroyed.
+   base::CallbackListSubscription browser_context_shutdown_subscription_;
 --- a/extensions/browser/extension_action.cc
 +++ b/extensions/browser/extension_action.cc
 @@ -64,7 +64,12 @@ struct IconRepresentationInfo {
