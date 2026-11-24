@@ -179,6 +179,9 @@
 # An unsigned .xpi's install is checked again when it happens, after the
 # prompt: CrxInstaller runs a Firefox add-on's install check just before it
 # adds the extension (firefox_xpi_installer.h).
+# pageAction.openPopup() and the menus command _execute_page_action run a
+# Firefox add-on's page action through the window's page action buttons
+# (firefox_page_action_buttons.h), which the desktop browser registers.
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -361,7 +364,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +451,18 @@ source_set("extensions") {
+@@ -389,6 +451,22 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -369,6 +372,10 @@
 +    # Firefox add-ons (dubna): what a menus click does in Firefox.
 +    "firefox_menu_clicks.cc",
 +    "firefox_menu_clicks.h",
++
++    # Firefox add-ons (dubna): the page action buttons a window has.
++    "firefox_page_action_buttons.cc",
++    "firefox_page_action_buttons.h",
 +
 +    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh().
 +    "firefox_menu_events.cc",
@@ -380,7 +387,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +728,9 @@ source_set("extensions") {
+@@ -654,6 +732,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -2903,7 +2910,7 @@
      },
      "types": [
        {
-@@ -44,6 +44,24 @@
+@@ -44,6 +44,34 @@
          ],
          "returns_async": {"name": "callback", "parameters": [], "optional": true}
        },
@@ -2925,10 +2932,20 @@
 +        ],
 +        "returns_async": {"name": "callback", "parameters": [{"name": "isShown", "type": "boolean"}]}
 +      },
++      // Firefox add-ons (dubna): Firefox's pageAction.openPopup
++      // (firefox_page_action_api.h).
++      {
++        "name": "openPopup",
++        "firefox_only": true,
++        "type": "function",
++        "description": "Runs the page action in the active tab of the top window as a click on its button does: its popup opens, or onClicked fires. Only from a user action.",
++        "parameters": [],
++        "returns_async": {"name": "callback", "parameters": []}
++      },
        {
          "name": "setTitle",
          "type": "function",
-@@ -54,7 +72,7 @@
+@@ -54,7 +82,7 @@
              "type": "object",
              "properties": {
                "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
@@ -2937,7 +2954,7 @@
              }
            }
          ],
-@@ -138,6 +156,7 @@
+@@ -138,6 +166,7 @@
              "properties": {
                "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
                "popup": {

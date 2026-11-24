@@ -9,6 +9,7 @@
 #include "build/build_config.h"
 #include "chrome/browser/extensions/browser_window_util.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
+#include "chrome/browser/extensions/firefox_page_action_buttons.h"
 #include "chrome/browser/extensions/firefox_menu_view_types.h"
 #include "chrome/browser/extensions/menu_manager.h"
 #include "chrome/browser/ui/extensions/extensions_container.h"
@@ -43,6 +44,19 @@ void RunToolbarAction(const Extension& extension,
   }
 }
 
+// The page action of `extension` in the window of `web_contents`, run as its
+// keyboard shortcut runs it.
+void RunPageAction(const Extension& extension,
+                   content::WebContents& web_contents) {
+  BrowserWindowInterface* browser =
+      browser_window_util::GetBrowserForTabContents(web_contents);
+  FirefoxPageActionButtons* buttons =
+      browser ? FirefoxPageActionButtons::From(*browser) : nullptr;
+  if (buttons) {
+    buttons->RunPageAction(extension);
+  }
+}
+
 }  // namespace
 
 bool RunFirefoxMenuCommand(const Extension* extension,
@@ -59,8 +73,11 @@ bool RunFirefoxMenuCommand(const Extension* extension,
     RunToolbarAction(*extension, *web_contents);
     return true;
   }
-  return command == manifest_values::kPageActionCommandEvent ||
-         command == kSidebarActionCommand;
+  if (command == manifest_values::kPageActionCommandEvent) {
+    RunPageAction(*extension, *web_contents);
+    return true;
+  }
+  return command == kSidebarActionCommand;
 }
 
 void AddFirefoxClickData(const Extension* extension,

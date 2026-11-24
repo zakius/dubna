@@ -23,6 +23,20 @@ class PageActionIsShownFunction : public ExtensionActionFunction {
   ResponseAction RunExtensionAction() override;
 };
 
+// Firefox's pageAction.openPopup(): runs the page action in the active tab
+// of the top window (the last focused browser window that the add-on may
+// see) as a click on its button does, from a user action only, with
+// Firefox's error otherwise: the popup opens at the button, or onClicked
+// fires (firefox_page_action_buttons.h).
+class PageActionOpenPopupFunction : public ExtensionFunction {
+ public:
+  DECLARE_EXTENSION_FUNCTION("pageAction.openPopup", UNKNOWN)
+
+ protected:
+  ~PageActionOpenPopupFunction() override = default;
+  ResponseAction Run() override;
+};
+
 }  // namespace extensions
 
 #endif  // CHROME_BROWSER_EXTENSIONS_API_EXTENSION_ACTION_FIREFOX_PAGE_ACTION_API_H_

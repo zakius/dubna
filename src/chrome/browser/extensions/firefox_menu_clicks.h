@@ -23,10 +23,10 @@ class MenuItem;
 // onClicked. _execute_browser_action in Manifest V2 and _execute_action in
 // Manifest V3 run the toolbar action as its keyboard shortcut does: its popup
 // opens, or action.onClicked fires when it has none. _execute_page_action
-// and _execute_sidebar_action do nothing until this browser has the page
-// action's button and the sidebar (zakius/oganesson#68, #86). Returns false
-// for any other item, extension or command: the caller fires onClicked, as
-// Firefox does for a command it doesn't know.
+// runs the page action as its shortcut does (firefox_page_action_buttons.h),
+// and _execute_sidebar_action does nothing until this browser has the
+// sidebar (#86). Returns false for any other item, extension or command: the
+// caller fires onClicked, as Firefox does for a command it doesn't know.
 bool RunFirefoxMenuCommand(const Extension* extension,
                            const MenuItem& item,
                            content::WebContents* web_contents);
