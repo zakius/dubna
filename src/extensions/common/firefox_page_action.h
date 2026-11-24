@@ -18,8 +18,14 @@ struct ActionInfo;
 // action handler leaves it out of the add-on's one action, and pageAction.*
 // calls reach it (ExtensionActionManager::GetFirefoxPageAction).
 
-// Whether the manifest has a page action that is a second action.
+// Whether the manifest has a page action that is a second action: only a
+// Firefox add-on's (firefox_add_on.h).
 bool HasFirefoxPageAction(const Extension& extension);
+
+// Whether the manifest has a page action that is the extension's one action,
+// as Chromium has it: in Manifest V2, unless it is a Firefox add-on's second
+// action. Chromium leaves out a Manifest V3 extension's page_action.
+bool HasChromiumPageAction(const Extension& extension);
 
 // Loads the second page action. Returns false and sets `error` when the
 // manifest's "page_action" is invalid.

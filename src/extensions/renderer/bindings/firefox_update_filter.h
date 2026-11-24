@@ -49,11 +49,6 @@ class FirefoxUpdateFilters {
   FirefoxUpdateFilters& operator=(const FirefoxUpdateFilters&) = delete;
   ~FirefoxUpdateFilters();
 
-  // Whether a Firefox add-on's context, the one the bindings system set
-  // (IsFirefoxAddOnContext), or none when unset.
-  using AddOnCheck = bool (*)(v8::Local<v8::Context> context);
-  static void SetAddOnCheck(AddOnCheck check);
-
   // Whether the event takes Firefox's filter in `context`: only a Firefox
   // add-on's. Other extensions keep Chromium's event, which takes none, as
   // one may tell Chrome by that: Violentmonkey tries a filter, and only where
