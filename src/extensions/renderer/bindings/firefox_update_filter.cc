@@ -363,9 +363,20 @@ FirefoxUpdateFilters::Filter::~Filter() = default;
 FirefoxUpdateFilters::FirefoxUpdateFilters() = default;
 FirefoxUpdateFilters::~FirefoxUpdateFilters() = default;
 
+namespace {
+FirefoxUpdateFilters::AddOnCheck g_add_on_check = nullptr;
+}  // namespace
+
 // static
-bool FirefoxUpdateFilters::Takes(std::string_view event_name) {
-  return event_name == "tabs.onUpdated" || event_name == kProxyOnRequest;
+void FirefoxUpdateFilters::SetAddOnCheck(AddOnCheck check) {
+  g_add_on_check = check;
+}
+
+// static
+bool FirefoxUpdateFilters::Takes(std::string_view event_name,
+                                 v8::Local<v8::Context> context) {
+  return (event_name == "tabs.onUpdated" || event_name == kProxyOnRequest) &&
+         g_add_on_check && g_add_on_check(context);
 }
 
 // static

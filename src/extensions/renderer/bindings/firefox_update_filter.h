@@ -49,8 +49,17 @@ class FirefoxUpdateFilters {
   FirefoxUpdateFilters& operator=(const FirefoxUpdateFilters&) = delete;
   ~FirefoxUpdateFilters();
 
-  // Whether the event takes Firefox's filter.
-  static bool Takes(std::string_view event_name);
+  // Whether a Firefox add-on's context, the one the bindings system set
+  // (IsFirefoxAddOnContext), or none when unset.
+  using AddOnCheck = bool (*)(v8::Local<v8::Context> context);
+  static void SetAddOnCheck(AddOnCheck check);
+
+  // Whether the event takes Firefox's filter in `context`: only a Firefox
+  // add-on's. Other extensions keep Chromium's event, which takes none, as
+  // one may tell Chrome by that: Violentmonkey tries a filter, and only where
+  // it throws drops the filter it passes later, `isFirefox && filter`.
+  static bool Takes(std::string_view event_name,
+                    v8::Local<v8::Context> context);
 
   // Reads `event_name`'s filter once, as Firefox's schema of it does.
   // nullopt for one Firefox refuses, with Firefox's message in `error`; or,

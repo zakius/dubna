@@ -5,6 +5,8 @@
 
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
+#include "extensions/renderer/get_script_context.h"
+#include "extensions/renderer/script_context.h"
 
 namespace extensions {
 
@@ -16,6 +18,12 @@ bool IsFirefoxMenusMemberHidden(const Extension* extension,
     return false;
   }
   return !extension || !IsFirefoxAddOn(*extension);
+}
+
+bool IsFirefoxAddOnContext(v8::Local<v8::Context> context) {
+  ScriptContext* script_context = GetScriptContextFromV8Context(context);
+  return script_context && script_context->extension() &&
+         IsFirefoxAddOn(*script_context->extension());
 }
 
 }  // namespace extensions
