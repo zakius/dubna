@@ -10,6 +10,7 @@
 #include "base/memory/raw_ptr.h"
 #include "base/strings/strcat.h"
 #include "base/strings/string_number_conversions.h"
+#include "extensions/renderer/bindings/firefox_schema_view.h"
 #include "gin/converter.h"
 #include "url/gurl.h"
 #include "v8/include/v8-container.h"
@@ -363,20 +364,11 @@ FirefoxUpdateFilters::Filter::~Filter() = default;
 FirefoxUpdateFilters::FirefoxUpdateFilters() = default;
 FirefoxUpdateFilters::~FirefoxUpdateFilters() = default;
 
-namespace {
-FirefoxUpdateFilters::AddOnCheck g_add_on_check = nullptr;
-}  // namespace
-
-// static
-void FirefoxUpdateFilters::SetAddOnCheck(AddOnCheck check) {
-  g_add_on_check = check;
-}
-
 // static
 bool FirefoxUpdateFilters::Takes(std::string_view event_name,
                                  v8::Local<v8::Context> context) {
   return (event_name == "tabs.onUpdated" || event_name == kProxyOnRequest) &&
-         g_add_on_check && g_add_on_check(context);
+         firefox_schema_view::IsFirefoxContext(context);
 }
 
 // static

@@ -2,12 +2,12 @@
 # Chromium lacks. The functions are in dubna's src/extensions/; this registers them
 # in their namespaces' schemas, builds them and registers their prefs. Firefox's
 # names for Chromium's APIs are aliases: browser.menus and the "menus" permission
-# are contextMenus. Firefox's Manifest V3 background pages (background.scripts or
-# .page) run as Manifest V2's do, unless the manifest also has a service worker;
+# are contextMenus. A Firefox add-on's Manifest V3 background page (background.scripts
+# or .page) runs as Manifest V2's does, unless the manifest also has a service worker;
 # runtime.getContexts() lists such a page as the background.
 # A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
 # with the full string as the version name (firefox_version.cc).
-# A background with "type": "module" loads its scripts as modules, as Firefox does.
+# A Firefox add-on's background with "type": "module" loads its scripts as modules.
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
 # a placeholder the message doesn't define becomes empty, and homepage_url
 # is localized too, also in a packed install, which reads the manifest once
@@ -20,20 +20,20 @@
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
 # A Manifest V2 event page that asks for webRequest runs as a persistent page.
-# A page_action next to a browser_action or action, or in Manifest V3, is a
+# A Firefox add-on's page_action next to a browser_action or action, or in Manifest V3, is a
 # second action that pageAction.* reaches (firefox_page_action.h).
 # menus.create and update take Firefox's icons (not shown) and its password,
 # bookmark and tools_menu contexts (the item shows in its other contexts).
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
 # So is privacy.network.peerConnectionEnabled, which is always true.
-# storage.session is there in Manifest V2 add-ons too, as in Firefox.
-# So is the scripting permission, as in Firefox.
+# storage.session is there in Manifest V2 Firefox add-ons too, as in Firefox.
+# So is scripting.
 # A Firefox add-on's storage.session counts Firefox's sizes
 # (firefox_session_size.h) and isn't in its content scripts, and its
 # storage.*.get() reads a key whose default is undefined (firefox_storage.h).
 # Firefox's theme API, read-only: getCurrent() and onUpdated give the browser
-# theme's colours in Firefox's key names (theme_api.cc), to any add-on.
+# theme's colours in Firefox's key names (theme_api.cc), to any Firefox add-on.
 # browserAction has action's setBadgeTextColor, getBadgeTextColor and
 # getUserSettings, as in Firefox (firefox_browser_action.h).
 # browserAction's and action's setters and getters take Firefox's windowId: a
@@ -129,8 +129,12 @@
 # (firefox_tab_menus.h).
 # Firefox's onShown listener gets an undefined tab where the menu has none
 # (firefox_menu_shown_tab.h).
-# Only Firefox add-ons' bindings have contextMenus.onShown, onHidden and
-# refresh() (firefox_menu_events_bindings.h).
+# What the climb adds to the API schemas is marked "firefox_only", and a relaxed
+# requirement has its "chromium" value: only a Firefox add-on's bindings read the
+# schemas as they are, every other extension's read their Chromium view, and lose
+# the marked members and result properties (firefox_schema_view.h,
+# firefox_add_on_bindings.h). A Firefox namespace's feature takes Chromium's
+# delegated availability check (firefox_add_on_availability.h).
 # A Firefox add-on's action menu starts with its items and a separator, as in
 # Firefox; past six items, the sixth place is a submenu with the add-on's name
 # that holds the rest, which Chromium dropped (firefox_menu_items.cc). A click
@@ -2173,18 +2177,20 @@
      "tts.json",
 --- a/chrome/common/extensions/api/_api_features.json
 +++ b/chrome/common/extensions/api/_api_features.json
-@@ -199,6 +199,18 @@
+@@ -199,6 +199,20 @@
      "dependencies": ["permission:browsingData"],
      "contexts": ["privileged_extension"]
    },
 +  // Firefox add-ons (dubna): Firefox's browserSettings.
 +  "browserSettings": {
++    "requires_delegated_availability_check": true,
 +    "dependencies": ["permission:browserSettings"],
 +    "contexts": ["privileged_extension"]
 +  },
 +  // Firefox add-ons (dubna): Firefox's theme API. As in Firefox, getCurrent()
 +  // and onUpdated need no permission: the theme permission is for update().
 +  "theme": {
++    "requires_delegated_availability_check": true,
 +    "channel": "stable",
 +    "extension_types": ["extension"],
 +    "contexts": ["privileged_extension"]
@@ -2192,13 +2198,14 @@
    "chromeosInfoPrivate": [{
      "dependencies": ["permission:chromeosInfoPrivate"],
      "contexts": ["privileged_extension"]
-@@ -271,6 +283,27 @@
+@@ -271,6 +285,28 @@
      "dependencies": ["manifest:commands"],
      "contexts": ["privileged_extension"]
    },
 +  // Firefox add-ons (dubna): Firefox's contentScripts, in Manifest V2 as in
 +  // Firefox. contentScriptsInternal is the unregister() of what it returns.
 +  "contentScripts": {
++    "requires_delegated_availability_check": true,
 +    "channel": "stable",
 +    "extension_types": ["extension"],
 +    "max_manifest_version": 2,
@@ -2220,12 +2227,13 @@
    "contentSettings": {
      "dependencies": ["permission:contentSettings"],
      "contexts": [
-@@ -280,9 +313,16 @@
+@@ -280,9 +316,17 @@
    "contentSettings.clipboard": {
      "feature_flag": "ApiContentSettingsClipboard"
    },
 +  // Firefox add-ons (dubna): Firefox's contextualIdentities, the containers.
 +  "contextualIdentities": {
++    "requires_delegated_availability_check": true,
 +    "dependencies": ["permission:contextualIdentities"],
 +    "contexts": ["privileged_extension"]
 +  },
@@ -2238,18 +2246,41 @@
    },
    "crashReportPrivate": [{
      "dependencies": ["permission:crashReportPrivate"],
-@@ -695,6 +735,12 @@
+@@ -695,6 +739,13 @@
      "dependencies": ["permission:mdns"],
      "contexts": ["privileged_extension"]
    },
 +  // Firefox add-ons (dubna): browser.menus is contextMenus.
 +  "menus": {
++    "requires_delegated_availability_check": true,
 +    "dependencies": ["permission:contextMenus"],
 +    "contexts": ["privileged_extension"],
 +    "source": "contextMenus"
 +  },
    "notifications": {
      "dependencies": ["permission:notifications"],
+     "contexts": ["privileged_extension"]
+@@ -703,10 +754,18 @@
+     "dependencies": ["manifest:omnibox"],
+     "contexts": ["privileged_extension"]
+   },
+-  "pageAction": {
++  // Firefox add-ons (dubna): Firefox add-ons have page actions in Manifest V3
++  // too, as in Firefox.
++  "pageAction": [{
+     "dependencies": ["manifest:page_action"],
+-    "contexts": ["privileged_extension"]
+-  },
++    "contexts": ["privileged_extension"],
++    "max_manifest_version": 2
++  }, {
++    "requires_delegated_availability_check": true,
++    "dependencies": ["manifest:page_action"],
++    "contexts": ["privileged_extension"],
++    "min_manifest_version": 3
++  }],
+   "pageCapture": {
+     "dependencies": ["permission:pageCapture"],
      "contexts": ["privileged_extension"]
 --- a/chrome/common/extensions/api/_permission_features.json
 +++ b/chrome/common/extensions/api/_permission_features.json
@@ -2296,7 +2327,7 @@
          "id": "TabDetails",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        },
@@ -2304,11 +2335,11 @@
          "type": "object",
          "properties": {
            "title": {
-+            "optional": true,  // Firefox add-ons (dubna): null clears the value.
++            "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
              "type": "string",
              "description": "The string the action should display when moused over."
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -2316,7 +2347,7 @@
              "optional": true,
              "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * n will be selected, where n is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -2324,7 +2355,7 @@
          "name": "details",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -2332,7 +2363,7 @@
              "description": "Limits the change to when a particular tab is selected. Automatically resets when the tab is closed."
            },
            "popup": {
-+            "optional": true,  // Firefox add-ons (dubna): null clears the value.
++            "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
              "type": "string",
              "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
            }
@@ -2340,7 +2371,7 @@
              "optional": true,
              "description": "Any number of characters can be passed, but only about four can fit in the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -2348,7 +2379,7 @@
          "type": "object",
          "properties": {
            "color": {
-+            "optional": true,  // Firefox add-ons (dubna): null clears the value.
++            "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
              "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
              "choices": [
                {"type": "string"},
@@ -2356,7 +2387,7 @@
                }
              ]
            },
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
            "tabId": {
              "type": "integer",
              "optional": true,
@@ -2364,7 +2395,7 @@
            "type": "object",
            "properties": {
              "color": {
-+              "optional": true,  // Firefox add-ons (dubna): null clears the value.
++              "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
                "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>. Not setting this value will cause a color to be automatically chosen that will contrast with the badge's background color so the text will be visible. Colors with alpha values equivalent to 0 will not be set and will return an error.",
                "choices": [
                  {
@@ -2372,16 +2403,17 @@
                  }
                ]
              },
-+            "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++            "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
              "tabId": {
                "type": "integer",
                "optional": true,
-@@ -353,10 +364,13 @@
+@@ -353,10 +364,14 @@
        "description": "Indicates whether the extension action is enabled for a tab (or globally if no <code>tabId</code> is provided). Actions enabled using only $(ref:declarativeContent) always return false.",
        "parameters": [
          {
 -          "type": "integer",
 +          // Firefox add-ons (dubna): a tab ID or Firefox's details.
++          "chromium": {"type": "integer", "minimum": 0, "choices": null},
 +          "choices": [
 +            {"type": "integer", "minimum": 0},
 +            {"$ref": "TabDetails"}
@@ -2429,7 +2461,7 @@
          "id": "TabDetails",
          "type": "object",
          "properties": {
-+          "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
++          "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): the window to query state for."},
            "tabId": { "type": "integer", "optional": true, "minimum": 0, "description": "The ID of the tab to query state for. If no tab is specified, the non-tab-specific state is returned." }
          }
        }
@@ -2437,11 +2469,11 @@
              "type": "object",
              "properties": {
                "title": {
-+                "optional": true,  // Firefox add-ons (dubna): null clears the value.
++                "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
                  "type": "string",
                  "description": "The string the browser action should display when moused over."
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -2449,7 +2481,7 @@
                  "optional": true,
                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to an icon to be set. If the icon is specified as a dictionary, the image used is chosen depending on the screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then an image with size <code>scale</code> * n is selected, where <i>n</i> is the size of the icon in the UI. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.path = {'16': foo}'"
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -2457,7 +2489,7 @@
              "name": "details",
              "type": "object",
              "properties": {
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -2465,7 +2497,7 @@
                  "description": "Limits the change to when a particular tab is selected. Automatically resets when the tab is closed."
                },
                "popup": {
-+                "optional": true,  // Firefox add-ons (dubna): null clears the value.
++                "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
                  "type": "string",
                  "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
                }
@@ -2473,7 +2505,7 @@
                  "optional": true,
                  "description": "Any number of characters can be passed, but only about four can fit into the space. If an empty string (<code>''</code>) is passed, the badge text is cleared.  If <code>tabId</code> is specified and <code>text</code> is null, the text for the specified tab is cleared and defaults to the global badge text."
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
@@ -2481,7 +2513,7 @@
              "type": "object",
              "properties": {
                "color": {
-+                "optional": true,  // Firefox add-ons (dubna): null clears the value.
++                "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
                  "description": "An array of four integers in the range 0-255 that make up the RGBA color of the badge. Can also be a string with a CSS hex color value; for example, <code>#FF0000</code> or <code>#F00</code> (red). Renders colors at full opacity.",
                  "choices": [
                    {"type": "string"},
@@ -2489,11 +2521,11 @@
                    }
                  ]
                },
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
                "tabId": {
                  "type": "integer",
                  "optional": true,
-@@ -245,6 +254,104 @@
+@@ -245,6 +254,108 @@
            ]
          }
        },
@@ -2501,6 +2533,7 @@
 +      // and isEnabled (firefox_browser_action.h), as in action.json.
 +      {
 +        "name": "setBadgeTextColor",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Sets the text color for the badge.",
 +        "parameters": [
@@ -2509,14 +2542,14 @@
 +            "type": "object",
 +            "properties": {
 +              "color": {
-+                "optional": true,  // Firefox add-ons (dubna): null clears the value.
++                "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
 +                "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge, or a string with a CSS value.",
 +                "choices": [
 +                  {"type": "string"},
 +                  {"$ref": "extensionTypes.ColorArray"}
 +                ]
 +              },
-+              "windowId": {"type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
++              "windowId": {"firefox_only": true, "type": "integer", "optional": true, "minimum": -2, "description": "Firefox add-ons (dubna): limits the change to the tabs of a window, under a tab's own value."},
 +              "tabId": {
 +                "type": "integer",
 +                "optional": true,
@@ -2530,6 +2563,7 @@
 +      },
 +      {
 +        "name": "getBadgeTextColor",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Gets the text color of the badge.",
 +        "parameters": [
@@ -2550,6 +2584,7 @@
 +      },
 +      {
 +        "name": "getUserSettings",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Returns the user-specified settings relating to the browser action.",
 +        "parameters": [],
@@ -2571,6 +2606,7 @@
 +      },
 +      {
 +        "name": "isEnabled",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Whether the browser action is enabled for a tab, a window or globally.",
 +        "parameters": [
@@ -2611,7 +2647,7 @@
      "properties": {
        "ACTION_MENU_TOP_LEVEL_LIMIT": {
          "value": 6,
-@@ -42,6 +46,23 @@
+@@ -42,6 +46,26 @@
            {
              "name": "tab",
              "description": "Applies to the context menu of a tab in the tab strip."
@@ -2623,19 +2659,22 @@
 +          // its other contexts.
 +          {
 +            "name": "password",
++            "firefox_only": true,
 +            "nodoc": true
 +          },
 +          {
 +            "name": "bookmark",
++            "firefox_only": true,
 +            "nodoc": true
 +          },
 +          {
 +            "name": "tools_menu",
++            "firefox_only": true,
 +            "nodoc": true
            }
          ],
          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'launcher' and 'tab'. The 'launcher' context is only supported by apps and is used to add menu items to the context menu that appears when clicking the app icon in the launcher/taskbar/dock/etc. Different platforms might put limitations on what is actually supported in a launcher context menu."
-@@ -52,6 +73,14 @@
+@@ -52,6 +76,15 @@
          "enum": ["normal", "checkbox", "radio", "separator"],
          "description": "The type of menu item."
        },
@@ -2643,6 +2682,7 @@
 +      // (firefox_menu_view_types.h).
 +      {
 +        "id": "ViewType",
++        "firefox_only": true,
 +        "type": "string",
 +        "enum": ["tab", "popup", "sidebar"],
 +        "nodoc": true
@@ -2650,29 +2690,33 @@
        {
          "id": "OnClickData",
          "type": "object",
-@@ -82,6 +111,36 @@
+@@ -82,6 +115,41 @@
              "optional": true,
              "description": "If the element is a link, the URL it points to."
            },
 +          // Firefox add-ons (dubna): Firefox's click data
 +          // (firefox_menu_clicks.h).
 +          "linkText": {
++            "firefox_only": true,
 +            "type": "string",
 +            "optional": true,
 +            "nodoc": true
 +          },
 +          "modifiers": {
++            "firefox_only": true,
 +            "type": "array",
 +            "items": {"type": "string"},
 +            "optional": true,
 +            "nodoc": true
 +          },
 +          "button": {
++            "firefox_only": true,
 +            "type": "integer",
 +            "optional": true,
 +            "nodoc": true
 +          },
 +          "viewType": {
++            "firefox_only": true,
 +            "type": "string",
 +            "optional": true,
 +            "nodoc": true
@@ -2680,6 +2724,7 @@
 +          // Firefox add-ons (dubna): the ID that menus.getTargetElement
 +          // takes (firefox_menu_target_element.h).
 +          "targetElementId": {
++            "firefox_only": true,
 +            "type": "integer",
 +            "optional": true,
 +            "nodoc": true
@@ -2687,13 +2732,14 @@
            "srcUrl": {
              "type": "string",
              "optional": true,
-@@ -133,6 +192,13 @@
+@@ -133,6 +201,14 @@
              "optional": true,
              "description": "The type of menu item. Defaults to <code>normal</code>."
            },
 +          // Firefox add-ons (dubna): Firefox's command, which a click runs
 +          // instead of firing onClicked (firefox_menu_clicks.h).
 +          "command": {
++            "firefox_only": true,
 +            "type": "string",
 +            "optional": true,
 +            "nodoc": true
@@ -2701,13 +2747,14 @@
            "id": {
              "type": "string",
              "optional": true,
-@@ -157,6 +223,17 @@
+@@ -157,6 +233,18 @@
              "optional": true,
              "description": "List of contexts this menu item will appear in. Defaults to <code>['page']</code>."
            },
 +          // Firefox add-ons (dubna): Firefox's viewTypes
 +          // (firefox_menu_view_types.h).
 +          "viewTypes": {
++            "firefox_only": true,
 +            "type": "array",
 +            "items": {
 +              "$ref": "ViewType"
@@ -2719,7 +2766,7 @@
            "visible": {
              "type": "boolean",
              "optional": true,
-@@ -203,6 +280,14 @@
+@@ -203,6 +291,15 @@
              "type": "boolean",
              "optional": true,
              "description": "Whether this context menu item is enabled or disabled. Defaults to <code>true</code>."
@@ -2727,6 +2774,7 @@
 +          // Firefox add-ons (dubna): Firefox's own icon for the item, by size
 +          // (firefox_menu_icons.h).
 +          "icons": {
++            "firefox_only": true,
 +            "type": "object",
 +            "additionalProperties": {"type": "string"},
 +            "optional": true,
@@ -2734,12 +2782,13 @@
            }
          }
        }
-@@ -257,6 +342,12 @@
+@@ -257,6 +354,13 @@
                  "$ref": "ItemType",
                  "optional": true
                },
 +              // Firefox add-ons (dubna): as in CreateProperties.
 +              "command": {
++                "firefox_only": true,
 +                "type": "string",
 +                "optional": true,
 +                "nodoc": true
@@ -2747,12 +2796,13 @@
                "title": {
                  "type": "string",
                  "optional": true
-@@ -273,6 +364,16 @@
+@@ -273,6 +377,17 @@
                  "minItems": 1,
                  "optional": true
                },
 +              // Firefox add-ons (dubna): as in CreateProperties.
 +              "viewTypes": {
++                "firefox_only": true,
 +                "type": "array",
 +                "items": {
 +                  "$ref": "ViewType"
@@ -2764,7 +2814,7 @@
                "visible": {
                  "type": "boolean",
                  "optional": true,
-@@ -314,6 +415,14 @@
+@@ -314,6 +429,15 @@
                "enabled": {
                  "type": "boolean",
                  "optional": true
@@ -2772,6 +2822,7 @@
 +              // Firefox add-ons (dubna): as in CreateProperties; null comes as
 +              // {} (context_menus_handlers.js).
 +              "icons": {
++                "firefox_only": true,
 +                "type": "object",
 +                "additionalProperties": {"type": "string"},
 +                "optional": true,
@@ -2779,7 +2830,7 @@
                }
              }
            }
-@@ -357,6 +466,20 @@
+@@ -357,6 +481,21 @@
            "parameters": [],
            "description": "Resolves when removal is complete."
          }
@@ -2788,6 +2839,7 @@
 +      // add-on's items in the open menu (firefox_menu_events.h).
 +      {
 +        "name": "refresh",
++        "firefox_only": true,
 +        "type": "function",
 +        "nodoc": true,
 +        "description": "Updates the extension's items in the shown menu.",
@@ -2800,7 +2852,7 @@
        }
      ],
      "events": [
-@@ -377,6 +500,34 @@
+@@ -377,6 +516,36 @@
              "optional": true
            }
          ]
@@ -2810,6 +2862,7 @@
 +      // (firefox_menu_events.h).
 +      {
 +        "name": "onShown",
++        "firefox_only": true,
 +        "type": "function",
 +        "nodoc": true,
 +        "description": "Fired when a menu is shown.",
@@ -2828,6 +2881,7 @@
 +      },
 +      {
 +        "name": "onHidden",
++        "firefox_only": true,
 +        "type": "function",
 +        "nodoc": true,
 +        "description": "Fired when a menu is hidden.",
@@ -2846,7 +2900,7 @@
      },
      "types": [
        {
-@@ -44,6 +44,23 @@
+@@ -44,6 +44,24 @@
          ],
          "returns_async": {"name": "callback", "parameters": [], "optional": true}
        },
@@ -2854,6 +2908,7 @@
 +      // (firefox_page_action_api.h).
 +      {
 +        "name": "isShown",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Whether the page action is shown in a tab.",
 +        "parameters": [
@@ -2870,26 +2925,26 @@
        {
          "name": "setTitle",
          "type": "function",
-@@ -54,7 +71,7 @@
+@@ -54,7 +72,7 @@
              "type": "object",
              "properties": {
                "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
 -              "title": {"type": "string", "description": "The tooltip string."}
-+              "title": {"type": "string", "optional": true, "description": "The tooltip string. Firefox add-ons (dubna): null clears the value."}
++              "title": {"type": "string", "optional": true, "chromium": {"optional": null}, "description": "The tooltip string. Firefox add-ons (dubna): null clears the value."}
              }
            }
          ],
-@@ -138,6 +155,7 @@
+@@ -138,6 +156,7 @@
              "properties": {
                "tabId": {"type": "integer", "minimum": 0, "description": "The id of the tab for which you want to modify the page action."},
                "popup": {
-+                "optional": true,  // Firefox add-ons (dubna): null clears the value.
++                "optional": true, "chromium": {"optional": null},  // Firefox add-ons (dubna): null clears the value.
                  "type": "string",
                  "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
                }
 --- a/chrome/common/extensions/api/privacy.json
 +++ b/chrome/common/extensions/api/privacy.json
-@@ -57,6 +57,13 @@
+@@ -57,6 +57,14 @@
              "$ref": "types.ChromeSetting",
              "value": ["webRTCIPHandlingPolicy", {"$ref":"IPHandlingPolicy"}],
              "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
@@ -2897,6 +2952,7 @@
 +          // Firefox add-ons (dubna): Firefox's setting, read-only and always
 +          // true (firefox_browser_settings.h).
 +          "peerConnectionEnabled": {
++            "firefox_only": true,
 +            "$ref": "types.ChromeSetting",
 +            "value": ["privacy.network.peerConnectionEnabled", {"type":"boolean"}],
 +            "description": "Firefox's: whether WebRTC's RTCPeerConnection is on. Read-only: always <code>true</code>."
@@ -2912,11 +2968,11 @@
 -          "sessionId": {"type": "string", "optional": true, "description": "The session ID used to uniquely identify a tab obtained from the $(ref:sessions) API."}
 +          "sessionId": {"type": "string", "optional": true, "description": "The session ID used to uniquely identify a tab obtained from the $(ref:sessions) API."},
 +          // Firefox add-ons (dubna): Firefox's cookie store of the tab.
-+          "cookieStoreId": {"type": "string", "optional": true, "description": "Firefox's: the tab's cookie store, firefox-default, firefox-private or a container's."}
++          "cookieStoreId": {"firefox_only": true, "type": "string", "optional": true, "description": "Firefox's: the tab's cookie store, firefox-default, firefox-private or a container's."}
          }
        },
        {
-@@ -409,6 +411,20 @@
+@@ -409,6 +411,22 @@
                  "minimum": 0,
                  "optional": true,
                  "description": "The ID of an existing tab to create a split view with. If specified, the split-with tab must meet the following conditions: <ul><li>It must not be an already split tab.</li><li>It must be in the same window as the newly created tab.</li><li>If <var>windowId</var> is specified, it must be the same as the split-with tab's window ID.</li><li>If <var>index</var> is specified, it must be an index adjacent to the split-with tab and will affect the relative positioning of the newly created tab.</li></ul>"
@@ -2924,12 +2980,14 @@
 +              // Firefox add-ons (dubna): Firefox's discarded tab and its title
 +              // (firefox_discarded_tab.h).
 +              "discarded": {
++                "firefox_only": true,
 +                "type": "boolean",
 +                "optional": true,
 +                "nodoc": true,
 +                "description": "Firefox's: the tab opens without loading its page, until it is selected."
 +              },
 +              "title": {
++                "firefox_only": true,
 +                "type": "string",
 +                "optional": true,
 +                "nodoc": true,
@@ -2999,6 +3057,25 @@
        {IDS_EXTENSION_PROMPT_WARNING_SYNCFILESYSTEM,
         {APIPermissionID::kSyncFileSystem},
         {}},
+--- a/chrome/common/scoped_chrome_extensions_client.cc
++++ b/chrome/common/scoped_chrome_extensions_client.cc
+@@ -14,6 +14,7 @@
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/extensions_client.h"
+ #include "extensions/common/features/feature.h"
++#include "extensions/common/firefox_add_on_availability.h"
+ #include "extensions/common/mime_handler_availability.h"
+ #include "extensions/common/user_scripts_availability.h"
+ #include "extensions/common/webstore_override.h"
+@@ -46,6 +47,8 @@ CombineAllAvailabilityCheckMaps() {
+       mime_handler_availability::CreateAvailabilityCheckMap(),
+       user_scripts_availability::CreateAvailabilityCheckMap(),
+       webstore_override::CreateAvailabilityCheckMap(),
++      // Firefox add-ons (dubna): firefox_add_on_availability.h.
++      firefox_add_on_availability::CreateAvailabilityCheckMap(),
+   };
+   Feature::FeatureDelegatedAvailabilityCheckMap result;
+ 
 --- a/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
 +++ b/chrome/renderer/extensions/api/chrome_extensions_renderer_api_provider.cc
 @@ -140,6 +140,14 @@ void ChromeExtensionsRendererAPIProvider::PopulateSourceMap(
@@ -3505,7 +3582,15 @@
  }  // namespace extensions
 --- a/extensions/browser/extension_protocols.cc
 +++ b/extensions/browser/extension_protocols.cc
-@@ -149,8 +149,13 @@ void GenerateBackgroundPageContents(const Extension* extension,
+@@ -76,6 +76,7 @@
+ #include "extensions/common/extension_resource.h"
+ #include "extensions/common/extension_urls.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_handlers/background_info.h"
+ #include "extensions/common/manifest_handlers/cross_origin_isolation_info.h"
+ #include "extensions/common/manifest_handlers/csp_info.h"
+@@ -149,8 +150,14 @@ void GenerateBackgroundPageContents(const Extension* extension,
    *mime_type = "text/html";
    *charset = "utf-8";
    *data = "<!DOCTYPE html>\n<body>\n";
@@ -3513,7 +3598,8 @@
 +  // when the manifest has "background": {"type": "module"}.
 +  const std::string* type =
 +      extension->manifest()->FindStringPath("background.type");
-+  const bool module = type && *type == "module";
++  const bool module =
++      type && *type == "module" && IsFirefoxAddOn(*extension);
    for (const auto& script : BackgroundInfo::GetBackgroundScripts(extension)) {
 -    *data += "<script src=\"";
 +    *data += module ? "<script type=\"module\" src=\"" : "<script src=\"";
@@ -3768,12 +3854,14 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,25 @@ static_library("common") {
+@@ -402,6 +402,27 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
 +    "firefox_add_on.cc",
 +    "firefox_add_on.h",
++    "firefox_add_on_availability.cc",
++    "firefox_add_on_availability.h",
 +    "firefox_cookie_store.h",
 +    "firefox_gecko_id.cc",
 +    "firefox_gecko_id.h",
@@ -3809,13 +3897,14 @@
    deps = [
 --- a/extensions/common/api/_api_features.json
 +++ b/extensions/common/api/_api_features.json
-@@ -700,6 +700,16 @@
+@@ -700,6 +700,17 @@
      "dependencies": ["permission:nativeMessaging"],
      "contexts": ["privileged_extension"]
    },
 +  // Firefox add-ons (dubna): Firefox has runtime.getDocumentId in content
 +  // scripts and extension pages.
 +  "runtime.getDocumentId": {
++    "requires_delegated_availability_check": true,
 +    "contexts": [
 +      "privileged_extension",
 +      "offscreen_extension",
@@ -3826,18 +3915,47 @@
    "runtime.getContexts": {
      "min_manifest_version": 3,
      "contexts": ["privileged_extension"]
-@@ -872,8 +882,10 @@
+@@ -805,10 +816,19 @@
+     "dependencies": ["permission:nativeMessaging"],
+     "contexts": ["privileged_extension"]
+   },
+-  "scripting": {
++  // Firefox add-ons (dubna): Firefox add-ons have scripting in Manifest V2
++  // too, as in Firefox.
++  "scripting": [{
++    "default_parent": true,
+     "dependencies": ["permission:scripting"],
+-    "contexts": ["privileged_extension"]
+-  },
++    "contexts": ["privileged_extension"],
++    "min_manifest_version": 3
++  }, {
++    "requires_delegated_availability_check": true,
++    "dependencies": ["permission:scripting"],
++    "contexts": ["privileged_extension"],
++    "max_manifest_version": 2
++  }],
+   "scripting.globalParams": {
+     "channel": "trunk",
+     "dependencies": ["permission:scripting"],
+@@ -872,9 +892,15 @@
        "content_script"
      ]
    },
-+  // Firefox add-ons (dubna): Firefox has storage.session in Manifest V2 too.
-+  // Chrome apps, also Manifest V2, stay without it.
-   "storage.session": {
--    "min_manifest_version": 3
+-  "storage.session": {
++  // Firefox add-ons (dubna): Firefox add-ons have storage.session in Manifest
++  // V2 too, as in Firefox. Chrome apps, also Manifest V2, stay without it.
++  "storage.session": [{
+     "min_manifest_version": 3
+-  },
++  }, {
++    "requires_delegated_availability_check": true,
++    "max_manifest_version": 2,
 +    "extension_types": ["extension"]
-   },
++  }],
    "system.cpu": {
      "dependencies": ["permission:system.cpu"],
+     "contexts": ["privileged_extension"]
 --- a/extensions/common/api/_manifest_features.json
 +++ b/extensions/common/api/_manifest_features.json
 @@ -80,13 +80,12 @@
@@ -3933,7 +4051,7 @@
            "sameSite": {"$ref": "SameSiteStatus", "description": "The cookie's same-site status (i.e. whether the cookie is sent with cross-site requests)."},
            "session": {"type": "boolean", "description": "True if the cookie is a session cookie, as opposed to a persistent cookie with an expiration date."},
            "expirationDate": {"type": "number", "optional": true, "description": "The expiration date of the cookie as the number of seconds since the UNIX epoch. Not provided for session cookies."},
-+          "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain, always \"\"."},
++          "firstPartyDomain": {"firefox_only": true, "type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain, always \"\"."},
            "storeId": {"type": "string", "description": "The ID of the cookie store containing this cookie, as provided in getAllCookieStores()."},
            "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
          }
@@ -3941,7 +4059,7 @@
          "properties": {
            "url": {"type": "string", "description": "The URL with which the cookie to access is associated. This argument may be a full URL, in which case any data following the URL path (e.g. the query string) is simply ignored. If host permissions for this URL are not specified in the manifest file, the API call will fail."},
            "name": {"type": "string", "description": "The name of the cookie to access."},
-+          "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
++          "firstPartyDomain": {"firefox_only": true, "type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
            "storeId": {"type": "string", "optional": true, "description": "The ID of the cookie store in which to look for the cookie. By default, the current execution context's cookie store will be used."},
            "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
          }
@@ -3949,7 +4067,7 @@
                "path": {"type": "string", "optional": true, "description": "Restricts the retrieved cookies to those whose path exactly matches this string."},
                "secure": {"type": "boolean", "optional": true, "description": "Filters the cookies by their Secure property."},
                "session": {"type": "boolean", "optional": true, "description": "Filters out session vs. persistent cookies."},
-+              "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
++              "firstPartyDomain": {"firefox_only": true, "type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", so another value matches no cookie."},
                "storeId": {"type": "string", "optional": true, "description": "The cookie store to retrieve cookies from. If omitted, the current execution context's cookie store will be used."},
                "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
              }
@@ -3957,7 +4075,7 @@
                "httpOnly": {"type": "boolean", "optional": true, "description": "Whether the cookie should be marked as HttpOnly. Defaults to false."},
                "sameSite": {"$ref": "SameSiteStatus", "optional": true, "description": "The cookie's same-site status. Defaults to \"unspecified\", i.e., if omitted, the cookie is set without specifying a SameSite attribute."},
                "expirationDate": {"type": "number", "optional": true, "description": "The expiration date of the cookie as the number of seconds since the UNIX epoch. If omitted, the cookie becomes a session cookie."},
-+              "firstPartyDomain": {"type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", and a cookie can't be set with another value."},
++              "firstPartyDomain": {"firefox_only": true, "type": "string", "optional": true, "description": "Firefox add-ons (dubna): Firefox's first-party domain. No cookie has one but \"\", and a cookie can't be set with another value."},
                "storeId": {"type": "string", "optional": true, "description": "The ID of the cookie store in which to set the cookie. By default, the cookie is set in the current execution context's cookie store."},
                "partitionKey": {"$ref": "CookiePartitionKey", "optional": true, "description": "The partition key for reading or modifying cookies with the Partitioned attribute."}
              }
@@ -3987,12 +4105,13 @@
    dnr_api::ManifestKeys manifest_keys;
 --- a/extensions/common/api/i18n.json
 +++ b/extensions/common/api/i18n.json
-@@ -26,6 +26,18 @@
+@@ -26,6 +26,19 @@
            ]
          }
        },
 +      {
 +        "name": "getPreferredSystemLanguages",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Firefox's: the system's languages, as BCP 47 tags. See firefox_i18n_api.cc.",
 +        "parameters": [],
@@ -4008,7 +4127,7 @@
          "nocompile": true,
 --- a/extensions/common/api/proxy.json
 +++ b/extensions/common/api/proxy.json
-@@ -99,6 +99,37 @@
+@@ -99,6 +99,39 @@
              }
            }
          ]
@@ -4018,6 +4137,7 @@
 +      // either (proxy_custom_bindings.js, proxy_internal_api.h).
 +      {
 +        "name": "onRequest",
++        "firefox_only": true,
 +        "type": "function",
 +        "nodoc": true,
 +        "description": "Fired when a request's proxy is decided.",
@@ -4033,6 +4153,7 @@
 +      // proxy.onRequest Firefox refuses, as an Error.
 +      {
 +        "name": "onError",
++        "firefox_only": true,
 +        "type": "function",
 +        "nodoc": true,
 +        "description": "Fired when an answer of onRequest is refused.",
@@ -4048,12 +4169,13 @@
    }
 --- a/extensions/common/api/runtime.json
 +++ b/extensions/common/api/runtime.json
-@@ -645,6 +645,37 @@
+@@ -645,6 +645,39 @@
            ]
          }
        },
 +      {
 +        "name": "getBrowserInfo",
++        "firefox_only": true,
 +        "type": "function",
 +        "description": "Firefox's: the browser's name, vendor and version (Chromium's). See firefox_runtime_api.cc.",
 +        "parameters": [],
@@ -4075,6 +4197,7 @@
 +      },
 +      {
 +        "name": "getDocumentId",
++        "firefox_only": true,
 +        "type": "function",
 +        "nocompile": true,
 +        "description": "Firefox's: the documentId of a window's or a frame element's document. See firefox_document_id.h.",
@@ -4213,13 +4336,23 @@
    auto get_title_key = [](const char* action_key) {
 --- a/extensions/common/manifest_handlers/background_info.cc
 +++ b/extensions/common/manifest_handlers/background_info.cc
-@@ -140,6 +140,13 @@ bool BackgroundInfo::Parse(Extension* extension, std::u16string* error) {
+@@ -17,6 +17,7 @@
+ #include "extensions/common/constants.h"
+ #include "extensions/common/error_utils.h"
+ #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/manifest_handlers/permissions_parser.h"
+ #include "extensions/common/permissions/api_permission_set.h"
+@@ -140,6 +141,15 @@ bool BackgroundInfo::Parse(Extension* extension, std::u16string* error) {
      return false;
    }
  
 +  // Firefox add-ons (dubna): an add-on for both browsers lists Firefox's
 +  // background page and Chromium's service worker. Chromium runs the worker.
-+  if (background_service_worker_script_url_.has_value()) {
++  // Only a Firefox add-on has a background page in Manifest V3.
++  if (background_service_worker_script_url_.has_value() ||
++      (extension->manifest_version() >= 3 && !IsFirefoxAddOn(*extension))) {
 +    background_url_ = GURL();
 +    background_scripts_.clear();
 +  }
@@ -4227,7 +4360,7 @@
    int background_solution_sum =
        (background_url_.is_valid() ? 1 : 0) +
        (!background_scripts_.empty() ? 1 : 0) +
-@@ -328,6 +335,14 @@ bool BackgroundInfo::LoadBackgroundPersistent(const Extension* extension,
+@@ -328,6 +338,14 @@ bool BackgroundInfo::LoadBackgroundPersistent(const Extension* extension,
      return false;
    }
    is_persistent_ = background_persistent->GetBool();
@@ -4252,19 +4385,18 @@
  #include "extensions/common/image_util.h"
  #include "extensions/common/manifest_constants.h"
  
-@@ -55,7 +56,10 @@ bool ExtensionActionHandler::Parse(Extension* extension,
+@@ -55,7 +56,9 @@ bool ExtensionActionHandler::Parse(Extension* extension,
      // type ACTION is correct.
    }
  
 -  if (extension->manifest()->FindKey(manifest_keys::kPageAction)) {
-+  // Firefox add-ons (dubna): a page action next to another action is a second
-+  // action (firefox_page_action.h).
-+  if (extension->manifest()->FindKey(manifest_keys::kPageAction) &&
-+      !HasFirefoxPageAction(*extension)) {
++  // Firefox add-ons (dubna): a page action next to another action, or in
++  // Manifest V3, is a Firefox add-on's second action (firefox_page_action.h).
++  if (HasChromiumPageAction(*extension)) {
      if (key != nullptr) {
        // An extension can only have one action.
        *error = manifest_errors::kOneUISurfaceOnly;
-@@ -118,6 +122,9 @@ bool ExtensionActionHandler::Parse(Extension* extension,
+@@ -118,6 +121,9 @@ bool ExtensionActionHandler::Parse(Extension* extension,
      ActionInfo::SetExtensionActionInfo(extension, std::move(action_info));
    }
  
@@ -4478,7 +4610,7 @@
      "api/messaging/gin_port.cc",
      "api/messaging/gin_port.h",
      "api/messaging/message_target.cc",
-@@ -99,6 +119,10 @@ source_set("renderer") {
+@@ -99,6 +119,14 @@ source_set("renderer") {
      "bindings/declarative_event.h",
      "bindings/event_emitter.cc",
      "bindings/event_emitter.h",
@@ -4486,10 +4618,14 @@
 +    # Firefox add-ons (dubna): Firefox's filter of tabs.onUpdated.
 +    "bindings/firefox_update_filter.cc",
 +    "bindings/firefox_update_filter.h",
++
++    # Firefox add-ons (dubna): the schemas' Chromium view.
++    "bindings/firefox_schema_view.cc",
++    "bindings/firefox_schema_view.h",
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +270,23 @@ source_set("renderer") {
+@@ -246,6 +274,22 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -4498,10 +4634,9 @@
 +    "bindings/firefox_menu_shown_tab.cc",
 +    "bindings/firefox_menu_shown_tab.h",
 +
-+    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh() only for
-+    # Firefox add-ons.
-+    "firefox_menu_events_bindings.cc",
-+    "firefox_menu_events_bindings.h",
++    # Firefox add-ons (dubna): what the schemas mark only for Firefox add-ons.
++    "firefox_add_on_bindings.cc",
++    "firefox_add_on_bindings.h",
 +
 +    # Firefox add-ons (dubna): menus.getTargetElement.
 +    "firefox_menu_target_element.cc",
@@ -4559,6 +4694,175 @@
      // NOTE(devlin): JS bindings only validate that the extension id is present,
      // rather than validating its content. This seems better. Let's see how this
      // goes.
+--- a/extensions/renderer/bindings/api_binding.cc
++++ b/extensions/renderer/bindings/api_binding.cc
+@@ -607,6 +607,9 @@ void APIBinding::HandleCall(const std::string& name,
+   // GetCurrentContext() should always be correct.
+   v8::Local<v8::Context> context = isolate->GetCurrentContext();
+ 
++  // Firefox add-ons (dubna): firefox_schema_view.h.
++  signature = signature->ForContext(context);
++
+   if (!access_checker_->HasAccessOrThrowError(context, name)) {
+     // TODO(devlin): Do we need handle this for events as well? I'm not sure the
+     // currrent system does (though perhaps it should). Investigate.
+--- a/extensions/renderer/bindings/api_request_handler.cc
++++ b/extensions/renderer/bindings/api_request_handler.cc
+@@ -13,6 +13,7 @@
+ #include "extensions/renderer/bindings/api_binding_util.h"
+ #include "extensions/renderer/bindings/api_response_validator.h"
+ #include "extensions/renderer/bindings/exception_handler.h"
++#include "extensions/renderer/bindings/firefox_schema_view.h"
+ #include "extensions/renderer/bindings/js_runner.h"
+ #include "gin/arguments.h"
+ #include "gin/converter.h"
+@@ -633,6 +634,9 @@ void APIRequestHandler::CompleteRequestImpl(int request_id,
+ 
+   const v8::LocalVector<v8::Value>& response_args =
+       arguments.GetArguments(context);
++  // Firefox add-ons (dubna): firefox_schema_view.h.
++  firefox_schema_view::FilterResults(context, pending_request.method_name,
++                                     /*is_event=*/false, response_args);
+ 
+   std::unique_ptr<InteractionProvider::Scope> user_gesture;
+   if (pending_request.user_gesture_token) {
+--- a/extensions/renderer/bindings/api_signature.cc
++++ b/extensions/renderer/bindings/api_signature.cc
+@@ -15,6 +15,7 @@
+ #include "extensions/renderer/bindings/api_binding_util.h"
+ #include "extensions/renderer/bindings/api_invocation_errors.h"
+ #include "extensions/renderer/bindings/argument_spec.h"
++#include "extensions/renderer/bindings/firefox_schema_view.h"
+ 
+ namespace extensions {
+ 
+@@ -527,15 +528,27 @@ std::unique_ptr<APISignature> APISignature::CreateFromValues(
+         BuildReturnsAsyncFromValues(returns_async->GetDict());
+   }
+ 
+-  return std::make_unique<APISignature>(std::move(expected_arguments),
+-                                        std::move(returns_async_struct));
++  auto signature = std::make_unique<APISignature>(
++      std::move(expected_arguments), std::move(returns_async_struct));
++  // Firefox add-ons (dubna): see ForContext().
++  if (firefox_schema_view::HasMarks(spec_list) ||
++      (returns_async && firefox_schema_view::HasMarks(*returns_async))) {
++    std::optional<base::Value> chromium_returns_async;
++    if (returns_async) {
++      chromium_returns_async = firefox_schema_view::ChromiumView(*returns_async);
++    }
++    signature->chromium_view_ = CreateFromValues(
++        firefox_schema_view::ChromiumView(spec_list),
++        chromium_returns_async ? &*chromium_returns_async : nullptr);
++  }
++  return signature;
+ }
+ 
+ APISignature::V8ParseResult APISignature::ParseArgumentsToV8(
+     v8::Local<v8::Context> context,
+     const v8::LocalVector<v8::Value>& arguments,
+     const APITypeReferenceMap& type_refs) const {
+-  return V8ArgumentParser(context, *this, arguments, type_refs)
++  return V8ArgumentParser(context, *ForContext(context), arguments, type_refs)
+       .ParseArguments();
+ }
+ 
+@@ -543,7 +556,8 @@ APISignature::JSONParseResult APISignature::ParseArgumentsToJSON(
+     v8::Local<v8::Context> context,
+     const v8::LocalVector<v8::Value>& arguments,
+     const APITypeReferenceMap& type_refs) const {
+-  return BaseValueArgumentParser(context, *this, arguments, type_refs)
++  return BaseValueArgumentParser(context, *ForContext(context), arguments,
++                                 type_refs)
+       .ParseArguments();
+ }
+ 
+@@ -619,6 +633,13 @@ bool APISignature::ValidateCall(v8::Local<v8::Context> context,
+       context, arguments, expected_arguments_, type_refs, error);
+ }
+ 
++const APISignature* APISignature::ForContext(
++    v8::Local<v8::Context> context) const {
++  return chromium_view_ && !firefox_schema_view::IsFirefoxContext(context)
++             ? chromium_view_.get()
++             : this;
++}
++
+ std::string APISignature::GetExpectedSignature() const {
+   // Return early if cached, or if the signature is empty (takes no arguments
+   // and has no async return).
+--- a/extensions/renderer/bindings/api_signature.h
++++ b/extensions/renderer/bindings/api_signature.h
+@@ -160,6 +160,11 @@ class APISignature {
+   // 'someInt', this would return "string someStr, optional integer someInt".
+   std::string GetExpectedSignature() const;
+ 
++  // Firefox add-ons (dubna): the signature that `context` parses by, the
++  // Chromium view of one with marks unless `context` is a Firefox add-on's
++  // (firefox_schema_view.h).
++  const APISignature* ForContext(v8::Local<v8::Context> context) const;
++
+   const std::vector<std::unique_ptr<ArgumentSpec>>& expected_arguments() const {
+     return expected_arguments_;
+   }
+@@ -179,6 +184,9 @@ class APISignature {
+   // nullptr if the API doesn't have an asynchronous return.
+   std::unique_ptr<APISignature::ReturnsAsync> returns_async_;
+ 
++  // Firefox add-ons (dubna): see ForContext().
++  std::unique_ptr<APISignature> chromium_view_;
++
+   // A developer-readable method signature string, lazily set.
+   mutable std::string expected_signature_;
+ };
+--- a/extensions/renderer/bindings/argument_spec.cc
++++ b/extensions/renderer/bindings/argument_spec.cc
+@@ -16,6 +16,7 @@
+ #include "content/public/renderer/v8_value_converter.h"
+ #include "extensions/renderer/bindings/api_invocation_errors.h"
+ #include "extensions/renderer/bindings/api_type_reference_map.h"
++#include "extensions/renderer/bindings/firefox_schema_view.h"
+ #include "gin/converter.h"
+ #include "gin/data_object_builder.h"
+ #include "gin/dictionary.h"
+@@ -85,6 +86,12 @@ ArgumentSpec::ArgumentSpec(const base::DictValue& dict) {
+     name_ = *name;
+ 
+   InitializeType(dict);
++
++  // Firefox add-ons (dubna): see chromium_view_.
++  if (dict.contains("id") && firefox_schema_view::HasMarks(dict)) {
++    chromium_view_ =
++        std::make_unique<ArgumentSpec>(firefox_schema_view::ChromiumView(dict));
++  }
+ }
+ 
+ ArgumentSpec::ArgumentSpec(ArgumentType type) : type_(type) {}
+@@ -278,6 +285,11 @@ bool ArgumentSpec::ParseArgument(v8::Local<v8::Context> context,
+                                  std::optional<base::Value>* out_value,
+                                  v8::Local<v8::Value>* v8_out_value,
+                                  std::string* error) const {
++  // Firefox add-ons (dubna): see chromium_view_.
++  if (chromium_view_ && !firefox_schema_view::IsFirefoxContext(context)) {
++    return chromium_view_->ParseArgument(context, value, refs, out_value,
++                                         v8_out_value, error);
++  }
+   // Note: for top-level arguments (i.e., those passed directly to the function,
+   // as opposed to a property on an object, or the item of an array), we will
+   // have already checked the type. Doing so again should be nearly free, but
+--- a/extensions/renderer/bindings/argument_spec.h
++++ b/extensions/renderer/bindings/argument_spec.h
+@@ -208,6 +208,10 @@ class ArgumentSpec {
+   // Whether this specific spec should ignore additional properties provided
+   // which do not match the spec, without emitting an error.
+   bool ignore_additional_properties_ = false;
++
++  // Firefox add-ons (dubna): the Chromium view of a type with marks, which
++  // ParseArgument() reads for other extensions (firefox_schema_view.h).
++  std::unique_ptr<ArgumentSpec> chromium_view_;
+ };
+ 
+ }  // namespace extensions
 --- a/extensions/renderer/bindings/event_emitter.cc
 +++ b/extensions/renderer/bindings/event_emitter.cc
 @@ -44,6 +44,7 @@ EventEmitter::~EventEmitter() = default;
@@ -4736,19 +5040,19 @@
  #include "extensions/renderer/bindings/api_binding_hooks.h"
  #include "extensions/renderer/bindings/api_binding_js_util.h"
  #include "extensions/renderer/bindings/api_binding_util.h"
-+#include "extensions/renderer/bindings/firefox_update_filter.h"
++#include "extensions/renderer/bindings/firefox_schema_view.h"
  #include "extensions/renderer/console.h"
  #include "extensions/renderer/extension_frame_helper.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extension_js_runner.h"
 +#include "extensions/renderer/firefox_last_error.h"
-+#include "extensions/renderer/firefox_menu_events_bindings.h"
++#include "extensions/renderer/firefox_add_on_bindings.h"
 +#include "extensions/renderer/firefox_menu_target_element.h"
 +#include "extensions/renderer/firefox_storage.h"
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/module_system.h"
-@@ -248,6 +253,15 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
+@@ -248,6 +253,10 @@ const base::DictValue& GetAPISchema(const std::string& api_name) {
  bool IsAPIFeatureAvailable(v8::Local<v8::Context> context,
                             const std::string& name) {
    ScriptContext* script_context = GetScriptContextFromV8ContextChecked(context);
@@ -4756,28 +5060,34 @@
 +  if (IsHiddenFromFirefoxAddOn(*script_context, name)) {
 +    return false;
 +  }
-+  // Firefox add-ons (dubna): contextMenus' Firefox events and refresh() are
-+  // theirs alone (firefox_menu_events_bindings.h).
-+  if (IsFirefoxMenusMemberHidden(script_context->extension(), name)) {
-+    return false;
-+  }
    return script_context->GetAvailability(name).is_available();
  }
  
-@@ -550,7 +564,11 @@
+@@ -260,6 +269,9 @@ v8::Local<v8::Object> CreateRootBinding(v8::Local<v8::Context> context,
+   APIBindingHooks* hooks = nullptr;
+   v8::Local<v8::Object> binding_object =
+       bindings_system->CreateAPIInstance(name, context, &hooks);
++  // Firefox add-ons (dubna): firefox_add_on_bindings.h.
++  HideFirefoxOnlyMembers(context, GetAPISchema(std::string(name)),
++                         binding_object);
+ 
+   v8::Isolate* isolate = v8::Isolate::GetCurrent();
+   auto* bridge = cppgc::MakeGarbageCollected<APIBindingBridge>(
+@@ -550,7 +562,12 @@ NativeExtensionBindingsSystem::NativeExtensionBindingsSystem(
            base::BindRepeating(&AddConsoleError),
            APILastError(base::BindRepeating(&GetLastErrorParents),
                         base::BindRepeating(&AddConsoleError))),
 -      messaging_service_(this) {}
 +      messaging_service_(this) {
-+  // Firefox add-ons (dubna): Firefox's filters on tabs.onUpdated and
-+  // proxy.onRequest are theirs alone (firefox_update_filter.h).
-+  FirefoxUpdateFilters::SetAddOnCheck(&IsFirefoxAddOnContext);
++  // Firefox add-ons (dubna): what the schemas mark is theirs alone
++  // (firefox_schema_view.h).
++  firefox_schema_view::SetAddOnCheck(&IsFirefoxAddOnContext);
++  firefox_schema_view::SetResultFilter(&RemoveFirefoxOnlyResults);
 +}
  
  NativeExtensionBindingsSystem::~NativeExtensionBindingsSystem() = default;
  
-@@ -598,6 +616,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
+@@ -598,6 +615,9 @@ void NativeExtensionBindingsSystem::DidCreateScriptContext(
    if (context->context_type() == mojom::ContextType::kContentScript) {
      SetScriptingParams(context);
    }
@@ -4787,7 +5097,7 @@
  }
  
  void NativeExtensionBindingsSystem::WillReleaseScriptContext(
-@@ -1031,11 +1052,23 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
+@@ -1031,11 +1051,23 @@ v8::Local<v8::Object> NativeExtensionBindingsSystem::GetAPIHelper(
    CHECK(
        gin::Converter<std::string>::FromV8(isolate, api_name, &api_name_string));
  
@@ -6073,11 +6383,12 @@
  
 --- a/chrome/common/extensions/api/bookmarks.json
 +++ b/chrome/common/extensions/api/bookmarks.json
-@@ -106,6 +106,11 @@
+@@ -106,6 +106,12 @@
              "type": "boolean",
              "description": "Whether this node is synced with the user's remote account storage by the browser. This can be used to distinguish between account and local-only versions of the same $(ref:FolderType). The value of this property may change for an existing node, for example as a result of user action.<p>Note: this reflects whether the node is saved to the browser's built-in account provider. It is possible that a node could be synced via a third-party, even if this value is false.</p><p>For managed nodes (nodes where <code>unmodifiable</code> is set to <code>true</code>), this property will always be <code>false</code>.</p>"
            },
 +          "type": {
++            "firefox_only": true,
 +            "type": "string",
 +            "optional": true,
 +            "description": "Firefox add-ons (dubna): the type of this node, given to Firefox add-ons only."
@@ -6085,12 +6396,13 @@
            "children": {
              "type": "array",
              "optional": true,
-@@ -136,6 +141,11 @@
+@@ -136,6 +142,12 @@
            "url": {
              "type": "string",
              "optional": true
 +          },
 +          "type": {
++            "firefox_only": true,
 +            "type": "string",
 +            "optional": true,
 +            "description": "Firefox add-ons (dubna): the type of the node to create. A folder has no URL, and a bookmark needs one."
@@ -6224,15 +6536,16 @@
      arguments->Return(promise);
 --- a/extensions/renderer/bindings/api_event_handler.cc
 +++ b/extensions/renderer/bindings/api_event_handler.cc
-@@ -22,6 +22,7 @@
+@@ -22,6 +22,8 @@
  #include "extensions/renderer/bindings/api_binding_util.h"
  #include "extensions/renderer/bindings/api_response_validator.h"
  #include "extensions/renderer/bindings/event_emitter.h"
 +#include "extensions/renderer/bindings/firefox_menu_shown_tab.h"
++#include "extensions/renderer/bindings/firefox_schema_view.h"
  #include "extensions/renderer/bindings/get_per_context_data.h"
  #include "extensions/renderer/bindings/js_runner.h"
  #include "gin/converter.h"
-@@ -297,6 +298,9 @@ void APIEventHandler::FireEventInContext(const std::string& event_name,
+@@ -297,6 +299,9 @@ void APIEventHandler::FireEventInContext(const std::string& event_name,
    for (const auto& arg : args) {
      v8_args.push_back(converter->ToV8Value(arg, context));
    }
@@ -6242,6 +6555,17 @@
  
    FireEventInContext(event_name, context, &v8_args, std::move(filter),
                       /*on_dispatched_callback=*/v8::Local<v8::Function>(),
+@@ -318,6 +323,10 @@ void APIEventHandler::FireEventInContext(
+ 
+   v8::Isolate* isolate = v8::Isolate::GetCurrent();
+ 
++  // Firefox add-ons (dubna): firefox_schema_view.h.
++  firefox_schema_view::FilterResults(context, event_name, /*is_event=*/true,
++                                     *arguments);
++
+   // An event dispatcher handler takes over the entire dispatch for this event:
+   // it matches and invokes the context's listeners itself. Hand it the raw
+   // arguments and bypass the emitter (which, for such events, only carries
 --- a/extensions/common/manifest_handlers/permissions_parser.cc
 +++ b/extensions/common/manifest_handlers/permissions_parser.cc
 @@ -19,6 +19,7 @@

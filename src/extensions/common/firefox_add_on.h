@@ -8,14 +8,20 @@ namespace extensions {
 
 class Extension;
 
-// Firefox add-ons (dubna's webextensions/README.md): whether `extension` is
-// written for Firefox, that is, its manifest has Firefox's own key, gecko in
-// browser_specific_settings or in the older applications. Where Firefox and
-// Chromium give the same thing a different value, a Firefox add-on gets
-// Firefox's, and an extension without the key keeps Chromium's. So a Chrome
-// Web Store extension that ships one manifest for both stores counts as a
-// Firefox add-on, and an AMO add-on without the key, which AMO allows in
-// Manifest V2, doesn't.
+// Firefox add-ons (dubna's webextensions/README.md, "Firefox add-ons only"):
+// whether `extension` gets Firefox's behaviour where Firefox and Chromium
+// differ. Every other extension keeps Chromium's, since a Chrome Web Store
+// extension may tell Chrome from Firefox by that behaviour.
+//
+// - Installed from a .xpi: always. The .xpi installer gives the add-on the ID
+//   that its Gecko ID makes (firefox_gecko_id.h), and writes a Gecko ID from
+//   the AMO signature into a manifest without one.
+// - Installed from a .crx, the Chrome Web Store's or any other: never, even
+//   with a Gecko ID in its manifest, as an extension that ships one manifest
+//   to both stores has. A .crx's ID comes from its key.
+// - Loaded unpacked: when its manifest has Firefox's own key, gecko in
+//   browser_specific_settings or in the older applications. Only a developer
+//   loads one, and adds the key to get Firefox's behaviour.
 bool IsFirefoxAddOn(const Extension& extension);
 
 }  // namespace extensions

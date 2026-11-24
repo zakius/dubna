@@ -1,0 +1,1660 @@
+{
+ "chromium": "158.0.8127.36",
+ "tests": {
+  "bindings/about_blank_iframe": {
+   "expected": [
+    "test"
+   ],
+   "helium": "pass"
+  },
+  "bindings/api_enums": {
+   "expected": [
+    "(no test)"
+   ],
+   "helium": "pass"
+  },
+  "bindings/event_filter": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "bindings/event_overriding": {
+   "expected": [
+    "test"
+   ],
+   "helium": "pass"
+  },
+  "bindings/exception_in_handler_should_not_crash:page.html": {
+   "expected": [
+    "permissionsGetAllThrowsError",
+    "tabsCreateThrowsError",
+    "tabsOnCreatedThrowsError"
+   ],
+   "helium": "pass"
+  },
+  "bindings/extension_subframe_gets_bindings:page.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "bindings/external_message_listener": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "bindings/internal_apis_not_on_chrome_object:page.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "bindings/invalidate_context": {
+   "expected": [
+    "removeFrameAndUseStorageAndRuntime",
+    "useFrameStorageAndRuntime",
+    "usePortAfterInvalidation",
+    "usePortAfterInvalidationAndDisconnect",
+    "usePortAfterInvalidationAndEventsCreated"
+   ],
+   "helium": "pass"
+  },
+  "bindings/last_error": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "bindings/message_sender": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "bindings/module_system": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "bindings/nocompile:page.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "bindings/unavailable_bindings_never_registered": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "bindings/uncaught_exception_logging": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "bookmarks": {
+   "expected": [
+    "create",
+    "createInManaged",
+    "createInRoot",
+    "createNoParentId",
+    "getArray",
+    "getChildren",
+    "getSubTree",
+    "moveSetup",
+    "removeManagedTree"
+   ],
+   "helium": "fail: Failed 17 of 26 tests"
+  },
+  "browser_action/add_popup": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/basics": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "browser_action/close_background": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "browser_action/color": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/enable": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/getters": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/invisible_icon": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/no_icon": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/none": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "browser_action/open_popup:open_popup_fails.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/open_popup:open_popup_succeeds.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/popup:popup.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "browser_action/popup_download:popup.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/popup_with_form:popup.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/popup_with_iframe:popup.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/rect_icon": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/remove_popup": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/set_icon": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/tab_specific_state": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "browser_action/update": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/about_blank_iframes": {
+   "expected": [
+    "testDontInjectInAboutBlankFrame",
+    "testDontInjectInAboutSrcdocFrame",
+    "testDontInjectInNestedAboutFrames"
+   ],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/about_blank_srcdoc": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/activity_log": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "content_scripts/all_frames": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/background_page_iframe": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/blob_fetch": {
+   "expected": [
+    "testBlobUrlFromContentScript"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/bypass_page_csp": {
+   "expected": [],
+   "helium": "fail: undefined"
+  },
+  "content_scripts/bypass_page_trusted_types": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/css_l10n": {
+   "expected": [
+    "extensionIDMessageGetsReplacedInContentScriptCSS"
+   ],
+   "helium": "fail: Failed 1 of 2 tests"
+  },
+  "content_scripts/dont_match_host_permissions": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/extension_iframe": {
+   "expected": [
+    "onRequest"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/extension_process": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/fragment": {
+   "expected": [
+    "test1"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/isolated_world1": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/isolated_world2": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/large_scripts": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://efamifadmpellcodpknncpeboacmhcbb/"
+  },
+  "content_scripts/main_world_injections": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kpapbjponfldjodmchfekljchnlekflb/"
+  },
+  "content_scripts/messaging": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/ntp": {
+   "expected": [
+    "testExecuteScriptInNewTab"
+   ],
+   "helium": "pass"
+  },
+  "content_scripts/other_extensions/injector": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/other_extensions/message_echoer_allows": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/other_extensions/message_echoer_allows_by_default": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/other_extensions/message_echoer_denies": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/other_extensions/victim": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/permissions": {
+   "expected": [
+    "noAccess"
+   ],
+   "helium": "fail: Failed 3 of 4 tests"
+  },
+  "content_scripts/policy": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "content_scripts/prerendering": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/request_cookies": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/speculation_rules": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "content_scripts/storage_api_allow_mixed_access": {
+   "expected": [],
+   "helium": "error: TimeoutError: timed out"
+  },
+  "content_scripts/storage_api_allow_untrusted_access": {
+   "expected": [],
+   "helium": "error: TimeoutError: timed out"
+  },
+  "content_scripts/storage_api_default_access": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kbbfhfamkbckhhpgphigjhpblhlffmdp/"
+  },
+  "content_scripts/view_source": {
+   "expected": [
+    "noContentScriptsInViewSource"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/add_from_multiple_contexts": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/basics": {
+   "expected": [
+    "hasParent",
+    "no_properties",
+    "remove",
+    "removeAll",
+    "removeWithUnusedId",
+    "result",
+    "simple",
+    "update",
+    "updateWithUnusedId"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/count": {
+   "expected": [
+    "createTooManyMenuItems"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/event_page": {
+   "expected": [
+    "generatedID",
+    "noOnClick",
+    "stringID"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/item_ids": {
+   "expected": [
+    "idCollision",
+    "idNonCollision",
+    "parentStringID",
+    "stringID"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/item_visibility": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "context_menus/no_perms": {
+   "expected": [
+    "simple"
+   ],
+   "helium": "pass"
+  },
+  "context_menus/simple/one": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "context_menus/simple/two": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "context_menus/tab_context": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "context_menus/tab_context_multiple": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "cookies/api": {
+   "expected": [
+    "exerciseApisWithPartitionedAndUnpartitionedCookiesPresent",
+    "getAllCookieStores",
+    "getAllCookies",
+    "getAllHasCrossSiteAncestor",
+    "getAllPartitionedCookies",
+    "getBasicCookie",
+    "getDomainCookie",
+    "getFirstPartyPartitionedCookie",
+    "getPartitionedCookie",
+    "getSecureCookie",
+    "invalidScheme",
+    "removeCookie",
+    "removeCookiesWithCallbacks",
+    "removePartitionedCookie",
+    "removePartitionedCookieWithHasCrossSiteAncestor",
+    "setCookiesWithCallbacks",
+    "setOddCookies",
+    "setPartitionedCookie",
+    "setSameSiteCookies"
+   ],
+   "helium": "fail: Failed 1 of 20 tests"
+  },
+  "cookies/events": {
+   "expected": [
+    "overwriteExpired",
+    "overwriteFirstSet",
+    "overwriteNoChange",
+    "overwriteSecondSet",
+    "testRemove",
+    "testSet"
+   ],
+   "helium": "pass"
+  },
+  "cookies/events_spanning": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "cookies/get_partition_key": {
+   "expected": [],
+   "helium": "fail: Failed 6 of 6 tests"
+  },
+  "cookies/no_permission": {
+   "expected": [
+    "readCookies"
+   ],
+   "helium": "pass"
+  },
+  "cookies/read_from_doc": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "events": {
+   "expected": [
+    "listenerManagement"
+   ],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "events/listener_spins_forever": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "executescript/bad_encoding": {
+   "expected": [
+    "executeJavaScriptFileWithBadEncodingShouldFail"
+   ],
+   "helium": "pass"
+  },
+  "executescript/bad_mime_type": {
+   "expected": [
+    "executeJavaScriptFileWithBadMimeTypeShouldFail"
+   ],
+   "helium": "pass"
+  },
+  "executescript/basic": {
+   "expected": [
+    "executeJavaScriptCodeShouldFail",
+    "executeJavaScriptCodeShouldSucceed",
+    "executeJavaScriptFileShouldSucceed",
+    "executeJavaScriptWithNoneValueShouldFail",
+    "executeJavaScriptWithTwoValuesShouldFail",
+    "insertCSSFileShouldSucceed",
+    "insertCSSTextShouldNotAffectDOM",
+    "insertCSSTextShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/callback": {
+   "expected": [
+    "executeCallbackArrayShouldSucceed",
+    "executeCallbackArrayWithNonNumericFieldsShouldSucceed",
+    "executeCallbackDOMObjShouldSucceedAndReturnNull",
+    "executeCallbackDoubleShouldSucceed",
+    "executeCallbackFalseShouldSucceed",
+    "executeCallbackIntShouldSucceed",
+    "executeCallbackNullShouldSucceed",
+    "executeCallbackObjShouldSucceed",
+    "executeCallbackObjWithNumericFieldsShouldSucceed",
+    "executeCallbackRecursiveArrayShouldSucceed",
+    "executeCallbackRecursiveObjShouldSucceed",
+    "executeCallbackStringShouldSucceed",
+    "executeCallbackTrueShouldSucceed",
+    "executeCallbackWindowShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/css_origin": {
+   "expected": [
+    "authorOriginShouldSucceed",
+    "noneOriginShouldSucceed",
+    "originInExecuteScriptShouldFail",
+    "unknownOriginShouldFail",
+    "userOriginShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/destructive:test.html": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "executescript/file_access": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "executescript/file_after_close": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "executescript/fragment": {
+   "expected": [
+    "test1"
+   ],
+   "helium": "pass"
+  },
+  "executescript/frame_after_load": {
+   "expected": [
+    "(no test)"
+   ],
+   "helium": "pass"
+  },
+  "executescript/frame_id": {
+   "expected": [
+    "executeScriptInFrameWithoutPermission",
+    "executeScriptInNestedFrame",
+    "executeScriptInNestedFrameIncludingAllFrames",
+    "executeScriptInSandboxedFrame",
+    "executeScriptInSrcdocFrame",
+    "executeScriptInSrcdocFrameIncludingAllFrames",
+    "executeScriptInSrcdocFrameWithoutMatchAboutBlank",
+    "executeScriptInSubFrame",
+    "executeScriptInSubFrameIncludingAllFrames",
+    "executeScriptInTopFrame",
+    "executeScriptInTopFrameIncludingAllFrames",
+    "executeScriptWithNegativeFrameId",
+    "executeScriptWithNonExistentFrameId",
+    "insertCSSInFrameWithoutPermission",
+    "insertCSSInNestedFrame",
+    "insertCSSInNestedFrameIncludingAllFrames",
+    "insertCSSInSandboxedFrame",
+    "insertCSSInSrcdocFrame",
+    "insertCSSInSrcdocFrameIncludingAllFrames",
+    "insertCSSInSrcdocFrameWithoutMatchAboutBlank",
+    "insertCSSInSubFrame",
+    "insertCSSInSubFrameIncludingAllFrames",
+    "insertCSSInTopFrame",
+    "insertCSSInTopFrameIncludingAllFrames",
+    "insertCSSWithNegativeFrameId",
+    "insertCSSWithNonExistentFrameId"
+   ],
+   "helium": "pass"
+  },
+  "executescript/http204": {
+   "expected": [
+    "executeScript204About",
+    "executeScriptTopLevelOnly",
+    "insertCss204Blank",
+    "insertCss204NoAbout",
+    "insertCssTopLevelOnly",
+    "verifyInsertCss204Blank"
+   ],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "executescript/in_frame": {
+   "expected": [
+    "executeJavaScriptCodeInAllFramesShouldSucceed",
+    "insertCSSTextInAllFramesShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/navigation_race": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "executescript/permissions": {
+   "expected": [
+    "setup",
+    "testAllFrames",
+    "testRace"
+   ],
+   "helium": "pass"
+  },
+  "executescript/remove_css": {
+   "expected": [
+    "insertCSSShouldSucceed",
+    "insertCSSWithDuplicateCodeShouldSucceed",
+    "insertCSSWithFileShouldSucceed",
+    "removeCSSShouldSucceed",
+    "removeCSSWithAllFramesShouldSucceed",
+    "removeCSSWithDifferentCSSOriginShouldDoNothing",
+    "removeCSSWithDifferentCodeShouldDoNothing",
+    "removeCSSWithDifferentFileShouldDoNothing",
+    "removeCSSWithDuplicateCodeShouldSucceed",
+    "removeCSSWithFileShouldSucceed",
+    "removeCSSWithFrameIdShouldSucceed",
+    "removeCSSWithMatchAboutBlankShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/removed_frames": {
+   "expected": [
+    "testInjectAndDeleteIframeFromIframe",
+    "testInjectAndDeleteIframeFromMainFrame"
+   ],
+   "helium": "pass"
+  },
+  "executescript/run_at": {
+   "expected": [
+    "executeAtStartShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "executescript/script_size_limit": {
+   "expected": [
+    "scriptFileWithinLimit"
+   ],
+   "helium": "fail: Failed 1 of 2 tests"
+  },
+  "executescript/subframes_on_load": {
+   "expected": [
+    "(no test)"
+   ],
+   "helium": "pass"
+  },
+  "executescript/user_gesture": {
+   "expected": [
+    "passUserGestureToExecutedScript"
+   ],
+   "helium": "pass"
+  },
+  "extension_action/action_persistence": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "extension_action/badge_text": {
+   "expected": [
+    "(no test)"
+   ],
+   "helium": "pass"
+  },
+  "extension_action/is_enabled": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ncgnglbibcaecchgomdjnbjkmohfggcd/"
+  },
+  "extension_action/stub_action": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "extension_action/title": {
+   "expected": [
+    "(no test)"
+   ],
+   "helium": "pass"
+  },
+  "extension_action/update_svg": {
+   "expected": [
+    "setIconFromWorkerFails"
+   ],
+   "helium": "pass"
+  },
+  "i18n": {
+   "expected": [
+    "detectLanguage",
+    "getAcceptLanguages",
+    "getMessage",
+    "getMessageFromContentScript",
+    "getUILanguage"
+   ],
+   "helium": "pass"
+  },
+  "messaging/background_only": {
+   "expected": [
+    "connectAndDisconnect",
+    "connectAndDisconnectInIframe",
+    "connectExpectDisconnect",
+    "sendMessageExpectingNoAnswer",
+    "sendMessageExpectingNoAnswerWithCallback",
+    "sendMessageNoCallback"
+   ],
+   "helium": "pass"
+  },
+  "messaging/connect": {
+   "expected": [
+    "sendMessageToCurrentContextFails",
+    "sendRequest",
+    "unserializableMessage"
+   ],
+   "helium": "fail: Failed 23 of 26 tests"
+  },
+  "messaging/connect_crash": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/connect_nobackground:page_in_main_frame.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "messaging/connect_panel": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "messaging/event_url": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/interstitial_component": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/large_messages": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "messaging/on_message_external_async/receiver": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/on_message_external_async/sender": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "messaging/on_message_external_leak/receiver": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/on_message_external_leak/sender": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "messaging/on_message_promise_external/receiver": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "messaging/on_message_promise_external/sender": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "messaging/on_pagehide": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "page_action/add_popup": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "page_action/basics": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "page_action/crash_57333/Extension1": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "page_action/crash_57333/Extension2": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "page_action/getters": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "page_action/hash_change": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "page_action/popup": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "page_action/remove_popup": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "page_action/simple": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "permissions/add_host_access_request": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://fnnbjfhghepibmchgbhodhdcjchkbklh/"
+  },
+  "permissions/always_allowed": {
+   "expected": [
+    "tabs",
+    "tabsNegative"
+   ],
+   "helium": "pass"
+  },
+  "permissions/disabled": {
+   "expected": [
+    "bookmarks",
+    "history",
+    "idle",
+    "tabs"
+   ],
+   "helium": "pass"
+  },
+  "permissions/enabled": {
+   "expected": [
+    "bookmarks",
+    "history",
+    "tabs"
+   ],
+   "helium": "pass"
+  },
+  "permissions/experimental_disabled": {
+   "expected": [
+    "experimental"
+   ],
+   "helium": "pass"
+  },
+  "permissions/favicon": {
+   "expected": [
+    "favicon",
+    "theme"
+   ],
+   "helium": "pass"
+  },
+  "permissions/file_access_no": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "permissions/file_access_yes": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "permissions/file_load": {
+   "expected": [],
+   "helium": "fail: Failed 2 of 2 tests"
+  },
+  "permissions/host_subsets": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "permissions/optional": {
+   "expected": [
+    "contains",
+    "eventListenerPermissions",
+    "getAll",
+    "noPromptForNoWarnings",
+    "removeOrigin",
+    "requestOrigin",
+    "unknownPermission"
+   ],
+   "helium": "fail: Failed 5 of 12 tests"
+  },
+  "permissions/optional_deny": {
+   "expected": [],
+   "helium": "fail: Failed 2 of 2 tests"
+  },
+  "permissions/optional_gesture": {
+   "expected": [
+    "testGesture"
+   ],
+   "helium": "pass"
+  },
+  "permissions/optional_policy_blocked": {
+   "expected": [],
+   "helium": "fail: Failed 2 of 2 tests"
+  },
+  "permissions/optional_request_from_popup:popup.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "permissions/optional_retain_gesture": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "permissions/optional_updates_bindings": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "permissions/remove_host_access_request": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kidbiplcapklekmbcmbejaecleghjgam/"
+  },
+  "preference/clear": {
+   "expected": [
+    "clearThirdPartyCookiesAllowed",
+    "getThirdPartyCookiesAllowed",
+    "getThirdPartyCookiesAllowed2",
+    "setThirdPartyCookiesAllowed"
+   ],
+   "helium": "pass"
+  },
+  "preference/onchange": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "preference/onchange_split": {
+   "expected": [
+    "changeDefault",
+    "changeDefaultOnly",
+    "changeIncognitoOnly",
+    "changeIncognitoOnlyBack",
+    "clearIncognito"
+   ],
+   "helium": "fail: Failed 1 of 6 tests"
+  },
+  "preference/onchange_split_regular_only": {
+   "expected": [
+    "getInitialValue",
+    "setupPreferenceListener"
+   ],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "preference/persistent_incognito": {
+   "expected": [],
+   "helium": "fail: Failed 5 of 5 tests"
+  },
+  "preference/safe_browsing": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://jekoifjhnkpdaakljelpeadkfbcpbppl/"
+  },
+  "preference/session_only_incognito": {
+   "expected": [
+    "openIncognito"
+   ],
+   "helium": "fail: Failed 9 of 10 tests"
+  },
+  "preference/standard": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "preference/third_party_cookies_allowed": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "preference/third_party_cookies_allowed_incognito": {
+   "expected": [],
+   "helium": "fail: Failed 2 of 2 tests"
+  },
+  "proxy/auto": {
+   "expected": [
+    "setAutoSettings",
+    "verifyRegular",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 4 tests"
+  },
+  "proxy/bypass": {
+   "expected": [
+    "setIndividualProxies",
+    "verifyRegular",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 4 tests"
+  },
+  "proxy/direct": {
+   "expected": [
+    "setAutoSettings",
+    "verifyRegular",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 4 tests"
+  },
+  "proxy/events:invalid_proxy.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "proxy/events:other_error.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "proxy/events:parse_error.html": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "proxy/individual": {
+   "expected": [
+    "setIndividualProxies",
+    "verifyRegular",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 4 tests"
+  },
+  "proxy/individual_incognito_also": {
+   "expected": [
+    "setIndividualProxiesRegular",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 3 tests"
+  },
+  "proxy/individual_incognito_only": {
+   "expected": [
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "fail: Failed 1 of 2 tests"
+  },
+  "proxy/individual_remove": {
+   "expected": [
+    "clearProxies",
+    "setIndividualProxies",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "proxy/pac": {
+   "expected": [
+    "setAutoSettings",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "proxy/pacdata": {
+   "expected": [
+    "setAutoSettings",
+    "verifySettings",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "proxy/pacdataurl": {
+   "expected": [
+    "setAutoSettings",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "proxy/single": {
+   "expected": [
+    "setSingleProxy",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "proxy/system": {
+   "expected": [
+    "setSystemProxy",
+    "verifyTestsHaveStarted"
+   ],
+   "helium": "pass"
+  },
+  "runtime/content_script": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "runtime/get_package_directory/app:window/test.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "runtime/get_package_directory/extension:test/test.html": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "runtime/get_platform_info": {
+   "expected": [
+    "testGetPlatformInfo"
+   ],
+   "helium": "pass"
+  },
+  "runtime/open_options_page": {
+   "expected": [
+    "testNewOptionsPage",
+    "testRefocusExistingOptionsPage"
+   ],
+   "helium": "pass"
+  },
+  "runtime/open_options_page_error": {
+   "expected": [
+    "test"
+   ],
+   "helium": "pass"
+  },
+  "runtime/platform_app:hello.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "runtime/privileged": {
+   "expected": [
+    "testGetVersion",
+    "testID"
+   ],
+   "helium": "fail: Failed 2 of 4 tests"
+  },
+  "runtime/send_message": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "runtime/uninstall_url": {
+   "expected": [
+    "setEmptyUrl",
+    "uninstallInvalidURLNonHttpOrHttps"
+   ],
+   "helium": "fail: Failed 1 of 3 tests"
+  },
+  "runtime/uninstall_url/sets_uninstall_url": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "runtime/uninstall_url_histogram": {
+   "expected": [
+    "setUninstallURL"
+   ],
+   "helium": "pass"
+  },
+  "runtime/update_terminated_extension/v1": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "runtime/update_terminated_extension/v2": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "scripting/css_injection": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kpndomfeacginngbmnenebjofinmldne/"
+  },
+  "scripting/dynamic_script_parameters": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kbloofnlilbgkoehgnhpiloaifidkibf/"
+  },
+  "scripting/dynamic_scripts_main_world": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://bngfonepgomkhehajdfblkhmhbnnfoac/"
+  },
+  "scripting/dynamic_scripts_size_limits": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://fkkhddapkcbodppcfibfbfmgcodgafcf/"
+  },
+  "scripting/dynamic_user_scripts": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ccmlnllokdfdfpccieigbnjcdajmhhii/"
+  },
+  "scripting/execute_script_size_limit": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://djfgonackhmoefknglngfhelhglffilk/"
+  },
+  "scripting/execute_script_special_characters": {
+   "expected": [],
+   "helium": "error: TimeoutError: timed out"
+  },
+  "scripting/get_scripts": {
+   "expected": [
+    "getRegisteredScripts"
+   ],
+   "helium": "pass"
+  },
+  "scripting/incognito_allowed": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "scripting/incognito_disallowed": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "scripting/main_frame": {
+   "expected": [],
+   "helium": "error: TimeoutError: timed out"
+  },
+  "scripting/nested_web_contents": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ckcngfmgdngpgdcbbhkfhggohnjegedp/"
+  },
+  "scripting/pdf": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://mkdmboplgeccpfgbejnalhegmfgjmpke/"
+  },
+  "scripting/persistent_dynamic_scripts": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ikeolkdfmoccdcmibaibiemfjdmhgdlh/"
+  },
+  "scripting/prerendering": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "scripting/register_scripts": {
+   "expected": [],
+   "helium": "error: TimeoutError: timed out"
+  },
+  "scripting/remove_css": {
+   "expected": [
+    "disallowedPermission",
+    "insertAndRemoveCSSWithMultipleFilesShouldSucceed",
+    "insertCSSShouldSucceed",
+    "insertCSSWithDuplicateCodeShouldSucceed",
+    "insertCSSWithFileShouldSucceed",
+    "insertMultipleFilesAndRemoveOneAtATime",
+    "loadTab",
+    "noSuchFile",
+    "noSuchTab",
+    "removeCSSShouldSucceed",
+    "removeCSSWithAllFramesShouldSucceed",
+    "removeCSSWithDifferentCSSOriginShouldDoNothing",
+    "removeCSSWithDifferentCodeShouldDoNothing",
+    "removeCSSWithDifferentFileShouldDoNothing",
+    "removeCSSWithDuplicateCodeShouldSucceed",
+    "removeCSSWithFileShouldSucceed",
+    "removeCSSWithFrameIdShouldSucceed"
+   ],
+   "helium": "pass"
+  },
+  "scripting/sub_frames": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://naikecmmlijgnaeflcnkcanokcoofcjo/"
+  },
+  "scripting/unregister_scripts": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ldcikogoljcddbmmibmgpkcmilcjmlkb/"
+  },
+  "scripting/update_scripts": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://nohbdjkbjdhigophglmfnccdfdheglpk/"
+  },
+  "storage": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for DevToolsActivePort"
+  },
+  "tabs/backForwardCache/on_updated": {
+   "expected": [
+    "backForwardNavigation"
+   ],
+   "helium": "pass"
+  },
+  "tabs/basics/crash": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/crud": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/discarded": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/duplicate": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/events": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/highlight": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/incognito": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/last_accessed": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/move": {
+   "expected": [
+    "moveMultipleTabs",
+    "moveNonExistentTab",
+    "moveTab",
+    "moveToInvalidIndex",
+    "setup"
+   ],
+   "helium": "pass"
+  },
+  "tabs/basics/muted": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/opener": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/pinned": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/query": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/relative_urls": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/remove": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/remove_multiple": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/tab_size": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics/update": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/basics:audible.html": {
+   "expected": [
+    "audibleStartsFalse",
+    "audibleUpdateAttemptShouldFail",
+    "makeAudible",
+    "makeNotAudible",
+    "setupWindow",
+    "testStaysAudibleAfterChangingWindow"
+   ],
+   "helium": "pass"
+  },
+  "tabs/basics:crud2.html": {
+   "expected": [
+    "detectLanguageAboutBlank",
+    "getAllInWindow",
+    "getCurrentWindow",
+    "getFirstWindowId",
+    "openerTabId",
+    "setupTwoWindows",
+    "testCreatePopupAndMoveTab",
+    "testOpenEmptyPopup",
+    "testOpenWindowInEmptyPopup",
+    "testRedirectingToAnotherWindow",
+    "updateSelect"
+   ],
+   "helium": "fail: Failed 3 of 14 tests"
+  },
+  "tabs/basics:get_views_popup.html": {
+   "expected": [
+    "canGetViewsOfEmptyPopup",
+    "canGetViewsOfPopupWithUrl"
+   ],
+   "helium": "pass"
+  },
+  "tabs/basics:get_views_window.html": {
+   "expected": [
+    "canGetViewsOfDetatchedTab",
+    "canGetViewsOfEmptyWindow",
+    "canGetViewsOfWindowWithManyUrls",
+    "canGetViewsOfWindowWithUrl"
+   ],
+   "helium": "pass"
+  },
+  "tabs/basics:pinned.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab/test_disabled": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab/test_file": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab/test_jpeg": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab/test_png": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab/test_race": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/capture_visible_tab_null_window": {
+   "expected": [
+    "captureNullWindow"
+   ],
+   "helium": "pass"
+  },
+  "tabs/connect": {
+   "expected": [],
+   "helium": "fail: Failed 9 of 10 tests"
+  },
+  "tabs/current_window": {
+   "expected": [
+    "getSelectedPopup"
+   ],
+   "helium": "pass"
+  },
+  "tabs/get_current": {
+   "expected": [
+    "backgroundPageGetCurrentTab",
+    "openedTabGetCurrentTab"
+   ],
+   "helium": "pass"
+  },
+  "tabs/host_permission": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/incognito_disabled": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "tabs/javascript_url_encoded": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "tabs/javascript_url_permissions": {
+   "expected": [],
+   "helium": "fail: Failed 2 of 2 tests"
+  },
+  "tabs/last_focused_window": {
+   "expected": [
+    "getSelectedPopup"
+   ],
+   "helium": "pass"
+  },
+  "tabs/lazy_background_on_created": {
+   "expected": [
+    "testCreateWithActiveFalse",
+    "testCreateWithActiveTrue"
+   ],
+   "helium": "pass"
+  },
+  "tabs/no_events": {
+   "expected": [
+    "*"
+   ],
+   "helium": "pass"
+  },
+  "tabs/no_permissions": {
+   "expected": [
+    "testErrorForCodeInjection",
+    "testOnUpdated",
+    "testQuery"
+   ],
+   "helium": "pass"
+  },
+  "tabs/on_created": {
+   "expected": [
+    "testCreateWithActiveFalse",
+    "testCreateWithActiveTrue"
+   ],
+   "helium": "pass"
+  },
+  "tabs/on_removed": {
+   "expected": [
+    "setupLetterPages",
+    "tabsOnRemoved",
+    "windowsOnCreated",
+    "windowsOnRemoved"
+   ],
+   "helium": "pass"
+  },
+  "tabs/on_updated": {
+   "expected": [
+    "browserThenRendererInitiated",
+    "chromeUrls",
+    "faviconLoaded",
+    "iframeNavigated",
+    "internalAnchorNavigated",
+    "titleUpdated"
+   ],
+   "helium": "pass"
+  },
+  "tabs/prerendering": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/prerendering_into_new_tab": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/reload": {
+   "expected": [
+    "createTab",
+    "testReload1",
+    "testReload2",
+    "testReload3",
+    "testReload4",
+    "testReload5",
+    "testReload6",
+    "testReload7"
+   ],
+   "helium": "pass"
+  },
+  "tabs/removing_tab_while_part_of_group": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://mofddokokndiipnfheblhieiegafbcma/"
+  },
+  "tabs/send_message": {
+   "expected": [],
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://pdlofnihmkdfmmfnnoepekdkaehjahij/"
+  },
+  "tabs/send_message_from_options:options.html": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "tabs/split_view_create_split": {
+   "expected": [
+    "errorAlreadyInSplitView",
+    "errorDuplicateTabIds",
+    "errorGroupMismatch",
+    "errorNonAdjacentTabs",
+    "errorNotInSameWindow",
+    "errorPinnedMismatch",
+    "errorTooFewTabIds",
+    "errorTooManyTabIds",
+    "validCreateSplit",
+    "validCreateSplitReverseOrder"
+   ],
+   "helium": "pass"
+  },
+  "tabs/split_view_create_split_with_id": {
+   "expected": [
+    "errorAlreadyInSplitView",
+    "errorIndexTooLarge",
+    "errorIndexTooSmall",
+    "errorNotInSameWindow",
+    "errorTabNotFound",
+    "validAdjacentIndexLeft",
+    "validAdjacentIndexRight",
+    "validBackgroundSplitActiveFalse",
+    "validBackgroundSplitActiveTrue",
+    "validNewTabActiveFalse",
+    "validNewTabActiveTrue",
+    "validSplitAtLeftOfGroupedTab",
+    "validSplitAtLeftOfPinnedTab",
+    "validUnspecifiedIndex"
+   ],
+   "helium": "pass"
+  },
+  "tabs/split_view_unsplit": {
+   "expected": [
+    "errorAlreadyUnsplit",
+    "errorInvalidSplitViewId",
+    "validUnsplit",
+    "validUnsplitInGroup",
+    "validUnsplitInPinned"
+   ],
+   "helium": "pass"
+  },
+  "tabs/tab_opener_id": {
+   "expected": [
+    "testSetOpenerOutsideOfWindow",
+    "testSetOpenerOutsideOfWindowWithWindowIdSet",
+    "testSetOpenerToSelf"
+   ],
+   "helium": "pass"
+  },
+  "tabs/update_picture_in_picture:test.html": {
+   "expected": [
+    "testRejectOnDisallowedStates"
+   ],
+   "helium": "fail: Failed 3 of 4 tests"
+  },
+  "tabs/zoom": {
+   "expected": [
+    "testNoCrashOnNativeUiTab",
+    "testZoomOnWebTab"
+   ],
+   "helium": "pass"
+  },
+  "windows/bounds": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  },
+  "windows/create": {
+   "expected": [
+    "createDataHasTabId",
+    "createDataHasUrlAndTabId",
+    "sizeTooBig",
+    "typeNormal",
+    "typePopup"
+   ],
+   "helium": "pass"
+  },
+  "windows/events": {
+   "expected": [],
+   "helium": "fail: Failed 1 of 1 tests"
+  },
+  "windows/update_fullscreen": {
+   "expected": [],
+   "helium": "timeout: no notifyPass() or notifyFail()"
+  }
+ }
+}

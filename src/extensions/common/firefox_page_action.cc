@@ -12,6 +12,7 @@
 #include "base/values.h"
 #include "extensions/common/api/extension_action/action_info.h"
 #include "extensions/common/extension.h"
+#include "extensions/common/firefox_add_on.h"
 #include "extensions/common/install_warning.h"
 #include "extensions/common/manifest.h"
 #include "extensions/common/manifest_constants.h"
@@ -33,12 +34,18 @@ struct FirefoxPageActionData : public Extension::ManifestData {
 
 bool HasFirefoxPageAction(const Extension& extension) {
   const Manifest* manifest = extension.manifest();
-  if (!manifest->FindKey(manifest_keys::kPageAction)) {
+  if (!manifest->FindKey(manifest_keys::kPageAction) ||
+      !IsFirefoxAddOn(extension)) {
     return false;
   }
   return extension.manifest_version() >= 3 ||
          manifest->FindKey(manifest_keys::kAction) ||
          manifest->FindKey(manifest_keys::kBrowserAction);
+}
+
+bool HasChromiumPageAction(const Extension& extension) {
+  return extension.manifest()->FindKey(manifest_keys::kPageAction) &&
+         extension.manifest_version() < 3 && !HasFirefoxPageAction(extension);
 }
 
 bool ParseFirefoxPageAction(Extension* extension, std::u16string* error) {
