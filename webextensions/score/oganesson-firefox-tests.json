@@ -1,8 +1,8 @@
 {
- "date": "2026-11-23",
+ "date": "2026-11-24",
  "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
- "passing": 25,
- "ported": 96,
+ "passing": 28,
+ "ported": 102,
  "total": 841,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
@@ -144,9 +144,10 @@
   "browser/components/extensions/test/browser/browser_ext_menus.js": {
    "port": "firefox/browser_ext_menus.py",
    "passed": false,
-   "error": "FAIL: test_02_action_context_menus (firefox.browser_ext_menus.MenusTest.test_02_action_context_menus) (kind='page'): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
+   "error": "FAIL: test_03_bookmark_context_menu (firefox.browser_ext_menus.MenusTest.test_03_bookmark_context_menu): AssertionError: timed out after 30s waiting for the message 'hello'; the add-ons logged: []",
    "passing": [
     "test_01_permissions",
+    "test_02_action_context_menus",
     "test_04_tab_context_menu",
     "test_05_onclick_frameid",
     "test_06_multiple_contexts_init"
@@ -216,10 +217,12 @@
   "browser/components/extensions/test/browser/browser_ext_menus_events.js": {
    "port": "firefox/browser_ext_menus_events.py",
    "passed": false,
-   "error": "FAIL: test_03_show_hide_pageAction (firefox.browser_ext_menus_events.MenusEventsTest.test_03_show_hide_pageAction): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
+   "error": "FAIL: test_10_show_hide_tab_via_tab_panel (firefox.browser_ext_menus_events.MenusEventsTest.test_10_show_hide_tab_via_tab_panel): AssertionError: this browser's list of all tabs has no tab menu",
    "passing": [
     "test_01_no_show_hide_for_unsupported_menu",
     "test_02_show_hide_without_menu_item",
+    "test_03_show_hide_pageAction",
+    "test_04_show_hide_pageAction_v3",
     "test_05_show_hide_browserAction",
     "test_06_show_hide_browserAction_v3",
     "test_07_show_hide_browserAction_popup",
@@ -310,25 +313,74 @@
     "test_02_visible_true"
    ]
   },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_activeTab.js": {
+   "port": "firefox/browser_ext_pageAction_activeTab.py",
+   "passed": false,
+   "error": "FAIL: test_01_middle_click_with_activeTab (firefox.browser_ext_pageAction_activeTab.PageActionActiveTabTest.test_01_middle_click_with_activeTab): AssertionError: timed out after 30s waiting for the message 'onClick'; the add-ons logged: []",
+   "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_click_types.js": {
+   "port": "firefox/browser_ext_pageAction_click_types.py",
+   "passed": false,
+   "error": "FAIL: test_01_clickData_MV2 (firefox.browser_ext_pageAction_click_types.PageActionClickTypesTest.test_01_clickData_MV2): AssertionError: timed out after 30s waiting for the message 'onClick'; the add-ons logged: []",
+   "passing": []
+  },
   "browser/components/extensions/test/browser/browser_ext_pageAction_context.js": {
    "port": "firefox/browser_ext_pageAction_context.py",
    "passed": false,
-   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_context.PageActionContextTest.test_01_tab_switch_context): AssertionError: browser.test: image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | Promise rej",
+   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_context.PageActionContextTest.test_01_tab_switch_context): AssertionError: browser.test: Promise rejected, expecting rejection to match '/Access denied for URL about:addons/', got 'Error: The specified popup path is invalid. Ensure it ",
    "passing": [
+    "test_02_multiple_windows",
     "test_03_navigation_clears_data"
    ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_contextMenu.js": {
+   "port": "firefox/browser_ext_pageAction_contextMenu.py",
+   "passed": false,
+   "error": "FAIL: test_02_pageaction_popup_contextmenu_hidden_items (firefox.browser_ext_pageAction_contextMenu.PageActionContextMenuTest.test_02_pageaction_popup_contextmenu_hidden_items): AssertionError: browser.test: context-viewsource is not hidden | inspect-separator is hidden | context-inspect is hidden",
+   "passing": [
+    "test_01_pageaction_popup_contextmenu"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_popup.js": {
+   "port": "firefox/browser_ext_pageAction_popup.py",
+   "passed": false,
+   "error": "FAIL: test_01_page_action_popup (firefox.browser_ext_pageAction_popup.PageActionPopupTest.test_01_page_action_popup): AssertionError: timed out after 30s waiting for the add-on's next step; the add-ons logged: []",
+   "passing": [
+    "test_02_page_action_security"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_popup_anchor.js": {
+   "port": "firefox/browser_ext_pageAction_popup_anchor.py",
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_popup_destroyed_when_anchoring_throws"
+   ]
+  },
+  "browser/components/extensions/test/browser/browser_ext_pageAction_popup_resize.js": {
+   "port": "firefox/browser_ext_pageAction_popup_resize.py",
+   "passed": false,
+   "error": "FAIL: test_01_page_action_popup_resize (firefox.browser_ext_pageAction_popup_resize.PageActionPopupResizeTest.test_01_page_action_popup_resize): AssertionError: browser.test: Panel window should be 200px tall - Expected: 200, Actual: 216 | Panel window should be 200px wide - Actual: 216 | Panel wind",
+   "passing": []
   },
   "browser/components/extensions/test/browser/browser_ext_pageAction_simple.js": {
    "port": "firefox/browser_ext_pageAction_simple.py",
    "passed": false,
-   "error": "FAIL: test_01_pageAction_basic (firefox.browser_ext_pageAction_simple.PageActionSimpleTest.test_01_pageAction_basic): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
-   "passing": []
+   "error": "FAIL: test_01_pageAction_basic (firefox.browser_ext_pageAction_simple.PageActionSimpleTest.test_01_pageAction_basic): AssertionError: browser.test: the unrecognized property is warned about - Actual: []",
+   "passing": [
+    "test_02_pageAction_pinned",
+    "test_03_pageAction_icon_on_subframe_navigation"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_pageAction_title.js": {
    "port": "firefox/browser_ext_pageAction_title.py",
-   "passed": false,
-   "error": "FAIL: test_01_tab_switch_context (firefox.browser_ext_pageAction_title.PageActionTitleTest.test_01_tab_switch_context): AssertionError: browser.test: image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | image exists | ",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_tab_switch_context",
+    "test_02_default_title"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_tabs_discarded.js": {
    "port": "firefox/browser_ext_tabs_discarded.py",
@@ -411,9 +463,11 @@
   },
   "browser/components/extensions/test/xpcshell/test_ext_pageAction_shutdown.js": {
    "port": "firefox/test_ext_pageAction_shutdown.py",
-   "passed": false,
-   "error": "FAIL: test_01_app_shutdown (firefox.test_ext_pageAction_shutdown.PageActionShutdownTest.test_01_app_shutdown): AssertionError: False is not true : pinnedToUrlbar: the page action shows in the location bar (zakius/oganesson#68)",
-   "passing": []
+   "passed": true,
+   "error": null,
+   "passing": [
+    "test_01_app_shutdown"
+   ]
   },
   "toolkit/components/extensions/test/browser/browser_ext_themes_static_onUpdated.js": {
    "port": "firefox/browser_ext_themes_static_onUpdated.py",
@@ -449,7 +503,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://bhkibekdjonfokdlogedpbgmfjgj",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://bjnpcjmhdhenpmojamggmfnfimnf",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -485,7 +539,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_pageAction_onClicked.html": {
    "port": "firefox/test_ext_pageAction_onClicked.py",
    "passed": false,
-   "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: no page action button in the location bar (zakius/oganesson#68)",
+   "error": "FAIL: test_01_pageAction_onClicked_and_inputHandling (firefox.test_ext_pageAction_onClicked.PageActionOnClickedTest.test_01_pageAction_onClicked_and_inputHandling): AssertionError: timed out after 15s waiting for the add-on's page action button",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_script_filenames.html": {
@@ -580,7 +634,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://kiknpkagclncngeppbnaedhjolbnldog/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://dmkefmkdfiblagndfigbpblkbgdhhapk/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -660,7 +714,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://mpdpbaphlo",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://nifighgaal",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -782,7 +836,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://kjlfcghhekobnokjignbkoelgfjk",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://cbgmjgjcegmajjpchikbjpbonofh",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"
