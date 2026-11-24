@@ -4201,7 +4201,7 @@
 "o": "dubna",
 "a": "Extensions & uBlock",
 "p": "dubna/patches/firefox-add-ons",
-"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. Firefox's manifests load as Firefox reads them, a downloaded .xpi signed by addons.mozilla.org installs on both browsers, also from the \"Add to Firefox\" button on addons.mozilla.org, and add-ons get Firefox's menus, contextualIdentities, proxy.onRequest, contentScripts.register, theme and more, some read-only for now. Most of the add-ons with the most users on addons.mozilla.org now start.",
+"w": "Groundwork for running Firefox add-ons: Firefox's WebExtensions APIs that Chromium lacks, added one at a time. Firefox's manifests load as Firefox reads them, a downloaded .xpi installs on both browsers, also from the \"Add to Firefox\" button on addons.mozilla.org (an unsigned one after a warning), and add-ons get Firefox's menus, contextualIdentities, proxy.onRequest, contentScripts.register, theme and more, some read-only for now. Most of the add-ons with the most users on addons.mozilla.org now start.",
 "s": "on",
 "n": "",
 "own": 1,
@@ -4239,6 +4239,17 @@
 "n": "",
 "own": 1,
 "t": "Firefox add-on sidebars"
+},
+{
+"b": "og",
+"o": "oganesson",
+"a": "Extensions & uBlock",
+"p": "oganesson/ui/firefox-page-action-button",
+"w": "A Firefox add-on's page action gets a button in the address bar, on the tabs where the add-on shows it, with its icon, badge and title. A click opens its popup or tells the add-on, the add-on's shortcut does the same, and a right-click shows the add-on's page action menu items.",
+"s": "on",
+"n": "",
+"own": 1,
+"t": "Firefox add-on page action button"
 },
 {
 "b": "og",
