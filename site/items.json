@@ -1526,7 +1526,7 @@
 "o": "Helium",
 "a": "Extensions & uBlock",
 "p": "helium/core/ublock-setup-sources",
-"w": "Adds uBlock Origin 1.66.4 source code and the build rules that package it. Build groundwork; nothing visible on its own.",
+"w": "Adds uBlock Origin 1.77.0 and the build rules that package it. Build groundwork; nothing visible on its own.",
 "s": "on",
 "n": ""
 },
@@ -1931,7 +1931,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/core/pins/open-links-outside",
-"w": "Links from a persistent pinned tab to another site open in a new tab, so the pin keeps its site.",
+"w": "Clicked links, typed addresses and searches from a persistent pinned tab to another origin, another subdomain too, open in a new tab, so the pin stays on its own origin.",
 "s": "off",
 "n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
 "t": "Pins: open links outside"
@@ -3324,7 +3324,7 @@
 "o": "Helium",
 "a": "Tabs & windows",
 "p": "helium/ui/drag-to-pin",
-"w": "Dragging a tab into the pinned tabs pins it, and dragging a pinned tab out among the other tabs unpins it.",
+"w": "In the vertical tab strip, dragging a tab into the pinned tabs pins it, and dragging a pinned tab out among the other tabs unpins it. The horizontal tab strip doesn't do this yet.",
 "s": "on",
 "n": "",
 "t": "Drag to pin"
