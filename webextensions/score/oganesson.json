@@ -5,7 +5,7 @@
   "L0": 836,
   "L1": 833,
   "L2": 771,
-  "L3": 699
+  "L3": 698
  },
  "addons": {
   "uBlock0@raymondhill.net": {
@@ -138,7 +138,7 @@
   },
   "webextension@metamask.io": {
    "level": "L2",
-   "error": "its content scripts did not run on https://connect.trezor.io//popup.html"
+   "error": "Uncaught ReferenceError: Compartment is not defined (vendor/trezor/content-script.js:1)"
   },
   "languagetool-webextension@languagetool.org": {
    "level": "L2",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'gpsz6jvsl2gwvxm613') (bada38bd-bf06-404d-87d3-0af0439bb639:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'wjx4i41q76c8fg68yc') (97e2a620-af03-465f-96e0-1933acaf6a49:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (1d997405-1720-43dc-9dab-cff9833996ba:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (9c1710ba-fc96-486c-bb55-2daa9e01395e:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -1262,7 +1262,7 @@
   },
   "{0c5b3b07-980a-413d-abd5-97a5eb4a0ff8}": {
    "level": "L2",
-   "error": "Uncaught SyntaxError: Identifier 'instances' has already been declared (common.js:1)"
+   "error": "Uncaught (in promise) Error: Failed to construct 'URL': Invalid URL (_generated_background_page.html:0)"
   },
   "ext_3tjvlkpa@extension-studio.com": {
    "level": "L3",
@@ -1957,8 +1957,8 @@
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/pages/background/index.js:1)"
   },
   "{228a49ed-af0c-452c-bc77-630f99cb0470}": {
-   "level": "L3",
-   "error": null
+   "level": "L2",
+   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'showEagleNotOpenedDialog') (js/lib/api/env.js:1)"
   },
   "michal.simonfy@gmail.com": {
    "level": "L3",
