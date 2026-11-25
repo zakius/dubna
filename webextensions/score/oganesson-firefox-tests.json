@@ -1,8 +1,8 @@
 {
- "date": "2026-11-24",
- "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
+ "date": "2026-11-25",
+ "browser": "oganesson 158.0.8127.88 (Chromium 158.0.8127.88)",
  "passing": 28,
- "ported": 102,
+ "ported": 104,
  "total": 841,
  "tests": {
   "browser/components/extensions/test/browser/browser_ext_browserAction_context.js": {
@@ -38,6 +38,15 @@
    "passed": false,
    "error": "FAIL: test_01_browser_action (firefox.browser_ext_browserAction_simple.BrowserActionSimpleTest.test_01_browser_action): AssertionError: browser.test: Reading manifest: Warning processing browser_action.unrecognized_property: An unexpected property was found - Expected: the warning, Actual: []",
    "passing": []
+  },
+  "browser/components/extensions/test/browser/browser_ext_commands_execute_page_action.js": {
+   "port": "firefox/browser_ext_commands_execute_page_action.py",
+   "passed": false,
+   "error": "FAIL: test_03_execute_page_action_with_matching (firefox.browser_ext_commands_execute_page_action.CommandsExecutePageActionTest.test_03_execute_page_action_with_matching): AssertionError: timed out after 15s waiting for the add-on's page action button",
+   "passing": [
+    "test_01_execute_page_action_without_popup",
+    "test_02_execute_page_action_with_popup"
+   ]
   },
   "browser/components/extensions/test/browser/browser_ext_commands_getAll.js": {
    "port": "firefox/browser_ext_commands_getAll.py",
@@ -313,6 +322,12 @@
     "test_02_visible_true"
    ]
   },
+  "browser/components/extensions/test/browser/browser_ext_openPanel.js": {
+   "port": "firefox/browser_ext_openPanel.py",
+   "passed": false,
+   "error": "FAIL: test_01_openPopup_requires_user_interaction (firefox.browser_ext_openPanel.OpenPanelTest.test_01_openPopup_requires_user_interaction): AssertionError: timed out after 30s waiting for the message 'ready'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Cannot read properties of undefine",
+   "passing": []
+  },
   "browser/components/extensions/test/browser/browser_ext_pageAction_activeTab.js": {
    "port": "firefox/browser_ext_pageAction_activeTab.py",
    "passed": false,
@@ -503,7 +518,7 @@
   "toolkit/components/extensions/test/mochitest/test_ext_cookies.html": {
    "port": "firefox/test_ext_cookies.py",
    "passed": false,
-   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://bjnpcjmhdhenpmojamggmfnfimnf",
+   "error": "FAIL: test_01_cookies (firefox.test_ext_cookies.CookiesTest.test_01_cookies): AssertionError: timed out after 30s waiting for notifyPass or notifyFail; the add-ons logged: ['\"Uncaught (in promise) Error: Invalid cookie store id: \"invalid_id\".\", source: chrome-extension://lehokgfgfjmogfklpilgbpljolii",
    "passing": []
   },
   "toolkit/components/extensions/test/mochitest/test_ext_cookies_expiry.html": {
@@ -634,7 +649,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_cookies_firstParty.js": {
    "port": "firefox/test_ext_cookies_firstParty.py",
    "passed": false,
-   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://dmkefmkdfiblagndfigbpblkbgdhhapk/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
+   "error": "FAIL: test_02_cookies_firstParty (firefox.test_ext_cookies_firstParty.CookiesFirstPartyTest.test_02_cookies_firstParty): AssertionError: browser.test: cookies sent from chrome-extension://kobdhcgbdhbgpembniaibgnoopoolooo/page.html?nestedfetch - Expected: none=a, Actual: none=a; lax=b; strict=c",
    "passing": [
     "test_01_setup",
     "test_04_cookies_background",
@@ -714,7 +729,7 @@
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy.js": {
    "port": "firefox/test_ext_privacy.py",
    "passed": false,
-   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://nifighgaal",
+   "error": "FAIL: test_01_privacy (firefox.test_ext_privacy.PrivacyTest.test_01_privacy): AssertionError: timed out after 30s waiting for the message 'gotData'; the add-ons logged: ['\"Uncaught (in promise) Error: You do not have permission to access incognito preferences.\", source: chrome-extension://mmbighcgno",
    "passing": []
   },
   "toolkit/components/extensions/test/xpcshell/test_ext_privacy_disable.js": {
@@ -836,7 +851,7 @@
   "toolkit/components/extensions/test/xpcshell/test_proxy_failover.js": {
    "port": "firefox/test_proxy_failover.py",
    "passed": false,
-   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://cbgmjgjcegmajjpchikbjpbonofh",
+   "error": "FAIL: test_03_failover_pac (firefox.test_proxy_failover.ProxyFailoverTest.test_03_failover_pac): AssertionError: timed out after 30s waiting for the message 'proxied'; the add-ons logged: ['\"Uncaught (in promise) TypeError: Invalid invocation\", source: chrome-extension://hfbbeffhhojglfifppkjnjmdcmoh",
    "passing": [
     "test_01_failover_content_direct",
     "test_02_failover_content"

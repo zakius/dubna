@@ -1,6 +1,6 @@
 {
- "date": "2026-11-24",
- "browser": "oganesson 158.0.8127.36 (Chromium 158.0.8127.36)",
+ "date": "2026-11-25",
+ "browser": "oganesson 158.0.8127.88 (Chromium 158.0.8127.88)",
  "levels": {
   "L0": 836,
   "L1": 833,
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'mt7sz2vu0inq531j9l') (71b7d1d1-af3a-4902-a0f9-9283529327db:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'gpsz6jvsl2gwvxm613') (bada38bd-bf06-404d-87d3-0af0439bb639:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (11126799-c8fa-4f6b-977e-f6097bca108c:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (1d997405-1720-43dc-9dab-cff9833996ba:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -821,8 +821,8 @@
    "error": "unknown permission 'tabHide'"
   },
   "{e6fc2bbd-183e-4518-9ea5-04a8a913ab00}": {
-   "level": "L3",
-   "error": null
+   "level": "L2",
+   "error": "Uncaught (in promise) FetchError: [GET] \"https://extension-api.repeek.gg/v1/announcements\": 500  (background/index.js:1)"
   },
   "addon@manualshunt.com": {
    "level": "L3",
@@ -1262,7 +1262,7 @@
   },
   "{0c5b3b07-980a-413d-abd5-97a5eb4a0ff8}": {
    "level": "L2",
-   "error": "Uncaught (in promise) Error: Failed to construct 'URL': Invalid URL (_generated_background_page.html:0)"
+   "error": "Uncaught SyntaxError: Identifier 'instances' has already been declared (common.js:1)"
   },
   "ext_3tjvlkpa@extension-studio.com": {
    "level": "L3",
@@ -1957,8 +1957,8 @@
    "error": "Uncaught SyntaxError: Cannot use import statement outside a module (src/pages/background/index.js:1)"
   },
   "{228a49ed-af0c-452c-bc77-630f99cb0470}": {
-   "level": "L2",
-   "error": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'showEagleNotOpenedDialog') (js/lib/api/env.js:1)"
+   "level": "L3",
+   "error": null
   },
   "michal.simonfy@gmail.com": {
    "level": "L3",
@@ -2266,7 +2266,7 @@
   },
   "keplr-extension@keplr.app": {
    "level": "L1",
-   "error": "Uncaught (in promise) Error: Failed to get response from https://analytics.keplr.app/log?msg=eyJrZXlyaW5nX251bSI6MCwiZXZlbnQiOiJ1c2VyX3Byb3BlcnRpZXMiLCJhbmFseXRpY3NJZCI6ImI0ZmYwZDg4YzNmZGEwYWYyNWE2ZmU3OTQzZDg5MDNlY2UyOTZiMmQiLCJ2MiI6dHJ1ZSwicGxhdGZvcm0iOiJleHRlbnNpb24iLCJtb2JpbGVPUyI6Im5vbm8iLCJ3ZWJ"
+   "error": "Uncaught (in promise) TypeError: Failed to fetch (958.bundle.js:2)"
   },
   "{2d97895d-fcd3-41ab-82e6-6a1d4d2243f6}": {
    "level": "L3",
