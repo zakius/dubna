@@ -1152,16 +1152,6 @@
 "b": "og",
 "o": "Helium",
 "a": "Build & plumbing",
-"p": "helium/core/sync/provider/repository",
-"w": "Reads and writes the private-sync settings and tracks sync errors. Groundwork.",
-"s": "off",
-"n": "inert: Helium's own sync vault, which Firefox Sync replaces",
-"t": "Provider: repository"
-},
-{
-"b": "og",
-"o": "Helium",
-"a": "Build & plumbing",
 "p": "helium/core/sync/provider/exclude-from-vault",
 "w": "Keeps the sync-storage extension itself, and its data, out of what gets synced. Groundwork for the unused provider sync.",
 "s": "off",
@@ -1464,6 +1454,15 @@
 "a": "Input & shortcuts",
 "p": "helium/core/add-middle-click-autoscroll-flag",
 "w": "Flag \"Middle Click Autoscroll\". Off by default on Linux/macOS, on by default on Windows as in stock Chromium.",
+"s": "flag",
+"n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Network & security",
+"p": "helium/core/add-cache-encryption-flag",
+"w": "Flag \"HTTP cache encryption\", off by default. It encrypts the HTTP cache on disk with a key the operating system keeps; on Linux without a secure keystore it uses a plain key. Turning it on or off clears the cache.",
 "s": "flag",
 "n": ""
 },
@@ -1818,9 +1817,9 @@
 "o": "Helium",
 "a": "Helium services",
 "p": "helium/core/component-updates",
-"w": "Blocks Google's component-update server (update.googleapis.com). Component updates come from Helium's server instead, only if its services, your consent and the update setting allow it. Only the certificate revocation list and Widevine (DRM) may register; other components are refused. chrome://components explains the errors when services are off.",
+"w": "Blocks Google's component-update server (update.googleapis.com). Component updates come from Helium's server instead, only if its services, your consent and the update setting allow it. Only the certificate revocation list, PKI Metadata (the Chrome Root Store, the Certificate Transparency log list and key pins), the SSL Error Assistant's list of captive portals and interception software, and Widevine (DRM) may register; other components are refused. chrome://components explains the errors when services are off.",
 "s": "on",
-"n": "components come straight from Google's update server by default, or through your own server, never Helium's; the Chrome Root Store and the CT log list may register too, and update checks send no pings; oganesson lets TranslateKit's components register too, which check for updates straight at Google's update server, and only while on-device translation is on"
+"n": "components come straight from Google's update server by default, or through your own server, never Helium's; the SSL Error Assistant never updates, and update checks send no pings; oganesson lets TranslateKit's components register too, which check for updates straight at Google's update server, and only while on-device translation is on"
 },
 {
 "b": "og",
@@ -1866,6 +1865,96 @@
 "w": "Adds an interface density preference: Default keeps Helium's compact sizes, Spacious makes tabs, toolbar buttons and the address bar larger. The browser reads it once at start, so a change applies after a relaunch. The switch is in a separate settings patch.",
 "s": "on",
 "n": ""
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/pin-state",
+"w": "Groundwork for persistent pinned tabs: each pinned tab remembers which pin it is and the address it was pinned at, also across restores.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: pin state"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/pin-sync",
+"w": "Persistent pinned tabs: every window shows the same pinned tabs, from one saved list. Pinning, unpinning or moving a pinned tab in one window does the same in the others.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: pin sync"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/sync-splits",
+"w": "A pinned split view is pinned as a whole and shows in every window, like other persistent pinned tabs.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: sync splits"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/sync-drags",
+"w": "Changes made by dragging pinned tabs reach the other windows once the drag ends.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: sync drags"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/hibernate-on-close",
+"w": "Closing a persistent pinned tab unloads it instead, also when an extension removes it; the pin stays.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: hibernate on close"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/pinned-url",
+"w": "A persistent pinned tab can go back to the address it was pinned at. Its right-click menu adds \"Return to pinned URL\" and \"Use current URL as pinned URL\".",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: pinned URL"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/open-links-outside",
+"w": "Links from a persistent pinned tab to another site open in a new tab, so the pin keeps its site.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: open links outside"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/core/pins/migrate-legacy-pins",
+"w": "Merges the pinned tabs each window had before into the one shared list of persistent pinned tabs.",
+"s": "off",
+"n": "oganesson's pinned tabs belong to their window and close, as in Firefox, until Settings > Appearance > \"Keep pinned tabs across windows and sessions\" turns this on",
+"t": "Pins: migrate legacy pins"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Settings & flags",
+"p": "helium/core/pins/persistent-pins-pref",
+"w": "Adds \"Keep pinned tabs across windows and sessions\" to Settings > Appearance. When it is off, each window keeps its own pinned tabs.",
+"s": "on",
+"n": "oganesson turns it off by default; turned on, pinned tabs open outside their container in other windows",
+"t": "Pins: persistent pins setting"
 },
 {
 "b": "og",
@@ -3223,6 +3312,26 @@
 {
 "b": "og",
 "o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/ui/pins-ui",
+"w": "In the vertical tab strip, pinned tabs sit in an outlined box instead of each having its own border, and their rows are balanced.",
+"s": "on",
+"n": "",
+"t": "Pins UI"
+},
+{
+"b": "og",
+"o": "Helium",
+"a": "Tabs & windows",
+"p": "helium/ui/drag-to-pin",
+"w": "Dragging a tab into the pinned tabs pins it, and dragging a pinned tab out among the other tabs unpins it.",
+"s": "on",
+"n": "",
+"t": "Drag to pin"
+},
+{
+"b": "og",
+"o": "Helium",
 "a": "Look & layout",
 "p": "helium/ui/generate-standard-qr-codes",
 "w": "The \"Create QR code\" dialog makes plain square QR codes with no Chrome dinosaur in the middle, instead of round dots, rounded corners and the dino. Without the logo, the code can also be smaller.",
@@ -3687,7 +3796,7 @@
 "o": "oganesson",
 "a": "Tabs & windows",
 "p": "oganesson/core/firefox-tab-behavior",
-"w": "New tabs open and closing a tab selects the next one by Firefox's rules, for links, extensions and pinned tabs alike.",
+"w": "New tabs open and closing a tab selects the next one by Firefox's rules, for links, extensions and pinned tabs alike. Helium's persistent pinned tabs, shared by every window, are off by default.",
 "s": "on",
 "n": "",
 "own": 1
