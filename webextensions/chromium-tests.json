@@ -1,5 +1,5 @@
 {
- "chromium": "158.0.8127.36",
+ "chromium": "158.0.8127.88",
  "tests": {
   "bindings/about_blank_iframe": {
    "expected": [
@@ -93,11 +93,12 @@
     "createNoParentId",
     "getArray",
     "getChildren",
+    "getRecent",
     "getSubTree",
     "moveSetup",
-    "removeManagedTree"
+    "searchRemovedTree"
    ],
-   "helium": "fail: Failed 17 of 26 tests"
+   "helium": "fail: Failed 15 of 25 tests"
   },
   "browser_action/add_popup": {
    "expected": [
@@ -289,11 +290,11 @@
   },
   "content_scripts/large_scripts": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://efamifadmpellcodpknncpeboacmhcbb/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://aaeijpcjolmofpilndehlbjjdjedmelh/"
   },
   "content_scripts/main_world_injections": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kpapbjponfldjodmchfekljchnlekflb/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://bmgomdeopjehnibcggiklmfppoiiclad/"
   },
   "content_scripts/messaging": {
    "expected": [],
@@ -349,7 +350,7 @@
   },
   "content_scripts/storage_api_allow_mixed_access": {
    "expected": [],
-   "helium": "error: TimeoutError: timed out"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://afgbacjmooeeiaghnphgodfolfejepid/"
   },
   "content_scripts/storage_api_allow_untrusted_access": {
    "expected": [],
@@ -357,7 +358,7 @@
   },
   "content_scripts/storage_api_default_access": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kbbfhfamkbckhhpgphigjhpblhlffmdp/"
+   "helium": "error: ConnectionError: websocket upgrade to ws://127.0.0.1:35217/devtools/page/D524311938EA66C54F891D351D5AA7A6 failed: b'HTTP/1.1 500 Internal Server Error\\r\\n'"
   },
   "content_scripts/view_source": {
    "expected": [
@@ -702,7 +703,7 @@
   },
   "extension_action/is_enabled": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ncgnglbibcaecchgomdjnbjkmohfggcd/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://oahkhkmjieiohcfpgljgedlnbpdelidi/"
   },
   "extension_action/stub_action": {
    "expected": [],
@@ -853,7 +854,7 @@
   },
   "permissions/add_host_access_request": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://fnnbjfhghepibmchgbhodhdcjchkbklh/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ebibdkgmlpfiddfpiijinpeekkkbplmb/"
   },
   "permissions/always_allowed": {
    "expected": [
@@ -950,7 +951,7 @@
   },
   "permissions/remove_host_access_request": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kidbiplcapklekmbcmbejaecleghjgam/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://mneldmllfffgfbifcjoaokopogokmigf/"
   },
   "preference/clear": {
    "expected": [
@@ -988,7 +989,7 @@
   },
   "preference/safe_browsing": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://jekoifjhnkpdaakljelpeadkfbcpbppl/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://benaiiailpmmojdmamfmaibmaekamkla/"
   },
   "preference/session_only_incognito": {
    "expected": [
@@ -1188,31 +1189,31 @@
   },
   "scripting/css_injection": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kpndomfeacginngbmnenebjofinmldne/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://jcedbkgmcjccjppplaimpfeckojpfpnf/"
   },
   "scripting/dynamic_script_parameters": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kbloofnlilbgkoehgnhpiloaifidkibf/"
+   "helium": "error: TimeoutError: timed out"
   },
   "scripting/dynamic_scripts_main_world": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://bngfonepgomkhehajdfblkhmhbnnfoac/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://kpfciigapjflemencbpmpkldmmllmckb/"
   },
   "scripting/dynamic_scripts_size_limits": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://fkkhddapkcbodppcfibfbfmgcodgafcf/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://faelgffgijnjjgekfjmkpjlnognbdkaj/"
   },
   "scripting/dynamic_user_scripts": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ccmlnllokdfdfpccieigbnjcdajmhhii/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://aihbbbajnnhlelhfenhoiandomjlbdid/"
   },
   "scripting/execute_script_size_limit": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://djfgonackhmoefknglngfhelhglffilk/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://gdpibiemhdmdfnmecldblgffanekibjg/"
   },
   "scripting/execute_script_special_characters": {
    "expected": [],
-   "helium": "error: TimeoutError: timed out"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://idmcaenlclplmkbjdlmhokkoaibimalc/"
   },
   "scripting/get_scripts": {
    "expected": [
@@ -1230,19 +1231,19 @@
   },
   "scripting/main_frame": {
    "expected": [],
-   "helium": "error: TimeoutError: timed out"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://iiiknnmcfgdchiagnljncgemphfcgjof/"
   },
   "scripting/nested_web_contents": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ckcngfmgdngpgdcbbhkfhggohnjegedp/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://fpbdcbfmnacdackmojlbodoacedmopej/"
   },
   "scripting/pdf": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://mkdmboplgeccpfgbejnalhegmfgjmpke/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://oodledminfkecfkcpbpdbkhmmnpjohjo/"
   },
   "scripting/persistent_dynamic_scripts": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ikeolkdfmoccdcmibaibiemfjdmhgdlh/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ojmioacehonihhekcmgbjnjhjgfhbjkg/"
   },
   "scripting/prerendering": {
    "expected": [],
@@ -1250,7 +1251,7 @@
   },
   "scripting/register_scripts": {
    "expected": [],
-   "helium": "error: TimeoutError: timed out"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://pjckppgbkficejkknlgobdgchbahnapj/"
   },
   "scripting/remove_css": {
    "expected": [
@@ -1276,15 +1277,15 @@
   },
   "scripting/sub_frames": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://naikecmmlijgnaeflcnkcanokcoofcjo/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://bmloophmgnnhlifppjjlclfeblhcalok/"
   },
   "scripting/unregister_scripts": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ldcikogoljcddbmmibmgpkcmilcjmlkb/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ehocfeddghjfkklnganjifnphobeiogl/"
   },
   "scripting/update_scripts": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://nohbdjkbjdhigophglmfnccdfdheglpk/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://cffggkkjdnnioelnaeafbidkioakinog/"
   },
   "storage": {
    "expected": [],
@@ -1559,11 +1560,11 @@
   },
   "tabs/removing_tab_while_part_of_group": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://mofddokokndiipnfheblhieiegafbcma/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://ddnacfnohkpgklgpkknpbkngjoagjejj/"
   },
   "tabs/send_message": {
    "expected": [],
-   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://pdlofnihmkdfmmfnnoepekdkaehjahij/"
+   "helium": "error: AssertionError: timed out after 60s waiting for the background of chrome-extension://molkpglmjncjhnefegijhglnpamfhhme/"
   },
   "tabs/send_message_from_options:options.html": {
    "expected": [],
@@ -1598,20 +1599,18 @@
     "validNewTabActiveFalse",
     "validNewTabActiveTrue",
     "validSplitAtLeftOfGroupedTab",
-    "validSplitAtLeftOfPinnedTab",
     "validUnspecifiedIndex"
    ],
-   "helium": "pass"
+   "helium": "fail: Failed 1 of 14 tests"
   },
   "tabs/split_view_unsplit": {
    "expected": [
     "errorAlreadyUnsplit",
     "errorInvalidSplitViewId",
     "validUnsplit",
-    "validUnsplitInGroup",
-    "validUnsplitInPinned"
+    "validUnsplitInGroup"
    ],
-   "helium": "pass"
+   "helium": "fail: Failed 1 of 5 tests"
   },
   "tabs/tab_opener_id": {
    "expected": [
