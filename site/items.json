@@ -4667,7 +4667,7 @@
 "o": "tennessine",
 "a": "Tabs & windows",
 "p": "tennessine/app-links",
-"w": "dubna's web app link handling on Android: a link out of an installed web app (WebAPK or shortcut) opens in your default browser. Settings > Web apps lists the installed apps, and a site's page in Site settings links to its own app, to edit each app's scope rules.",
+"w": "dubna's web app link handling on Android: a link out of an installed web app (WebAPK or shortcut) opens in your default browser. So does a new tab or window the app opens inside its own scope, unless its \"Pages that stay in the app\" rules keep it there. Settings > Web apps lists the installed apps, and a site's page in Site settings links to its own app, to edit each app's scope rules.",
 "s": "on",
 "n": "",
 "own": 1
