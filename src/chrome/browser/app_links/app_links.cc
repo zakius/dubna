@@ -10,6 +10,7 @@
 
 #include "base/functional/bind.h"
 #include "base/task/sequenced_task_runner.h"
+#include "build/build_config.h"
 #include "chrome/browser/app_links/app_links_platform.h"
 #include "chrome/browser/app_links/app_scope_rules.h"
 #include "chrome/browser/profiles/profile.h"
@@ -93,6 +94,20 @@ bool LeavesApp(content::WebContents* contents,
   return IsUrlExcludedFromUserAppScope(prefs, *app_id, url) ||
          ((out_of_scope || IsUserAppScopeStrict(prefs, *app_id)) &&
           !InScope(contents, *app_id, url));
+}
+
+// Whether a new tab or window that a page of `contents` opens at `url` leaves
+// the app. On desktop one in the app's scope opens as another app window. On
+// Android it would be one more tab of the app's activity, shown as a custom
+// tab, so it leaves too, unless the user's rules keep it in the app.
+bool NewTabLeavesApp(content::WebContents* contents, const GURL& url) {
+#if BUILDFLAG(IS_ANDROID)
+  std::optional<std::string> app_id = AppId(contents);
+  return url.SchemeIsHTTPOrHTTPS() && app_id &&
+         !UserAppScopeOverride(Prefs(contents), *app_id, url).value_or(false);
+#else
+  return LeavesApp(contents, url, /*out_of_scope=*/true);
+#endif
 }
 
 // Whether `contents` may open a URL that leaves the app now; see
@@ -381,7 +396,8 @@ bool MaybeOpenNewContentsOutsideApp(content::WebContents* source,
        disposition != WindowOpenDisposition::kNewWindow &&
        (!popup || !HasStrictScope(source))) ||
       post || (new_contents && content::IsNewWindowForFormPost(new_contents)) ||
-      !LeavesApp(source, url, /*out_of_scope=*/true)) {
+      !(popup ? LeavesApp(source, url, /*out_of_scope=*/true)
+              : NewTabLeavesApp(source, url))) {
     if (popup && new_contents) {
       AppPopup::CreateForWebContents(new_contents);
     }

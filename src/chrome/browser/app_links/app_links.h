@@ -34,8 +34,9 @@ bool IsInAppWindow(content::WebContents* contents);
 // For the browser's handling of a new window that `source` opens on `url`
 // (a new tab or window, or a popup) with `disposition`; `new_contents` is the
 // window's WebContents where it exists already. From an app's own window, a
-// new tab or window out of the app's scope goes to the default browser, and
-// with a strict scope, so does a popup. Returns true when it took the
+// new tab or window out of the app's scope goes to the default browser (on
+// Android, one in the scope too, unless the user's rules keep it), and with a
+// strict scope, so does a popup. Returns true when it took the
 // navigation, which the caller then drops. Form posts stay: only Chromium can
 // submit them. A popup that stays is remembered as one, so its links stay
 // with it.
