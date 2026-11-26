@@ -32,6 +32,8 @@
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
 # and the preference functions hand its key to firefox_browser_settings.cc.
 # So is privacy.network.peerConnectionEnabled, which is always true.
+# privacy.network.webRTCIPHandlingPolicy takes Firefox's proxy_only, which the
+# renderer takes as disable_non_proxied_udp, Chromium's strictest policy.
 # storage.session is there in Manifest V2 Firefox add-ons too, as in Firefox.
 # So is scripting.
 # A Firefox add-on's storage.session counts Firefox's sizes
@@ -3019,7 +3021,23 @@
                }
 --- a/chrome/common/extensions/api/privacy.json
 +++ b/chrome/common/extensions/api/privacy.json
-@@ -57,6 +57,14 @@
+@@ -10,7 +10,14 @@
+       {
+         "id": "IPHandlingPolicy",
+         "type": "string",
+-        "enum": ["default", "default_public_and_private_interfaces", "default_public_interface_only", "disable_non_proxied_udp"],
++        "enum": [
++          "default", "default_public_and_private_interfaces", "default_public_interface_only", "disable_non_proxied_udp",
++          // Firefox add-ons (dubna): Firefox's proxy_only, WebRTC only
++          // through a TURN server behind the proxy. Chromium has no such
++          // mode: the renderer takes it as disable_non_proxied_udp, its
++          // strictest (blink's webrtc_ip_handling_policy.cc).
++          {"name": "proxy_only", "firefox_only": true, "nodoc": true}
++        ],
+         "description": "The IP handling policy of WebRTC."
+       },
+       {
+@@ -57,6 +64,14 @@
              "$ref": "types.ChromeSetting",
              "value": ["webRTCIPHandlingPolicy", {"$ref":"IPHandlingPolicy"}],
              "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
@@ -5530,6 +5548,21 @@
  
    return &l10n_messages;
  }
+--- a/third_party/blink/common/peerconnection/webrtc_ip_handling_policy.cc
++++ b/third_party/blink/common/peerconnection/webrtc_ip_handling_policy.cc
+@@ -30,6 +30,12 @@ blink::mojom::WebRtcIpHandlingPolicy ToWebRTCIPHandlingPolicy(
+   if (preference == kWebRTCIPHandlingDisableNonProxiedUdp) {
+     return blink::mojom::WebRtcIpHandlingPolicy::kDisableNonProxiedUdp;
+   }
++  // Firefox add-ons (dubna): Firefox's proxy_only, which only a Firefox
++  // add-on's privacy.network.webRTCIPHandlingPolicy sets (privacy.json), is
++  // the strictest policy here.
++  if (preference == "proxy_only") {
++    return blink::mojom::WebRtcIpHandlingPolicy::kDisableNonProxiedUdp;
++  }
+   return blink::mojom::WebRtcIpHandlingPolicy::kDefault;
+ }
+ 
 --- a/ui/base/BUILD.gn
 +++ b/ui/base/BUILD.gn
 @@ -133,6 +133,8 @@ component("base") {
