@@ -1,5 +1,5 @@
 {
- "source": {"repository": "https://github.com/mozilla-firefox/firefox.git", "commit": "225e2b6abc91b5966c1537d7d9309df31c598668", "date": "2026-11-24"},
+ "source": {"repository": "https://github.com/mozilla-firefox/firefox.git", "commit": "1a6a495ea3c4dc84233500d97fc6ad5f0d429d95", "date": "2026-11-26"},
  "tests": [
   {"path": "browser/components/extensions/test/browser/browser_AMBrowserExtensionsImport.js", "api": "", "state": "n/a", "reason": "Firefox's own extensions UI, not add-on behaviour"},
   {"path": "browser/components/extensions/test/browser/browser_ExtensionControlledPopup.js", "api": "", "state": "n/a", "reason": "Firefox's own extensions UI, not add-on behaviour"},
@@ -568,6 +568,7 @@
   {"path": "toolkit/components/extensions/test/xpcshell/test_WebExtensionContentScript_mozextMatchWarning.js", "api": "", "state": "n/a", "reason": "Gecko's WebExtensionPolicy classes"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_WebExtensionPolicy.js", "api": "", "state": "n/a", "reason": "Gecko's WebExtensionPolicy classes"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_WebExtensionPolicy_aboutnewtab.js", "api": "", "state": "n/a", "reason": "Gecko's WebExtensionPolicy classes"},
+  {"path": "toolkit/components/extensions/test/xpcshell/test_WebExtensionPolicy_flags.js", "api": "", "state": "n/a", "reason": "Gecko's WebExtensionPolicy classes"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_change_backgroundServiceWorker_enabled_pref_false.js", "api": "", "state": "n/a", "reason": "Gecko's process and background modes, set by prefs"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_change_backgroundServiceWorker_enabled_pref_true.js", "api": "", "state": "n/a", "reason": "Gecko's process and background modes, set by prefs"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_change_remote_mode.js", "api": "", "state": "n/a", "reason": "Gecko's process and background modes, set by prefs"},
@@ -686,6 +687,7 @@
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_download.js", "api": "declarativeNetRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_dynamic_rules.js", "api": "declarativeNetRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_file_access.js", "api": "declarativeNetRequest", "state": "todo"},
+  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_loadingPrincipal.js", "api": "declarativeNetRequest", "state": "ported", "port": "firefox/test_ext_dnr_loadingPrincipal.py"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_modifyHeaders.js", "api": "declarativeNetRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_private_browsing.js", "api": "declarativeNetRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_dnr_redirect_main_frame.js", "api": "declarativeNetRequest", "state": "todo"},
@@ -912,6 +914,7 @@
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_redirect_StreamFilter.js", "api": "webRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_redirect_mozextension.js", "api": "webRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_redirect_resource_timing.js", "api": "webRequest", "state": "todo"},
+  {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_requestBody_no_content_type.js", "api": "webRequest", "state": "ported", "port": "firefox/test_ext_webRequest_requestBody_no_content_type.py"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_requestSize.js", "api": "webRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_responseBody.js", "api": "webRequest", "state": "todo"},
   {"path": "toolkit/components/extensions/test/xpcshell/test_ext_webRequest_restrictedHeaders.js", "api": "webRequest", "state": "todo"},
