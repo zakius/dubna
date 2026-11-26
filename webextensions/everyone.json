@@ -52,7 +52,6 @@
   "extensions/browser/image_sanitizer.cc#85d71cac737e": "Plumbing: shrink_to_fit is true only for a Firefox add-on's packed install (sandboxed_unpacker.cc)",
   "extensions/browser/image_sanitizer.cc#ee521b7815e6": "Plumbing: shrink_to_fit is true only for a Firefox add-on's packed install (sandboxed_unpacker.cc)",
   "extensions/browser/load_and_localize_file.cc#7a66bca68fe5": "Plumbing: the localization of CSS that firefox_ui_locale.h and message_bundle.cc decide",
-  "extensions/browser/sandboxed_unpacker.cc#13d971520854": "Plumbing: shrink_to_fit is true only for a Firefox add-on's packed install",
   "extensions/browser/unpacked_installer.cc#f69989cc8d2c": "Keeps the folder ID of an unpacked add-on whose ID now comes from its Gecko ID; a manifest without a Gecko ID keeps Chromium's ID",
   "extensions/browser/zipfile_installer.cc#94a0b52e16de": "Unzips a .xpi theme's META-INF/ for its AMO signature; only the .xpi installer reads it",
   "extensions/common/api/commands/commands_handler.cc#1bb607ddc6c3": "Firefox's shortcuts (Ctrl+Alt, F1 to F12, MacCtrl): a manifest Chromium refuses loads, and the shortcuts page takes them for every extension, on purpose (README \"Status\")",

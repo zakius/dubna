@@ -14,6 +14,9 @@
 # before it localizes it.
 # declarative_net_request without its permission loads without its rulesets,
 # as in Firefox.
+# A Firefox add-on whose manifest names an icon or a side panel it doesn't have
+# loads, with Chromium's error as a warning, and a path with spaces around it
+# (" icon.png") reads as one without, as in Firefox (firefox_file_paths.h).
 # A tab that hasn't committed a navigation has the URL about:blank for a Firefox
 # add-on (firefox_add_on.h), as in Firefox.
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
@@ -3966,18 +3969,22 @@
    auto file_reader = base::MakeRefCounted<FileReader>(
 --- a/extensions/browser/sandboxed_unpacker.cc
 +++ b/extensions/browser/sandboxed_unpacker.cc
-@@ -59,6 +59,7 @@
+@@ -59,6 +59,8 @@
  #include "extensions/common/extensions_client.h"
  #include "extensions/common/features/feature_channel.h"
  #include "extensions/common/file_util.h"
 +#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_file_paths.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/default_locale_handler.h"
  #include "extensions/common/manifest_handlers/icons_handler.h"
-@@ -186,8 +187,12 @@ class SandboxedUnpacker::IOThreadState {
+@@ -186,8 +188,15 @@ class SandboxedUnpacker::IOThreadState {
      DCHECK(!image_sanitizer_);
      std::set<base::FilePath> image_paths =
          ExtensionsClient::Get()->GetBrowserImagePaths(extension);
++    // Firefox add-ons (dubna): an add-on loads without them
++    // (firefox_file_paths.h).
++    RemoveMissingFirefoxImages(*extension, extension_root, &image_paths);
 +    // Firefox add-ons (dubna): Firefox has no size limit for an add-on's
 +    // images, so a Firefox add-on's too large image is scaled down to fit
 +    // Chromium's, where other extensions' fail the install.
@@ -4012,7 +4019,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,27 @@ static_library("common") {
+@@ -402,6 +402,29 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -4021,6 +4028,8 @@
 +    "firefox_add_on_availability.cc",
 +    "firefox_add_on_availability.h",
 +    "firefox_cookie_store.h",
++    "firefox_file_paths.cc",
++    "firefox_file_paths.h",
 +    "firefox_gecko_id.cc",
 +    "firefox_gecko_id.h",
 +    "firefox_host_permissions.cc",
@@ -4433,16 +4442,17 @@
            *error = ErrorUtils::FormatErrorMessageUTF16(
 --- a/extensions/common/extension.cc
 +++ b/extensions/common/extension.cc
-@@ -34,6 +34,8 @@
+@@ -34,6 +34,9 @@
  #include "extensions/common/error_utils.h"
  #include "extensions/common/extension_id.h"
  #include "extensions/common/file_util.h"
++#include "extensions/common/firefox_file_paths.h"
 +#include "extensions/common/firefox_gecko_id.h"
 +#include "extensions/common/firefox_version.h"
  #include "extensions/common/manifest.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handler.h"
-@@ -167,6 +169,13 @@ bool ComputeExtensionID(const base::DictValue& manifest,
+@@ -167,6 +170,13 @@ bool ComputeExtensionID(const base::DictValue& manifest,
      return false;
    }
  
@@ -4456,7 +4466,16 @@
    // If there is a path, we generate the ID from it. This is useful for
    // development mode, because it keeps the ID stable across restarts and
    // reloading the extension.
-@@ -693,6 +702,13 @@ bool Extension::LoadVersion(std::vector<InstallWarning>* install_warnings,
+@@ -330,6 +340,8 @@ bool Extension::ResourceMatches(const URLPatternSet& pattern_set,
+ }
+ 
+ ExtensionResource Extension::GetResource(std::string_view relative_path) const {
++  // Firefox add-ons (dubna): " icon.png" (firefox_file_paths.h).
++  relative_path = FirefoxResourcePath(*this, relative_path);
+   // We have some legacy data where resources have leading slashes.
+   // See: http://crbug.com/40767705
+   if (!relative_path.empty() && relative_path[0] == '/') {
+@@ -693,6 +705,13 @@ bool Extension::LoadVersion(std::vector<InstallWarning>* install_warnings,
      return false;
    }
    version_ = base::Version(*version_str);
@@ -4492,6 +4511,28 @@
    // Returns the key for the "default_title" entry in the given
    // `action_key`'s manifest entry.
    auto get_title_key = [](const char* action_key) {
+--- a/extensions/common/manifest_handler_registry.cc
++++ b/extensions/common/manifest_handler_registry.cc
+@@ -11,6 +11,7 @@
+ 
+ #include "base/check.h"
+ #include "extensions/common/extension.h"
++#include "extensions/common/firefox_file_paths.h"
+ #include "extensions/common/manifest_handler.h"
+ #include "extensions/common/permissions/manifest_permission.h"
+ #include "extensions/common/permissions/manifest_permission_set.h"
+@@ -85,6 +86,11 @@ bool ManifestHandlerRegistry::ValidateExtension(
+   }
+   for (auto* handler : handlers) {
+     if (!handler->Validate(*extension, error, warnings)) {
++      // Firefox add-ons (dubna): a missing icon or panel is a warning
++      // (firefox_file_paths.h).
++      if (FirefoxLoadsWithoutFile(*extension, *handler, error, warnings)) {
++        continue;
++      }
+       return false;
+     }
+   }
 --- a/extensions/common/manifest_handlers/background_info.cc
 +++ b/extensions/common/manifest_handlers/background_info.cc
 @@ -17,6 +17,7 @@
