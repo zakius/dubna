@@ -22,6 +22,11 @@
 # A Manifest V2 event page that asks for webRequest runs as a persistent page.
 # A Firefox add-on's page_action next to a browser_action or action, or in Manifest V3, is a
 # second action that pageAction.* reaches (firefox_page_action.h).
+# A Firefox add-on's page action shows on the pages that its show_matches and
+# hide_matches match, until show() or hide() for the tab
+# (firefox_show_matches.h): TabHelper makes each tab's matcher, GetIsVisible()
+# reads its result under show() and hide(), which a tab keeps also when it
+# equals the match.
 # menus.create and update take Firefox's icons (not shown) and its password,
 # bookmark and tools_menu contexts (the item shows in its other contexts).
 # browserSettings is Firefox's, read-only: each setting is a types.ChromeSetting,
@@ -341,7 +346,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +375,22 @@ source_set("extensions") {
+@@ -329,6 +375,26 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -354,6 +359,10 @@
 +    "firefox_cookie_store.cc",
 +    "firefox_cookie_store.h",
 +
++    # Firefox add-ons (dubna): page_action's show_matches.
++    "firefox_show_matches.cc",
++    "firefox_show_matches.h",
++
 +    # Firefox add-ons (dubna): a downloaded .xpi installs.
 +    "firefox_xpi_installer.cc",
 +    "firefox_xpi_installer.h",
@@ -364,7 +373,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +451,22 @@ source_set("extensions") {
+@@ -389,6 +455,22 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -387,7 +396,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +732,9 @@ source_set("extensions") {
+@@ -654,6 +736,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -749,7 +758,20 @@
  }
  
  bool ExtensionActionFunction::ExtractDataFromArguments() {
-@@ -464,7 +489,9 @@ ExtensionActionGetBadgeTextFunction::RunExtensionAction() {
+@@ -267,6 +292,12 @@ void ExtensionActionFunction::NotifyChange() {
+ }
+ 
+ void ExtensionActionFunction::SetVisible(bool visible) {
++  // Firefox add-ons (dubna): show() and hide() override show_matches.
++  if (FirefoxActionValues::ShowOrHide(*extension_action_, *extension(), tab_id_,
++                                      visible)) {
++    NotifyChange();
++    return;
++  }
+   if (extension_action_->GetIsVisible(tab_id_) == visible) {
+     return;
+   }
+@@ -464,7 +495,9 @@ ExtensionActionGetBadgeTextFunction::RunExtensionAction() {
  ExtensionFunction::ResponseAction
  ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -760,7 +782,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -475,7 +502,10 @@ ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
+@@ -475,7 +508,10 @@ ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -772,7 +794,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +526,8 @@ ExtensionFunction::ResponseAction ActionGetUserSettingsFunction::Run() {
+@@ -496,7 +532,8 @@ ExtensionFunction::ResponseAction ActionGetUserSettingsFunction::Run() {
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
@@ -1898,6 +1920,25 @@
  
    // This returns a image of width/height kFaviconSize, loaded through the
    // MenuIconLoader associated with the `extension_key`.
+--- a/chrome/browser/extensions/tab_helper.cc
++++ b/chrome/browser/extensions/tab_helper.cc
+@@ -13,6 +13,7 @@
+ #include "chrome/browser/extensions/activity_log/activity_log.h"
+ #include "chrome/browser/extensions/extension_action_runner.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_show_matches.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/sessions/session_tab_helper_factory.h"
+ #include "chrome/common/buildflags.h"
+@@ -111,6 +112,8 @@ TabHelper::TabHelper(content::WebContents* web_contents)
+ 
+   registry_observation_.Observe(
+       ExtensionRegistry::Get(web_contents->GetBrowserContext()));
++  // Firefox add-ons (dubna): page_action's show_matches.
++  FirefoxShowMatches::CreateForWebContents(web_contents);
+ 
+ #if !BUILDFLAG(IS_ANDROID)
+   // The Android bookmark manager is native UI, not web UI, so this event router
 --- a/chrome/browser/net/BUILD.gn
 +++ b/chrome/browser/net/BUILD.gn
 @@ -300,6 +300,9 @@ source_set("impl") {
@@ -3551,6 +3592,19 @@
  }
  
  }  // namespace
+@@ -319,6 +324,12 @@ bool ExtensionAction::GetIsVisibleInternal(TabID tab_id,
+     return true;
+   }
+ 
++  // Firefox add-ons (dubna): show_matches and hide_matches, which show() and
++  // hide() override (FirefoxActionValues::SetShowMatches()).
++  if (const bool* matches = base::FindOrNull(firefox_show_matches_, tab_id)) {
++    return *matches;
++  }
++
+   if (const bool* default_is_visible =
+           base::FindOrNull(is_visible_, kDefaultTabId)) {
+     return *default_is_visible;
 --- a/extensions/browser/extension_action.h
 +++ b/extensions/browser/extension_action.h
 @@ -11,6 +11,7 @@
@@ -3583,13 +3637,17 @@
      } else if (const T* default_value = base::FindOrNull(map, kDefaultTabId)) {
        return *default_value;
      } else {
-@@ -316,6 +325,10 @@ class ExtensionAction {
+@@ -316,6 +325,14 @@ class ExtensionAction {
    // GetDefaultIconImage().)
    mutable gfx::Image placeholder_icon_image_;
  
 +  // Firefox add-ons (dubna): the default icon drawn from the manifest's SVG
 +  // (firefox_action_values.h).
 +  gfx::Image firefox_svg_default_icon_;
++
++  // Firefox add-ons (dubna): whether the page action's show_matches and
++  // hide_matches match the tab's page (FirefoxActionValues::SetShowMatches()).
++  std::map<TabID, bool> firefox_show_matches_;
 +
    // The id for the ExtensionAction, for example: "RssPageAction". This is
    // needed for compat with an older version of the page actions API.
@@ -4464,16 +4522,17 @@
      if (key != nullptr) {
        // An extension can only have one action.
        *error = manifest_errors::kOneUISurfaceOnly;
-@@ -118,6 +121,9 @@ bool ExtensionActionHandler::Parse(Extension* extension,
+@@ -118,7 +121,9 @@ bool ExtensionActionHandler::Parse(Extension* extension,
      ActionInfo::SetExtensionActionInfo(extension, std::move(action_info));
    }
  
-+  if (HasFirefoxPageAction(*extension)) {
-+    return ParseFirefoxPageAction(extension, error);
-+  }
-   return true;
+-  return true;
++  // Firefox add-ons (dubna): a page action next to another action, and the
++  // page action's show_matches (firefox_page_action.h).
++  return ParseFirefoxPageAction(extension, error);
  }
  
+ bool ExtensionActionHandler::Validate(
 --- a/extensions/common/manifest_handlers/manifest_url_handlers.cc
 +++ b/extensions/common/manifest_handlers/manifest_url_handlers.cc
 @@ -14,6 +14,7 @@

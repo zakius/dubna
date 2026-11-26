@@ -11,9 +11,10 @@
 
 namespace extensions {
 
-// Whether show() showed the page action in the tab. Not a declarative rule's
-// showing, which would tell the extension about pages it has no permission
-// for, as action.isEnabled doesn't.
+// Whether show(), or else the manifest's show_matches, showed the page action
+// in the tab (chrome/browser/extensions/firefox_show_matches.h), as in
+// Firefox. Not a declarative rule's showing, which would tell the extension
+// about pages it has no permission for, as action.isEnabled doesn't.
 class PageActionIsShownFunction : public ExtensionActionFunction {
  public:
   DECLARE_EXTENSION_FUNCTION("pageAction.isShown", UNKNOWN)

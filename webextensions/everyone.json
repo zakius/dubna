@@ -22,6 +22,7 @@
   "chrome/browser/extensions/menu_manager.cc#32be9973a132": "Stores a menu item's Firefox fields, which only Firefox add-ons' schema can set",
   "chrome/browser/extensions/menu_manager.cc#ffd567aa6895": "Plumbing: the click's event flags reach the menu matcher, where only a Firefox add-on's items read them (firefox_menu_clicks.cc)",
   "chrome/browser/extensions/open_tab_helper.cc#36a8886bc851": "Reachable only through tabs.create's discarded, which only Firefox add-ons' schema has (firefox_schema_view.h)",
+  "chrome/browser/extensions/tab_helper.cc#0ba006ff72b3": "Makes each tab's FirefoxShowMatches, which shows only a Firefox add-on's page action: show_matches loads for a Firefox add-on alone (firefox_page_action.cc)",
   "chrome/browser/net/chrome_mojo_proxy_resolver_factory.cc#4693d096e89c": "Reachable only through a proxy.onRequest listener, which alone turns the PAC script on,, which only Firefox add-ons' schema has (firefox_schema_view.h)",
   "chrome/browser/net/proxy_config_monitor.cc#caa00e56f017": "Reachable only through a proxy.onRequest listener, which alone turns the PAC script on,, which only Firefox add-ons' schema has (firefox_schema_view.h)",
   "chrome/browser/renderer_context_menu/render_view_context_menu.cc#ef5c0ec951f5": "Plumbing: the click's event flags reach the menu matcher, where only a Firefox add-on's items read them (firefox_menu_clicks.cc)",

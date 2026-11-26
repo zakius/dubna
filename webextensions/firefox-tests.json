@@ -134,7 +134,7 @@
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_popup.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_popup.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_popup_anchor.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_popup_anchor.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_popup_resize.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_popup_resize.py"},
-  {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_show_matches.js", "api": "pageAction", "state": "todo"},
+  {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_show_matches.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_show_matches.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_simple.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_simple.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_telemetry.js", "api": "pageAction", "state": "n/a", "reason": "Firefox's telemetry, which only Mozilla's own code reads"},
   {"path": "browser/components/extensions/test/browser/browser_ext_pageAction_title.js", "api": "pageAction", "state": "ported", "port": "firefox/browser_ext_pageAction_title.py"},

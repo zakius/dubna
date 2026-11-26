@@ -4,6 +4,8 @@
 #ifndef EXTENSIONS_BROWSER_FIREFOX_ACTION_VALUES_H_
 #define EXTENSIONS_BROWSER_FIREFOX_ACTION_VALUES_H_
 
+#include <optional>
+
 #include "third_party/skia/include/core/SkColor.h"
 #include "ui/gfx/image/image.h"
 
@@ -63,6 +65,22 @@ class FirefoxActionValues {
   static gfx::Image SvgDefaultIcon(const ExtensionAction& action);
   static void SetSvgDefaultIcon(ExtensionAction& action,
                                 const gfx::Image& icon);
+
+  // Whether the page action shows on the tab's page by its show_matches and
+  // hide_matches (extensions/common/firefox_page_action.h), or nullopt to
+  // forget the tab. GetIsVisible() reads it under show() and hide().
+  static void SetShowMatches(ExtensionAction& action,
+                             int tab_id,
+                             std::optional<bool> matches);
+
+  // show() or hide() for a tab of a page action with show_matches: the tab
+  // keeps the value, also where it is the one that show_matches gives, so
+  // that it wins over show_matches until the tab navigates. Returns false for
+  // another action, whose show() and hide() stay Chromium's.
+  static bool ShowOrHide(ExtensionAction& action,
+                         const Extension& extension,
+                         int tab_id,
+                         bool visible);
 };
 
 }  // namespace extensions
