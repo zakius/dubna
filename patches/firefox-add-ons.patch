@@ -5,8 +5,9 @@
 # are contextMenus. A Firefox add-on's Manifest V3 background page (background.scripts
 # or .page) runs as Manifest V2's does, unless the manifest also has a service worker;
 # runtime.getContexts() lists such a page as the background.
-# A Firefox version with a suffix ("3.4resigned1") loads as its leading numbers,
-# with the full string as the version name (firefox_version.cc).
+# A Firefox add-on's version Chromium refuses ("3.4resigned1", "01", "1.2.3.4.5",
+# ".") loads as its leading numbers, with the full string as the version name,
+# and a name longer than 75 characters is cut to 75 (firefox_version.cc).
 # A Firefox add-on's background with "type": "module" loads its scripts as modules.
 # Locale files load as Firefox reads them: a message of any name ("first-install-body"),
 # a placeholder the message doesn't define becomes empty, and homepage_url
@@ -4475,20 +4476,28 @@
    // We have some legacy data where resources have leading slashes.
    // See: http://crbug.com/40767705
    if (!relative_path.empty() && relative_path[0] == '/') {
-@@ -693,6 +705,13 @@ bool Extension::LoadVersion(std::vector<InstallWarning>* install_warnings,
-     return false;
+@@ -678,6 +690,8 @@ bool Extension::LoadName(std::u16string* error) {
    }
-   version_ = base::Version(*version_str);
-+  // Firefox add-ons (dubna): a Firefox version with a suffix, "3.4resigned1".
-+  if (!version_.IsValid()) {
-+    version_ = LoadFirefoxVersion(*version_str, this);
-+    if (version_.IsValid()) {
-+      return true;
-+    }
-+  }
-   if (!version_.IsValid() || version_.components().size() > 4) {
+ 
+   non_localized_name_ = *non_localized_name_ptr;
++  // Firefox add-ons (dubna): Firefox cuts a name to 75 characters.
++  non_localized_name_ = LoadFirefoxName(non_localized_name_, *this);
+   std::u16string sanitized_name =
+       base::CollapseWhitespace(base::UTF8ToUTF16(non_localized_name_), true);
+   base::i18n::SanitizeUserSuppliedString(&sanitized_name);
+@@ -692,6 +706,12 @@ bool Extension::LoadVersion(std::vector<InstallWarning>* install_warnings,
      *error = errors::kInvalidVersion;
      return false;
+   }
++  // Firefox add-ons (dubna): Firefox's version strings, "3.4resigned1", "01",
++  // "1.2.3.4.5".
++  version_ = LoadFirefoxVersion(*version_str, this);
++  if (version_.IsValid()) {
++    return true;
++  }
+   version_ = base::Version(*version_str);
+   if (!version_.IsValid() || version_.components().size() > 4) {
+     *error = errors::kInvalidVersion;
 --- a/extensions/common/extension_l10n_util.cc
 +++ b/extensions/common/extension_l10n_util.cc
 @@ -271,6 +271,19 @@ bool LocalizeManifest(const extensions::MessageBundle& messages,

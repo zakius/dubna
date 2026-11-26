@@ -58,7 +58,6 @@
   "extensions/common/api/commands/commands_handler.cc#8180762e24ed": "Firefox's shortcuts (Ctrl+Alt, F1 to F12, MacCtrl): a manifest Chromium refuses loads, and the shortcuts page takes them for every extension, on purpose (README \"Status\")",
   "extensions/common/command.cc#2ac809f706a5": "Firefox's shortcuts (Ctrl+Alt, F1 to F12, MacCtrl): a manifest Chromium refuses loads, and the shortcuts page takes them for every extension, on purpose (README \"Status\")",
   "extensions/common/command.cc#9f39180b7fe8": "Firefox's shortcuts (Ctrl+Alt, F1 to F12, MacCtrl): a manifest Chromium refuses loads, and the shortcuts page takes them for every extension, on purpose (README \"Status\")",
-  "extensions/common/extension.cc#6a73a074fede": "Lets a manifest load that Chromium refuses, so no extension that runs in Chrome gets here: a Firefox version string (\"3.4resigned1\")",
   "extensions/common/extension.cc#7853a9b94262": "The ID from the Gecko ID, for an unpacked manifest with a Gecko ID; a .crx keeps the ID of its key",
   "extensions/common/file_util.cc#0533adbfecea": "Firefox's locale files: a message name, placeholder or default_locale that Chromium refuses loads",
   "extensions/common/manifest_handlers/background_info.cc#abe84b65586e": "Lets a manifest load that Chromium refuses, so no extension that runs in Chrome gets here: an event page that asks for webRequest",
