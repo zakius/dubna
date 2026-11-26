@@ -24,7 +24,7 @@
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_onUserSettingsChanged.js", "api": "browserAction", "state": "ported", "port": "firefox/browser_ext_browserAction_onUserSettingsChanged.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_pageAction_icon.js", "api": "browserAction", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_pageAction_icon_permissions.js", "api": "browserAction", "state": "todo"},
-  {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_popup.js", "api": "browserAction", "state": "todo"},
+  {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_popup.js", "api": "browserAction", "state": "ported", "port": "firefox/browser_ext_browserAction_popup.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_popup_confirm_dialog.js", "api": "browserAction", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_popup_port.js", "api": "browserAction", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_popup_preload.js", "api": "browserAction", "state": "todo"},

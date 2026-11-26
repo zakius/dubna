@@ -672,11 +672,13 @@
  
 --- a/chrome/browser/extensions/api/extension_action/BUILD.gn
 +++ b/chrome/browser/extensions/api/extension_action/BUILD.gn
-@@ -10,6 +10,14 @@ source_set("extension_action") {
+@@ -10,6 +10,16 @@ source_set("extension_action") {
    sources = [
      "extension_action_api.cc",
      "extension_action_api.h",
 +    "firefox_action_null.cc",
++    "firefox_action_popup.cc",
++    "firefox_action_popup.h",
 +    "firefox_action_window.cc",
 +    "firefox_action_window.h",
 +    "firefox_browser_action.h",
@@ -697,16 +699,17 @@
  #include <utility>
  
  #include "base/check.h"
-@@ -18,6 +19,8 @@
+@@ -18,6 +19,9 @@
  #include "base/metrics/histogram_functions.h"
  #include "base/strings/string_number_conversions.h"
  #include "base/strings/stringprintf.h"
++#include "chrome/browser/extensions/api/extension_action/firefox_action_popup.h"
 +#include "chrome/browser/extensions/api/extension_action/firefox_action_window.h"
 +#include "chrome/browser/extensions/api/extension_action/firefox_svg_default_icon.h"
  #include "chrome/browser/extensions/browser_window_util.h"
  #include "chrome/browser/extensions/extension_action_dispatcher.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
-@@ -38,6 +41,7 @@
+@@ -38,6 +42,7 @@
  #include "extensions/browser/extension_event_histogram_value.h"
  #include "extensions/browser/extension_host.h"
  #include "extensions/browser/extension_prefs.h"
@@ -714,7 +717,7 @@
  #include "extensions/browser/icon_util.h"
  #include "extensions/common/api/extension_action/action_info.h"
  #include "extensions/common/constants.h"
-@@ -184,6 +188,11 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
+@@ -184,6 +189,11 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
    ExtensionActionManager* manager =
        ExtensionActionManager::Get(browser_context());
    extension_action_ = manager->GetExtensionAction(*extension());
@@ -726,7 +729,7 @@
    if (!extension_action_) {
      // TODO(kalman): Ideally the browserAction/pageAction APIs wouldn't even
      // exist for extensions that don't have one declared. This should come as
-@@ -194,6 +203,21 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
+@@ -194,6 +204,21 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
    // Populates the tab_id_ and details_ members.
    EXTENSION_FUNCTION_VALIDATE(ExtractDataFromArguments());
  
@@ -748,7 +751,7 @@
    // Find the WebContents that contains this tab id if one is required.
    if (tab_id_ != ExtensionAction::kDefaultTabId) {
      content::WebContents* contents_out_param = nullptr;
-@@ -210,7 +234,8 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
+@@ -210,7 +235,8 @@ ExtensionFunction::ResponseAction ExtensionActionFunction::Run() {
      EXTENSION_FUNCTION_VALIDATE(extension_action_->action_type() !=
                                  ActionInfo::Type::kPage);
    }
@@ -758,7 +761,7 @@
  }
  
  bool ExtensionActionFunction::ExtractDataFromArguments() {
-@@ -267,6 +292,12 @@ void ExtensionActionFunction::NotifyChange() {
+@@ -267,6 +293,12 @@ void ExtensionActionFunction::NotifyChange() {
  }
  
  void ExtensionActionFunction::SetVisible(bool visible) {
@@ -771,7 +774,18 @@
    if (extension_action_->GetIsVisible(tab_id_) == visible) {
      return;
    }
-@@ -464,7 +495,9 @@ ExtensionActionGetBadgeTextFunction::RunExtensionAction() {
+@@ -362,7 +394,9 @@ ExtensionActionSetPopupFunction::RunExtensionAction() {
+   // back to an empty string (URL) will cause no popup to be shown (even if
+   // one is specified in the manifest).
+   if (!popup_string->empty()) {
+-    popup_url = extension()->ResolveExtensionURL(*popup_string);
++    // Firefox add-ons (dubna): relative to the calling page
++    // (firefox_action_popup.h).
++    popup_url = ResolveFirefoxPopupUrl(*this, *popup_string);
+     if (!popup_url.is_valid() || !popup_url.SchemeIs(kExtensionScheme)) {
+       return RespondNow(Error(manifest_errors::kInvalidExtensionPopupPath));
+     }
+@@ -464,7 +498,9 @@ ExtensionActionGetBadgeTextFunction::RunExtensionAction() {
  ExtensionFunction::ResponseAction
  ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -782,7 +796,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -475,7 +508,10 @@ ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
+@@ -475,7 +511,10 @@ ExtensionActionGetBadgeBackgroundColorFunction::RunExtensionAction() {
  ExtensionFunction::ResponseAction
  ActionGetBadgeTextColorFunction::RunExtensionAction() {
    base::ListValue list;
@@ -794,7 +808,7 @@
    list.Append(static_cast<int>(SkColorGetR(color)));
    list.Append(static_cast<int>(SkColorGetG(color)));
    list.Append(static_cast<int>(SkColorGetB(color)));
-@@ -496,7 +532,8 @@ ExtensionFunction::ResponseAction ActionGetUserSettingsFunction::Run() {
+@@ -496,7 +535,8 @@ ExtensionFunction::ResponseAction ActionGetUserSettingsFunction::Run() {
    // This API is only available to extensions with the "action" key in the
    // manifest, so they should always have an action.
    CHECK(action, base::NotFatalUntil::M161);
