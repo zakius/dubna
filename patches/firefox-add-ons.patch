@@ -3,8 +3,12 @@
 # in their namespaces' schemas, builds them and registers their prefs. Firefox's
 # names for Chromium's APIs are aliases: browser.menus and the "menus" permission
 # are contextMenus. A Firefox add-on's Manifest V3 background page (background.scripts
-# or .page) runs as Manifest V2's does, unless the manifest also has a service worker;
-# runtime.getContexts() lists such a page as the background.
+# or .page) runs as Manifest V2's does; runtime.getContexts() lists such a page as
+# the background. Of a Firefox add-on's backgrounds, the one Firefox picks runs,
+# with Firefox's warnings: a page over scripts, and a page or scripts over a
+# service worker unless background.preferred_environment puts "service_worker"
+# first; a background.type other than "classic" or "module" refuses the add-on
+# (firefox_background.h).
 # A Firefox add-on's version Chromium refuses ("3.4resigned1", "01", "1.2.3.4.5",
 # ".") loads as its leading numbers, with the full string as the version name,
 # and a name longer than 75 characters is cut to 75 (firefox_version.cc).
@@ -4020,7 +4024,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,29 @@ static_library("common") {
+@@ -402,6 +402,31 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -4028,6 +4032,8 @@
 +    "firefox_add_on.h",
 +    "firefox_add_on_availability.cc",
 +    "firefox_add_on_availability.h",
++    "firefox_background.cc",
++    "firefox_background.h",
 +    "firefox_cookie_store.h",
 +    "firefox_file_paths.cc",
 +    "firefox_file_paths.h",
@@ -4544,23 +4550,28 @@
    }
 --- a/extensions/common/manifest_handlers/background_info.cc
 +++ b/extensions/common/manifest_handlers/background_info.cc
-@@ -17,6 +17,7 @@
+@@ -17,6 +17,8 @@
  #include "extensions/common/constants.h"
  #include "extensions/common/error_utils.h"
  #include "extensions/common/file_util.h"
 +#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_background.h"
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/manifest_handlers/permissions_parser.h"
  #include "extensions/common/permissions/api_permission_set.h"
-@@ -140,6 +141,15 @@ bool BackgroundInfo::Parse(Extension* extension, std::u16string* error) {
+@@ -140,6 +142,19 @@ bool BackgroundInfo::Parse(Extension* extension, std::u16string* error) {
      return false;
    }
  
-+  // Firefox add-ons (dubna): an add-on for both browsers lists Firefox's
-+  // background page and Chromium's service worker. Chromium runs the worker.
-+  // Only a Firefox add-on has a background page in Manifest V3.
-+  if (background_service_worker_script_url_.has_value() ||
-+      (extension->manifest_version() >= 3 && !IsFirefoxAddOn(*extension))) {
++  // Firefox add-ons (dubna): Firefox runs one of the manifest's backgrounds
++  // (firefox_background.h). Only a Firefox add-on has a background page in
++  // Manifest V3.
++  if (IsFirefoxAddOn(*extension)) {
++    if (!PickFirefoxBackground(extension, background_url_, background_scripts_,
++                               background_service_worker_script_url_, error)) {
++      return false;
++    }
++  } else if (extension->manifest_version() >= 3) {
 +    background_url_ = GURL();
 +    background_scripts_.clear();
 +  }
@@ -4568,7 +4579,7 @@
    int background_solution_sum =
        (background_url_.is_valid() ? 1 : 0) +
        (!background_scripts_.empty() ? 1 : 0) +
-@@ -328,6 +338,14 @@ bool BackgroundInfo::LoadBackgroundPersistent(const Extension* extension,
+@@ -328,6 +343,14 @@ bool BackgroundInfo::LoadBackgroundPersistent(const Extension* extension,
      return false;
    }
    is_persistent_ = background_persistent->GetBool();
