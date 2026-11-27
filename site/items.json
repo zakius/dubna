@@ -1194,7 +1194,7 @@
 "p": "helium/core/keyboard-shortcuts",
 "w": "Ctrl/Cmd+Shift+C copies the page address. You can switch this off in Settings > Appearance, and then it opens Inspect element. Inspect element moves to Ctrl/Cmd+Shift+E. Web pages can no longer take the DevTools and tab-search shortcuts. On macOS, \"Email Link\" is gone, \"Copy URL\" is in the Edit menu and \"New split tab\" (Cmd+Opt+N) is in the Tab menu.",
 "s": "on",
-"n": ""
+"n": "No switch here: Ctrl+Shift+C is Copy URL, and Inspect elements is its own row on the Shortcuts page"
 },
 {
 "b": "og",
@@ -1810,7 +1810,7 @@
 "p": "helium/core/tab-cycling-mru",
 "w": "Adds the setting \"Cycle through tabs in most recently used order with Ctrl+Tab\" (Appearance, off by default).",
 "s": "on",
-"n": "oganesson has no setting: give Ctrl+Tab to the recently-used Next tab command on the Shortcuts page"
+"n": "oganesson has no setting: give Ctrl+Tab to Cycle to recently used tab on the Shortcuts page"
 },
 {
 "b": "og",
@@ -3166,7 +3166,7 @@
 "p": "helium/ui/layout/shortcuts",
 "w": "In Vertical layout, Ctrl+S (Cmd+S on Mac) collapses or expands the vertical tab strip instead of saving the page. A setting on the behavior page turns this on or off. In other layouts Ctrl+S still saves. Also removes Chromium's Ctrl+Shift+L shortcut for collapsing vertical tabs, and on Mac the Cmd+Alt+N shortcut for a new split tab.",
 "s": "on",
-"n": "Ctrl+S always saves the page here, with no setting: Collapse vertical tabs has no key until you give it one on the Shortcuts page",
+"n": "No setting here: by default Ctrl+S saves the page, and Toggle vertical tabs has no key until you give it one on the Shortcuts page. A profile that had Ctrl+S collapse vertical tabs keeps that key on Toggle vertical tabs",
 "t": "Layout: shortcuts"
 },
 {
@@ -3296,7 +3296,7 @@
 "p": "helium/ui/layout/zen-mode",
 "w": "Adds Zen mode: the toolbar, tab strip and vertical tab sidebar hide and slide back in when the mouse reaches the top or side edge of the window. They stay visible while the address bar is focused or a menu is open, and hide when the window loses focus. The top bar and sidebar can each be pinned. Ctrl+S shows or hides the side tabs, and a toast says \"new tab created\" when a link opens a tab you can't see. Also fixes pinned tabs per row in the vertical strip.",
 "s": "on",
-"n": "Ctrl+S saves the page here; Collapse vertical tabs on the Shortcuts page shows or hides the side tabs",
+"n": "Toggle vertical tabs on the Shortcuts page shows or hides the side tabs; by default it has no key and Ctrl+S saves the page",
 "t": "Layout: zen mode"
 },
 {
@@ -3490,7 +3490,7 @@
 "o": "oganesson",
 "a": "Input & shortcuts",
 "p": "oganesson/core/plain-shortcut-commands",
-"w": "Each key runs one command. Ctrl+Shift+C copies the page address, Ctrl+S saves the page, and Ctrl+Tab and Ctrl+Shift+Tab go to the next and previous tab. Inspect (Ctrl+Shift+E), Collapse vertical tabs and Next and Previous tab in recently-used order are rows of their own on the Shortcuts page, ready for any key. On the first start, keys that Helium's switches gave to other commands move to those commands, and keys you moved stay put.",
+"w": "Each key runs one command. By default, Ctrl+Shift+C copies the page address, Ctrl+S saves the page, and Ctrl+Tab and Ctrl+Shift+Tab go to the next and previous tab. Inspect elements (Ctrl+Shift+E), Toggle vertical tabs and Cycle to recently used tab (also in reverse) are rows of their own on the Shortcuts page. On the first start after the update, keys that Helium's switches gave to other commands move to those commands, and keys you moved stay put.",
 "s": "on",
 "n": "",
 "own": 1
@@ -4078,7 +4078,7 @@
 "o": "oganesson",
 "a": "Input & shortcuts",
 "p": "oganesson/settings/no-shortcut-switches",
-"w": "Removes Helium's switches for what Ctrl+Tab, Ctrl+Shift+C and Ctrl+S run from Behavior. Each command they chose between is its own row on the Shortcuts page.",
+"w": "Removes Helium's switches for what Ctrl+Tab, Ctrl+Shift+C and Ctrl+S run from Behavior.",
 "s": "on",
 "n": "",
 "own": 1
