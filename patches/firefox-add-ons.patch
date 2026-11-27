@@ -52,6 +52,10 @@
 # theme's colours in Firefox's key names (theme_api.cc), to any Firefox add-on.
 # browserAction has action's setBadgeTextColor, getBadgeTextColor and
 # getUserSettings, as in Firefox (firefox_browser_action.h).
+# browserAction.onUserSettingsChanged fires for a Firefox add-on's
+# browser_action as action's does, and a Firefox add-on's default_area pins it
+# at install (navbar, tabstrip, personaltoolbar) or doesn't (menupanel)
+# (firefox_action_user_settings.h).
 # browserAction's and action's setters and getters take Firefox's windowId: a
 # value for the tabs of one window (firefox_action_window.h).
 # contentScripts.register() is Firefox's (firefox_content_scripts.cc): dynamic
@@ -357,7 +361,7 @@
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +375,26 @@ source_set("extensions") {
+@@ -329,6 +375,31 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -381,10 +385,15 @@
 +    # Firefox add-ons (dubna): the ID in a .xpi's AMO signature.
 +    "firefox_xpi_signature.cc",
 +    "firefox_xpi_signature.h",
++
++    # Firefox add-ons (dubna): browserAction.onUserSettingsChanged and
++    # default_area.
++    "firefox_action_user_settings.cc",
++    "firefox_action_user_settings.h",
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +455,22 @@ source_set("extensions") {
+@@ -389,6 +460,22 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -407,7 +416,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +736,9 @@ source_set("extensions") {
+@@ -654,6 +741,9 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -1553,7 +1562,15 @@
  }  // namespace extensions
 --- a/chrome/browser/extensions/extension_action_dispatcher.cc
 +++ b/chrome/browser/extensions/extension_action_dispatcher.cc
-@@ -147,6 +147,11 @@ void ExtensionActionDispatcher::ClearAllValuesForTab(
+@@ -6,6 +6,7 @@
+ 
+ #include "base/lazy_instance.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_action_user_settings.h"
+ #include "components/sessions/content/session_tab_helper.h"
+ #include "components/sessions/core/session_id.h"
+ #include "content/public/browser/web_contents.h"
+@@ -147,6 +148,11 @@ void ExtensionActionDispatcher::ClearAllValuesForTab(
        }
        NotifyChange(extension_action, web_contents, browser_context);
      }
@@ -1565,6 +1582,16 @@
    }
  }
  
+@@ -182,6 +188,9 @@ void ExtensionActionDispatcher::OnActionPinnedStateChanged(
+                            events::ACTION_ON_USER_SETTINGS_CHANGED,
+                            "action.onUserSettingsChanged", std::move(args),
+                            EventRouter::UserGestureState::kNotEnabled);
++  // Firefox add-ons (dubna): browserAction's event for a browser_action.
++  DispatchFirefoxBrowserActionUserSettingsChanged(browser_context_,
++                                                  extension_id, is_pinned);
+ }
+ 
+ }  // namespace extensions
 --- a/chrome/browser/extensions/extension_install_prompt.cc
 +++ b/chrome/browser/extensions/extension_install_prompt.cc
 @@ -12,6 +12,7 @@
@@ -2261,6 +2288,25 @@
    navigation_extension_enabler_ =
        std::make_unique<extensions::NavigationExtensionEnabler>(new_contents);
  #endif
+--- a/chrome/browser/ui/toolbar/toolbar_actions_model.cc
++++ b/chrome/browser/ui/toolbar/toolbar_actions_model.cc
+@@ -21,6 +21,7 @@
+ #include "base/task/single_thread_task_runner.h"
+ #include "chrome/browser/extensions/extension_management.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_action_user_settings.h"
+ #include "chrome/browser/extensions/managed_toolbar_pin_mode.h"
+ #include "chrome/browser/extensions/profile_util.h"
+ #include "chrome/browser/extensions/sync/extension_sync_service.h"
+@@ -148,6 +149,8 @@ void ToolbarActionsModel::OnExtensionInstalled(
+       base::FeatureList::IsEnabled(features::kExtensionsPinnedByDefault);
+   bool is_toggle_on =
+       profile_->GetPrefs()->GetBoolean(prefs::kExtensionsPinnedByDefault);
++  // Firefox add-ons (dubna): the manifest's default_area, if it has one.
++  is_toggle_on = extensions::FirefoxPinnedAtInstall(*extension, is_toggle_on);
+   // Pin the extension if policy enforces default pinning, OR if no policy is
+   // set and default pinning is enabled by feature flag and user preference
+   // (excluding enterprise extensions, extensions installed from sync, and
 --- a/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
 +++ b/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
 @@ -7,6 +7,7 @@
@@ -2756,6 +2802,34 @@
        {
          "name": "enable",
          "type": "function",
+@@ -306,6 +417,27 @@
+             "$ref": "tabs.Tab"
+           }
+         ]
++      },
++      // Firefox add-ons (dubna): Firefox's onUserSettingsChanged
++      // (firefox_action_user_settings.h), as in action.json.
++      {
++        "name": "onUserSettingsChanged",
++        "firefox_only": true,
++        "type": "function",
++        "description": "Fired when user-specified settings relating to the browser action change.",
++        "parameters": [
++          {
++            "name": "change",
++            "type": "object",
++            "properties": {
++              "isOnToolbar": {
++                "type": "boolean",
++                "optional": true,
++                "description": "Whether the browser action is pinned to the toolbar."
++              }
++            }
++          }
++        ]
+       }
+     ]
+   }
 --- a/chrome/common/extensions/api/context_menus.json
 +++ b/chrome/common/extensions/api/context_menus.json
 @@ -6,6 +6,10 @@
