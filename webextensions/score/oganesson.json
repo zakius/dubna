@@ -1,5 +1,5 @@
 {
- "date": "2026-11-26",
+ "date": "2026-11-27",
  "browser": "oganesson 158.0.8127.88 (Chromium 158.0.8127.88)",
  "levels": {
   "L0": 836,
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'tlzaik7be15mlwejz7') (b0fe2f9e-6d37-411e-8c8d-bcaaf45e7a2b:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'elfeb47pffuud29nh3') (e66b6b44-0bac-4d32-9070-392e2c7698e2:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (0b19de09-9cec-4373-93f1-a7a686a595c4:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (c64b3bc8-46ac-4df7-b866-6fceb4b49fb6:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
