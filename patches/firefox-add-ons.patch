@@ -205,6 +205,10 @@
 # The popup of a Firefox add-on's Manifest V2 browser_action or page_action
 # with "browser_style": true has Firefox's extension.css, whose body has no
 # margin, so the popup is as large as its content (firefox_browser_style.h).
+# On the desktop, a Firefox add-on's onClicked of browserAction, action and
+# pageAction gets Firefox's OnClickData, from the click or key press on the
+# button, and a middle click on the button runs the action: onClicked fires,
+# also when the action has a popup (firefox_action_click.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -396,7 +400,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +460,22 @@ source_set("extensions") {
+@@ -389,6 +460,26 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -409,6 +413,10 @@
 +    "firefox_page_action_buttons.cc",
 +    "firefox_page_action_buttons.h",
 +
++    # Firefox add-ons (dubna): onClicked's OnClickData, and the middle click.
++    "firefox_action_click.cc",
++    "firefox_action_click.h",
++
 +    # Firefox add-ons (dubna): menus.onShown, onHidden and refresh().
 +    "firefox_menu_events.cc",
 +    "firefox_menu_events.h",
@@ -419,13 +427,16 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +741,9 @@ source_set("extensions") {
+@@ -654,6 +745,12 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
 +
 +    # Firefox add-ons (dubna): a .xpi's COSE signature.
 +    "//components/cbor",
++
++    # Firefox add-ons (dubna): the click that runs an action.
++    "//ui/events",
    ]
    public_deps = [
      "//chrome/browser/extensions/api/messaging",
@@ -1565,15 +1576,25 @@
  }  // namespace extensions
 --- a/chrome/browser/extensions/extension_action_dispatcher.cc
 +++ b/chrome/browser/extensions/extension_action_dispatcher.cc
-@@ -6,6 +6,7 @@
+@@ -6,6 +6,8 @@
  
  #include "base/lazy_instance.h"
  #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_action_click.h"
 +#include "chrome/browser/extensions/firefox_action_user_settings.h"
  #include "components/sessions/content/session_tab_helper.h"
  #include "components/sessions/core/session_id.h"
  #include "content/public/browser/web_contents.h"
-@@ -147,6 +148,11 @@ void ExtensionActionDispatcher::ClearAllValuesForTab(
+@@ -116,6 +118,8 @@ void ExtensionActionDispatcher::DispatchExtensionActionClicked(
+     args->data.Append(ExtensionTabUtil::CreateTabObject(
+                           web_contents, scrub_tab_behavior, extension)
+                           .ToValue());
++    // Firefox add-ons (dubna): Firefox's OnClickData (firefox_action_click.h).
++    AddFirefoxOnClickData(extension, args->data);
+ 
+     DispatchEventToExtension(web_contents->GetBrowserContext(),
+                              extension_action.extension_id(), histogram_value,
+@@ -147,6 +151,11 @@ void ExtensionActionDispatcher::ClearAllValuesForTab(
        }
        NotifyChange(extension_action, web_contents, browser_context);
      }
@@ -1585,7 +1606,7 @@
    }
  }
  
-@@ -182,6 +188,9 @@ void ExtensionActionDispatcher::OnActionPinnedStateChanged(
+@@ -182,6 +191,9 @@ void ExtensionActionDispatcher::OnActionPinnedStateChanged(
                             events::ACTION_ON_USER_SETTINGS_CHANGED,
                             "action.onUserSettingsChanged", std::move(args),
                             EventRouter::UserGestureState::kNotEnabled);
@@ -1595,6 +1616,28 @@
  }
  
  }  // namespace extensions
+--- a/chrome/browser/extensions/extension_action_runner.cc
++++ b/chrome/browser/extensions/extension_action_runner.cc
+@@ -18,6 +18,7 @@
+ #include "chrome/browser/extensions/api/side_panel/side_panel_service.h"
+ #include "chrome/browser/extensions/extension_action_dispatcher.h"
+ #include "chrome/browser/extensions/extension_tab_util.h"
++#include "chrome/browser/extensions/firefox_action_click.h"
+ #include "chrome/browser/extensions/tab_helper.h"
+ #include "chrome/browser/profiles/profile.h"
+ #include "chrome/browser/ui/extensions/reload_page_dialog_controller.h"
+@@ -138,7 +139,10 @@ ExtensionAction::ShowAction ExtensionActionRunner::RunAction(
+     return ExtensionAction::ShowAction::kNone;
+   }
+ 
+-  if (extension_action->HasPopup(tab_id)) {
++  // Firefox add-ons (dubna): a middle click fires onClicked, popup or not
++  // (firefox_action_click.h).
++  if (extension_action->HasPopup(tab_id) &&
++      !IsFirefoxMiddleClickRunning(*extension)) {
+     return ExtensionAction::ShowAction::kShowPopup;
+   }
+ 
 --- a/chrome/browser/extensions/extension_install_prompt.cc
 +++ b/chrome/browser/extensions/extension_install_prompt.cc
 @@ -12,6 +12,7 @@
@@ -2310,6 +2353,51 @@
    // Pin the extension if policy enforces default pinning, OR if no policy is
    // set and default pinning is enabled by feature flag and user preference
    // (excluding enterprise extensions, extensions installed from sync, and
+--- a/chrome/browser/ui/views/extensions/extensions_menu_button.cc
++++ b/chrome/browser/ui/views/extensions/extensions_menu_button.cc
+@@ -7,6 +7,7 @@
+ #include "base/functional/bind.h"
+ #include "base/metrics/user_metrics.h"
+ #include "base/metrics/user_metrics_action.h"
++#include "chrome/browser/extensions/firefox_action_click.h"
+ #include "chrome/browser/ui/browser_window/public/browser_window_interface.h"
+ #include "chrome/browser/ui/tabs/tab_strip_model.h"
+ #include "chrome/browser/ui/toolbar/toolbar_action_view_model.h"
+@@ -61,12 +62,19 @@ content::WebContents* ExtensionsMenuButton::GetCurrentWebContents() const {
+   return browser_->GetTabStripModel()->GetActiveWebContents();
+ }
+ 
+-void ExtensionsMenuButton::ButtonPressed() {
++void ExtensionsMenuButton::ButtonPressed(const ui::Event& event) {
++  extensions::ScopedFirefoxActionClick click(event);
+   base::RecordAction(
+       base::UserMetricsAction("Extensions.Toolbar.ExtensionActivatedFromMenu"));
+   model_->ExecuteUserAction(
+       ToolbarActionViewModel::InvocationSource::kMenuEntry);
+ }
+ 
++bool ExtensionsMenuButton::IsTriggerableEvent(const ui::Event& event) {
++  return HoverButton::IsTriggerableEvent(event) ||
++         extensions::IsFirefoxMiddleClick(event, GetCurrentWebContents(),
++                                          model_->GetId());
++}
++
+ BEGIN_METADATA(ExtensionsMenuButton)
+ END_METADATA
+--- a/chrome/browser/ui/views/extensions/extensions_menu_button.h
++++ b/chrome/browser/ui/views/extensions/extensions_menu_button.h
+@@ -44,7 +44,10 @@ class ExtensionsMenuButton : public HoverButton {
+  private:
+   void UpdateState();
+   content::WebContents* GetCurrentWebContents() const;
+-  void ButtonPressed();
++  // Firefox add-ons (dubna): `event` for onClicked's OnClickData, and a
++  // middle click that runs the action too (firefox_action_click.h).
++  void ButtonPressed(const ui::Event& event);
++  bool IsTriggerableEvent(const ui::Event& event) override;
+ 
+   const raw_ptr<BrowserWindowInterface, DanglingUntriaged> browser_;
+ 
 --- a/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
 +++ b/chrome/browser/ui/views/renderer_context_menu/render_view_context_menu_views.cc
 @@ -7,6 +7,7 @@
@@ -2334,6 +2422,52 @@
  }
  
  RenderViewContextMenuViews::~RenderViewContextMenuViews() = default;
+--- a/chrome/browser/ui/views/toolbar/toolbar_action_view.cc
++++ b/chrome/browser/ui/views/toolbar/toolbar_action_view.cc
+@@ -11,6 +11,7 @@
+ #include "base/metrics/user_metrics.h"
+ #include "base/metrics/user_metrics_action.h"
+ #include "chrome/browser/extensions/extension_context_menu_model.h"
++#include "chrome/browser/extensions/firefox_action_click.h"
+ #include "chrome/browser/themes/theme_properties.h"
+ #include "chrome/browser/ui/browser_element_identifiers.h"
+ #include "chrome/browser/ui/layout_constants.h"
+@@ -125,6 +126,12 @@ std::unique_ptr<LabelButtonBorder> ToolbarActionView::CreateDefaultBorder()
+ }
+ 
+ bool ToolbarActionView::IsTriggerableEvent(const ui::Event& event) {
++  // Firefox add-ons (dubna): a middle click runs the action too
++  // (firefox_action_click.h).
++  if (extensions::IsFirefoxMiddleClick(
++          event, delegate_->GetCurrentWebContents(), view_model_->GetId())) {
++    return true;
++  }
+   // By default MenuButton checks the time since the menu closure, but that
+   // prevents left clicks from showing the extension popup when the context menu
+   // is showing.  The time check is to prevent reshowing on the same click that
+@@ -341,7 +348,9 @@ void ToolbarActionView::OnPopupClosed() {
+   pressed_lock_.reset();  // Unpress the menu button if it was pressed.
+ }
+ 
+-void ToolbarActionView::ButtonPressed() {
++void ToolbarActionView::ButtonPressed(const ui::Event& event) {
++  // Firefox add-ons (dubna): onClicked's OnClickData (firefox_action_click.h).
++  extensions::ScopedFirefoxActionClick click(event);
+   if (view_model_->IsEnabled(delegate_->GetCurrentWebContents())) {
+     base::RecordAction(base::UserMetricsAction(
+         "Extensions.Toolbar.ExtensionActivatedFromToolbar"));
+--- a/chrome/browser/ui/views/toolbar/toolbar_action_view.h
++++ b/chrome/browser/ui/views/toolbar/toolbar_action_view.h
+@@ -135,7 +135,8 @@ class ToolbarActionView : public views::MenuButton {
+   // Like GetReferenceButtonForPopup but with a more precise return type.
+   views::Button* GetReferenceButtonForPopupInternal();
+ 
+-  void ButtonPressed();
++  // Firefox add-ons (dubna): `event` for onClicked's OnClickData.
++  void ButtonPressed(const ui::Event& event);
+ 
+   // A lock to keep the MenuButton pressed when a menu or popup is visible.
+   std::unique_ptr<views::MenuButtonController::PressedLock> pressed_lock_;
 --- a/chrome/common/extensions/api/BUILD.gn
 +++ b/chrome/common/extensions/api/BUILD.gn
 @@ -49,6 +49,9 @@ generated_json_strings("generated_api_json_strings") {
@@ -2595,6 +2729,29 @@
            "description": "The ID of the tab for which you want check enabled status."
          }
        ],
+@@ -404,6 +419,22 @@
+       "parameters": [{
+         "name": "tab",
+         "$ref": "tabs.Tab"
++      }, {
++        // Firefox add-ons (dubna): Firefox's OnClickData
++        // (firefox_action_click.h).
++        "name": "info",
++        "firefox_only": true,
++        "optional": true,
++        "type": "object",
++        "description": "The click: the mouse button and the keys held.",
++        "properties": {
++          "modifiers": {
++            "type": "array",
++            "items": {"type": "string"},
++            "description": "The keys held: Shift, Alt, Command, Ctrl or MacCtrl."
++          },
++          "button": {"type": "integer", "optional": true, "description": "0 for a left click or a key press, 1 for a middle click."}
++        }
+       }]
+     }, {
+       "name": "onUserSettingsChanged",
 --- a/chrome/common/extensions/api/api_sources.gni
 +++ b/chrome/common/extensions/api/api_sources.gni
 @@ -63,7 +63,20 @@ uncompiled_sources_ = [
@@ -2805,10 +2962,29 @@
        {
          "name": "enable",
          "type": "function",
-@@ -306,6 +417,27 @@
+@@ -304,6 +415,44 @@
+           {
+             "name": "tab",
              "$ref": "tabs.Tab"
-           }
-         ]
++          },
++          {
++            // Firefox add-ons (dubna): Firefox's OnClickData
++            // (firefox_action_click.h).
++            "name": "info",
++            "firefox_only": true,
++            "optional": true,
++            "type": "object",
++            "description": "The click: the mouse button and the keys held.",
++            "properties": {
++              "modifiers": {
++                "type": "array",
++                "items": {"type": "string"},
++                "description": "The keys held: Shift, Alt, Command, Ctrl or MacCtrl."
++              },
++              "button": {"type": "integer", "optional": true, "description": "0 for a left click or a key press, 1 for a middle click."}
++            }
++          }
++        ]
 +      },
 +      // Firefox add-ons (dubna): Firefox's onUserSettingsChanged
 +      // (firefox_action_user_settings.h), as in action.json.
@@ -2828,11 +3004,9 @@
 +                "description": "Whether the browser action is pinned to the toolbar."
 +              }
 +            }
-+          }
-+        ]
+           }
+         ]
        }
-     ]
-   }
 --- a/chrome/common/extensions/api/context_menus.json
 +++ b/chrome/common/extensions/api/context_menus.json
 @@ -6,6 +6,10 @@
@@ -3151,6 +3325,30 @@
                  "type": "string",
                  "description": "The relative path to the HTML file to show in a popup. If set to the empty string (<code>''</code>), no popup is shown."
                }
+@@ -176,6 +205,23 @@
+           {
+             "name": "tab",
+             "$ref": "tabs.Tab"
++          },
++          {
++            // Firefox add-ons (dubna): Firefox's OnClickData
++            // (firefox_action_click.h).
++            "name": "info",
++            "firefox_only": true,
++            "optional": true,
++            "type": "object",
++            "description": "The click: the mouse button and the keys held.",
++            "properties": {
++              "modifiers": {
++                "type": "array",
++                "items": {"type": "string"},
++                "description": "The keys held: Shift, Alt, Command, Ctrl or MacCtrl."
++              },
++              "button": {"type": "integer", "optional": true, "description": "0 for a left click or a key press, 1 for a middle click."}
++            }
+           }
+         ]
+       }
 --- a/chrome/common/extensions/api/privacy.json
 +++ b/chrome/common/extensions/api/privacy.json
 @@ -10,7 +10,14 @@

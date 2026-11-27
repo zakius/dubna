@@ -4,11 +4,10 @@
 #include "chrome/browser/extensions/firefox_menu_clicks.h"
 
 #include <string>
-#include <utility>
 
-#include "build/build_config.h"
 #include "chrome/browser/extensions/browser_window_util.h"
 #include "chrome/browser/extensions/context_menu_matcher.h"
+#include "chrome/browser/extensions/firefox_action_click.h"
 #include "chrome/browser/extensions/firefox_page_action_buttons.h"
 #include "chrome/browser/extensions/firefox_menu_view_types.h"
 #include "chrome/browser/extensions/menu_manager.h"
@@ -88,24 +87,7 @@ void AddFirefoxClickData(const Extension* extension,
   if (!extension || !IsFirefoxAddOn(*extension)) {
     return;
   }
-  // In the order of Firefox's clickModifiersFromEvent().
-  base::ListValue modifiers;
-  if (event_flags & ui::EF_SHIFT_DOWN) {
-    modifiers.Append("Shift");
-  }
-  if (event_flags & ui::EF_ALT_DOWN) {
-    modifiers.Append("Alt");
-  }
-  if (event_flags & ui::EF_COMMAND_DOWN) {
-    modifiers.Append("Command");
-  }
-  if (event_flags & ui::EF_CONTROL_DOWN) {
-    modifiers.Append("Ctrl");
-#if BUILDFLAG(IS_MAC)
-    modifiers.Append("MacCtrl");
-#endif
-  }
-  properties.Set("modifiers", std::move(modifiers));
+  properties.Set("modifiers", FirefoxClickModifiers(event_flags));
 
   int button = 0;
   if (event_flags & ui::EF_MIDDLE_MOUSE_BUTTON) {

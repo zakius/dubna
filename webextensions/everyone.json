@@ -33,6 +33,7 @@
   "chrome/browser/ui/tabs/tab_features.cc#f4e0e58369e4": "The browser's own behaviour on addons.mozilla.org, not an extension API: AMO sees Firefox's user agent, so it offers its .xpi files",
   "chrome/browser/ui/tabs/tab_menu_model.cc#6820faff547d": "Plumbing: the click's event flags reach the menu matcher, where only a Firefox add-on's items read them (firefox_menu_clicks.cc)",
   "chrome/browser/ui/views/tabs/tab/tab_context_menu_controller.cc#224cc8ea0526": "Plumbing: the click's event flags reach the menu matcher, where only a Firefox add-on's items read them (firefox_menu_clicks.cc)",
+  "chrome/browser/ui/views/toolbar/toolbar_action_view.cc#d72f6fe3c6ee": "Plumbing: the click's event reaches onClicked's OnClickData, which only a Firefox add-on's onClicked gets (firefox_action_click.cc)",
   "chrome/common/extensions/permissions/chrome_api_permissions.cc#1246e603752f": "The \"menus\" permission is contextMenus', as in Firefox; only Firefox add-ons have the menus namespace",
   "chrome/common/extensions/permissions/chrome_api_permissions.cc#5916152c0687": "Registers the permissions of browserSettings, theme and contextualIdentities, whose namespaces only Firefox add-ons have; Chromium drops such a permission with a warning, and here it grants no API",
   "chrome/common/extensions/permissions/chrome_permission_message_rules.cc#0433d56af383": "The install warning of browserSettings, a permission no Chrome extension asks for",

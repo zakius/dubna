@@ -13,7 +13,7 @@
   {"path": "browser/components/extensions/test/browser/browser_ext_autoplayInBackground.js", "api": "", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_activeTab.js", "api": "browserAction", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_area.js", "api": "browserAction", "state": "todo"},
-  {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_click_types.js", "api": "browserAction", "state": "todo"},
+  {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_click_types.js", "api": "browserAction", "state": "ported", "port": "firefox/browser_ext_browserAction_click_types.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_context.js", "api": "browserAction", "state": "ported", "port": "firefox/browser_ext_browserAction_context.py"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_contextMenu.js", "api": "browserAction", "state": "todo"},
   {"path": "browser/components/extensions/test/browser/browser_ext_browserAction_disabled.js", "api": "browserAction", "state": "todo"},
