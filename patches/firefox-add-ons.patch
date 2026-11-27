@@ -3768,6 +3768,19 @@
      *data += script.relative_path().AsUTF8Unsafe();
      *data += "\"></script>\n";
    }
+@@ -934,6 +941,12 @@ class ExtensionURLLoader : public network::mojom::URLLoader {
+         BuildHttpHeaders(content_security_policy, cross_origin_embedder_policy,
+                          cross_origin_opener_policy, origin_trial_tokens,
+                          send_cors_header, include_allow_service_worker_header);
++    // Firefox add-ons (dubna): Firefox refuses an add-on's file as a script
++    // without a JavaScript type, and as a style sheet without text/css.
++    // nosniff makes Blink refuse them too.
++    if (extension && IsFirefoxAddOn(*extension)) {
++      headers->SetHeader("X-Content-Type-Options", "nosniff");
++    }
+     // Component extension resources may be part of the embedder's resource
+     // files, for example component_extension_resources.pak in Chrome.
+     int resource_id = 0;
 --- a/extensions/browser/extension_user_script_loader.cc
 +++ b/extensions/browser/extension_user_script_loader.cc
 @@ -45,6 +45,8 @@
