@@ -48,7 +48,8 @@ class ScopedFirefoxActionClick {
 
 // Whether `event`, on the button of the action of `extension_id` in the
 // window of `web_contents`, is a middle click that runs the action: the
-// middle button's release, for a Firefox add-on.
+// middle button's release, for a Firefox add-on whose action is enabled in
+// that tab.
 bool IsFirefoxMiddleClick(const ui::Event& event,
                           content::WebContents* web_contents,
                           const ExtensionId& extension_id);

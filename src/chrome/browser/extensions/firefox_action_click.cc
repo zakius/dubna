@@ -6,7 +6,10 @@
 #include <utility>
 
 #include "build/build_config.h"
+#include "components/sessions/content/session_tab_helper.h"
 #include "content/public/browser/web_contents.h"
+#include "extensions/browser/extension_action.h"
+#include "extensions/browser/extension_action_manager.h"
 #include "extensions/browser/extension_registry.h"
 #include "extensions/common/extension.h"
 #include "extensions/common/firefox_add_on.h"
@@ -45,7 +48,15 @@ bool IsFirefoxMiddleClick(const ui::Event& event,
       ExtensionRegistry::Get(web_contents->GetBrowserContext())
           ->enabled_extensions()
           .GetByID(extension_id);
-  return extension && IsFirefoxAddOn(*extension);
+  if (!extension || !IsFirefoxAddOn(*extension)) {
+    return false;
+  }
+  // A disabled action does nothing on a middle click, as in Firefox.
+  const ExtensionAction* action =
+      ExtensionActionManager::Get(web_contents->GetBrowserContext())
+          ->GetExtensionAction(*extension);
+  return action && action->GetIsVisible(
+                       sessions::SessionTabHelper::IdForTab(web_contents).id());
 }
 
 bool IsFirefoxMiddleClickRunning(const Extension& extension) {
