@@ -202,6 +202,9 @@
 # pageAction.openPopup() and the menus command _execute_page_action run a
 # Firefox add-on's page action through the window's page action buttons
 # (firefox_page_action_buttons.h), which the desktop browser registers.
+# The popup of a Firefox add-on's Manifest V2 browser_action or page_action
+# with "browser_style": true has Firefox's extension.css, whose body has no
+# margin, so the popup is as large as its content (firefox_browser_style.h).
 --- a/chrome/browser/android/tab_features.cc
 +++ b/chrome/browser/android/tab_features.cc
 @@ -191,6 +191,7 @@
@@ -4993,7 +4996,7 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +274,22 @@ source_set("renderer") {
+@@ -246,6 +274,26 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -5013,6 +5016,10 @@
 +    # Firefox add-ons (dubna): runtime.lastError null without an error.
 +    "firefox_last_error.cc",
 +    "firefox_last_error.h",
++
++    # Firefox add-ons (dubna): Firefox's extension.css in a popup.
++    "firefox_browser_style.cc",
++    "firefox_browser_style.h",
    ]
  
    configs += [ "//build/config:precompiled_headers" ]
@@ -5383,15 +5390,16 @@
  }  // namespace extensions
 --- a/extensions/renderer/dispatcher.cc
 +++ b/extensions/renderer/dispatcher.cc
-@@ -79,6 +79,7 @@
+@@ -79,6 +79,8 @@
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/extensions_renderer_api_provider.h"
  #include "extensions/renderer/extensions_renderer_client.h"
++#include "extensions/renderer/firefox_browser_style.h"
 +#include "extensions/renderer/firefox_manifest_svg_icons.h"
  #include "extensions/renderer/ipc_message_sender.h"
  #include "extensions/renderer/isolated_world_manager.h"
  #include "extensions/renderer/module_system.h"
-@@ -443,6 +444,10 @@ void Dispatcher::DidCreateScriptContext(
+@@ -443,6 +445,10 @@ void Dispatcher::DidCreateScriptContext(
    RequireGuestViewModules(context);
  #endif
  
@@ -5402,6 +5410,16 @@
    const base::TimeDelta elapsed = base::TimeTicks::Now() - start_time;
    switch (context->context_type()) {
      case mojom::ContextType::kUnspecified:
+@@ -865,6 +871,9 @@ void Dispatcher::DidCreateDocumentElement(blink::WebLocalFrame* frame) {
+             IDR_EXTENSION_CSS);
+     frame->GetDocument().InsertStyleSheet(WebString::FromUtf8(extension_css));
+   }
++
++  // Firefox add-ons (dubna): a popup's browser_style (firefox_browser_style.h).
++  InsertFirefoxBrowserStyle(frame, extension, effective_document_url);
+ }
+ 
+ void Dispatcher::RunScriptsAtDocumentStart(content::RenderFrame* render_frame) {
 --- a/extensions/renderer/native_extension_bindings_system.cc
 +++ b/extensions/renderer/native_extension_bindings_system.cc
 @@ -45,10 +45,15 @@
@@ -5492,6 +5510,18 @@
  
    v8::Maybe<bool> success =
        apis->CreateDataProperty(context, api_name, root_binding);
+--- a/extensions/renderer/resources/BUILD.gn
++++ b/extensions/renderer/resources/BUILD.gn
+@@ -88,6 +88,9 @@ generate_grd("build_grdp") {
+     "uncaught_exception_handler.js",
+     "utils.js",
+     "web_request_event.js",
++
++    # Firefox add-ons (dubna): Firefox's extension.css in a popup.
++    "firefox_extension.css",
+   ]
+ 
+   if (is_chromeos) {
 --- a/extensions/renderer/resources/context_menus_handlers.js
 +++ b/extensions/renderer/resources/context_menus_handlers.js
 @@ -53,6 +53,21 @@
