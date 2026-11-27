@@ -1194,7 +1194,7 @@
 "p": "helium/core/keyboard-shortcuts",
 "w": "Ctrl/Cmd+Shift+C copies the page address. You can switch this off in Settings > Appearance, and then it opens Inspect element. Inspect element moves to Ctrl/Cmd+Shift+E. Web pages can no longer take the DevTools and tab-search shortcuts. On macOS, \"Email Link\" is gone, \"Copy URL\" is in the Edit menu and \"New split tab\" (Cmd+Opt+N) is in the Tab menu.",
 "s": "on",
-"n": "No switch here: Ctrl+Shift+C is Copy URL, and Inspect elements is its own row on the Shortcuts page"
+"n": "No switch here: by default Ctrl+Shift+C is Copy URL, and Inspect elements is its own row on the Shortcuts page"
 },
 {
 "b": "og",
