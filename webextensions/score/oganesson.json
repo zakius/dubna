@@ -138,7 +138,7 @@
   },
   "webextension@metamask.io": {
    "level": "L2",
-   "error": "Uncaught ReferenceError: Compartment is not defined (vendor/trezor/content-script.js:1)"
+   "error": "its content scripts did not run on https://connect.trezor.io//popup.html"
   },
   "languagetool-webextension@languagetool.org": {
    "level": "L2",
@@ -246,7 +246,7 @@
   },
   "extension@one-tab.com": {
    "level": "L2",
-   "error": "the smoke check failed: <urlopen error [Errno 111] Connection refused>"
+   "error": "the smoke check failed: HTTP Error 500: Internal Server Error"
   },
   "CookieAutoDelete@kennydo.com": {
    "level": "L3",
@@ -494,7 +494,7 @@
   },
   "adnauseam@rednoise.org": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'f7ys9pftoumjfnbzzd') (6119b220-edba-4209-ab53-f795b0a312d8:27)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading '51sjlpuzlli749kd82') (46ca9dc9-74ec-4453-b372-fba1d443f542:27)"
   },
   "control-panel-for-youtube@jbscript.dev": {
    "level": "L3",
@@ -566,7 +566,7 @@
   },
   "user-agent-switcher@ninetailed.ninja": {
    "level": "L2",
-   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (cb456d7f-4343-4e90-912d-af152209325d:37)"
+   "error": "Uncaught TypeError: Cannot read properties of undefined (reading 'Proxy') (78ea3659-29f2-435d-8357-d1d75f5666a0:37)"
   },
   "2.0@disconnect.me": {
    "level": "L3",
@@ -1010,7 +1010,7 @@
   },
   "offline-qr-code@rugk.github.io": {
    "level": "L2",
-   "error": "Uncaught (in promise) Error: using selection is disabled (popup/modules/InitQrCode.js:37)"
+   "error": "Uncaught (in promise) Error: show no random tip, because randomize did not pass (common/modules/RandomTips/RandomTips.js:333)"
   },
   "remove-paywall@example.com": {
    "level": "L3",
@@ -1262,7 +1262,7 @@
   },
   "{0c5b3b07-980a-413d-abd5-97a5eb4a0ff8}": {
    "level": "L2",
-   "error": "Uncaught (in promise) Error: Failed to construct 'URL': Invalid URL (_generated_background_page.html:0)"
+   "error": "Uncaught SyntaxError: Identifier 'instances' has already been declared (common.js:1)"
   },
   "ext_3tjvlkpa@extension-studio.com": {
    "level": "L3",
