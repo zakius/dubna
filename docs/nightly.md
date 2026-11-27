@@ -51,7 +51,7 @@ The daily chain is the router's: space, the upstream checks, updates, releases, 
 The next round starts only when all of these hold. The router checks them at the end of the daily chain, and the climb stage at the end of each round. Check in order and report the first that fails.
 
 1. The rounds aren't paused: `work/rounds-paused` doesn't exist. The maintainer pauses them with `tools/rounds.py pause <reason>` to edit something between rounds, and `tools/rounds.py resume` starts the next round. When paused, report the file's reason.
-2. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`. After a security chain, the round before it counts, and `stopped security` counts as landed.
+2. The chain landed: the daily chain wrote `end chain landed`, or the round's climb ended `landed`. After a security chain, the last chain before it that is not a security chain counts, and its climb's `stopped security` counts as landed.
 3. No other run is queued in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1). A queued run is the 18:00 router, a security run or a stage started by hand, and it goes first: the rounds start again after its chain.
 4. tools/usage_pace.py prints "headroom: yes" first ("headroom: unknown" counts as no). Fable's limit doesn't count: Opus reviews when Fable can't. The week's usage, this thread's included, must be under an even pace (93 points over the 7 days), so the rounds last the whole week and leave room for the maintainer's other work. The projection to the reset counts only the work outside this thread. The 18:00 chains still to come aren't projected either.
 5. No other T3 thread is active (t3_thread_list, allProjects true, statuses running, starting, preparing, queued), apart from this one. If one is, wait for it (t3_thread_wait, timeoutMs 1800000, called again until it is idle) for at most 2 hours in all, then check 1 to 5 again. So a busy maintainer thread or the morning changelog watch delays a round instead of ending the rounds. Still active after 2 hours, or the wait says to end your turn: name it and stop.
@@ -83,8 +83,9 @@ The security run waits in the thread's queue like any run, so it never overlaps 
 The security stage builds nothing. It logs what is due, and the router starts the update stages. It has no `start` or `end` line, so of "Starting a stage" only step 1 applies:
 
 1. Read the log from the last `begin`. If the last line is `start <stage> …`, look for a queued run in this thread (t3_thread_read on the router's thread, runLimit 5, limit 1):
-   - A run is queued: that stage was started and waits behind you. Change nothing, post to the security webhook again (the command in "Climb rounds", with STAGE=security), and end. A queued climb finds `work/security-pending` and stops at once; this run's copy follows it.
-   - None is queued: the stage died. Append `end <stage> died`, and `end chain nothing` if it was a climb round.
+   - A run is queued and `work/security-reposted` doesn't exist: that stage was started and waits behind you. Create the file, change nothing else, post to the security webhook again (the command in "Climb rounds", with STAGE=security), and end. A queued climb finds `work/security-pending` and stops at once; this run's copy follows it.
+   - Otherwise the stage died: a stage queued before the copy would have run by now. Append `end <stage> died`, and `end chain nothing` if it was a climb round.
+   Delete `work/security-reposted` unless you just created it, so a run re-posts itself at most once.
 2. Run upstream_status.py as the router does (2b) and keep the `update` and `zeroday` lines. For a `zeroday` line that says "find the version that fixes it", do as the router's 2c. If the script fails, report it and go on with no lines.
 3. Log, then delete `work/security-pending`:
    - An open daily chain or security chain: append a `finding` line for each line that the chain doesn't have.
@@ -94,7 +95,7 @@ The security stage builds nothing. It logs what is due, and the router starts th
 In a security chain the router starts the update stages; `site` and `release final` only after an update stage ran. When the chain has ended:
 
 - If no daily chain has begun since the last 18:00 (the 18:00 run found a security run queued or its chain open, and left the day to it), the router appends `begin` and begins the daily chain at once.
-- Otherwise, if the chain before it was a climb round whose climb ended `landed` or `stopped security`, the router checks "Climb rounds" 1 to 5 for the next round, numbered on from that round.
+- Otherwise, if the last chain before it that is not a security chain was a climb round whose climb ended `landed` or `stopped security`, the router checks "Climb rounds" 1 to 5 for the next round, numbered on from that round.
 
 ## Starting a stage
 

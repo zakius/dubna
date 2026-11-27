@@ -65,14 +65,18 @@ def main():
         url = webhook('security')
         if not url:
             sys.exit(f'no security webhook in {WEBHOOKS}')
+        before = PENDING.read_text() if PENDING.exists() else None
         # Before the post: the run can start and remove it before the post returns.
         write(PENDING, unlogged(sent, log) + found)
         try:
             status = post(url)
         except Exception as error:  # pylint: disable=broad-except
-            # Not marked sent, so the next hour tries again; no climb stops for a run
-            # that never comes.
-            write(PENDING, unlogged(sent, log))
+            # Not marked sent, so the next hour tries again. The flag goes back as it was,
+            # so no climb stops for a run that never comes.
+            if before is None:
+                PENDING.unlink(missing_ok=True)
+            else:
+                PENDING.write_text(before)
             sys.exit(f'the security webhook failed: {type(error).__name__} '
                      f'{getattr(error, "code", "")}'.rstrip())
         sent += found
