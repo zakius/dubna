@@ -23,6 +23,11 @@
 # Shortcuts load as Firefox reads them: Ctrl+Alt, F1 to F12 alone or with Shift,
 # MacCtrl as Ctrl, any number of shortcuts, and a command without a description
 # or a key for this platform; the shortcuts page takes them too (function_keys.cc).
+# A Firefox add-on's commands load as Firefox reads them (firefox_commands.h):
+# keys of other platforms (android, ios) are ignored, Command is Ctrl off
+# macOS, and a key with the same modifier twice is refused. Its suggested key
+# wins over the browser's own shortcut, and commands.getAll() gives a null
+# description for a command without one.
 # A Manifest V2 event page that asks for webRequest runs as a persistent page.
 # A Firefox add-on's page_action next to a browser_action or action, or in Manifest V3, is a
 # second action that pageAction.* reaches (firefox_page_action.h).
@@ -569,6 +574,29 @@
      *error = bookmarks_errors::kInvalidIdError;
      return nullptr;
    }
+--- a/chrome/browser/extensions/api/commands/commands.cc
++++ b/chrome/browser/extensions/api/commands/commands.cc
+@@ -10,6 +10,8 @@
+ #include "chrome/browser/extensions/commands/command_service.h"
+ #include "extensions/buildflags/buildflags.h"
+ #include "extensions/common/api/extension_action/action_info.h"
++#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_commands.h"
+ 
+ static_assert(BUILDFLAG(ENABLE_EXTENSIONS_CORE));
+ 
+@@ -73,5 +75,11 @@ ExtensionFunction::ResponseAction CommandsGetAllFunction::Run() {
+     command_list.Append(CreateCommandValue(iter->second, active));
+   }
+ 
++  // Firefox add-ons (dubna): a command without a description has a null
++  // one, as in Firefox.
++  if (IsFirefoxAddOn(*extension_)) {
++    SetFirefoxCommandDescriptions(*extension_, command_list);
++  }
++
+   return RespondNow(WithArguments(std::move(command_list)));
+ }
 --- a/chrome/browser/extensions/api/context_menus/context_menus_api.cc
 +++ b/chrome/browser/extensions/api/context_menus/context_menus_api.cc
 @@ -10,11 +10,16 @@
@@ -1147,6 +1175,29 @@
  
    // Dispatches the `tabs.onCreated` API event for the given `contents`.
    // `active` indicates if the tab is active in its tab strip.
+--- a/chrome/browser/extensions/commands/command_service.cc
++++ b/chrome/browser/extensions/commands/command_service.cc
+@@ -31,6 +31,7 @@
+ #include "extensions/common/command.h"
+ #include "extensions/common/extension_id.h"
+ #include "extensions/common/feature_switch.h"
++#include "extensions/common/firefox_add_on.h"
+ #include "extensions/common/manifest_constants.h"
+ #include "extensions/common/permissions/permissions_data.h"
+ #include "ui/base/accelerators/command.h"
+@@ -572,7 +573,11 @@ bool CommandService::CanAutoAssign(const ui::Command& command,
+   }
+ 
+   // Not a global command, check if the command is a Chrome shortcut.
+-  return !IsChromeAccelerator(command.accelerator());
++  // Firefox add-ons (dubna): a Firefox add-on's key wins over the browser's
++  // shortcut, as in Firefox. Extension shortcuts have the high priority
++  // (accelerator_priority.h), so the key reaches the add-on first.
++  return IsFirefoxAddOn(*extension) ||
++         !IsChromeAccelerator(command.accelerator());
+ }
+ 
+ void CommandService::UpdateExtensionSuggestedCommandPrefs(
 --- a/chrome/browser/extensions/context_menu_helpers.cc
 +++ b/chrome/browser/extensions/context_menu_helpers.cc
 @@ -154,6 +154,13 @@
@@ -4033,7 +4084,7 @@
    } else if (prefs->HasAllowFileAccessSetting(id)) {
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
-@@ -402,6 +402,29 @@ static_library("common") {
+@@ -402,6 +402,31 @@ static_library("common") {
      "features/simple_feature.h",
      "file_util.cc",
      "file_util.h",
@@ -4041,6 +4092,8 @@
 +    "firefox_add_on.h",
 +    "firefox_add_on_availability.cc",
 +    "firefox_add_on_availability.h",
++    "firefox_commands.cc",
++    "firefox_commands.h",
 +    "firefox_cookie_store.h",
 +    "firefox_file_paths.cc",
 +    "firefox_file_paths.h",
@@ -4171,9 +4224,12 @@
      "channel": "stable",
 --- a/extensions/common/api/commands/commands_handler.cc
 +++ b/extensions/common/api/commands/commands_handler.cc
-@@ -14,19 +14,12 @@
+@@ -13,20 +13,15 @@
+ #include "base/values.h"
  #include "extensions/common/command.h"
  #include "extensions/common/error_utils.h"
++#include "extensions/common/firefox_add_on.h"
++#include "extensions/common/firefox_commands.h"
  #include "extensions/common/manifest_constants.h"
 -#include "extensions/common/manifest_handlers/permissions_parser.h"
  #include "ui/base/accelerators/command.h"
@@ -4191,7 +4247,22 @@
  // static
  const char* CommandsInfo::kManifestDataKey = keys::kCommands;
  
-@@ -81,7 +74,6 @@ bool CommandsHandler::Parse(Extension* extension, std::u16string* error) {
+@@ -72,6 +67,14 @@ bool CommandsHandler::Parse(Extension* extension, std::u16string* error) {
+ 
+   const base::DictValue* dict =
+       extension->manifest()->available_values().FindDict(keys::kCommands);
++  // Firefox add-ons (dubna): Firefox's suggested keys (firefox_commands.h).
++  base::DictValue firefox_commands;
++  if (dict && IsFirefoxAddOn(*extension)) {
++    if (!ReadFirefoxCommands(*dict, &firefox_commands, error)) {
++      return false;
++    }
++    dict = &firefox_commands;
++  }
+   if (!dict) {
+     *error = manifest_errors::kInvalidCommandsKey;
+     return false;
+@@ -81,7 +84,6 @@ bool CommandsHandler::Parse(Extension* extension, std::u16string* error) {
  
    bool invalid_action_command_specified = false;
    int command_index = 0;
@@ -4199,7 +4270,7 @@
    for (const auto item : *dict) {
      ++command_index;
  
-@@ -97,23 +89,9 @@ bool CommandsHandler::Parse(Extension* extension, std::u16string* error) {
+@@ -97,23 +99,10 @@ bool CommandsHandler::Parse(Extension* extension, std::u16string* error) {
      if (!binding->Parse(*command, item.first, command_index, error))
        return false;  // |error| already set.
  
@@ -4221,8 +4292,9 @@
 -      }
 -    }
 +    // Firefox add-ons (dubna): any number of commands has a shortcut, as in
-+    // Firefox. CommandService doesn't assign one that the browser or another
-+    // extension has, so the user can set it on the shortcuts page.
++    // Firefox. CommandService doesn't assign one that another extension has,
++    // or for a Chrome extension one that the browser has, so the user can set
++    // it on the shortcuts page.
  
      std::string command_name = binding->command_name();
      // Set the command only if it's correct for the manifest's action type. This
