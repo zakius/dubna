@@ -115,6 +115,10 @@
 # frame of a window (blink's WebFrame::FromWindowOrNullopt()) or frame
 # element and asks the browser for its documentId with a synchronous message
 # (firefox_document_id.h).
+# A Firefox add-on gets each documentId in Firefox's form, a UUID, and may
+# send it back in either form: the renderer turns it at the bindings'
+# results, events and requests, and at messaging's sender and options
+# (firefox_document_ids.h).
 # UserScriptLoader::SendUpdate() sends a renderer process only the
 # contentScripts scripts of its cookie store (firefox_content_script_stores.h).
 # A Firefox add-on's targetUrlPatterns take any scheme and match as Firefox's
@@ -4834,7 +4838,7 @@
      "bindings/exception_handler.cc",
      "bindings/exception_handler.h",
      "bindings/interaction_provider.h",
-@@ -246,6 +274,22 @@ source_set("renderer") {
+@@ -246,6 +274,26 @@ source_set("renderer") {
      "worker_thread_dispatcher.h",
      "worker_thread_util.cc",
      "worker_thread_util.h",
@@ -4854,6 +4858,10 @@
 +    # Firefox add-ons (dubna): runtime.lastError null without an error.
 +    "firefox_last_error.cc",
 +    "firefox_last_error.h",
++
++    # Firefox add-ons (dubna): documentIds in Firefox's form.
++    "bindings/firefox_document_ids.cc",
++    "bindings/firefox_document_ids.h",
    ]
  
    configs += [ "//build/config:precompiled_headers" ]
@@ -4884,15 +4892,26 @@
  }  // namespace extensions
 --- a/extensions/renderer/api/messaging/messaging_util.cc
 +++ b/extensions/renderer/api/messaging/messaging_util.cc
-@@ -23,6 +23,7 @@
+@@ -23,6 +23,8 @@
  #include "extensions/common/manifest_handlers/message_serialization_info.h"
  #include "extensions/common/mojom/context_type.mojom.h"
  #include "extensions/common/mojom/message_port.mojom.h"
 +#include "extensions/renderer/api/messaging/firefox_message_target.h"
++#include "extensions/renderer/bindings/firefox_document_ids.h"
  #include "extensions/renderer/extension_interaction_provider.h"
  #include "extensions/renderer/get_script_context.h"
  #include "extensions/renderer/script_context.h"
-@@ -401,6 +402,10 @@ bool GetTargetExtensionId(ScriptContext* script_context,
+@@ -364,6 +366,9 @@ MessageOptions ParseMessageOptions(v8::Local<v8::Context> context,
+     if (!v8_document_id->IsUndefined()) {
+       DCHECK(v8_document_id->IsString());
+       options.document_id = gin::V8ToString(isolate, v8_document_id);
++      // Firefox add-ons (dubna): firefox_document_ids.h.
++      options.document_id =
++          TakeFirefoxDocumentId(context, options.document_id);
+     }
+   }
+ 
+@@ -401,6 +406,10 @@ bool GetTargetExtensionId(ScriptContext* script_context,
    } else {
      DCHECK(v8_target_id->IsString());
      target_id = gin::V8ToString(script_context->isolate(), v8_target_id);
@@ -4903,6 +4922,27 @@
      // NOTE(devlin): JS bindings only validate that the extension id is present,
      // rather than validating its content. This seems better. Let's see how this
      // goes.
+--- a/extensions/renderer/api/messaging/native_renderer_messaging_service.cc
++++ b/extensions/renderer/api/messaging/native_renderer_messaging_service.cc
+@@ -29,6 +29,7 @@
+ #include "extensions/renderer/api/messaging/messaging_util.h"
+ #include "extensions/renderer/api_activity_logger.h"
+ #include "extensions/renderer/bindings/api_binding_util.h"
++#include "extensions/renderer/bindings/firefox_document_ids.h"
+ #include "extensions/renderer/bindings/get_per_context_data.h"
+ #include "extensions/renderer/extension_interaction_provider.h"
+ #include "extensions/renderer/get_script_context.h"
+@@ -651,7 +652,9 @@ void NativeRendererMessagingService::DispatchOnConnectToListeners(
+     sender_builder.Set("frameId", source.frame_id);
+   }
+   if (!source.document_id.empty()) {
+-    sender_builder.Set("documentId", source.document_id);
++    // Firefox add-ons (dubna): firefox_document_ids.h.
++    sender_builder.Set("documentId",
++                       GiveFirefoxDocumentId(v8_context, source.document_id));
+   }
+   if (!source.document_lifecycle.empty()) {
+     sender_builder.Set("documentLifecycle", source.document_lifecycle);
 --- a/extensions/renderer/bindings/api_binding.cc
 +++ b/extensions/renderer/bindings/api_binding.cc
 @@ -607,6 +607,9 @@ void APIBinding::HandleCall(const std::string& name,
@@ -4917,15 +4957,25 @@
      // currrent system does (though perhaps it should). Investigate.
 --- a/extensions/renderer/bindings/api_request_handler.cc
 +++ b/extensions/renderer/bindings/api_request_handler.cc
-@@ -13,6 +13,7 @@
+@@ -13,6 +13,8 @@
  #include "extensions/renderer/bindings/api_binding_util.h"
  #include "extensions/renderer/bindings/api_response_validator.h"
  #include "extensions/renderer/bindings/exception_handler.h"
++#include "extensions/renderer/bindings/firefox_document_ids.h"
 +#include "extensions/renderer/bindings/firefox_schema_view.h"
  #include "extensions/renderer/bindings/js_runner.h"
  #include "gin/arguments.h"
  #include "gin/converter.h"
-@@ -633,6 +634,9 @@ void APIRequestHandler::CompleteRequestImpl(int request_id,
+@@ -453,6 +455,8 @@ v8::Local<v8::Promise> APIRequestHandler::StartRequest(
+     v8::Local<v8::Function> callback,
+     v8::Local<v8::Function> custom_callback,
+     binding::ResultModifierFunction result_modifier) {
++  // Firefox add-ons (dubna): firefox_document_ids.h.
++  TakeFirefoxDocumentIds(context, method, arguments_list);
+   v8::Isolate* isolate = v8::Isolate::GetCurrent();
+ 
+   v8::Local<v8::Promise> promise;
+@@ -633,6 +637,9 @@ void APIRequestHandler::CompleteRequestImpl(int request_id,
  
    const v8::LocalVector<v8::Value>& response_args =
        arguments.GetArguments(context);

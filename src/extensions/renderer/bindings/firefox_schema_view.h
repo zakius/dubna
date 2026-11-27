@@ -51,7 +51,8 @@ bool IsFirefoxContext(v8::Local<v8::Context> context);
 // properties that the schema marks "firefox_only", such as a tab's
 // cookieStoreId, unless `context` is a Firefox add-on's. The browser sends
 // them to every extension. The bindings system sets the filter
-// (RemoveFirefoxOnlyResults), which needs the schemas.
+// (RemoveFirefoxOnlyResults), which needs the schemas. A Firefox add-on gets
+// the documentIds in `values` in Firefox's form (firefox_document_ids.h).
 using ResultFilter = void (*)(v8::Local<v8::Context> context,
                               std::string_view name,
                               bool is_event,

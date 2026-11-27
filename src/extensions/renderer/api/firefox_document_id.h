@@ -17,10 +17,10 @@ class ScriptContext;
 // which RuntimeHooksDelegate hands here. It returns the documentId that
 // webNavigation, webRequest and scripting give for the document of a window,
 // local or remote, or of an <iframe>, <frame>, <embed> or <object> element,
-// synchronously as in Firefox. The ID is the browser's, so the renderer asks
-// for it with a synchronous message (extensions/browser/
-// firefox_document_id.h). Other targets, and frames that are gone, throw
-// Firefox's errors.
+// synchronously and in Firefox's form (firefox_document_ids.h) as in
+// Firefox. The ID is the browser's, so the renderer asks for it with a
+// synchronous message (extensions/browser/firefox_document_id.h). Other
+// targets, and frames that are gone, throw Firefox's errors.
 APIBindingHooks::RequestResult HandleFirefoxGetDocumentId(
     ScriptContext* script_context,
     const APISignature* signature,

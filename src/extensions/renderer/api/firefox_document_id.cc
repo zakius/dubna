@@ -10,6 +10,7 @@
 #include "content/public/renderer/render_frame.h"
 #include "extensions/common/mojom/frame.mojom.h"
 #include "extensions/renderer/bindings/api_signature.h"
+#include "extensions/renderer/bindings/firefox_document_ids.h"
 #include "extensions/renderer/extension_frame_helper.h"
 #include "extensions/renderer/script_context.h"
 #include "gin/converter.h"
@@ -88,7 +89,8 @@ RequestResult HandleFirefoxGetDocumentId(
   }
 
   RequestResult result(RequestResult::HANDLED);
-  result.return_value = gin::StringToV8(isolate, document_id);
+  result.return_value =
+      gin::StringToV8(isolate, DocumentIdInFirefoxForm(document_id));
   return result;
 }
 

@@ -3,6 +3,8 @@
 
 #include "extensions/renderer/bindings/firefox_schema_view.h"
 
+#include "extensions/renderer/bindings/firefox_document_ids.h"
+
 namespace extensions::firefox_schema_view {
 
 namespace {
@@ -100,6 +102,7 @@ void FilterResults(v8::Local<v8::Context> context,
   if (g_result_filter) {
     g_result_filter(context, name, is_event, values);
   }
+  GiveFirefoxDocumentIds(context, name, values);
 }
 
 }  // namespace extensions::firefox_schema_view
