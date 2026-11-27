@@ -1,6 +1,6 @@
 # Nightly runs
 
-The nightly update is a chain of T3 scheduled tasks. The router starts the daily chain at 18:00: it checks space, the upstreams and the releases, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. After the daily chain, climb rounds follow: each is one climb stage, which starts the next round itself ("Climb rounds"). So the router, the upstream checks, the tasks stage and the site run once a day, and the climb runs on. Only one stage runs at a time, and never two builds at once.
+The nightly update is a chain of T3 scheduled tasks. The router starts the daily chain at 18:00: it checks space, the upstreams and the releases, decides what is due, and starts one stage. Each stage does one job, writes one line to the log and starts the router again. The router then picks the next stage. After the daily chain, climb rounds follow: each is one climb stage, which starts the next round itself ("Climb rounds"). So the router, the upstream checks, the tasks stage and the site run once a day, and the climb runs on. An hourly check starts a security chain when an upstream release is due before 18:00 ("Security runs"). Only one stage runs at a time, and never two builds at once.
 
 | Task | Job |
 |---|---|
@@ -11,6 +11,7 @@ The nightly update is a chain of T3 scheduled tasks. The router starts the daily
 | dubna nightly · tasks | A batch of open issues |
 | dubna nightly · climb | A batch of WebExtensions climb steps, mostly implementation: as many as one build can ship, pushed to main without a tag. In a round, it starts the next round |
 | dubna nightly · site | Bring the site and its release notes up to date |
+| dubna nightly · security | Log an upstream release that tools/security_watch.py found due, and start the router ("Security runs") |
 
 Every task is bound to one thread, the router's, and posts there. The router's task id and that thread's id are machine config, not in Git: the `router` and `thread` lines of ~/.config/dubna/nightly-ids (tab-separated). tools/usage_pace.py counts that thread's usage apart, and a `past-thread` line's too. Each run starts a fresh session, so the log, not the thread, carries the state. A run started while the thread is busy waits in the thread's queue, so runs never overlap.
 
@@ -36,8 +37,8 @@ The chain keeps its state in `work/nightly.log` (not in Git). Each line is a UTC
 2026-11-11T21:10:00Z end chain landed
 ```
 
-- `begin` opens a chain. Only the router writes `begin`, `round`, `finding`, `space`, `start` and `end chain` lines, and the climb stage, for the round it ends and the next one.
-- `round <N>` comes right after the `begin` of a climb round (see "Climb rounds"). The daily chain, begun at 18:00 or by hand, has no `round` line.
+- `begin` opens a chain. Only the router writes `begin`, `round`, `finding`, `space`, `start` and `end chain` lines, and the climb stage, for the round it ends and the next one, and the security stage, for the chain it begins or the findings it adds ("Security runs").
+- `round <N>` comes right after the `begin` of a climb round (see "Climb rounds"). `security` comes right after the `begin` of a security chain. The daily chain, begun at 18:00 or by hand, has neither.
 - `start <stage> [details]` comes just before the stage is started. The details are what the stage works on.
 - `end <stage> <result> <summary>` is the stage's last line. The result is `landed` (pushed something), `nothing`, `skipped` or `stopped` (stopped before a push, or left something broken). The router writes `end <stage> died` for a stage whose thread stopped without an end line.
 
@@ -66,6 +67,30 @@ The URLs in that file are secrets: never print, log or commit them. If the comma
 At the end of a round, the climb stage appends its end line, then `end chain landed` or `end chain nothing`, then checks 1 to 5. It never starts the router. When a check fails, the rounds stop until 18:00 or a start by hand (`tools/rounds.py resume`).
 
 When the router finds a round still open, it closes it: `end climb died` if the last line is `start climb`, then `end chain landed` or `end chain nothing`. If the climb wrote its own end line (it started the router instead of the next round), the router checks 1 to 5 for the next round. If the climb died, the router begins the daily chain.
+
+## Security runs
+
+Every Chromium release in our milestone carries security fixes, so an upstream release that the policy takes now (an `update` or `zeroday` finding) doesn't wait for 18:00. A systemd user timer (tools/systemd/) runs tools/security_watch.py at half past every hour. The script runs tools/upstream_status.py and keeps its `update` and `zeroday` lines. A line is new when no `finding` line in the log has it and the script hasn't sent it before (`work/security-sent`). For new lines it writes them to `work/security-pending` and posts to the `security` stage's webhook. When nothing is new, no agent runs. A `milestone` finding still waits for 18:00. The policy is unchanged: we take the upstream's release, and bump Chromium ourselves only for a zero-day (rule 3).
+
+The security run waits in the thread's queue like any run, so it never overlaps a stage. It goes before the router that the running stage starts at its end, so the 18:00 run waits for it too. Updates, tasks, the release and the site finish first; a climb stops for it:
+
+- The climb checks for `work/security-pending` before each step, and between waits on a long job: wait at most 10 minutes per call.
+- When the file exists, it stops its running build or test (kill the job's process group), commits what each unfinished step has, and pushes it to its climb-<repo>-<N> branch with a comment on the issue: what is done and what is left. The next climb carries it on (1b). It pushes nothing to main.
+- It ends `end climb stopped security: <summary>`. In a round, it appends `end chain nothing` and starts nothing: no round check, no router. In the daily chain, it starts the router as usual.
+
+The security stage builds nothing. It logs what is due, and the router starts the update stages. It has no `start` or `end` line, so of "Starting a stage" only step 1 applies:
+
+1. Delete `work/security-pending`. Run upstream_status.py as the router does (2b) and keep the `update` and `zeroday` lines. For a `zeroday` line that says "find the version that fixes it", do as the router's 2c.
+2. Read the log from the last `begin`:
+   - An open daily chain or security chain: append a `finding` line for each due line that the chain doesn't have.
+   - Otherwise: if the chain is a climb round whose last line is `start climb …`, close it (`end climb died`, `end chain nothing`). Then append `begin`, `security`, and a `finding` line for each due line.
+   - Nothing due (a stage landed it meanwhile): append nothing, report it, and end.
+3. Start the router as the last tool call ("Ending a stage", 4).
+
+In a security chain the router starts only the update stages, `site` and `release final`. When the chain has ended:
+
+- If no daily chain has begun since the last 18:00 (the 18:00 run found the security chain open, and a queued run carried it), the router appends `begin` and begins the daily chain at once.
+- Otherwise, if the chain before it was a climb round that ended `stopped security`, the router checks "Climb rounds" 1 to 5 for the next round, numbered on from that round.
 
 ## Starting a stage
 

@@ -54,6 +54,21 @@ def log(event):
         file.write(f'{stamp} {event}\n')
 
 
+def webhook(stage):
+    """The stage's webhook URL, or None. The URL is a secret: never print it."""
+    return next((line.split('\t')[1] for line in WEBHOOKS.read_text().splitlines()
+                 if line.startswith(f'{stage}\t')), None)
+
+
+def post(url):
+    """Posts to a stage's webhook and returns the HTTP status. An error's message can
+    carry the URL: report only its type and code."""
+    request = urllib.request.Request(url, data=b'{}', method='POST',
+                                     headers={'content-type': 'application/json'})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return response.status
+
+
 def start_round():
     chain = last_chain()
     if chain and not any(event.startswith('end chain') for event in chain):
@@ -68,18 +83,14 @@ def start_round():
         sys.exit('the 18:00 router starts now: run resume after 18:05')
     rounds = [int(m.group(1)) for event in chain if (m := re.fullmatch(r'round (\d+)', event))]
     number = rounds[-1] + 1 if rounds else 1
-    url = next((line.split('\t')[1] for line in WEBHOOKS.read_text().splitlines()
-                if line.startswith('climb\t')), None)
+    url = webhook('climb')
     if not url:
         sys.exit(f'no climb webhook in {WEBHOOKS}')
     log('begin')
     log(f'round {number}')
     log(f'start climb round {number}')
     try:
-        request = urllib.request.Request(url, data=b'{}', method='POST',
-                                         headers={'content-type': 'application/json'})
-        with urllib.request.urlopen(request, timeout=30) as response:
-            print(f'started climb round {number} (HTTP {response.status})')
+        print(f'started climb round {number} (HTTP {post(url)})')
     except Exception as error:  # pylint: disable=broad-except
         # The router's rule for a failed start; a 404 means the URLs were rotated.
         # Only the error's type and code: some messages carry the secret URL.

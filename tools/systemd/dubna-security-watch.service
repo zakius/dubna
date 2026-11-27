@@ -1,0 +1,7 @@
+[Unit]
+Description=dubna: start the security stage when an upstream release is due (docs/nightly.md, "Security runs")
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 %h/dev/superheavy/dubna/tools/security_watch.py

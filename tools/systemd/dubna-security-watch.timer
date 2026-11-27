@@ -1,0 +1,10 @@
+[Unit]
+Description=dubna: hourly check for an upstream release that is due (docs/nightly.md, "Security runs")
+
+[Timer]
+# Half past, away from the router's 18:00 start.
+OnCalendar=*-*-* *:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
