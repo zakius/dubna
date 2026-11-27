@@ -341,7 +341,7 @@
      "api/tabs/tabs_util.cc",
      "api/tabs/tabs_util.h",
      "api/tabs/tabs_windows_api.cc",
-@@ -265,6 +287,30 @@ source_set("extensions") {
+@@ -265,6 +287,35 @@ source_set("extensions") {
      "context_menu_helpers.h",
      "context_menu_matcher.cc",
      "context_menu_matcher.h",
@@ -369,10 +369,15 @@
 +    # Firefox add-ons (dubna): Firefox's menus error texts.
 +    "firefox_menu_errors.cc",
 +    "firefox_menu_errors.h",
++
++    # Firefox add-ons (dubna): the browser shortcuts a Firefox add-on's key
++    # doesn't take.
++    "commands/firefox_reserved_shortcuts.cc",
++    "commands/firefox_reserved_shortcuts.h",
      "corrupted_extension_reinstaller.cc",
      "corrupted_extension_reinstaller.h",
      "corrupted_extension_reinstaller_factory.cc",
-@@ -329,6 +375,31 @@ source_set("extensions") {
+@@ -329,6 +380,31 @@ source_set("extensions") {
      "extension_special_storage_policy.h",
      "extension_tab_util.cc",
      "extension_tab_util.h",
@@ -404,7 +409,7 @@
      "extension_telemetry_service_verdict_handler.cc",
      "extension_telemetry_service_verdict_handler.h",
      "extension_ui_util.cc",
-@@ -389,6 +460,26 @@ source_set("extensions") {
+@@ -389,6 +465,26 @@ source_set("extensions") {
      "low_trust_policy_install_block_manager.h",
      "managed_toolbar_pin_mode.h",
      "menu_icon_loader.h",
@@ -431,7 +436,7 @@
      "menu_manager.cc",
      "menu_manager.h",
      "menu_manager_factory.cc",
-@@ -654,6 +745,12 @@ source_set("extensions") {
+@@ -654,6 +750,12 @@ source_set("extensions") {
      "//ui/menus",
      "//ui/native_window_tracker",
      "//ui/shell_dialogs",
@@ -444,7 +449,7 @@
    ]
    public_deps = [
      "//chrome/browser/extensions/api/messaging",
-@@ -731,6 +828,11 @@ source_set("extensions") {
+@@ -731,6 +833,11 @@ source_set("extensions") {
        "api/tabs/tabs_event_router_platform_delegate_non_android.h",
        "chrome_app_icon_loader.cc",
        "chrome_app_icon_loader.h",
@@ -1245,7 +1250,15 @@
  
 --- a/chrome/browser/extensions/commands/command_service.cc
 +++ b/chrome/browser/extensions/commands/command_service.cc
-@@ -31,6 +31,7 @@
+@@ -16,6 +16,7 @@
+ #include "base/strings/utf_string_conversions.h"
+ #include "base/values.h"
+ #include "build/build_config.h"
++#include "chrome/browser/extensions/commands/firefox_reserved_shortcuts.h"
+ #include "chrome/browser/extensions/extension_commands_global_registry.h"
+ #include "chrome/browser/extensions/extension_keybinding_registry.h"
+ #include "chrome/browser/profiles/profile.h"
+@@ -31,6 +32,7 @@
  #include "extensions/common/command.h"
  #include "extensions/common/extension_id.h"
  #include "extensions/common/feature_switch.h"
@@ -1253,15 +1266,16 @@
  #include "extensions/common/manifest_constants.h"
  #include "extensions/common/permissions/permissions_data.h"
  #include "ui/base/accelerators/command.h"
-@@ -572,7 +573,11 @@ bool CommandService::CanAutoAssign(const ui::Command& command,
+@@ -572,7 +574,12 @@ bool CommandService::CanAutoAssign(const ui::Command& command,
    }
  
    // Not a global command, check if the command is a Chrome shortcut.
 -  return !IsChromeAccelerator(command.accelerator());
 +  // Firefox add-ons (dubna): a Firefox add-on's key wins over the browser's
-+  // shortcut, as in Firefox. Extension shortcuts have the high priority
-+  // (accelerator_priority.h), so the key reaches the add-on first.
-+  return IsFirefoxAddOn(*extension) ||
++  // shortcut, as in Firefox, but for the reserved ones
++  // (firefox_reserved_shortcuts.h).
++  return (IsFirefoxAddOn(*extension) &&
++          FirefoxMayTakeBrowserShortcut(command.accelerator())) ||
 +         !IsChromeAccelerator(command.accelerator());
  }
  
